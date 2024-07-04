@@ -9,9 +9,12 @@ comments: true
 
 ## Math
 
-Some math: 
+Some math: \( \theta + 1 = \theta_2 \)
+
+Displayed math:
+
 $$
-\theta + 1 = \theta_2
+\int_0^\infty e^{-x^2} \,dx = \frac{\sqrt{\pi}}{2}
 $$
 
 Some code: 
