@@ -116,11 +116,12 @@
   {% elsif site.avatar %}
   <meta name="twitter:image" content="{{ site.url }}{{ site.avatar }}" />
   {% endif %}
-    <!-- inline config -->
+    <!-- Math inline config -->
     <script>
     MathJax = {
         tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
         macros: {
             RR: "{\\bf R}",
             bold: ["{\\bf #1}", 1],
