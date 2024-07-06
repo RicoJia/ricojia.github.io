@@ -42,6 +42,7 @@ K(RP_1+t) = Z_2 p_2
 $$
 
 Then, we "normalize" the depths $Z_1$ and $Z_2$ and get the canonical points:
+
 $$
 \begin{gather*}
 P_{c1} = K^{-1}p_1 = P_1/Z_1 \\
@@ -52,6 +53,7 @@ $$
 #### How do we can define the epipolar constraint?
 
 Using the coplanar characteristic, and the **essential matrix, E**:
+
 $$
 \begin{gather*}
 t \times P_{c2} = \alpha t \times RP_1
@@ -73,7 +75,8 @@ One important point is **we omitted depth** because one side is zero. So, **the 
 
 Note that we can use the skew matrix of $t$ to represent $E$ as $E = [t_\times] KR$.
 
-Now, to get the **foundamental matrix, F**, 
+Now, to get the **foundamental matrix, F**,
+
 $$
 \begin{gather*}
 P_{c2}^T E P_{c1} = 0
@@ -106,6 +109,7 @@ Let $e = [e_1 , e_2 , e_3 , e_4 , e_5 , e_6 , e_7 , e_8 , e_9 ]^T$
 #### ❓Remember how to get the canonical plane coordinates from pixel values?
 
 Recall the intrinsic matrix
+
 $$
 \begin{gather*}
 K = \begin{pmatrix}
