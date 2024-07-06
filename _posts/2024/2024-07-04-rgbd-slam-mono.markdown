@@ -20,7 +20,7 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 ### Intro - Relative Motion Is In Epipolar Constraints
 
 In the Epipolar Geometry show, our main characters are:
-- $O_1$, $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
+- $$O_1$$, $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
 - $p_1$, $p_2$ are the corresponding pixel points
 - $P$ is the 3D point 
 - Additionally, $e_1$, $e_2$ are the epipoles of the two cameras. $l_1$ and $l_2$ are epipolar lines
