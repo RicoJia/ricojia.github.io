@@ -149,7 +149,15 @@ Each combination of $t$ and $R$ could be a valid solution. They correspond to th
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/27e5e2a9-fc12-431e-8778-77855504ee3e" height="300" width="width"/>
 </p>
 
-But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check". TODO
+But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation**. Given $R$ and $t$, one can establish
+$$
+Z_1 P_{c1} = Z_2 R P_{c2} + t
+\\
+=> 
+\\
+Z_1 P_{c1} \times P_{c1} = Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
+$$
+Then, one can solve for depths $Z_1$ and $Z_2$. If they are both positive, then the solution is valid.
 
 
 
@@ -157,8 +165,11 @@ But only the first scenario has both canonical points' depths being positive. So
 
 If we have feature points landed on one plane, like a wall, or a floor, then, we can solve for H in $p_2 = Hp_1$, which gives $R$ and $t$. This method is a.k.a Direct Linear Transform
 
-Recall that we have a plane 
+Recall that we have a plane
+
+<div style="text-align: center;">
 $$
+\begin{align*}
 n^TP + d = 0
 \\
 =>
@@ -170,7 +181,9 @@ p_2 = K(RP_1+t) = K(RP_1+t(-\frac{n^T}{d})P_1)
 = K(R+t(-\frac{n^T}{d}))P_1
 \\
 = K(R+t(-\frac{n^T}{d}))K^{-1}p_1 = Hp_1
+\end{align*}
 $$
+</div>
 
 Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying the "positive depth" constraint, we can eliminate two. I'm not sure how to eliminate the last one?
 
