@@ -153,13 +153,11 @@ But only the first scenario has both canonical points' depths being positive. So
 
 $$
 \begin{gather}
-\begin{align}
 Z_1 P_{c1} = Z_2 R P_{c2} + t
 \\
 => 
 \\
 Z_1 P_{c1} \times P_{c1} = Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
-\end{align}
 \end{gather}
 $$
 
