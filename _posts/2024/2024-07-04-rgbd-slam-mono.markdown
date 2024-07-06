@@ -43,14 +43,17 @@ $$
 
 Then, we "normalize" the depths $Z_1$ and $Z_2$ and get the canonical points:
 $$
+\begin{gather*}
 P_{c1} = K^{-1}p_1 = P_1/Z_1 \\
 P_{c2} = K^{-1}p_2 = (RP_1+t)/Z_2 = (Z_1 RP_{c1}+t)/Z_2
+\end{gather*}
 $$
 
 #### How do we can define the epipolar constraint?
 
 Using the coplanar characteristic, and the **essential matrix, E**:
 $$
+\begin{gather*}
 t \times P_{c2} = \alpha t \times RP_1
 \\
 =>
@@ -63,6 +66,7 @@ P_{c2}^T \cdot t \times RP_{c1} = P_{c2}^T E P_{c1} = 0
 \\
 =>
 E = t \times R
+\end{gather*}
 $$
 
 One important point is **we omitted depth** because one side is zero. So, **the epipolar constraint is scale ambiguous**.
@@ -71,6 +75,7 @@ Note that we can use the skew matrix of $t$ to represent $E$ as $E = [t_\times] 
 
 Now, to get the **foundamental matrix, F**, 
 $$
+\begin{gather*}
 P_{c2}^T E P_{c1} = 0
 \\
 =>
@@ -78,6 +83,7 @@ p_2^T K^{-T}FK^{-1} p_1  = p_2^T F p_1 = 0
 \\
 =>
 F = K^{-T}EK^{-1}
+\end{gather*}
 $$
 
 ### Step 2 - Estimate Relative Motion in Epipolar Constraints (8 point algorithm)
@@ -101,6 +107,7 @@ Let $e = [e_1 , e_2 , e_3 , e_4 , e_5 , e_6 , e_7 , e_8 , e_9 ]^T$
 
 Recall the intrinsic matrix
 $$
+\begin{gather*}
 K = \begin{pmatrix}
 f_x & 0 & c_x \\
 0 & f_y & c_y \\
@@ -110,6 +117,7 @@ f_x & 0 & c_x \\
 =>
 \\
 x_n = \frac{u - c_x}{f_x}, y_n = \frac{v - c_y}{f_y}
+\end{gather*}
 $$
 
 #### 🤔 How many equations do we need?
@@ -118,7 +126,9 @@ P_{c1} = $[u_1, v_1, 1]$ and P_{c2} is $[u_2, v_2, 1]$.
 
 So, each epipolar constraint $P_{c2}^T E P_{c1}$ gives 1 equation:
 $$
+\begin{gather*}
 [u_2 u_1 , u_2 v_1 , u_2 , v_2 u_1 , v_2 v_1 , v_2 , u_1 , v_1 , 1] · e = Ae = 0
+\end{gather*}
 $$
 
 Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
@@ -171,32 +181,29 @@ If we have feature points landed on one plane, like a wall, or a floor, then, we
 
 Recall that we have a plane
 
-<div style="text-align: center;">
+
 $$
-\begin{align*}
+\begin{gather*}
 n^TP + d = 0
 \\
 =>
 \\
 -\frac{n^TP}{d}=1
 \\
-\end{align*}
+\end{gather*}
 $$
-</div>
 
 Then plug these into $P_1$ and $P_2$
 
-<div style='text-align: center;'>
 $$
-\begin{align*}
+\begin{gather*}
 p_2 = K(RP_1+t) = K(RP_1+t(-\frac{n^T}{d})P_1)
 \\
 = K(R+t(-\frac{n^T}{d}))P_1
 \\
 = K(R+t(-\frac{n^T}{d}))K^{-1}p_1 = Hp_1
-\end{align*}
+\end{gather*}
 $$
-</div>
 
 Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying the "positive depth" constraint, we can eliminate two. I'm not sure how to eliminate the last one?
 
