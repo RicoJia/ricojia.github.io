@@ -2,6 +2,7 @@
 layout: post
 title: A Mini MONO SLAM Front End  
 date: '2024-07-04 10:11'
+tags: [MathJax, Mathematic]
 excerpt: This blog post will guide you through the theory of a mono slam front end
 comments: true
 ---
