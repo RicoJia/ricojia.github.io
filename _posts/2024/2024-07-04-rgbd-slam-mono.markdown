@@ -2,7 +2,6 @@
 layout: post
 title: A Mini MONO SLAM Front End  
 date: '2024-07-04 10:11'
-katex: True
 excerpt: This blog post will guide you through the theory of a mono slam front end
 comments: true
 ---
@@ -15,7 +14,6 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 
 <p align="center">
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="400" width="width"/>
-<figcaption align="center">Epipolar Constraints</figcaption>
 </p>
 
 ### Intro - Relative Motion Is In Epipolar Constraints
@@ -37,9 +35,11 @@ In the pinhole camera model, we introduce the notion of "canonical plane". Remem
 From the pinhole camera model, we know:
 
 $$
+\begin{align*}
 KP_1 = Z_1 p_1
 \\
 K(RP_1+t) = Z_2 p_2
+\end{align*}
 $$
 
 Then, we "normalize" the depths $Z_1$ and $Z_2$ and get the canonical points:
