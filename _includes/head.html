@@ -27,6 +27,10 @@
     {% endfor %}
   {% endif %}
 
+{% if page.mathjax %}
+  {% include mathjax.html %}
+{% endif %}
+
   {% if layout.common-googlefonts %}
     {% for font in layout.common-googlefonts %}
       <link rel="stylesheet" href="//fonts.googleapis.com/css?family={{ font }}" />
