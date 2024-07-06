@@ -13,7 +13,7 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 ## Theoretical Thingies
 
 <p align="center">
-<img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="400" width="width"/>
+<img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="300" width="width"/>
 </p>
 
 ### Relative Motion Is In Epipolar Constraints
@@ -154,7 +154,7 @@ $$
 E = U \Sigma V^T
 $$
 
-where E has eigen values $\sigma_1$, $\sigma_2$, $\sigma_3$. To project E onto a manifold, it will be equvalent to $diag(1,1,0)$ (I'm not too sure why, sorry!)
+where E has eigen values $\sigma_1$, $\sigma_2$, $\sigma_3$. To project E onto a manifold, it will be equvalent to $diag(1,1,0)$ 
 
 $$
 \begin{align*}
@@ -219,9 +219,17 @@ Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying t
 
 When there is no linear translation $t$, $E$ would be zero matrix too (if you multiply E and R) together. So a common practice is to calculate both homography and 8 points, then reproject them into back into the picture
 
-TODO: 
-HOW TO REPROJECT?
+### 🔎 How Do we Check Our Results?
 
+Reprojection. Project points on 1 image point onto the other. How? 
+
+First, we can see that the projection of one point can be mapped to multiple points, due to the scale ambiguity in translation (while rotation should be absolute). On **canonical planes**, The mapped points of $P_{c1}$ for example, are actually the line $l_2$ on the second image. Why?
+
+<p align="center">
+<img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="300" width="width"/>
+</p>
+
+Remember the epipolar constraint $P_{c2}^TEP_{c1}$ = 0? It already tells that the 3-vector $EP_{c1} = [a,b,c]$ is perpendicular to $P_{c2} = [x,y,1]$. That defines a line! $ax + by + c = 0$. So once we get this point, if the $P_2$ is close to this line, we think this projection is successful.
 
 ## Reference
 
