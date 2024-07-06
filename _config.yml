@@ -117,16 +117,6 @@ paginate: 10
 
 kramdown:
   input: GFM
-  math_engine: mathjax
-  syntax_highlighter_opts:
-    block:
-      line_numbers: true
-    span:
-      line_numbers: false
-  mathjax:
-    # Specifies how kramdown should insert MathJax markup
-    inline_math: [['$', '$'], ['\\(', '\\)']]
-    display_math: [['$$', '$$'], ['\\[', '\\]']]
 
 # Default YAML values (more information on Jekyll's site)
 defaults:
