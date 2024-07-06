@@ -16,7 +16,7 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="400" width="width"/>
 </p>
 
-### Intro - Relative Motion Is In Epipolar Constraints
+### Relative Motion Is In Epipolar Constraints
 
 In the Epipolar Geometry show, our main characters are:
 - $O_1$,  $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
@@ -28,7 +28,7 @@ The main purpose of this show is to establish a constraint between the pixels, u
 
 Below we are denoting 3D points using the capital letter $P$, and 2D pixel points using lower case letter $p$ . Let $P_1=[X,Y,Z]$ in $O_1$. Assume there's transformation $O_2 = RO_1 + T$. Then, the 3D point $P_2 = RP_1 + t$, where the **translation vector t** is $\vec{O_1O_2}$
 
-### Step 1 - Epipolar Constraints Derivation
+## Step 1 - Epipolar Constraints Derivation
 
 In the pinhole camera model, we introduce the notion of "canonical plane". Remember that our image plane is focal length $f$ away from the optical center? the canonical plane is 1 unit away from it. Meanwhile, the point $P$ has depth $Z_1$ and $Z_2$ in each frame. This simplifies our computation quite a bit. We represent points on the canonical planes of the two cameras as $P_{c1}$, $P_{c2}$
 
@@ -50,7 +50,7 @@ P_{c2} = K^{-1}p_2 = (RP_1+t)/Z_2 = (Z_1 RP_{c1}+t)/Z_2
 \end{gather*}
 $$
 
-#### How do we can define the epipolar constraint?
+### How do we can define the epipolar constraint?
 
 Using the coplanar characteristic, and the **essential matrix, E**:
 
@@ -89,7 +89,7 @@ F = K^{-T}EK^{-1}
 \end{gather*}
 $$
 
-### Step 2 - Estimate Relative Motion in Epipolar Constraints (8 point algorithm)
+## Step 2 - Estimate Relative Motion in Epipolar Constraints (8 point algorithm)
 
 In 1981, Longuet-Higgins proposed the famous "8-point algorithm" in Nature to estimate E, and solve for R and t. Since usually $K$ is known, we can operate on the canonical points
 
@@ -106,7 +106,7 @@ $$
 
 Let $e = [e_1 , e_2 , e_3 , e_4 , e_5 , e_6 , e_7 , e_8 , e_9 ]^T$
 
-#### ❓Remember how to get the canonical plane coordinates from pixel values?
+### ❓Remember how to get the canonical plane coordinates from pixel values?
 
 Recall the intrinsic matrix
 
@@ -124,11 +124,12 @@ x_n = \frac{u - c_x}{f_x}, y_n = \frac{v - c_y}{f_y}
 \end{gather*}
 $$
 
-#### 🤔 How many equations do we need?
+### 🤔 How many equations do we need?
 
 P_{c1} = $[u_1, v_1, 1]$ and P_{c2} is $[u_2, v_2, 1]$. 
 
 So, each epipolar constraint $P_{c2}^T E P_{c1}$ gives 1 equation:
+
 $$
 \begin{gather*}
 [u_2 u_1 , u_2 v_1 , u_2 , v_2 u_1 , v_2 v_1 , v_2 , u_1 , v_1 , 1] · e = Ae = 0
@@ -137,9 +138,14 @@ $$
 
 Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
 
-#### How to select those 8 points?
+### How to select those 8 points?
 
-In general, there could be multiple outliers in matched feature pairs. In general, Ransac is better than least squares when there's a lot of error terms
+In general, there could be multiple outliers in matched feature pairs. But also in the mean time, we most likely get more than 8 feature pairs . So, in general, we:
+1. Randomly select feature pairs that are within a specified distance from epipolar lines.
+2. Calculate E. Solve for R and t and use them to reproject the points on one image to another image. 
+3. Repeat this process. TODO: when to stop?
+
+This propose-and-pick-best is called **"Random Sample Consensus", or RANSAC**. In general, RANSAC is better than least squares when there's a lot of error in the input data
 
 ## Step 3 Solve for R, and t?
 
@@ -163,7 +169,7 @@ Each combination of $t$ and $R$ could be a valid solution. They correspond to th
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/27e5e2a9-fc12-431e-8778-77855504ee3e" height="300" width="width"/>
 </p>
 
-But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation**. Given $R$ and $t$, one can establish
+But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation** [1]. Given $R$ and $t$, one can establish
 
 $$
 \begin{gather*}
@@ -177,9 +183,7 @@ $$
 
 Then, one can solve for depths $Z_1$ and $Z_2$. If they are both positive, then the solution is valid.
 
-
-
-### [Optional] Step 4 - Homography for Co-Planar Features
+## [Optional] Step 4 - Homography for Co-Planar Features
 
 If we have feature points landed on one plane, like a wall, or a floor, then, we can solve for H in $p_2 = Hp_1$, which gives $R$ and $t$. This method is a.k.a Direct Linear Transform
 
@@ -211,7 +215,7 @@ $$
 
 Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying the "positive depth" constraint, we can eliminate two. I'm not sure how to eliminate the last one?
 
-### Step 5 - Do Both 8 points and Homography To Avoid De-generation
+## Step 5 - Do Both 8 points and Homography To Avoid De-generation
 
 When there is no linear translation $t$, $E$ would be zero matrix too (if you multiply E and R) together. So a common practice is to calculate both homography and 8 points, then reproject them into back into the picture
 
@@ -219,3 +223,6 @@ TODO:
 HOW TO REPROJECT?
 
 
+## Reference
+
+[1] Nistér, D. 2004. An Efficient Solution to the Five-Point Relative Pose Problem. In *Proceedings of the 2004 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'04)*, Vol. 2. IEEE, 195–202. DOI: https://www-users.cse.umn.edu/~hspark/CSci5980/nister.pdf
