@@ -151,17 +151,17 @@ Each combination of $t$ and $R$ could be a valid solution. They correspond to th
 
 But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation**. Given $R$ and $t$, one can establish
 
-<div style='text-align: center;'>
 $$
-\begin{align*}
+\begin{gather}
+\begin{align}
 Z_1 P_{c1} = Z_2 R P_{c2} + t
 \\
 => 
 \\
 Z_1 P_{c1} \times P_{c1} = Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
-\end{align*}
+\end{align}
+\end{gather}
 $$
-</div>
 
 Then, one can solve for depths $Z_1$ and $Z_2$. If they are both positive, then the solution is valid.
 
