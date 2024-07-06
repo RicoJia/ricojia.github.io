@@ -27,10 +27,6 @@
     {% endfor %}
   {% endif %}
 
-{% if page.mathjax %}
-  {% include mathjax.html %}
-{% endif %}
-
   {% if layout.common-googlefonts %}
     {% for font in layout.common-googlefonts %}
       <link rel="stylesheet" href="//fonts.googleapis.com/css?family={{ font }}" />
@@ -120,9 +116,7 @@
   {% elsif site.avatar %}
   <meta name="twitter:image" content="{{ site.url }}{{ site.avatar }}" />
   {% endif %}
+    <!-- Math -->
+    {% include mathjax.html >}
 
-    <!-- MathJax -->
-    <script type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
 </head>
