@@ -20,7 +20,7 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 ### Intro - Relative Motion Is In Epipolar Constraints
 
 In the Epipolar Geometry show, our main characters are:
-- $$O_1$$, $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
+- $$O_1$$,  $$O_2$$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
 - $p_1$, $p_2$ are the corresponding pixel points
 - $P$ is the 3D point 
 - Additionally, $e_1$, $e_2$ are the epipoles of the two cameras. $l_1$ and $l_2$ are epipolar lines
@@ -34,6 +34,7 @@ Below we are denoting 3D points using the capital letter $P$, and 2D pixel point
 In the pinhole camera model, we introduce the notion of "canonical plane". Remember that our image plane is focal length $f$ away from the optical center? the canonical plane is 1 unit away from it. Meanwhile, the point $P$ has depth $Z_1$ and $Z_2$ in each frame. This simplifies our computation quite a bit. We represent points on the canonical planes of the two cameras as $P_{c1}$, $P_{c2}$
 
 From the pinhole camera model, we know:
+
 $$
 KP_1 = Z_1 p_1
 \\
