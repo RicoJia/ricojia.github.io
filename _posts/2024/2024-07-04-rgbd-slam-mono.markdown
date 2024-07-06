@@ -36,16 +36,14 @@ From the pinhole camera model, we know:
 
 $$
 \begin{align*}
-KP_1 = Z_1 p_1
-\\
+KP_1 = Z_1 p_1 \\
 K(RP_1+t) = Z_2 p_2
 \end{align*}
 $$
 
 Then, we "normalize" the depths $Z_1$ and $Z_2$ and get the canonical points:
 $$
-P_{c1} = K^{-1}p_1 = P_1/Z_1
-\\
+P_{c1} = K^{-1}p_1 = P_1/Z_1 \\
 P_{c2} = K^{-1}p_2 = (RP_1+t)/Z_2 = (Z_1 RP_{c1}+t)/Z_2
 $$
 
@@ -125,7 +123,11 @@ $$
 
 Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
 
-#### Now, how do we solve for R, and t? 
+#### How to select those 8 points?
+
+In general, there could be multiple outliers in matched feature pairs. In general, Ransac is better than least squares when there's a lot of error terms
+
+## Step 3 Solve for R, and t?
 
 E could be singular decomposed into: 
 $$
@@ -147,10 +149,11 @@ Each combination of $t$ and $R$ could be a valid solution. They correspond to th
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/27e5e2a9-fc12-431e-8778-77855504ee3e" height="300" width="width"/>
 </p>
 
-But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds.
+But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check". TODO
 
 
-### [Optional] Step 3 - Homography for Co-Planar Features
+
+### [Optional] Step 4 - Homography for Co-Planar Features
 
 If we have feature points landed on one plane, like a wall, or a floor, then, we can solve for H in $p_2 = Hp_1$, which gives $R$ and $t$. This method is a.k.a Direct Linear Transform
 
@@ -171,7 +174,11 @@ $$
 
 Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying the "positive depth" constraint, we can eliminate two. I'm not sure how to eliminate the last one?
 
-### Step 4 - Do Both 8 points and Homography To Avoid De-generation
+### Step 5 - Do Both 8 points and Homography To Avoid De-generation
 
-When there is no linear translation $t$, $E$ would be zero matrix too (if you multiply E and R) together. 
-TODO
+When there is no linear translation $t$, $E$ would be zero matrix too (if you multiply E and R) together. So a common practice is to calculate both homography and 8 points, then reproject them into back into the picture
+
+TODO: 
+HOW TO REPROJECT?
+
+
