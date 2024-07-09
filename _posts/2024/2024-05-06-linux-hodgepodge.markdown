@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Going Back To The Basics - Bash Tools
+title: Linux HodgePodge
 date: '2024-05-06 13:19'
-excerpt: This blog is a hodge-podge of bash commands that I found useful
+excerpt: This blog is a hodge-podge collection of Facts about Linux that I found useful
 comments: true
 ---
 
-This is a running hodge-podge list of bash concepts and commands that I found useful in my robotics career. I will keep adding ingredients and spices here. 🍲
+This is a running hodge-podge list of Linux concepts and commands that I found useful in my robotics career. I will keep adding ingredients and spices here. 🍲
 
 Enjoy!
 
@@ -49,3 +49,16 @@ Autostarting can depend on a few factors:
 - Conditions. Unit files could have `Condition*` that must be met for service to start. E.g., `ConditionPathExists=/some/path` will autostart the service at boot only if the path exists. 
 
 
+## Poll
+
+`poll` is used to monitor changes on a specified file descriptor. E.g., checking if there's a new USB device being plugged in. This is also known as "event-driven-programming". In python: 
+
+```python
+import select
+poller = select.poll()
+fd = 0
+poller.register(fd, select.POLLIN)  # checking input events
+READ_PERIOD = 5 # in milliseconds
+events = poller.poll(READ_PERIOD)
+...
+```
