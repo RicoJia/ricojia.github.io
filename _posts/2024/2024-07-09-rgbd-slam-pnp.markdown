@@ -43,9 +43,14 @@ $$
 Here comes the hard part: how do we solve for OA, OB, OC? In the original paper [1], Gao et al. proposed to use Wu-Ritt Decomposition to solve binary quadratic equations. Another method is to transform the above into one biquatric equation and [to solve with this method](https://mathworld.wolfram.com/QuarticEquation.html). Either case, there is a lot of derivation, so the linked resources above are probably the best places to look them up XD
 
 
+Then, we need 1 pair of feature match to find the solution that yields the positive z.
 
 [In OpenCV](https://docs.opencv.org/4.x/d5/d1f/calib3d_solvePnP.html), there are implementations for the P3P [1], EPnP, etc. 
 One can notice that comOAred to the result of 8-point-algorithm, the rotation matrix is similar, but the translation is usually quite different
+
+#### Disadvantages of P3P
+- When there are more than 3 pairs of points, we cannot use them. **Question: can we use RANSAC?** TODO
+- Sensitive to noise / feature mismatches.
 
 ### References
 [1] Complete Solution Classification for the Perspective-Three-Point Problem" by Xiao-Shan Gao, Xiao-Rong Hou, Jianliang Tang, and Hang-Fei Cheng. It was published in the IEEE Transactions on OAttern Analysis and Machine Intelligence, volume 25, issue 8, OAges 930-943, in 2003
