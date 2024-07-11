@@ -8,6 +8,14 @@ comments: true
 
 ## OpenCV Image Tools
 
+- Create a cv::Mat
+
+```cpp
+//
+cv::Mat(another_mat);
+```
+    - **Watch out**, if you pass another mat directly into `cv::Mat()` constructor, then the new mat will use the same pointer to the underlying data structure. To create a real copy, do `cv::Mat.clone()`
+
 - Check image size:
 
 ```cpp
@@ -24,4 +32,14 @@ cols = s.width;
 double min, max;
 cv::Mat mat
 cv::minMaxIdx(mat, &min, &max);  // Find min and max depth values
+```
+
+## OpenCV Math Tools
+
+- Rotation Vector and Matrix:
+```cpp
+cv::Mat r, R;
+// cv::Mat_<double>(3,1) is a template function?
+r = (cv::Mat_<double>(3,1) << 0, 0, CV_PI/2);
+cv::Rodrigues(r, R);
 ```

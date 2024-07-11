@@ -13,7 +13,10 @@ comments: true
 ```bash
 docker ps -a checks all containers, including the stopped ones
 docker container prune removes all stopped containers
-docker container rm
+docker container rm <container-id>
+
+# or
+docker rm $(docker ps -a -f status=exited -q)   # -f followed by status
 ```
 
 ## Docker Compose

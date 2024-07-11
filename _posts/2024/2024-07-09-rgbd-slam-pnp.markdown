@@ -14,9 +14,70 @@ The Perspective-n-Point (PnP) problem is a very important technique in RGBD SLAM
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/c52064b4-ddaf-40ed-974a-cf30dc0addb9" height="400" width="width"/>
 </p>
 
+### Direct Linear Transform
+
+Naively, when we have the 3D coordinates of points in the camera frame and the world frame, we should be able to find a way to solve for their transforma, R and T.
+
+$$
+\begin{gather*}
+K^{-T}z[u,v] = 
+
+\begin{bmatrix}
+t_1 & t_2 & t_3 & t_4 \\
+t_5 & t_6 & t_7 & t_8 \\
+t_9 & t_{10} & t_{11} & t_{12} \\
+\end{bmatrix}
+
+\end{gather*}
+$$
+
+So each point gives:
+$$
+\begin{gather*}
+u_1 = \frac{t_1 X + t_2 Y + t_3 Z + t_4}{t_9 X + t_{10} Y + t_{11} Z + t_{12}}, \quad
+v_1 = \frac{t_5 X + t_6 Y + t_7 Z + t_8}{t_9 X + t_{10} Y + t_{11} Z + t_{12}}.
+\end{gather*}
+$$
+
+Let $P=[x,y,z]$
+
+$$
+\begin{gather*}
+\begin{equation}
+\mathbf{t}_1 = (t_1, t_2, t_3, t_4)^\top, \quad
+\mathbf{t}_2 = (t_5, t_6, t_7, t_8)^\top, \quad
+\mathbf{t}_3 = (t_9, t_{10}, t_{11}, t_{12})^\top
+\end{equation}
+\end{gather*}
+$$
+
+Then, we gather at least 6 points, and use SVD to find a solution using least-squares for t.
+
+$$
+\begin{gather*}
+\begin{equation}
+\begin{pmatrix}
+\mathbf{P}_1^\top & 0 & -u_1 \mathbf{P}_1^\top \\
+0 & \mathbf{P}_1^\top & -v_1 \mathbf{P}_1^\top \\
+\vdots & \vdots & \vdots \\
+\mathbf{P}_N^\top & 0 & -u_N \mathbf{P}_N^\top \\
+0 & \mathbf{P}_N^\top & -v_N \mathbf{P}_N^\top \\
+\end{pmatrix}
+\begin{pmatrix}
+\mathbf{t}_1 \\
+\mathbf{t}_2 \\
+\mathbf{t}_3 \\
+\end{pmatrix}
+= 0
+\end{equation}
+\end{gather*}
+$$
+
+Since we need $SE(3)$ constraints on R, we need to use QR decomposition to solve for R, while it's relatively simple to solve for t since it's in the Cartesian Space. Since we are getting an approximate solution from QR decomposition, we often need to optimize based on this solution.
+
 ### P3P
 
-In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. On the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $OA$, $OB$. $OC$ [1]. 
+In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. In the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $OA$, $OB$. $OC$ [1]. 
 
 First we can solve for cosines:
 
@@ -28,7 +89,7 @@ $$
 \cos(\gamma) = \frac{pb^2 + pc^2 - bc^2}{2 \cdot pb \cdot pc}
 $$
 
-Then, using the law of cosines, we can write out:
+Then, using the law of cosines, we can 
 
 $$
 \begin{gather*}
@@ -45,14 +106,23 @@ Here comes the hard part: how do we solve for OA, OB, OC? In the original paper 
 
 Then, we need 1 pair of feature match to find the solution that yields the positive z.
 
-[In OpenCV](https://docs.opencv.org/4.x/d5/d1f/calib3d_solvePnP.html), there are implementations for the P3P [1], EPnP, etc. 
 One can notice that comOAred to the result of 8-point-algorithm, the rotation matrix is similar, but the translation is usually quite different
 
 #### Disadvantages of P3P
 - When there are more than 3 pairs of points, we cannot use them. **Question: can we use RANSAC?** TODO
 - Sensitive to noise / feature mismatches.
 
+## Implementation Notes
+
+```
+what():  OpenCV(4.2.0) ../modules/calib3d/src/solvepnp.cpp:753: error: (-215:Assertion failed) ( (npoints >= 4) || (npoints == 3 && flags == SOLVEPNP_ITERATIVE && useExtrinsicGuess) ) && npoints == std::max(ipoints.checkVector(2, CV_32F), ipoints.checkVector(2, CV_64F)) in function 'solvePnPGeneric'
+```
+[In OpenCV](https://docs.opencv.org/4.x/d5/d1f/calib3d_solvePnP.html), there are implementations for the P3P [1], EPnP, etc.
+
+
 ### References
 [1] Complete Solution Classification for the Perspective-Three-Point Problem" by Xiao-Shan Gao, Xiao-Rong Hou, Jianliang Tang, and Hang-Fei Cheng. It was published in the IEEE Transactions on OAttern Analysis and Machine Intelligence, volume 25, issue 8, OAges 930-943, in 2003
 
 [2] https://blog.csdn.net/leonardohaig/article/details/120756834
+
+[3] Jesse Chen's Blog about EPnP https://blog.csdn.net/jessecw79/article/details/82945918
