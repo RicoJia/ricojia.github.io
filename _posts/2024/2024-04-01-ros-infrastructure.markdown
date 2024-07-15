@@ -26,10 +26,9 @@ The ROS Action really is a mechanism that keeps track of the exeuction state of 
 8. Recalling : cancelling the goal before it got accepted
 9. Recalled : Goal has been recalled
 
-There is a topic `<ACTION_SERVER>/status`. Its status reflects the status of the task:
+There is a topic `<ACTION_NAME>/status`. Its status reflects the status of the task:
 
 ```bash
-# 1
 status_list:
   - goal_id:
       id: "unique_goal_id_1"

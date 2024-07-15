@@ -10,7 +10,7 @@ comments: true
 
 ### Hierarchy
 
-CMake is hierarchical. That is, you have a top-level project, with multiple subprojects. 
+CMake is hierarchical. That is, you have a top-level project, with multiple subprojects.
 
 Basic Operations:
 
@@ -45,6 +45,12 @@ In a sub-project, it has a reference to the parent it was launched in. So a prop
 set(FOO <foo value> PARENT_SCOPE)
 ```
 
+## Compile Options
+
+To add more compile options, one simply does `SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} <OTHER OPTIONS>")`. Below is a list of options that can be used
+
+- `-wall`: enable all commonly used warning messages during compilation.
+
 ## Advanced Options
 
 - `ccache` is a compiler cache that caches previous compilations and detecting if the same compilation needs to be done again. It's meant for C/C++ projects.
@@ -66,3 +72,24 @@ set(FOO <foo value> PARENT_SCOPE)
             - input source file, compiler options (direct mode)
         2. Look up for existing hash, which includes **a cache hit or cache miss**
         
+## Weird Issues 
+- When `/usr/include/opencv4/opencv2/core/eigen.hpp:259:29: error: expected ‘,’ or ‘...’ before ‘<’ token 259 |Eigen::Matrix<_Tp, 1, Eigen::Dynamic>& dst )`. Solution: 
+    - **In header file, make sure eigen includes come before <opencv2/core/eigen.hpp>**
+        ```cpp
+        #include <Eigen/Core>
+        #include <Eigen/Dense>
+        #include <opencv2/core/eigen.hpp>
+        ```
+    - Make sure the CMake has:
+        ```cmake
+        target_include_directories(${PROJECT_NAME}
+        PUBLIC 
+            ${OpenCV_INCLUDE_DIRS}
+            ${EIGEN3_INCLUDE_DIRS}
+        )
+        
+        target_link_libraries(executable 
+            ...
+            Eigen3::Eigen
+        )
+        ```

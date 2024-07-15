@@ -64,6 +64,7 @@ R_z(\alpha) = \begin{bmatrix}
 \end{gather*}
 $$
 
+**Representation 4** Quaternion. TODO
 
 ### Order is important
 
@@ -73,7 +74,7 @@ So, **it's important to specify the order or rotation, if a single rotation can 
 
 In the robotics community:
 
-- Using fixed axes, [ROS uses the X-Y-Z order](https://www.ros.org/reps/rep-0103.html), so there is no ambiguity on order.
+- Use world frame fixed axes. [ROS uses the X-Y-Z order](https://www.ros.org/reps/rep-0103.html), so there is no ambiguity on order. There is no gimbal lock, either.
 
 - Euler angles can represent any orientation. There are common orders such as Z-X-Y, X-Y-Z, etc. There are 24 valid combinations. Below (from Wikipedia) is an illustration of Z-X-Z'
 
