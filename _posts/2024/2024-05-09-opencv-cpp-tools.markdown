@@ -36,6 +36,9 @@ cv::minMaxIdx(mat, &min, &max);  // Find min and max depth values
 
 ## OpenCV Math Tools
 
+- Basic Representation of points
+    - `cv::Point2f` is 32 bit single precision floating point
+    - `cv::Point2i` is 32-bit single precision integer.
 - Rotation Vector and Matrix:
 ```cpp
 cv::Mat r, R;

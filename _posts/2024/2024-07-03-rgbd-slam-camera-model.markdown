@@ -16,7 +16,7 @@ Each camera has a 3D world coordinate system, and:
 - Image Plane: the plane where the image is taken. It should be focal length away from the optical center $f$
 - Principle Point: where the optical center lands on the image plane.
 - A convention of the coordinate system placement is that the **z axis points to the image plane, x points right, and y points down**
-- **An image always starts from the top left corner**, and **x or u represent columns, y, or v represent row index** (it's a weird convention, I feel ya).
+- **An image always starts from the top left corner**, and **x or u represent columns, y or v represent row index** (it's a weird convention, I feel ya).
 
 If we go back to the original [pinhole model](https://en.wikipedia.org/wiki/Pinhole_camera_model), we can find that the image is upside down. But for most robotics applications, this can be simplified into the illustration below, where an image is placed in in front of the camera optical center
 
@@ -26,7 +26,7 @@ If we go back to the original [pinhole model](https://en.wikipedia.org/wiki/Pinh
 
 ## Mathematical Model
 
-Mathematically, in a pinhole model, the relationship a pixel $[u, v]$ and its corresponding 3D coordinates $[X, Y, s]$ ($s$ is depth) are:
+Mathematically, in a pinhole model, the relationship between a pixel $[u, v]$ and its corresponding 3D coordinates $[X, Y, s]$ ($s$ is depth) are:
 
 $$
 \begin{gather*}
@@ -72,7 +72,7 @@ s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} =  K T \begin{bmatrix} X \\ Y \\ s \
 $$
 
 Where:
-- $T=[R|t]$
+- $T=[R | t]$
 - $R$ is the $SO(3)$ rotation matrix
 - $t$ is the Cartesian translation vector.
 
