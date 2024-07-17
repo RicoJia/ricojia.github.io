@@ -1,0 +1,56 @@
+---
+layout: post
+title: Writing GTest for ROS
+date: '2024-05-21 13:19'
+excerpt: Test! Test! Test!
+comments: true
+---
+
+## Concepts
+
+Google Test (a.k.a GTest) is an open source unit testing structure. From the [official website](http://google.github.io/googletest/primer.html)
+
+- Test Suite vs Test Case: *A test suite contains one or many tests. You should group your tests into test suites that reflect the structure of the tested code. When multiple tests in a test suite need to share common objects and subroutines, you can put them into a test fixture class.*
+
+Some common macros include:
+
+- `EXPECT_EQ` vs `ASSERT_EQ`: *`EXPECT_*` versions generate nonfatal failures, which don’t abort the current function. Usually `EXPECT_*` are preferred, as they allow more than one failure to be reported in a test. However, you should use  `ASSERT_*` if it doesn’t make sense to continue when the assertion in question fails.*
+
+
+## Usage
+
+1. Install GTest
+
+```bash
+git clone https://github.com/google/googletest
+cd googletest
+mkdir -p build install
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=../install .. Install locally
+make -j32 install
+```
+
+2. Simple Test Case
+
+```cpp
+// Test function
+double getFrobeniusNorm(const cv::Mat &m){
+    // element-wise matrix multiplication 
+    // cv::sum sums of elements across all dimensions
+    return std::sqrt(cv::sum(m.mul(m))[0]);
+}
+
+// Test case
+#include <gtest/gtest.h>
+
+TEST(CvUtilsTest, TestFrobeniusNorm) {
+    cv::Mat_<double> m (3, 3);
+    m << 1.0, 2.0, 3.0,
+        0.0, 0.0, 0.0,
+        1.0, 2.0, 0.0;
+    double norm = getFrobeniusNorm(m);
+    EXPECT_EQ(norm, std::sqrt(1 + 4 + 9 + 1 + 4));
+}
+```
+
+3. Test Case with Fixture: TODO
