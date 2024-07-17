@@ -71,7 +71,10 @@ s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} =  K T \begin{bmatrix} X \\ Y \\ s \
 \end{gather*}
 $$
 
-Where $T=[R|t]$, $R$ is the $SO(3)$ rotation matrix, $t$ is the Cartesian translation vector.
+Where:
+- $T=[R|t]$
+- $R$ is the $SO(3)$ rotation matrix
+- $t$ is the Cartesian translation vector.
 
 ## References
 https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
