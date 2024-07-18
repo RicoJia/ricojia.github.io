@@ -16,7 +16,7 @@ Each class has a virtual table (vtable) that stores pointers to all virtual func
 
 <p align="center">
 <img src="https://github.com/user-attachments/assets/204338dc-a36d-4dfc-80a9-d0dcba31eec2" height="400"/>
-<figcaption>[Source: Pablo Arias](https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/)</figcaption>
+<figcaption><a href="https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/">Source: Pablo Arias</a></figcaption>
 </p>
 
 ### Remember to Define Virtual Dtor in Base Class
