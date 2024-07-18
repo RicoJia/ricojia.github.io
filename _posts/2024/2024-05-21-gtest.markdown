@@ -16,10 +16,9 @@ Some common macros include:
 
 - `EXPECT_EQ` vs `ASSERT_EQ`: *`EXPECT_*` versions generate nonfatal failures, which don’t abort the current function. Usually `EXPECT_*` are preferred, as they allow more than one failure to be reported in a test. However, you should use  `ASSERT_*` if it doesn’t make sense to continue when the assertion in question fails.*
 
-
 ## Usage
 
-1. Install GTest
+- Install GTest
 
 ```bash
 git clone https://github.com/google/googletest
@@ -30,7 +29,7 @@ cmake -DCMAKE_INSTALL_PREFIX=../install .. Install locally
 make -j32 install
 ```
 
-2. Simple Test Case
+### Simple Test Case
 
 ```cpp
 // Test function
@@ -53,7 +52,9 @@ TEST(CvUtilsTest, TestFrobeniusNorm) {
 }
 ```
 
-3. Test fixture is a mechanism to share resources between test cases in a test suite. Below, we have an example
+### Test Fixture
+
+Test fixture is a mechanism to share code between test cases in a test suite. One common misconception is "the text fixture will be reused across tests". **THAT IS NOT TRUE!** Test fixtures are only for sharing initialization code. Below, we have an example
 
 ```cpp
 class MyTestFixture : public ::testing::Test{
@@ -76,5 +77,33 @@ class MyTestFixture : public ::testing::Test{
 };
 
 TEST_F(MyTestFixture, SomeTest){
+}
+```
+
+1. Note, to use a test fixture, one needs `TEST_F` instead of `TEST`.
+2. Another option is to use constructors. [The official documentation has a good recommendation on when to use which.](https://google.github.io/googletest/faq.html#CtorVsSetUp). The TL;DR is:
+
+    - Use ctor when we want to initialize `const` member variables. If we know they wouldn't change throughout the tests, it'd be a good practice to do so.
+    - Use `SetUp()` when:
+        - We need to call a virtual function during initialization. C++ doesn't allow virtual calls in ctor and dtors? (TODO: to link, C++ does not allow virtual function calls in constructors and destructors. You can call a method declared as virtual, but it will not use dynamic dispatch. It will use the definition from the class the constructor of which is currently executing. This is because calling a virtual method before the derived class constructor has a chance to run is very dangerous - the virtual method might operate on uninitialized data. Therefore, if you need to call a method that will be overridden in a derived class, you have to use SetUp()/TearDown().) 
+        - If a fatal failure could happen, `ASSERT_*` is a good choice for that purpose, but it cannot be used in ctor or dtor and **can be only used in SetUp()**
+        - `SetUp()` can catch exceptions. Arguably, it could be a good idea if you don't want uncaught exceptions to interrupt your normal tests (e.g., an emergency test fix)
+
+### Test Environment
+
+Test environment helps initialize test resource that's shared for the entire test binary, e.g., logging system initialization. **One potential bug is this environment could be shared across multiple compilation units, if they comprise the same binary.**
+
+```cpp
+class Environment : public ::testing::Environment{
+    public:
+        ~Environment() override {}
+        void SetUp() override {std::cout<<"This is intialized only once globally"<<std::endl;}
+        void TearDown() override {std::cout<<"This is destructed only once globally"<<std::endl;}
+};
+
+int main(int argc, char **argv){
+    testing::AddGlobalTestEnvironment(new Environment);
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 ```
