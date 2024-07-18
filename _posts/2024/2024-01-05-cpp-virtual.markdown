@@ -1,8 +1,8 @@
 ---
 layout: post
-title: [C++] Virtual Keyword - Virtual Functions and Virtual Inheritance
+title: C++ Virtual Keyword - Virtual Functions and Virtual Inheritance
 date: '2024-01-05 13:19'
-excerpt: Virtual is virtually
+excerpt: Virtual is virtually complicated
 comments: true
 ---
 
