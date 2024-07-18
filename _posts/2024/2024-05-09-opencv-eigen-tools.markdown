@@ -47,4 +47,25 @@ r = (cv::Mat_<double>(3,1) << 0, 0, CV_PI/2);
 cv::Rodrigues(r, R);
 ```
 
-## Eigen
+## Eigen Tools
+
+### Common Conversions
+
+- ROS `geometry_msgs::Pose` $->$  `Eigen::Quaterniond`
+
+```cpp
+geometry_msgs::Pose p;
+Eigen::Quaterniond q(pose.rotation());
+```
+
+### Tricks
+
+- Print a vector on one line
+
+```cpp
+// Define the IO format to print on one line
+Eigen::IOFormat eigen_1_line_fmt(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", ", ", "", "", " [", "] ");
+
+// Print the vector using the defined format
+std::cout << "p1: " << p1.format(eigen_1_line_fmt) << std::endl;
+```
