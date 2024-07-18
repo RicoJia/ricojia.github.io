@@ -85,7 +85,7 @@ TEST_F(MyTestFixture, SomeTest){
 
     - Use ctor when we want to initialize `const` member variables. If we know they wouldn't change throughout the tests, it'd be a good practice to do so.
     - Use `SetUp()` when:
-        - We need to call a virtual function during initialization. C++ doesn't allow virtual calls in ctor and dtors? (TODO: to link, C++ does not allow virtual function calls in constructors and destructors. You can call a method declared as virtual, but it will not use dynamic dispatch. It will use the definition from the class the constructor of which is currently executing. This is because calling a virtual method before the derived class constructor has a chance to run is very dangerous - the virtual method might operate on uninitialized data. Therefore, if you need to call a method that will be overridden in a derived class, you have to use SetUp()/TearDown().) 
+        - We need to call a virtual function during initialization. [See this article for more about the rationale.](./2024-01-05-cpp-virtual.markdown)
         - If a fatal failure could happen, `ASSERT_*` is a good choice for that purpose, but it cannot be used in ctor or dtor and **can be only used in SetUp()**
         - `SetUp()` can catch exceptions. Arguably, it could be a good idea if you don't want uncaught exceptions to interrupt your normal tests (e.g., an emergency test fix)
 
