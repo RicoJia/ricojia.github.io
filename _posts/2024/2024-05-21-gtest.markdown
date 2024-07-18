@@ -53,4 +53,28 @@ TEST(CvUtilsTest, TestFrobeniusNorm) {
 }
 ```
 
-3. Test Case with Fixture: TODO
+3. Test fixture is a mechanism to share resources between test cases in a test suite. Below, we have an example
+
+```cpp
+class MyTestFixture : public ::testing::Test{
+    protected:
+        void SetUp() override {
+           str_ = "Hello World";
+           std::cout<<str_<<std::endl;
+        }
+        void TearDown() override {
+            // For extra destruction work
+        }
+
+        static void SetUpTestSuite(){
+            // Initialize shared resource (like database access) for the entire test suite
+        }
+        static void TearDownTestSuite(){
+            // Destruct test suite's shared resources
+        }
+    std::string str_;
+};
+
+TEST_F(MyTestFixture, SomeTest){
+}
+```

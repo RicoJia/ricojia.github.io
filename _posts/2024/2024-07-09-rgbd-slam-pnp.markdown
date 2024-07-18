@@ -109,18 +109,27 @@ Then, we need 1 pair of feature match to find the solution that yields the posit
 One can notice that comOAred to the result of 8-point-algorithm, the rotation matrix is similar, but the translation is usually quite different
 
 #### Disadvantages of P3P
+
 - When there are more than 3 pairs of points, we cannot use them. **Question: can we use RANSAC?** TODO
 - Sensitive to noise / feature mismatches.
 
 ## Implementation Notes
 
-```
+1. Open CV Error from `solvePnP`
+
+```bash
 what():  OpenCV(4.2.0) ../modules/calib3d/src/solvepnp.cpp:753: error: (-215:Assertion failed) ( (npoints >= 4) || (npoints == 3 && flags == SOLVEPNP_ITERATIVE && useExtrinsicGuess) ) && npoints == std::max(ipoints.checkVector(2, CV_32F), ipoints.checkVector(2, CV_64F)) in function 'solvePnPGeneric'
 ```
+
 [In OpenCV](https://docs.opencv.org/4.x/d5/d1f/calib3d_solvePnP.html), there are implementations for the P3P [1], EPnP, etc.
 
+2. Rviz does not show `sensor_msgs/PointCloud2` point cloud, even though there are valid messages. In this case, please check:
+
+- Are you publishing on to a different frame? If so, is there a valid transform?
+- Are there any `nan` or `inf` in your message? 
 
 ### References
+
 [1] Complete Solution Classification for the Perspective-Three-Point Problem" by Xiao-Shan Gao, Xiao-Rong Hou, Jianliang Tang, and Hang-Fei Cheng. It was published in the IEEE Transactions on OAttern Analysis and Machine Intelligence, volume 25, issue 8, OAges 930-943, in 2003
 
 [2] https://blog.csdn.net/leonardohaig/article/details/120756834
