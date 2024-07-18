@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [C++] Virtual Keyword - Virtual Functions and Virtual Inheritance
+title: C++ - Virtual Functions and Virtual Inheritance
 date: '2024-01-05 13:19'
 excerpt: Virtual is virtually complicated. Dynamic Dispatch, Dreadful Diamond Derivative (DDD) Problem ...
 comments: true
@@ -109,7 +109,50 @@ int main() {
 ### Quirks
 
 - **Virtual functions cannot be called in ctor or dtor**
-    - This is because the object is **considered to have the type of base class during construction, or destruction**
+    - This is because in construction or destruction, when calling a virtual function, C++ does NOT use dynamic dispatch there, and will only use the definition from the class where the constructor is defined. This is to **prevent calling a virtual function that touches uninitialized data.** See below example
+
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    Base() {
+        display();
+    }
+
+    virtual ~Base() = default;
+
+    virtual void display() const {
+        std::cout << "Display from Base" << std::endl;
+        
+    }
+    
+    virtual void displayer_wrapper() const{
+                display();
+        }
+};
+
+class Derived : public Base {
+public:
+    Derived() {}
+
+    ~Derived() override = default;
+
+    void display() const override {
+        std::cout << "Display from Derived" << std::endl;
+    }
+};
+
+int main() {
+    // See "Display from Base", because it's called in base ctor and polymorphism is banned at the point.
+    Base* d = new Derived();
+    // See "Display from Derived", which is expected from polymorphism
+    d ->  displayer_wrapper();
+    delete d;
+    return 0;
+}
+```
+
 
 ## Virtual Inheritance
 
