@@ -45,6 +45,23 @@ In a sub-project, it has a reference to the parent it was launched in. So a prop
 set(FOO <foo value> PARENT_SCOPE)
 ```
 
+### Interface Library
+
+Interface library is a library that does not create build artifacts, like `.a`, `.o` files. So you can use it to make a group of dependencies other targets can link against. Example:
+
+```cmake
+add_library(my_project_dependencies INTERFACE)
+target_link_libraries(my_project_dependencies INTERFACE
+    ${catkin_LIBRARIES}
+    ${rosbag_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    simple_robotics_cpp_utils
+    Eigen3::Eigen
+)
+add_executable(orb_test src/orb_test.cpp)
+target_link_libraries(orb_test my_project_dependencies)
+```
+
 ## Compile Options
 
 To add more compile options, one simply does `SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} <OTHER OPTIONS>")`. Below is a list of options that can be used
@@ -73,23 +90,27 @@ To add more compile options, one simply does `SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_F
         2. Look up for existing hash, which includes **a cache hit or cache miss**
         
 ## Weird Issues 
-- When `/usr/include/opencv4/opencv2/core/eigen.hpp:259:29: error: expected ‘,’ or ‘...’ before ‘<’ token 259 |Eigen::Matrix<_Tp, 1, Eigen::Dynamic>& dst )`. Solution: 
+
+- When `/usr/include/opencv4/opencv2/core/eigen.hpp:259:29: error: expected ‘,’ or ‘...’ before ‘<’ token 259 |Eigen::Matrix<_Tp, 1, Eigen::Dynamic>& dst )`. Solution:
     - **In header file, make sure eigen includes come before <opencv2/core/eigen.hpp>**
-        ```cpp
-        #include <Eigen/Core>
-        #include <Eigen/Dense>
-        #include <opencv2/core/eigen.hpp>
-        ```
+    
+    ```cpp
+    #include <Eigen/Core>
+    #include <Eigen/Dense>
+    #include <opencv2/core/eigen.hpp>
+    ```
+    
     - Make sure the CMake has:
-        ```cmake
-        target_include_directories(${PROJECT_NAME}
-        PUBLIC 
-            ${OpenCV_INCLUDE_DIRS}
-            ${EIGEN3_INCLUDE_DIRS}
-        )
-        
-        target_link_libraries(executable 
-            ...
-            Eigen3::Eigen
-        )
-        ```
+
+    ```cmake
+    target_include_directories(${PROJECT_NAME}
+    PUBLIC 
+        ${OpenCV_INCLUDE_DIRS}
+        ${EIGEN3_INCLUDE_DIRS}
+    )
+    
+    target_link_libraries(executable 
+        ...
+        Eigen3::Eigen
+    )
+    ```
