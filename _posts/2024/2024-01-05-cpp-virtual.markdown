@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ Virtual Keyword - Virtual Functions and Virtual Inheritance
+title: [C++] Virtual Keyword - Virtual Functions and Virtual Inheritance
 date: '2024-01-05 13:19'
 excerpt: Virtual is virtually complicated. Dynamic Dispatch, Dreadful Diamond Derivative (DDD) Problem ...
 comments: true
@@ -108,8 +108,8 @@ int main() {
 
 ### Quirks
 
-- Virtual functions cannot be called in ctor or dtor TODO
-TODO: to link, C++ does not allow virtual function calls in constructors and destructors. You can call a method declared as virtual, but it will not use dynamic dispatch. It will use the definition from the class the constructor of which is currently executing. This is because calling a virtual method before the derived class constructor has a chance to run is very dangerous - the virtual method might operate on uninitialized data. Therefore, if you need to call a method that will be overridden in a derived class, you have to use SetUp()/TearDown().
+- **Virtual functions cannot be called in ctor or dtor**
+    - This is because the object is **considered to have the type of base class during construction, or destruction**
 
 ## Virtual Inheritance
 
