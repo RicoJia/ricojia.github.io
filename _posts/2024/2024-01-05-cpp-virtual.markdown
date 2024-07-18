@@ -21,37 +21,46 @@ The mechanism of dynamic dispatching in C++ is through a virtual function table 
 <figcaption><a href="https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/">Source: Pablo Arias</a></figcaption>
 </p>
 
-### Remember to Define Virtual Dtor in Base Class
-
-In the case of virtual dtor, Base and Derived Class can look like below when virtual dtor is / is not defined in base class. (**One weirdity here is if ~Base::Base is marked virtual, Derived::Derived is automatically virtual**)
+By declaring a function `virtual` in base class, one can provide `overrride` functions in subclasses if necessary. One example is:
 
 ```cpp
-// Base and Derived classes vtables when virtual dtor is defined in base class:
-[&Base::do_something, &~Base::Base]
-[&Derived::do_something, &~Derived::Derived]
+#include <iostream>
+#include <string>
 
-// Base and Derived classes vtables when virtual dtor is not defined in base class:
-[&Base::do_something ]
-[&Derived::do_something]
-
-// virtual dtor only in base? or in both? 
+class B{
+    public:
+    virtual void foo() {  std::cout << "Hello, I'm B "<<std::endl;}
+    };
+class C: public B{
+    public:
+    void foo() override {  std::cout << "Hello, I'm C"<<std::endl;}
+    };
+class D: public B{
+    };
+    
+int main()
+{
+    // See Hello, I'm C
+    C().foo();
+    // See Hello, I'm B 
+    D().foo();
+}
 ```
 
-So when `~Base::Base` is not marked virtual, the compiler will first synthesize `~Base::Base`. But then during runtime, the program can't find `~Derived::Derived`, so that's not called. Try running below code snippet:  
+### If You Have A Base Class, Always Define Virtual Dtor it
+
+In C++ polymorphism, **IT IS REQUIRED TO DECLARE BASE CLASS'S DTOR AS VIRTUAL**
+
 ```cpp
 #include <iostream>
 #include <memory>
 
 struct Shape {
-    virtual void do_something() const = 0; // Pure virtual function
     // Omitting virtual destructor will skip the dtor of Circle as well.
-    // virtual ~Shape() = default;
+    virtual ~Shape() { std::cout << "Deleting shape" << std::endl;};
 };
 
 struct Circle : public Shape {
-    void do_something() const override {
-        std::cout << "circle" << std::endl;
-    }
     ~Circle() {
         std::cout << "Circle destructor called" << std::endl;
     }
@@ -59,12 +68,43 @@ struct Circle : public Shape {
 
 int main() {
     Shape* shape = new Circle();
-    shape->do_something();
     delete shape; // Won't see "Circle destructor called"
     return 0;
 }
 ```
 
+Because this way, the Vtable is able to include the proper destructors. 
+
+```bash
+[&~Base::Base]
+[&~Derived::Derived]
+```
+
+If the base class doesn't have a virtual dtor: 
+
+```cpp
+#include <iostream>
+#include <memory>
+
+struct Shape {
+    // Omitting virtual destructor will skip the dtor of Circle as well.
+    ~Shape() { std::cout << "Deleting shape" << std::endl;};
+};
+
+struct Circle : public Shape {
+    ~Circle() {
+        std::cout << "Circle destructor called" << std::endl;
+    }
+};
+
+int main() {
+    Shape* shape = new Circle();
+    delete shape; // Won't see "Circle destructor called"
+    return 0;
+}
+```
+
+- **One weirdity here is if ~Base::Base is marked virtual, Derived::Derived is automatically virtual**
 
 ### Quirks
 
