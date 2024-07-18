@@ -43,11 +43,9 @@ Let $P=[x,y,z]$
 
 $$
 \begin{gather*}
-\begin{equation}
 \mathbf{t}_1 = (t_1, t_2, t_3, t_4)^\top, \quad
 \mathbf{t}_2 = (t_5, t_6, t_7, t_8)^\top, \quad
 \mathbf{t}_3 = (t_9, t_{10}, t_{11}, t_{12})^\top
-\end{equation}
 \end{gather*}
 $$
 
@@ -55,7 +53,6 @@ Then, we gather at least 6 points, and use SVD to find a solution using least-sq
 
 $$
 \begin{gather*}
-\begin{equation}
 \begin{pmatrix}
 \mathbf{P}_1^\top & 0 & -u_1 \mathbf{P}_1^\top \\
 0 & \mathbf{P}_1^\top & -v_1 \mathbf{P}_1^\top \\
@@ -69,7 +66,6 @@ $$
 \mathbf{t}_3 \\
 \end{pmatrix}
 = 0
-\end{equation}
 \end{gather*}
 $$
 
