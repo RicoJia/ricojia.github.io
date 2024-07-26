@@ -6,7 +6,7 @@ excerpt: A Running List of Opencv and Eigen Tools
 comments: true
 ---
 
-## OpenCV Image Tools
+## OpenCV Image Processing
 
 - Create a cv::Mat
 
@@ -46,6 +46,13 @@ cv::Mat r, R;
 r = (cv::Mat_<double>(3,1) << 0, 0, CV_PI/2);
 cv::Rodrigues(r, R);
 ```
+
+## OpenCV Misc Tools
+
+- `waitkey(timeout)` - wait for key press. If `timeout=0`, this will be infinite
+
+    - This function needs an image widget active. Otherwise, it would just become a delay.
+
 
 ## Eigen Tools
 
