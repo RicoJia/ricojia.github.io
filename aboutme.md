@@ -4,7 +4,7 @@ title: About me
 subtitle:
 ---
 
-Hello! My name is Rico Jia and I am currently a robotics software engineer working on robotics backend development, navigation, and machine learning. I am a firm believer of the idea that "there's no better learning than doing". So, I enjoy understanding interesting ideas, and **implementing them from scratch**. I also believe in the power of "first principle" - to build & manage a system well, always understand the lowest-level fundamentals well. This universe is evolving with basic elements, after all. So, in this nerd cluster, there are many articles about fundamentals.
+Hello! My name is Rico Jia and I am a robotics software engineer working on robotics backend development, navigation, and machine learning. I am a firm believer of the idea that "there's no better learning than doing". So, I enjoy understanding interesting ideas, and **implementing them from scratch**. I also believe in the power of "first principle" - to build & manage a system well, always understand the lowest-level fundamentals well. This universe is evolving with basic elements, after all. So, in this nerd cluster, there are many articles about fundamentals.
 
 In the [Open Learning Section](https://ricojia.github.io/openlearning), I have a list of self-directed courses and projects that I implemented from scratch. The bulk of the blog articles here are actually "by-products" of those projects 😛.
 
