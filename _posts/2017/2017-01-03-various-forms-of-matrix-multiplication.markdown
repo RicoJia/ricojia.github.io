@@ -2,7 +2,7 @@
 layout: post
 title: Math - Various Useful Forms Of Matrix Multiplication
 date: '2017-01-05 13:19'
-excerpt: Inner Product, outer Product, and how they are related to matrix multiplication
+excerpt: Inner & outer Product, Correlation Matrix, etc.
 comments: true
 ---
 
@@ -20,4 +20,36 @@ The definition of Matrix Multiplication of $C = AB$ is $C_{ij} = \sum_k A_{ik}B_
 
 That is, $AB = \sum_{k=1}^n a_k b_k^{T}$. Why? Because for any given element $C_{ij}$, we have $C_{ij} = \sum_k A_{ik}B_{kj}$.
 
+## Correlation Matrix
 
+The Matrix $X^TX$ is called a correlation matrix of $X$. It is so very common in multiple fields, such as control system, SVD, etc. Each element is the inner product of `X_i` and `X_j^T`. And that's "correlation"
+
+$$
+\mathbf{X}^T \mathbf{X} =
+\begin{bmatrix}
+\mathbf{x}_1^T \\
+\mathbf{x}_2^T \\
+\vdots \\
+\mathbf{x}_n^T
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{x}_1 & \mathbf{x}_2 & \cdots & \mathbf{x}_m
+\end{bmatrix}
+
+\\=>
+
+\begin{gather*}
+\mathbf{X}^T \mathbf{X} =
+\begin{bmatrix}
+\mathbf{x}_1^T \mathbf{x}_1 & \mathbf{x}_1^T \mathbf{x}_2 & \cdots & \mathbf{x}_1^T \mathbf{x}_m \\
+\mathbf{x}_2^T \mathbf{x}_1 & \mathbf{x}_2^T \mathbf{x}_2 & \cdots & \mathbf{x}_2^T \mathbf{x}_m \\
+\vdots & \vdots & \ddots & \vdots \\
+\mathbf{x}_m^T \mathbf{x}_1 & \mathbf{x}_m^T \mathbf{x}_2 & \cdots & \mathbf{x}_m^T \mathbf{x}_m \\
+\end{bmatrix}
+\end{gather*}
+$$
+
+So the correlation matrix is
+
+- Positive semi-definite
+- Symmetric
