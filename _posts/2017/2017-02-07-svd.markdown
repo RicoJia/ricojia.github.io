@@ -1,0 +1,117 @@
+---
+layout: post
+title: Math - Null Space and Singular Value Decomposition (SVD)
+date: '2017-02-07 13:19'
+excerpt: How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?
+comments: true
+---
+
+## Introduction
+
+The three most basic & important matrix factorizations in pure & applied linear algebra are:
+
+- QR Decomposition (Gram-Schmidt Orthogonalization)
+- LU Decomposition (Gaussian Elimination)
+- SVD Decomposition (Singular Value Decomposition)
+
+At various points of my career in robotics, computer vision, and machine learning, Singular Value Decomposition (SVD) has been a cornerstone and serves as a powerful **data reduction tool** that transforms **high-dimensional data into a more manageable lower-dimensional form**.
+
+## Singular Value Decomposition
+
+Let A be an `m x n` matrix. The goal is to decompose A into $A = U\Sigma V^T$, where U is `mxm`, and m > n
+
+- U is m x m orthonormal matrix, **aka left singular vectors.**
+- $\Sigma$ is m x n diagonal matrix, all elements are non-negative, and decreasing $\sigma 1 > \sigma 2 > \sigma 3... $.
+- D is n x n orthonormal matrix, right singular vectors
+
+To solve for the above matrices, [A's correlation matrix $A^T A$](https://ricojia.github.io/2017/01/05/various-forms-of-matrix-multiplication.html) can be written as:
+
+$$
+\begin{gather*}
+A^T A = (U \Sigma V^T)^T U \Sigma V^T
+\\
+= V \Sigma^2 V^T
+\end{gather*}
+$$
+
+
+$$
+U = 
+\begin{matrix}
+[\sigma_1^{-1}Av_1 \dots \sigma_n^{-1}Av_n | \text{Arbitrary orthonormal vectors}]
+\end{matrix}
+$$
+where S is `mxn`
+$$
+S=[
+\begin{matrix}
+\sigma_1 \dots 0 \dots \\
+0 \dots \sigma_n 0 \dots 
+\end{matrix}
+]
+$$
+
+V is `nxn`
+$$
+V=[
+    \begin{matrix}
+    v_1 \dots v_n
+    \end{matrix}
+]
+$$
+
+This works because if we want to prove $USV^T = A$, we can prove $USV^Tx = Ax$. 
+
+$$
+V^Tx = \left[
+    \begin{matrix}
+    V_1^Tx\\
+    \dots \\ 
+    V_n^Tx
+    \end{matrix}
+\right]
+\\
+=> 1
+\\
+SV^Tx = \left[
+    \begin{matrix}
+    V_1^Tx\\
+    \dots \\ 
+    V_n^Tx \\
+    0 \\
+    \dots \\ 
+    \end{matrix}
+\right]
+\\
+=> 2
+\\
+USV^Tx = \left[
+    Av_1v_1^Tx + \dots + Av_nv_n^Tx
+\right]
+= Ax
+$$
+
+Here for step 2, we are using two lemmas:
+2. For orthonormal vectors $v_1 \dots v_n$, $v_1v_1^T + \dots + v_nv_n^T = I$. Proof:
+    $$
+    (v_1v_1^T + \dots + v_nv_n^T)(v_1v_1^T + \dots + v_nv_n^T) = (v_1v_1^T + \dots + v_nv_n^T)
+    $$
+    - So matrix $(v_1v_1^T + \dots + v_nv_n^T)$ is the right and left identity of itself. So, $v_1v_1^T + \dots + v_nv_n^T$ is identity
+
+### Interpretations of U. $\Sigma$, V
+
+- Each singular value in sigma is an "importance".
+- Each column corresponds to each singular value (or importance)
+- $V$ is a "mixture" of columns
+- Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $A$. So, the returned values are: $U$ as mxn, $\Sigma$ as nxn, and $V$ as nxn,
+ are returned
+
+### Code In Action
+
+[Here is an online C++ compiler with `Eigen` ](https://coderpad.io/languages/cpp/)
+
+## More Remarks
+
+SVD is like "Data Driven Generalization of Fourier Transform". It's one of the transformations used in **the last generation computational science tools, which maps a system into a new coordinates**. In a system like facial recognition, we have a bunch of data but no off-the-shelf mathematical model for Fourier Tranformation. SVD allows us to tailor a model with those data to the specific problem.
+
+- It can be used in PCA to form a basis for a reduced-dimension coordinate system. This is used in Google Page Rank, facial recognition algorithms (eigen faces), recommender systems in Aamazon and facebook; It's a very money-making tool ;).

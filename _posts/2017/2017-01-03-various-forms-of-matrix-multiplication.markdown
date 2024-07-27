@@ -18,11 +18,56 @@ The definition of Matrix Multiplication of $C = AB$ is $C_{ij} = \sum_k A_{ik}B_
 
 ### The matrix product is the sum of the outer product of A's columns and B's rows
 
-That is, $AB = \sum_{k=1}^n a_k b_k^{T}$. Why? Because for any given element $C_{ij}$, we have $C_{ij} = \sum_k A_{ik}B_{kj}$.
+That is, $AB = \sum_{k=1}^n a_k b_k^{T}$. Why? 
+
+Because for any given element $C_{ij}$, we have $C_{ij} = \sum_k A_{ik}B_{kj}$.
+
+#### Special case 1
+
+For orthonormal vectors $v_1 \dots v_n$, $v_1v_1^T + \dots + v_nv_n^T = I$. Proof:
+
+$$
+\begin{gather*}
+(v_1v_1^T + \dots + v_nv_n^T)(v_1v_1^T + \dots + v_nv_n^T) = (v_1v_1^T + \dots + v_nv_n^T)
+\end{gather*}
+$$
+
+- Matrix $(v_1v_1^T + \dots + v_nv_n^T)$ is the right and left identity of itself. So, $v_1v_1^T + \dots + v_nv_n^T$ is identity
+
+Special Case 2
+
+The product of a matrix and a diagonal Matrix has columns being diagonal term * columns:
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+v_1 & v_2
+\end{bmatrix}
+\begin{bmatrix}
+\lambda_1 & 0 \\
+0 & \lambda_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+\lambda_1 v_1 & 0
+\end{bmatrix}
++
+\begin{bmatrix}
+0 & \lambda_2 v_2
+\end{bmatrix}
+\\ =
+\begin{bmatrix}
+\lambda_1 v_1 & \lambda_2 v_2
+\end{bmatrix}
+\end{gather*}
+$$
+
+### 
+
 
 ## Correlation Matrix
 
-The Matrix $X^TX$ is called a correlation matrix of $X$. It is so very common in multiple fields, such as control system, SVD, etc. Each element is the inner product of `X_i` and `X_j^T`. And that's "correlation"
+The Matrix $X^TX$ is called a correlation matrix of $X$. It is so very common in multiple fields, such as control system, SVD, etc. Each element is the inner product of $X_i$ and $X_j^T$. And that's "correlation"
 
 $$
 \mathbf{X}^T \mathbf{X} =
