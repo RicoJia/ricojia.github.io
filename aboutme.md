@@ -3,10 +3,9 @@ layout: page
 title: About me
 subtitle:
 ---
+Hello! My name is Rico Jia, and I am a robotics software engineer focusing on backend development, navigation, and machine learning. I firmly believe in the idea that **"there's no better learning than doing"**. I enjoy understanding interesting ideas and **implementing them from scratch**. Additionally, I hold to the principle of "first principles"—to build and manage a system well, **one must understand the lowest-level fundamentals thoroughly**. After all, this universe is built from basic elements. So in my articles, I often try to delve into these fundamentals.
 
-Hello! My name is Rico Jia and I am a robotics software engineer working on robotics backend development, navigation, and machine learning. I am a firm believer of the idea that "there's no better learning than doing". So, I enjoy understanding interesting ideas, and **implementing them from scratch**. I also believe in the power of "first principle" - to build & manage a system well, **always understand the lowest-level fundamentals well**. This universe is evolving with basic elements, after all. So, in this nerd cluster, there are many articles about fundamentals. 
-
-On top of these mentalities, I also believe in the power of "compound interest". Knowledge & experience compounds over time - if someone **understands and remembers** a tiny bit of **useful information** every day, overtime, the person's tech stack will grow exponentially. Writing really helps me organize my thoughts, so I try to write the interesting facts & knowledge points down. Meanwhile, I don't trust my long term memory - a concept learned months ago could fade in memory. So I try to organize my articles in a simple, and no-bullshit manner.
+I also believe in the power of "compound interest" in knowledge and experience. If someone **understands and remembers a tiny bit of useful information every day**, their tech stack will grow exponentially over time. There are no shortcuts to this process. Writing helps me organize my thoughts, so I document interesting facts and knowledge points. However, I don't trust my long-term memory—a concept learned months ago could fade. Therefore, I aim to organize my articles in a simple, straightforward, and no-nonsense manner.
 
 In the [Open Learning Section](https://ricojia.github.io/openlearning), I have a list of self-directed courses and projects that I implemented from scratch. The bulk of the blog articles here are actually "by-products" of those projects 😛.
 
