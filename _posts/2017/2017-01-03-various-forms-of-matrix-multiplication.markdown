@@ -62,9 +62,6 @@ v_1 & v_2
 \end{gather*}
 $$
 
-### 
-
-
 ## Correlation Matrix
 
 The Matrix $X^TX$ is called a correlation matrix of $X$. It is so very common in multiple fields, such as control system, SVD, etc. Each element is the inner product of $X_i$ and $X_j^T$. And that's "correlation"
