@@ -75,13 +75,14 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
 
 **Important CAVEAT**: do not compute SVD using the above method, it's not accurate and not efficient. Method based on QR factorization is faster.
 
-### Interpretations of U. $\Sigma$, V
+### Interpretations of U, $\Sigma$, V
 
 - Each singular value in sigma is an "importance".
 - Each column in $U$ corresponds to each singular value (or importance) 
 - $V$ is a "mixture" of columns. 
     - Eventually, this will become: $\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$ (the sum of outer products). Each term increasingly improves the estimate of SVD
 - Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $A$. So, the returned values are: $U$ as mxn, $\Sigma$ as nxn, and $V$ as nxn, are returned
+    - Many times, people would return the first $r$ columns and rows of $U$ and $V^T$
 
 ### Applications
 
@@ -89,7 +90,7 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
     - Each term $\sqrt{\sigma_1} u_1 v_1^T$ has rank 1, because it's formed by only 1 linearly independ row and column 
 
 - Image Compression: By SVD'ing an image and keeping first 5 columns of the U matrix (so they are eigen vectors of the image column space) and first 5 rows of the V matrix, we can already see some features.
-- Digital Watermark: after SVD'ing an image, one can change an column in $U$ or $V$ with low $\sigma$ value to their own "digital watermark"
+- Digital Watermark: after SVD'ing an image, one can change an column in $U$ or $V$ with low $\sigma$ value to their own "digital watermark".
 
 <p align="center">
     <figure>
