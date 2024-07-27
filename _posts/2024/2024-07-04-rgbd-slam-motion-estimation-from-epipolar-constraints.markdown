@@ -72,7 +72,7 @@ E = t \times R
 \end{gather*}
 $$
 
-One important point is **we omitted depth** because one side is zero. So, **the epipolar constraint is scale ambiguous**.
+One important point is **we omitted depth** because one side is zero. So, **the epipolar constraint is scale ambiguous**. Since `t` and `R` each has 3 degrees of freedom (dof), E technically has 6 dof. But because of equivalence to scale, it has 5.
 
 Note that we can use the skew matrix of $t$ to represent $E$ as $E = [t_\times] R$.
 
@@ -83,9 +83,12 @@ $$
 P_{c2}^T E P_{c1} = 0
 \\
 =>
-p_2^T K^{-T}FK^{-1} p_1  = p_2^T F p_1 = 0
+\\
+p_2^T K^{-T}FK^{-1} p_1 \\
+= p_2^T F p_1 = 0
 \\
 =>
+\\
 F = K^{-T}EK^{-1}
 \end{gather*}
 $$
@@ -96,7 +99,7 @@ In 1981, Longuet-Higgins proposed the famous "8-point algorithm" in Nature to es
 
 E is a 3x3 matrix:
 $$
-\begin{bmatrix}
+E=\begin{bmatrix}
 e_1 & e_2 & e_3
 \\
 e_4 & e_5 & e_6
@@ -125,9 +128,9 @@ x_n = \frac{u - c_x}{f_x}, y_n = \frac{v - c_y}{f_y}
 \end{gather*}
 $$
 
-### 🤔 How many equations do we need?
+### 🤔 How Many Equations Do We Need?
 
-P_{c1} = $[u_1, v_1, 1]$ and P_{c2} is $[u_2, v_2, 1]$. 
+$P_{c1} = [u_1, v_1, 1]$ and $P_{c2} = [u_2, v_2, 1]$.
 
 So, each epipolar constraint $P_{c2}^T E P_{c1}$ gives 1 equation:
 
@@ -137,9 +140,9 @@ $$
 \end{gather*}
 $$
 
-Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
+Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Usually, we either make one element 1, or make $|t|=1$. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
 
-### How to select those 8 points?
+### How To Select Those 8 Points?
 
 In general, there could be multiple outliers in matched feature pairs. But also in the mean time, we most likely get more than 8 feature pairs . So, in general, we:
 1. Randomly select feature pairs that are within a specified distance from epipolar lines.
@@ -148,14 +151,14 @@ In general, there could be multiple outliers in matched feature pairs. But also 
 
 This propose-and-pick-best is called **"Random Sample Consensus", or RANSAC**. In general, RANSAC is better than least squares when there's a lot of error in the input data
 
-## Step 3 Solve for R, and t?
+## Step 3 How To Solve For R, And t?
 
-E could be singular decomposed into: 
+E could be singular decomposed into:
 $$
 E = U \Sigma V^T
 $$
 
-where E has eigen values $\sigma_1$, $\sigma_2$, $\sigma_3$. To project E onto a manifold, it will be equvalent to $diag(1,1,0)$ 
+where E has eigen values $\sigma_1$, $\sigma_2$, $\sigma_3$. To project E onto a manifold, it will be equvalent to $diag(1,1,0)$
 
 $$
 \begin{align*}
@@ -178,7 +181,8 @@ Z_1 P_{c1} = Z_2 R P_{c2} + t
 \\
 => 
 \\
-Z_1 P_{c1} \times P_{c1} = Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
+Z_1 P_{c1} \times P_{c1} \\
+= Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
 \end{gather*}
 $$
 
@@ -186,35 +190,72 @@ Then, one can solve for depths $Z_1$ and $Z_2$. If they are both positive, then 
 
 ## [Optional] Step 4 - Homography for Co-Planar Features
 
-If we have feature points landed on one plane, like a wall, or a floor, then, we can solve for H in $p_2 = Hp_1$, which gives $R$ and $t$. This method is a.k.a Direct Linear Transform
+In two frames, if all our feature points land on the **the same** plane, like a wall, or a floor, **then the transform between the two frames is called a Homography (单应).** For example, two matching feature points have: $p_2 = Hp_1$, where $H$ is composed of $R$ and $t$. **This method is a.k.a Direct Linear Transform** (DLT)
 
-Recall that we have a plane
-
+What's a plane? (My rusty brain yells to the college me) If we know the normal vector $n$, and a point it passes $P$, and a constant $c$, it is:
 
 $$
 \begin{gather*}
-n^TP + d = 0
+n^Tp + c = 0
 \\
 =>
 \\
--\frac{n^TP}{d}=1
-\\
+\frac{n^Tp}{c} = -1
 \end{gather*}
 $$
 
-Then plug these into $P_1$ and $P_2$
+Above is we write the co-plane constraint in another form, so we are set up for further elimination. The issue is we don't know $n$, and $c$. But that's ok, we know the relationship between $R$, $t$ and $H$.
 
 $$
 \begin{gather*}
-p_2 = K(RP_1+t) = K(RP_1+t(-\frac{n^T}{d})P_1)
+p_2 = K(RP_1+\vec{t}) \\
+= K(RP_1- \vec{t} \cdot \frac{n^TP_1}{c})
 \\
-= K(R+t(-\frac{n^T}{d}))P_1
+=K(R- \vec{t} \cdot \frac{n^T}{c})P_1
 \\
-= K(R+t(-\frac{n^T}{d}))K^{-1}p_1 = Hp_1
+=K(R- \vec{t} \cdot \frac{n^T}{c})K^{-1}p_1
+\\
+=Hp_1
 \end{gather*}
 $$
 
-Similar to the 8 point algorithm, 1 of 4 solutions could be valid. By applying the "positive depth" constraint, we can eliminate two. I'm not sure how to eliminate the last one?
+Similar to the 8 point algorithm, H is a `3x3` matrix, but is up to a scale. So out of the 9 elements of H, we make one of them 1. Then, we can write H as:
+
+$$
+\begin{gather*}
+H = \begin{bmatrix}
+h_1 & h_2 & h_3
+\\
+h_4 & h_5 & h_6
+\\
+h_7 & h_8 & 1
+\end{bmatrix}
+\end{gather*}
+$$
+
+Each pair of 2D matching pixels $[u_1, v_1]$, $[u_2, v_2]$ gives:
+
+$$
+\begin{gather*}
+\begin{cases}
+h_1 u_1 + h_2 v_1 + h_3 = u_2 \\
+h_4 u_1 + h_5 v_1 + h_6 = v_2 \\
+h_7 u_1 + h_8 v_1 + h_9 = 1
+\end{cases}
+\end{gather*}
+$$
+
+And that's equivalent to two equations
+
+$$
+\begin{gather*}
+u_2 = \frac{h_1 u_1 + h_2 v_1 + h_3}{h_7 u_1 + h_8 v_1 + h_9}
+\\
+v_2 = \frac{h_4 u_1 + h_5 v_1 + h_6}{h_7 u_1 + h_8 v_1 + h_9}
+\end{gather*}
+$$
+
+So, **we need 4 pairs of points to solve for homography.**. Like the essential matrix, we get 4 solutions for $H$. By applying the "positive depth" constraint, we can eliminate two. To eliminate the last one, we can assume the normal vector of the known scene plane. Then, R and t could be solved using decomposition
 
 ## Step 5 - Do Both 8 points and Homography To Avoid De-generation
 
