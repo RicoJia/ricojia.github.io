@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Eigen Value, Eigen Vector, and Eigen Value Decomposition
-date: '2017-02-07 13:19'
+date: '2017-01-15 13:19'
 excerpt: What is Eigen Value Decomposition?
 comments: true
 ---
