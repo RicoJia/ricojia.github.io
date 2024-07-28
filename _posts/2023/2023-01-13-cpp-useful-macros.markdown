@@ -12,21 +12,15 @@ Macros are string substitution for code. It happens during the preprocessing pha
 
 Here is the general compilation process
 
+
 <div style="text-align: center;">
 
-```mermaid
-graph TD;
-    A[Source Code main.cpp] --> B[Preprocessing, output main.i];
-    B --> D[Compilation output main.s];
-    D --> E[Assembly Code, output main.o ];
-    E --> H[Linking output executable];
-    
-    style A fill:#8FBC8F,stroke:#333,stroke-width:2px,color:#fff;
-    style B fill:#4682B4,stroke:#333,stroke-width:2px,color:#fff;
-    style D fill:#D2691E,stroke:#333,stroke-width:2px,color:#fff;
-    style E fill:#8B008B,stroke:#333,stroke-width:2px,color:#fff;
-    style H fill:#FF4500,stroke:#333,stroke-width:2px,color:#fff;
-```
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/dcdabf60-46de-4054-a987-98aa4a28d569" height="400" alt=""/>
+    </figure>
+</p>
+
 </div>
 
 ## Application 1 - Linkage Specifier
