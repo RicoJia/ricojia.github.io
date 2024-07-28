@@ -130,8 +130,18 @@ what():  OpenCV(4.2.0) ../modules/calib3d/src/solvepnp.cpp:753: error: (-215:Ass
 CV_IMPL void cvFindExtrinsicCameraParams2(...){
     cvConvertPointsHomogeneous( objectPoints, matM );
     cvConvertPointsHomogeneous( imagePoints, _m );
+    cvSVD( &_MM, &matW, 0, &matV, CV_SVD_MODIFY_A + CV_SVD_V_T );
+    if (co-plannar-from-svd)
+        cvFindHomography( _Mxy, _mn, &matH );
+    else
+        DLT();  //
+        ...
+    // minimizes reprojection error between two images
+    CvLevMarq solver( 6, count*2, cvTermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER,max_iter,FLT_EPSILON), true);
 }
 ```
+
+- One note is that the co-plane check using SVD is smart, [check here for more info](https://ricojia.github.io/2017/02/07/svd.html)
 
 ### References
 

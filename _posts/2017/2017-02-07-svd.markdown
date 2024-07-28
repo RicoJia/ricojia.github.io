@@ -22,7 +22,7 @@ Let A be an `m x n` matrix. The goal is to decompose A into $A = U\Sigma V^T$, w
 
 - $U$ is m x m orthonormal matrix, **aka left singular vectors.**
 - $\Sigma$ is m x n diagonal matrix, all elements are non-negative, and decreasing $\sigma 1 > \sigma 2 > \sigma 3... $.
-- $V$ is n x n orthonormal matrix, right singular vectors
+- $V$ is n x n orthonormal matrix, **aka right singular vectors**
 
 To solve for the above matrices, [A's correlation matrix $A^T A$](https://ricojia.github.io/2017/01/05/various-forms-of-matrix-multiplication.html) can be written as:
 
@@ -98,6 +98,10 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
         <figcaption><a href="https://www.youtube.com/watch?v=QQ8vxj-9OfQ">Source: Steve Brunton</a></figcaption>
     </figure>
 </p>
+
+- Plane Detection
+
+In `OpenCV::cvFindExtrinsicCameraParams2`, the goal is to find extrinsics of two cameras given 3D points from frame 1, and 2D pixel values from frame 2. [This line](https://github.com/opencv/opencv/blob/f824db4803855ca30bf782f8bb37ca39051f319f/modules/calib3d/src/calibration.cpp#L990) actually does the check.
 
 ### Code In Action
 
