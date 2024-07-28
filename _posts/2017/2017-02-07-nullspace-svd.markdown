@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Math - Null Space and Singular Value Decomposition (SVD)
+title: Math - Singular Value Decomposition (SVD)
 date: '2017-02-07 13:19'
-excerpt: How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?
+excerpt: What is Singular Value Decomposition (SVD)?
 comments: true
 ---
 
@@ -98,8 +98,6 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
         <figcaption><a href="https://www.youtube.com/watch?v=QQ8vxj-9OfQ">Source: Steve Brunton</a></figcaption>
     </figure>
 </p>
-
-![Screenshot from 2024-07-27 18-16-28]()
 
 ### Code In Action
 

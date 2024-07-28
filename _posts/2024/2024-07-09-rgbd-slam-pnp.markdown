@@ -124,6 +124,15 @@ what():  OpenCV(4.2.0) ../modules/calib3d/src/solvepnp.cpp:753: error: (-215:Ass
 - Are you publishing on to a different frame? If so, is there a valid transform?
 - Are there any `nan` or `inf` in your message? 
 
+3. [How does OpenCV solves for extrinsics?](https://github.com/opencv/opencv/blob/f824db4803855ca30bf782f8bb37ca39051f319f/modules/calib3d/src/calibration.cpp#L923) `cvFindExtrinsicCameraParams2` is the function to look at. An excerpt of code include:
+
+```cpp
+CV_IMPL void cvFindExtrinsicCameraParams2(...){
+    cvConvertPointsHomogeneous( objectPoints, matM );
+    cvConvertPointsHomogeneous( imagePoints, _m );
+}
+```
+
 ### References
 
 [1] Complete Solution Classification for the Perspective-Three-Point Problem" by Xiao-Shan Gao, Xiao-Rong Hou, Jianliang Tang, and Hang-Fei Cheng. It was published in the IEEE Transactions on OAttern Analysis and Machine Intelligence, volume 25, issue 8, OAges 930-943, in 2003
