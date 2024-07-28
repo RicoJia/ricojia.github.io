@@ -140,7 +140,7 @@ $$
 \end{gather*}
 $$
 
-Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Usually, we either make one element 1, or make $|t|=1$. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
+Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Usually, we either make one element 1, or make $abs(t)=1$. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
 
 ### How To Select Those 8 Points?
 
@@ -272,7 +272,3 @@ First, we can see that the projection of one point can be mapped to multiple poi
 </p>
 
 Remember the epipolar constraint $P_{c2}^TEP_{c1}$ = 0? It already tells that the 3-vector $EP_{c1} = [a,b,c]$ is perpendicular to $P_{c2} = [x,y,1]$. That defines a line! $ax + by + c = 0$. So once we get this point, if the $P_2$ is close to this line, we think this projection is successful.
-
-## Reference
-
-[1] Nistér, D. 2004. An Efficient Solution to the Five-Point Relative Pose Problem. In *Proceedings of the 2004 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'04)*, Vol. 2. IEEE, 195–202. DOI: https://www-users.cse.umn.edu/~hspark/CSci5980/nister.pdf

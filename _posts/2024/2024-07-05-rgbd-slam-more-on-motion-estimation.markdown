@@ -48,8 +48,42 @@ The proof was more involved than I thought (for those who are interested, see [2
 
 So, one way to combat this is using DLT to calculate homography aside from applying 8-point algorithm, and choose the result with minimum reprojection error.
 
+## Five Point Algorithm
+
+**Motivation:** Since E has 5 dof, why don't we do use five points? The reason for using fewer feature matches points is from feature matches, there could be many bad matches. People are using RANSAC to get more robustness, adn the five point algorithm lowers the chance of using bad matches. (outliers).
+
+The basic set up is [the same as the 8-point algorithm](https://ricojia.github.io/2024/07/04/rgbd-slam-motion-estimation-from-epipolar-constraints.html)
+
+$$
+\begin{gather*}
+[u_2 u_1 , u_2 v_1 , u_2 , v_2 u_1 , v_2 v_1 , v_2 , u_1 , v_1 , 1] · e = Ae = 0
+\end{gather*}
+$$
+
+With 5 feature matches, we get 5 equations. So $U$ should have 4 linearly independent solutions: `X, Y, Z, W`. The final solution $E$ must be a linear combination of them. Since $E$ is up to scale and has 1 dof, we make $c_{w}=1$
+
+$$
+\begin{gather*}
+E = c_x X + c_y Y + c_z Z + c_w W \tag{1}
+\end{gather*}
+$$
+
+Then, Nister et al. found two properties of E that can be used as constraints: [3]
+
+$$
+\begin{gather*}
+\text{det}(\mathbf{E}) = 0 \tag{2}
+\\
+\mathbf{E}\mathbf{E}^T\mathbf{E} - \frac{1}{2} \text{trace}(\mathbf{E}\mathbf{E}^T)\mathbf{E} = \mathbf{0} \tag{3}
+\end{gather*}
+$$
+
+Plugging (1) into (2) and (3) gives 3 cubic equations in 3 variables , which have at most 9 valid equations. However, **People have widely adopted the five point algorithm because these equations can be quickly eliminated, using redundant feature matches**
+
 ## References
 
 [1] Dong, Q., Shu, M., Cui, H., Xu, H., & Hu, Z. (2018). Learning stratified 3D reconstruction. *Science China Information Sciences*, 61(2), 023101. DOI: https://doi.org/10.1007/s11432-017-9234-7
 
 [2] P. H. S. Torr, A. Zisserman, and S. J. Maybank. "Robust Detection of Degenerate Configurations whilst Estimating the Fundamental Matrix." Robotics Research Group, Department of Engineering Science, Oxford University, Department of Computer Science, Reading University, UK. DOI: https://www.robots.ox.ac.uk/~vgg/publications/1998/Torr98c/torr98c.pdf
+
+[3] Nistér, D. 2004. An Efficient Solution to the Five-Point Relative Pose Problem. In *Proceedings of the 2004 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'04)*, Vol. 2. IEEE, 195–202. DOI: https://www-users.cse.umn.edu/~hspark/CSci5980/nister.pdf
