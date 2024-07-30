@@ -68,6 +68,25 @@ To add more compile options, one simply does `SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_F
 
 - `-wall`: enable all commonly used warning messages during compilation.
 
+### Choosing a good C++ Standard - what if the rest of the system does not support your standard?
+
+- If the rest of the system does not support your chosen C++ standard, be aware of potential issues.
+It is generally possible to use different C++ standards within the same project. However, be cautious of inconsistent ABI (Application Binary Interface) issues, particularly if the package is meant to be a library.
+- If the package consists of standalone C++ modules, such as ROS nodes, mixing standards is usually acceptable as long as the modules do not share ABI-sensitive interfaces.
+
+### Debug VS Release
+
+`set(CMAKE_BUILD_TYPE Debug)` will include debug information so gdb can step through it, check variable information. It's equivalent to `gcc -g ...` using the gcc compiler.
+
+- There wouldn't be much code optimziation in the debug mode. So the compilation time could be a bit shorter, but execution time would be longer.
+- Debug symbols include: 
+    - variable names
+    - function names and params
+    - line numbers
+    - data types
+
+`set(CMAKE_BUILD_TYPE Release)` not only exclude debug symbols, but will also turn on optimization, and disable assertions. This would include `-O3`
+
 ## Advanced Options
 
 - `ccache` is a compiler cache that caches previous compilations and detecting if the same compilation needs to be done again. It's meant for C/C++ projects.

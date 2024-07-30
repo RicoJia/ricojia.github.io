@@ -1,172 +1,286 @@
 ---
 layout: post
-title: RGBD SLAM Bundle Adjustment
+title: RGBD SLAM - Bundle Adjustment, From Zero To Hero Part 1
 date: '2024-07-11 13:19'
 excerpt: RGBD SLAM Backend Introduction
 comments: true
 ---
 
-## Misc Notes
+## What is Optimization?
+
+$$
+\begin{gather*}
+min F(x)
+\end{gather*}
+$$
+
+Above is an optimization problem. Any optimization needs: a cost function, target variables, and constraints. In SLAM, most problems are constraints-less, so we will be focused on it.
+
+When `F(x)` is a non-linear function, this optimization problem becomes a "non-linear" optimization problem. When F(x) is linear, we can form optimization problem when it has constraints. When we know the gradient of F(x) analytically, we can get an minima by $\frac{dF}{dx}=0$. 
+
+However, in real life applications, we usually don't. So we would iteratively find the gradient descent direction in X, apply a step size, and get a smaller `F(x)`. To find the step size, one commonly use Gauss-Newton, or Levenberg-Marquardt methods.
+
+## How To Formulate SLAM Into An Optimization Problem
 
 A classical SLAM frontend is like IMU, it is incremental, and have accumulative errors. A batch is to optimize the total amount of errors with multiple camera frames at once.
 
-## Problem Setup
+Imagine we have a trajectory composed of:
 
-There are three types of bundle adjustment:
+- 4 poses in $[x, y, \theta]$
+- 2 sythesized 2D observations $[d, \psi]$ ([range, bearing]). (Well, 3D has more dimension(s), but the formulation is the same.)
 
-- Feature graph
-    - Each vertex is a camera pose / 3D point (feature)
-    - Each edge is an edge that connects the observed 3D point to its camera pose. It represents the 2D reprojection error.
-- Pose graph
-    - each graph is a camera pose only
-- Factor graph
-    - TODO
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+    <img src="https://github.com/user-attachments/assets/c97fd3ef-0f9b-414a-8412-0d926f77c45a" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
+Now, we have 4 robot poses and 2 landmark poses to estimate. They are the variables under estimation, $X$. Now, we can represent the total error w.r.t all these variables:
 
-In general, a SLAM framework is:
-```
-def add_to_graph(rgb_frame, depth_frame, previous_rgb_frame, previous_depth_frame)
-    matches = feature_matching(rgb_frame, previous_rgb_frame)
-    if length(matches) < LEN_THRESHOLD:
-        return
-    estimate = pnp_estimate(matches, previous_depth_frame)
-    # This is likely a bad estimate
-    if estimate.linear_norm() > LINEAR_MAX or estimate.angular_norm() > ANGULAR_MAX:
-        return
-    # Not enough motion, reject
-    if estimate.linear_norm() < LINEAR_MIN and estimate.angular_norm() < ANGULAR_MIN:
-        return
+- State vector: $[x_1, y_1, \theta_1 ... x_4, y_4, \theta_4]$
+- Observations: $z = [ x_{z1}, y_{z1}, x_{z2}, y_{z2}]$
+- Error $e_{ij}$: the difference between the estimated landmark pose $x_j$, and its observation from robot pose $x_i$
+    $$
+    \begin{gather*}
+    e_{ij} =
+    \begin{bmatrix}
+    x_j - (x_i + d_i*cos(\theta_i + \psi_i)), \\
+    y_j - (y_i + d_i*sin(\theta_i + \psi_i))
+    \end{bmatrix}
+    \end{gather*}
+    $$
 
-    add_to_optimizer(rgb_frame)
+We can formulate our cost of this trajectory:
 
-def SLAM_pipeline(rgb_frame, depth_frame):
-    add_to_graph(rgb_frame, previous_rgb_frame[-1]) 
-    # back end
-    # Proximity check
-    for last N previous_rgb_frames:
-        add_to_graph(rgb_frame, previous_rgb_frame[-n]) 
+$$
+\begin{gather*}
+F(X) = \sum_{i \leq 6, j \leq 6} (e_{ij})^T \Omega e_{ij}
+\end{gather*}
+$$
 
-    # Random frame check for loop closer
-    for M random previous_rgb_frames:
-        add_to_graph(rgb_frame, previous_rgb_frame[-m]) 
+- $\Omega$ is the **information matrix**, which measures the certainty of measurements. It's common to use $\Omega_{ij}=Q^{-1}$, where $Q$ is the covariance matrix of the observation model $[d, \psi]$
 
-    optimize() 
+### How To Solve For $\Delta x$
+
+$F(x)$ is a non-linear function, but its evaluation is a number. But it's a function of robot poses: $x_j$, $y_j$. So, **to find the set of poses that minimizes F(x)**, we can try to find its jacobian, and use the one of the above optimization techniques.
+
+To be able to apply Gauss-Newton with increments on X, we need to linearize the cost function.
+
+- For that, we first need to linearize error. We obtain Jacobian of error: $J = \frac{\partial e_{ij}}{\partial(X)}$
+
+    - This will expand to $J = [\frac{\partial F}{\partial(x_1)}, \frac{\partial F}{\partial(y_1)}, \frac{\partial F}{\partial(\theta_1)} ... \frac{\partial F}{\partial(\theta_n)}]$. For a specific pair of nodes $(i, j)$, only F is only determined by $e_{ij}$. So
     
-```
+    $$
+    \begin{gather*}
+    J_{ij} = \begin{bmatrix}
+    0_{2 \times 3} ... \frac{\partial e_{ij}}{\partial X_i}, ... 0_{2 \times 2} ... \frac{\partial e_{ij}}{\partial X_j} ...
+    \end{bmatrix}
+    \end{gather*}
+    $$
+    
 
-- One reason for degredation is probably the number of matching feature points
-    - if there are too few, we might want to adjust
-- I think there are two questions if we want to use g2o:
-    - the front end gives the transform from one frame to the next keyframe, right? If that's the case, then how do we detect if the same points show on multiple frame? And at different frames, the same feature points could correspond to different 3D poses?
-
-### What is a kernel?
-
-In SLAM, it's common to have mismatched feature points. In that case, we add an edge that we shouldn't have added between a camera pose and a 3D point. The wrong edge could give huge error and high gradient, so high that just optimizing parameters associated could yield more gradient than the correct edges. One way to make up for it is to regulate an edge's cost, so it doesn't get too high nor gives too high of a gradient. Huber loss, cauchy loss are common examples. In SLAM terminology, loss is also called  "kernel". (How come people in different computer science disciplines love corn so much?)
-
-For example, Huber kernel switches to first order when error is higher than $\delta$. Also, it is continuous and derivable at $y - \hat{y} = \delta$. This is important, because we need to get gradient everywhere at the cost function.
+Then, we given an initial set of estimate $X$, we want to apply a step size $\Delta X$ such that $F(X+\Delta X)$ is smaller. We can approximate the cost function locally with the first order taylor expansion, and get its local mimima 
 
 $$
 \begin{gather*}
-e=
-\begin{cases} 
-\frac{1}{2} x^2 & \text{for } |x| \le \delta \\
-\delta (|x| - \frac{1}{2} \delta) & \text{for } |x| > \delta 
-\end{cases}
+F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
+\\ = (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
+\\ = C + 2b \Delta X + \Delta X^T H \Delta X
 \end{gather*}
 $$
 
+Where $H$ is the Hessian $J^T \Omega J$, and is composed of hessians from every robot-landmark pose pair:
 
-## G2O Introduction
-
-G2O has a list of the optimizations it does. Here is short excerpt of the items that pertain to our rgbd slam problem:
-
-- slam3d: 
-    - Each vertex represents
-        - a robot pose with 6dof.
-        - 3D points (landmarks)
-    - Each constraint represents
-        -  the pose-pose constraint.
-- SBA (Sparse Bundle Adjustment):
-    - Each vertex represents:
-        - camera intrinsics (optional?)
-        - extrinsics
-        - 3D points (landmarks)???
-    - Each constraint include:
-        - 2D projection (with known intrinsics?) onto image plane (2D coordinates)
-        - monocular projection with parameters (with unknown intrinsics?)
-        - stereo projection (3D points can be projected back onto the left and right cameras. The baseline between the cameras shhould be known)
-        - scale constraint between extrinsics nodes? (Used in scenario where additional information about the relative scale / distance between multiple cameras is known)
-
-Linear solvers include:
-- PCG
-- colamd
-- CHOLMOD
-- csparse
-- dense
-- eigen
-
-## Schur's Trick
-
-TODO
-
-## Solve for Delta x Using Cholesky Decomposition
-
-cfter applying Schur's trick, we get converted the original $H\Delta x = g$ into:
 $$
 \begin{gather*}
-[B − EC^{−1} E^T] \Delta x_{c} = H' \Delta x_{c} = v − EC^{-1} w = g'
+H = \sum_{ij} H_{ij} = \sum_{ij} J^T_{ij} \Omega J_{ij} \text{(Gauss Newton)}
+\\ \text{OR}
+\\
+H = \sum_{ij} H_{ij} = \sum_{ij} (J^T_{ij} \Omega J_{ij} + \lambda I) \text{(Levenberg-Marquardt)}
 \end{gather*}
 $$
 
-**$H'$ is called "Schur's compliment"**. $H'$ is still semi-positive-definite and symmetric. So, using Cholesky Decomp, $H=LL^T$ where $L$ is a lower triangular matrix. So now,
+The above is quadratic!! How nice. The minimum is achieved when
+
+$$
+\begin{gather*}
+\Delta x = H_{ij}^{-1} b
+\end{gather*}
+$$
+
+- To construct H, note that each block $H_{ij}$ is only a function of $x_i$ and $x_j$
+- Correspondingly, $b = [... \frac{\partial e_{ij}}{\partial X_i}^T \Omega e_{ij} ... \frac{\partial e_{ij}}{\partial X_j}^T \Omega e_{ij} ...]$
+
+### Solving H and J With Sparsity And Style
+
+Now you might be wondering, why SLAM didn't do this pre-21st century? That is because solving for $H^{-1}$ was a real pain in the butt. It may have tens of thousands of edges, vertices, if not more.
+
+The reason is that J and H are SPARSE, and we can use certain tricks to solve them more easily 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/5e0be97f-2ccc-434d-86b1-04ea6646d830" height="300" alt=""/>
+        <figcaption>Source: 14 Lectures on Visual SLAM </figcaption>
+    </figure>
+</p>
+</div>
+
+In $H=\sum_{ij} J^T_{ij} \Omega J_{ij}$, $\Omega$ is always a diagonal matrix. So, the $H_{ii}$ part is always diagonal. $H_{ij}$ and $H_{ji}$ may / may not be dense, depending on the observation data.
+
+So, the final $J$ and $H$ are something like:
+
+![Screenshot from 2024-07-29 20-18-31](https://github.com/user-attachments/assets/4efa33ff-5532-4de6-8c5f-4bc5384e63b1)
+
+
+In a Larger system with hundreds of landmarks and robot poses, H may look like:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/a567b7ed-15cb-432a-a790-4e6e21bd9e64" height="300" alt=""/>
+        <figcaption>Source: 14 Lectures on Visual SLAM </a></figcaption>
+    </figure>
+</p>
+</div>
+
+
+If we divide divide up $H$ into 4 parts:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/e7f447e6-f8a5-4a89-9d83-cb2e56a0351d" height="300" alt=""/>
+        <figcaption>Source: 14 Lectures on Visual SLAM</figcaption>
+    </figure>
+</p>
+</div>
+
+small bonus question here: why is C a diagonal matrix?
+
+### Schur's Trick (or Schur Elimination)
+
+$H \Delta X=b$ can be written as:
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+B & E \\
+E^T & C
+\end{bmatrix}
+\begin{bmatrix}
+\Delta X_r \\ 
+\Delta X_l
+\end{bmatrix}
+=
+\begin{bmatrix}
+v \\
+w
+\end{bmatrix}
+\end{gather*}
+$$
+
+**It's much easier to invert a diaonal matrix**, because we just need to invert it's diagonal terms (C and without proof, B)
+
+Then, by applying **Schur's compliment**: 
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+I & -EC^{-1} \\
+0 & I
+\end{bmatrix}
+
+\begin{bmatrix}
+B & E \\
+E^T & C
+\end{bmatrix}
+\begin{bmatrix}
+\Delta X_r \\ 
+\Delta X_l
+\end{bmatrix}
+=
+
+\begin{bmatrix}
+I & -EC^{-1} \\
+0 & I
+\end{bmatrix}
+\begin{bmatrix}
+v \\
+w
+\end{bmatrix}
+\end{gather*}
+$$
+
+We get
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+B -EC^{-1}E^T & 0 \\
+E^T & C
+\end{bmatrix}
+
+\begin{bmatrix}
+\Delta X_r \\ 
+\Delta X_l
+\end{bmatrix}
+=
+
+
+\begin{bmatrix}
+v -EC^{-1}w\\
+w
+\end{bmatrix}
+\end{gather*}
+$$
+
+So, we get a single equation for solving for $\Delta X_r$
+
+$$
+\begin{gather*}
+(B -EC^{-1}E^T)^{-1} \Delta X_r = v -EC^{-1}w
+\end{gather*}
+$$
+
+Note that $C$ is diagonal, so $C^{-1}$ is easy to get. $(B -EC^{-1}E^T)^{-1}$ is still something we need to brute-force invert, but its dimension is the same as the robot pose (which is much smaller than the original $H$). 
+
+A side note about $S$'s sparsity: without proof, the an off-diagonal non-zero item $S_{mn}$ means there's at least 1 landmark observation between camera pose `m` and `n`. In general, we want $S$ to be dense, such that there will be constraints between camera poses to improve our estimates. In non-sliding window methods, such as ORB-SLAM, we may have a background thread running as the backend, so we could disgard frames that do not share many landmarks together.
+
+### Solve for Delta x Using Cholesky Decomposition
+
+After applying Schur's trick, we converted the original $H\Delta x = b$ into:
+$$
+\begin{gather*}
+[B − EC^{−1} E^T] \Delta x_{r} = S \Delta x_{r} = v − EC^{-1} w = g'
+\end{gather*}
+$$
+
+**$S$ is called "Schur's compliment"**. $S$ is still semi-positive-definite and symmetric. So, using Cholesky Decompistion, $S=LL^T$ where $L$ is a lower triangular matrix. So now,
 1. Solve for $y$ in $Ly = g'$ because a lower triangular matrix's inverse is easier to solve
 2. Solve for $\Delta x_{c}$ in $L^T \Delta x_{c} = y$
 
-The system $Ax=b$ is always called "linear". Cholesky Decomp. finally solves this step, so its solver is called a "linear solver".
+The system $Ax=b$ is always called "linear", **so its solver is called a "linear solver".**
 
-## How G2O Works
+### Wrap Up
+After solving for $\Delta X_r$, one can use it to solve $\Delta X_p$. That gives the full step size $\Delta X$ for the optimizer.
 
-### Optimizers
+ONEEEEEE LAST THINGGGGGG: wait a second, poses are in $SE(3)$.  $F(X + \Delta X) \approx F(X) + J\Delta X$ hold, especially the rotation matrix part in $SO(3)$. What do we do?? Well, the Lie Algebra of $SE(3)$, $se(3)$ DOES support addition:
 
-Most SLAM problems are sparse, meaning they have a large number of variables, but relatively low number of edges. The SparseOptimizer is the most common type of optimizer used in SLAM. It first needs a block solver for computing Hessian jacobian, and Schur compliment in SparseBlockMatrix, a datastructure that represents sparse matrices with non-zero blocks only. Then, Sparse Optimizer needs a linear optimizer
+$$
+\begin{gather*}
+\begin{bmatrix}
+0 & -\omega_z & \omega_y & v_x \\
+\omega_z & 0 & -\omega_x & v_y \\
+-\omega_y & \omega_x & 0 & v_z \\
+0 & 0 & 0 & 0
+\end{bmatrix}
+\end{gather*}
+$$
 
-- CSparse: using QR Factorization and LU factorization
-- CHOLMOD: uses Cholesky Decomp. and is optimized for symmetric positive definite sparse amtrices.
-- PCG (Preconditioned Conjugate Gradient) TODO?
+The transformation between $se(3)$ and $SE(3)$ is "matrix exponentiation", which is analogous to the regular scalar exponentiation / log operation. 
 
-SparseOptimizerIncremental: In online slam, optimization is done incrementally? TODO
-
-- Marginalization TODO
-
-
-## G2O Set Up
-
-For least-squares problem
-
-A **vertex** is the sets of parameters to optimize. In the context of slam, a vertex is the camera pose, i.e., $se(3)$ parameters (6 parameters). **A constraint, or an edge** is a measurement that was seen at least two camera poses, so in the graph, an edge connects at least two nodes.
-Node error function?
-
-Then, an optimizer's job is to 
-- Find gradient of the total cost function at their vertices (i.e., adding up all constraints)
-- Apply Levenberg-Marquardt on parameters under optimization to find a local (hopefully global) minimum.
-
-In SLAM, a vertex needs to satisfy $se(3)$ requirements. In `g2o/types/sba/types_six_dof_expmap.h` these vertices can be defined:
-- `VertexSE3Expmap` represents robot poses in SE3 space, 
-- `VertexSBAPointXYZ` represents a 3D point
-- `EdgeProjectXYZ2UV` represents the projection of a 3D point onto the image plane
-
-G2O is used in famous SLAM algorithms like ORB_SLAM. 
-
-[Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
-
-## Results
-
-I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/jCsX9R2aa-I?si=JEyQF3Gw1BrXfVxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-## References
-
-[1] Fan Zheng's Farm: https://fzheng.me/2016/03/15/g2o-demo/
-[2] g2o "what is in these directories": https://github.com/RainerKuemmerle/g2o/blob/master/g2o/what_is_in_these_directories.txt
+If you want an interesting little nerd story to share with your non-nerdy friends: $SE(3)$ is a manifold, and $se(3)$ is its tangent space. A manifold is a topological space that locally resembles Euclidean space and allows for calculus to be performed. (Here an $SE(3)$ can be transformed into a neary by $SE(3)$ smoothly through matrix multiplication)
 
