@@ -17,14 +17,14 @@ baseurl: ""
 title: Rico's Nerd Cluster
 
 # Short description of your site
-description: A virtual proof that name is awesome!
+description: Rico Jia's Personal Website
 
 # --- Navigation bar options --- #
 
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
-  Open Learning: "openlearning"
+  Home: "-"
   Projects: "projects"
 #  Resources:
 #    - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"

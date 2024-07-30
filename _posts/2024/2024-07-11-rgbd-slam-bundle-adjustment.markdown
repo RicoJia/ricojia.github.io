@@ -16,9 +16,7 @@ $$
 
 Above is an optimization problem. Any optimization needs: a cost function, target variables, and constraints. In SLAM, most problems are constraints-less, so we will be focused on it.
 
-When `F(x)` is a non-linear function, this optimization problem becomes a "non-linear" optimization problem. When F(x) is linear, we can form optimization problem when it has constraints. When we know the gradient of F(x) analytically, we can get an minima by $\frac{dF}{dx}=0$. 
-
-However, in real life applications, we usually don't. So we would iteratively find the gradient descent direction in X, apply a step size, and get a smaller `F(x)`. To find the step size, one commonly use Gauss-Newton, or Levenberg-Marquardt methods.
+When F(x) is linear, we can form an optimization problem when it has constraints. When `F(x)` is a non-linear function, this optimization problem becomes a "non-linear" optimization problem. If we know the gradient of F(x) analytically, we can get an minima by $\frac{dF}{dx}=0$. However, in real life applications, we usually don't. So we would iteratively find the gradient descent direction in X, apply a step size, and get a smaller `F(x)`. To find the step size, one commonly use Gauss-Newton, or Levenberg-Marquardt methods.
 
 ## How To Formulate SLAM Into An Optimization Problem
 
@@ -267,7 +265,7 @@ The system $Ax=b$ is always called "linear", **so its solver is called a "linear
 ### Wrap Up
 After solving for $\Delta X_r$, one can use it to solve $\Delta X_p$. That gives the full step size $\Delta X$ for the optimizer.
 
-ONEEEEEE LAST THINGGGGGG: wait a second, poses are in $SE(3)$.  $F(X + \Delta X) \approx F(X) + J\Delta X$ hold, especially the rotation matrix part in $SO(3)$. What do we do?? Well, the Lie Algebra of $SE(3)$, $se(3)$ DOES support addition:
+ONEEEEEE LAST THINGGGGGG: wait a second, poses are in $SE(3)$.  $F(X + \Delta X) \approx F(X) + J\Delta X$ does NOT hold, especially the rotation matrix part in $SO(3)$. What do we do?? Well, the Lie Algebra of $SE(3)$, $se(3)$, DOES support addition:
 
 $$
 \begin{gather*}
@@ -280,7 +278,7 @@ $$
 \end{gather*}
 $$
 
-The transformation between $se(3)$ and $SE(3)$ is "matrix exponentiation", which is analogous to the regular scalar exponentiation / log operation. 
+The transformation between $se(3)$ and $SE(3)$ is called "matrix exponentiation", which is analogous to the regular scalar exponentiation / log operation.
 
-If you want an interesting little nerd story to share with your non-nerdy friends: $SE(3)$ is a manifold, and $se(3)$ is its tangent space. A manifold is a topological space that locally resembles Euclidean space and allows for calculus to be performed. (Here an $SE(3)$ can be transformed into a neary by $SE(3)$ smoothly through matrix multiplication)
+If you want an interesting little nerdy story to share with your non-nerdy friends: $SE(3)$ is a manifold, and $se(3)$ is its tangent space. A manifold is a topological space that locally resembles Euclidean space and allows for calculus to be performed. (Here an $SE(3)$ can be transformed into a neary by $SE(3)$ smoothly through matrix multiplication)
 
