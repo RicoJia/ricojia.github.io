@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RGBD SLAM - Bundle Adjustment, From Zero To Hero Part 1
+title: RGBD SLAM - Bundle Adjustment From Zero To Hero, Part 1, Theories
 date: '2024-07-11 13:19'
 excerpt: RGBD SLAM Backend Introduction
 comments: true
@@ -16,11 +16,17 @@ $$
 
 Above is an optimization problem. Any optimization needs: a cost function, target variables, and constraints. In SLAM, most problems are constraints-less, so we will be focused on it.
 
-When F(x) is linear, we can form an optimization problem when it has constraints. When `F(x)` is a non-linear function, this optimization problem becomes a "non-linear" optimization problem. If we know the gradient of F(x) analytically, we can get an minima by $\frac{dF}{dx}=0$. However, in real life applications, we usually don't. So we would iteratively find the gradient descent direction in X, apply a step size, and get a smaller `F(x)`. To find the step size, one commonly use Gauss-Newton, or Levenberg-Marquardt methods.
+When F(x) is linear, we can form an optimization problem when it has constraints. When `F(x)` is a non-linear function, this optimization problem becomes a "non-linear" optimization problem (duh!). If we know the gradient of F(x) analytically, we can get a local minima in one-shot by $\frac{dF}{dx}=0$. However, in real life applications, we usually don't. So we would iteratively find the gradient descent direction in X, apply a step size, and get a smaller `F(x)`. To find the step size, we commonly use optimization techniques like Gauss-Newton, or Levenberg-Marquardt.
 
 ## How To Formulate SLAM Into An Optimization Problem
 
-A classical SLAM frontend is like IMU, it is incremental, and have accumulative errors. A batch is to optimize the total amount of errors with multiple camera frames at once.
+A typical SLAM frontend uses odometry (e.g., IMU) which is incremental and has accumulative errors. There are three main schools of SLAM methods: 
+
+- Filtering Based SLAM (Kalman Filter, Particle Filter Based, etc.)
+- Graph Based SLAM
+- Deep Learning based SLAM
+
+A batch is to optimize the total amount of errors with multiple camera frames at once.
 
 Imagine we have a trajectory composed of:
 
@@ -156,7 +162,7 @@ If we divide divide up $H$ into 4 parts:
 </p>
 </div>
 
-small bonus question here: why is C a diagonal matrix?
+Small bonus question here: why is C a diagonal matrix?
 
 ### Schur's Trick (or Schur Elimination)
 
