@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Linux X Window System
+title: Linux - X Window System
 date: '2018-01-05 13:19'
 excerpt: X Window System
 comments: true

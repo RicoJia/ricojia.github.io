@@ -1,10 +1,54 @@
 ---
 layout: post
-title: Linux - Systemd Services
+title: Linux - Udev Rules And Systemd Services
 date: '2018-01-07 13:19'
-excerpt: Systemd Services
+excerpt: Udev Rules Systemd Services
 comments: true
 ---
+
+## Udev
+
+ Unix Kernel is a monolithic kernel and provides API to access these hardware. Udev is a device manager of Linux Kernel, and serves as a successor of the Unix Kernel. It handles device nodes in `/dev` and raises user space events (uevent) when hardware devices are added to the system. In 2012, it's moved to systemd
+
+### Udev Work flow
+
+1. Udev finds a device through:
+    - name
+    - vendor id (vid)
+    - pid (device)
+    - Model name
+2. Assign names to devices
+3. Create symlinks
+4. Trigger scripts
+
+Udev rules end in `.rules`. They are in two places:
+
+- `etc/udev/rules.d/`: user's custom udev rules.
+- `/usr/lib/udev/rules.d/`: System udev rules
+
+If there are udev rules with same names in these two directories, the custom one will take precedence.
+
+udev rules are processed based on the number before their names:
+
+- `50-udev-default.rules` will be processed before `60-...`
+
+A Udev config file example (Intel RealSense D415):
+
+```bash
+# Sets USB device permission to 0666 (read and write) on device with the specified vendor id and product id. Then execute the script in /usr/local/...
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0a80", MODE:="0666", GROUP:="plugdev", RUN+="/usr/local/bin/usb-R200-in_udev"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0a66", MODE:="0666", GROUP:="plugdev"
+# Intel RealSense recovery devices. Assigns the device into the plugdev group
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0ab3", MODE:="0666", GROUP:="plugdev"
+
+# Applies to devices with kernel name matching iio*. It adds file permission to read, write, execute for everyone (0777).
+# Then, runs the command chmod -R 0777 /sys/%p to set file permission in /sys for this device.
+KERNEL=="iio*", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0ad5", MODE:="0777", GROUP:="plugdev", RUN+="/bin/sh -c 'chmod -R 0777 /sys/%p'"
+
+# Applies the hid_sensor_custom driver on the specified device. HID subsystem is for mouse, keyboard, sensors, etc.
+# HID exposes sensor data through Industrial I/O (IIO) interface. 
+DRIVER=="hid_sensor_custom", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0ad5", RUN+="/bin/sh -c 'chmod -R 0777 /sys/%p && chmod 0777 /dev/%k'"
+```
 
 ## Services
 A `systemd` service in unix has:
