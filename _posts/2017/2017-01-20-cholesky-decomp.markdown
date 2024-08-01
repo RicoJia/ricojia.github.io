@@ -92,13 +92,67 @@ $$
 
 Voila, after solving for these iteratively, we get the LLT decomposition $A=LL^T$.
 
-### LLT Decomp. Variant - LDLT Decomp.
+### LLT Decomp. Variant - LDL Decomp.
 
-The vanilla method above suffers from numerical instability from the square root operations. So, 
+The vanilla method above suffers from numerical instability from the square root operations. For the same A, one can do $A=LDL^T$, where **L is a lower triangle matrix, D is a diagonal matrix with positive diagonal terms**.
 
-TODO
+To give a feel:
 
-### LLT Decomp. Variant - Block Cholesky Decomp. 
+$$
+\begin{gather*}
+A = LDL^T = 
+\begin{bmatrix}
+1 & 0 & 0 \\
+L_{21} & 1 & 0 \\
+L_{31} & L_{32} & 1
+\end{bmatrix}
+
+\begin{bmatrix}
+D_1 & 0 & 0 \\
+0 & D_2 & 0 \\
+0 & 0 & D_3
+\end{bmatrix}
+
+\begin{bmatrix}
+1 & L_{21} & L_{31} \\
+0 & 1 & L_{32} \\
+0 & 0 & 1
+\end{bmatrix}
+
+\end{gather*}
+$$
+
+Then we get:
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+D_1 & 0 & 0 \\
+L_{21} D_1 & L_{21}^2 D_1 + D_2 & 0 \\
+L_{31} D_1 & L_{31} L_{21} D_1 + L_{32} D_2 & L_{31}^2 D_1 + L_{32}^2 D_2 + D_3
+\end{bmatrix}
+\end{gather*}
+$$
+
+Based on $A$, unleashing the GPU power, we can solve:
+
+1. $D_1$
+2. $L_{21}$, $L_{31}$, ...
+3. $D_2$
+4. $L_{32}$ ...
+5. $D_3$...
+
+I hate how some websites throw the math right at us. But with the above example, hopefully it's a bit easier:
+
+$$
+\begin{gather*}
+D_j = A_{j,j} - \sum_{k=1}^{j-1} L_{j,k}^2 D_k
+\\
+L_{i,j} = \frac{ \left( A_{i,j} - \sum_{k=1}^{j-1} L_{i,k} L_{j,k} D_k \right) }{D_j} \quad \text{for } i > j
+\end{gather*}
+$$
+
+### LLT Decomp. Variant - Block Cholesky Decomp.
 
 Block Cholesky Decomp. is basically the same as the above, but just operate on block. It is mainly used in GPU. Here's how:
 
@@ -112,22 +166,85 @@ A_{21} & A_{22} & A_{23} & A_{24} \\
 A_{31} & A_{32} & A_{33} & A_{34} \\
 A_{41} & A_{42} & A_{43} & A_{44}
 \end{pmatrix}
+,
+L = \begin{pmatrix}
+L_{11} & L_{12} & L_{13} & L_{14} \\
+L_{21} & L_{22} & L_{23} & L_{24} \\
+L_{31} & L_{32} & L_{33} & L_{34} \\
+L_{41} & L_{42} & L_{43} & L_{44}
+\end{pmatrix}
 \end{gather*}
 $$
 
-2. For a single block, say $A_{11}$, in the larger matrix:
+2. Let's start $A_{11}$ in the $L$ matrix:
 
-$$A = \begin{bmatrix}
+$$
+\begin{gather*}
+A = \begin{bmatrix}
 A_{11} & B^T \\
 B & \hat{A}
 \end{bmatrix}
 \quad A_{11} \in \mathbb{R}^{r \times r}
-\begin{gather*}
+,
+L = \begin{bmatrix}
+L_{11} & 0^T \\
+S & \hat{L}
+\end{bmatrix}
+
 \end{gather*}
 $$
 
+3. From $A=LL^T$, we get 
 
+$$
+\begin{gather*}
+\begin{equation}
+A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11})
+\end{equation}
+\\
+\begin{equation}
+S = BL_{11}^{-T}
+\end{equation}
+\\
+\begin{equation}
+\hat{L}\hat{L}^T = \hat{A} - SS^T
+\end{equation}
+\end{gather*}
+$$
 
+- For (1), We have chosen $r$ to be small enough, so $chol(A_{11})$ is relatively easy
+- Then we can witness the GPU power for (2): 
+
+$$
+\begin{gather*}
+S = \begin{bmatrix}
+L_{21} & L_{31} & L_{41}
+\end{bmatrix} ^T
+\\
+=> 
+L_{21} = A_{21}L_{11}^{-T}
+\\
+L_{31} = A_{31}L_{11}^{-T}
+\\
+L_{41} = A_{41}L_{11}^{-T}
+\end{gather*}
+$$
+
+- For (3), once we get $S$, can go ahead and calculate $A'=\hat{A}-SS^T$. Again, this can be done by leveraging the almighty GPU power:
+
+$$
+\begin{gather*}
+A'_{22} = A_{22} - L_{21}L_{21}^T
+\\
+A'_{23} = A_{23} - L_{21}L_{31}^T
+\\
+...
+\\
+A'_{44} = A_{44} - L_{41}L_{41}^T
+\end{gather*}
+$$
+
+4. Repeat the whole process again with $A'$
 
 ## Why Bother With Matrix Decomps?
 
