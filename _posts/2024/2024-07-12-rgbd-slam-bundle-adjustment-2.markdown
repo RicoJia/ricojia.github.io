@@ -10,6 +10,8 @@ If you haven't, please check out the previous article on [how to formulate SLAM 
 
 ## Why Graph Optimization
 
+**Frontend and Backend**: the front end gives the transform from one frame to the next keyframe. The backend perrforms batch optimization, which takes multiple frames and observations, and try to minimize the total squared errors of estimated poses against observations.
+
 **Motivation:** A classical SLAM frontend is like IMU, it is incremental, and have accumulative errors.  **The goal of graph optimization** is we want to minimize the total squared error of a cost function that minimizes observation errors, see here [See here](./2024-07-11-rgbd-slam-bundle-adjustment.markdown). Then, we can use the sparsity of the Hessian and Jacobi matrices to achieve that. **However, setting up the hessian and jacobi is manual, and the following optimziation process is quite "standard".**
 
 So, we introduce graph optimization to add blocks to those matrices for those poses in the form of a graph, with nodes and edges.
@@ -42,13 +44,9 @@ Then, we have two types of edges that represent **an error**:
 - $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$. 
 
 
-## TODO: on what graph optimization does using LM, and in Block?
+## How G2O Works
 
-G2O is a "General Least Squares" Optimizer, meaning any LS problem that can be formulated in the form of a graph could be optimized like this.
-
-- oplus? TODO
-
-Then, an optimizer's job is to:
+G2O is a "General Least Squares" Optimizer, meaning any LS problem that can be formulated in the form of a graph could be optimized like this. Then, an optimizer's job is to:
 
 - Find gradient of the total cost function at their vertices (i.e., adding up all constraints)
 - Apply Levenberg-Marquardt on parameters under optimization to find a local (hopefully global) minimum.
@@ -60,6 +58,15 @@ In SLAM, a vertex needs to satisfy $se(3)$ requirements. In `g2o/types/sba/types
 
 G2O is used in famous SLAM algorithms like ORB_SLAM. [Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
 
+### Optimizers
+
+Most SLAM problems are sparse, meaning they have a large number of variables, but relatively low number of edges. The SparseOptimizer is the most common type of optimizer used in SLAM. It first needs a block solver for computing Hessian jacobian, and Schur compliment in SparseBlockMatrix, a datastructure that represents sparse matrices with non-zero blocks only. Then, Sparse Optimizer needs a linear optimizer
+
+- CSparse: using QR Factorization and LU factorization
+- CHOLMOD: uses Cholesky Decomp. and is optimized for symmetric positive definite sparse amtrices.
+- PCG (Preconditioned Conjugate Gradient) TODO?
+
+SparseOptimizerIncremental: In online slam, optimization is done incrementally? TODO
 
 ## Robust Kernels
 
@@ -77,7 +84,39 @@ e=
 \end{gather*}
 $$
 
-### My Implementation
+### Implementation
+
+In general, a SLAM framework is:
+```
+def add_to_graph(rgb_frame, depth_frame, previous_rgb_frame, previous_depth_frame)
+    matches = feature_matching(rgb_frame, previous_rgb_frame)
+    if length(matches) < LEN_THRESHOLD:
+        return
+    estimate = pnp_estimate(matches, previous_depth_frame)
+    # This is likely a bad estimate
+    if estimate.linear_norm() > LINEAR_MAX or estimate.angular_norm() > ANGULAR_MAX:
+        return
+    # Not enough motion, reject
+    if estimate.linear_norm() < LINEAR_MIN and estimate.angular_norm() < ANGULAR_MIN:
+        return
+
+    add_to_optimizer(rgb_frame)
+
+def SLAM_pipeline(rgb_frame, depth_frame):
+    add_to_graph(rgb_frame, previous_rgb_frame[-1]) 
+    # back end
+    # Proximity check
+    for last N previous_rgb_frames:
+        add_to_graph(rgb_frame, previous_rgb_frame[-n]) 
+
+    # Random frame check for loop closer
+    for M random previous_rgb_frames:
+        add_to_graph(rgb_frame, previous_rgb_frame[-m]) 
+
+    optimize() 
+    
+```
+
 
 I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
 
