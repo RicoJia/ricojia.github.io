@@ -8,13 +8,58 @@ comments: true
 
 If you haven't, please check out the previous article on [how to formulate SLAM as an optimization problem](./2024-07-11-rgbd-slam-bundle-adjustment.markdown)
 
-## How To Formulate SLAM Optimization Into Pose Graph
+## Why Graph Optimization
+
+**Motivation:** A classical SLAM frontend is like IMU, it is incremental, and have accumulative errors.  **The goal of graph optimization** is we want to minimize the total squared error of a cost function that minimizes observation errors, see here [See here](./2024-07-11-rgbd-slam-bundle-adjustment.markdown). Then, we can use the sparsity of the Hessian and Jacobi matrices to achieve that. **However, setting up the hessian and jacobi is manual, and the following optimziation process is quite "standard".**
+
+So, we introduce graph optimization to add blocks to those matrices for those poses in the form of a graph, with nodes and edges.
+
+## How To Formulate SLAM Optimization Into A Graph
 
 What are nodes: each node represents a pose of the robot's trajectory. Each edge between two edges represent the relative position of the two poses.
 
 A graph G is composed of vertices (V) and edges (E) $G={V,E}$. An edge can connect to 1 vertex (unary edge), 2 vertices (binary edge), or even multiple vertices (hyper edge). Most commonly, a graph has binary edges. But when there are hyper edges, this graph is called "hyper graph".
 
-TODO: on what graph optimization does using LM, and in Block?
+Let's look at an example:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/88b87054-fce9-4304-be4f-c6b595ff36ce" height="400" alt=""/>
+        <figcaption>Source: 14 Lectures on Visual SLAM</figcaption>
+    </figure>
+</p>
+</div>
+
+We can form a graph with two types of nodes: 4 camera poses and 2 camera poses:
+
+- $x_1$ is 1 set of 6 parameters for $SE(3)$ Pose $T_{x1}$
+- $p_1$ is 1 set of 3 parameters for $(x,y,z)$ Pose $T_{p1}$
+
+Then, we have two types of edges that represent **an error**:
+
+- $x_1x_2$ is an adjacent edge with odometry observation $\hat{T_{x1,x2}}$ . It represents $T_{x1. x2} - \hat{T_{x1,x2}}$ in $se(3)$
+- $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$. 
+
+
+## TODO: on what graph optimization does using LM, and in Block?
+
+G2O is a "General Least Squares" Optimizer, meaning any LS problem that can be formulated in the form of a graph could be optimized like this.
+
+- oplus? TODO
+
+Then, an optimizer's job is to:
+
+- Find gradient of the total cost function at their vertices (i.e., adding up all constraints)
+- Apply Levenberg-Marquardt on parameters under optimization to find a local (hopefully global) minimum.
+
+In SLAM, a vertex needs to satisfy $se(3)$ requirements. In `g2o/types/sba/types_six_dof_expmap.h` these vertices can be defined:
+- `VertexSE3Expmap` represents robot poses in SE3 space, 
+- `VertexSBAPointXYZ` represents a 3D point
+- `EdgeProjectXYZ2UV` represents the projection of a 3D point onto the image plane
+
+G2O is used in famous SLAM algorithms like ORB_SLAM. [Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
+
 
 ## Robust Kernels
 
@@ -33,3 +78,7 @@ e=
 $$
 
 ### My Implementation
+
+I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jCsX9R2aa-I?si=JEyQF3Gw1BrXfVxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
