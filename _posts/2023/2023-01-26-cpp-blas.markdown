@@ -1,0 +1,29 @@
+---
+layout: post
+title: C++ - BLAS and LAPACK
+date: '20243-01-26 13:19'
+excerpt: Scientific Computing Libraries
+comments: true
+---
+
+## Article: BLAS ("Basic Linear Algebra Subalgorithms")
+
+BLAS is a set of **specifications** of linear algebra operations such as vector addition, scalar multiplication, dot products, etc. It's categorized into 3 levels: 
+
+- level1: vector operations such as dot products. Usually `O(n)`
+- level2: vector and matrix operations such as matrix-vector multiplication. `O(n^2)`
+- level3: matrix operations. Usually O(n^3) operations
+
+It can be found on almost all computing platforms, from desktops, GPU, to super computers. 
+
+`LAPACK`  (`Linear Algebra Package`) is a library that provides solvers for linear systems, linear least squares, eigenvalue problems, and singular value decomp. Famous examples are: matrix factorizations like LU, LLT, QR, SVD, Schur. It's built on top of BLAS in Fortran. Many users however just stick to the LAPACK API and chooses different implementations.
+
+`BLAS` and `LAPACK` has two most popular implementations:
+- `OpenBLAS` 
+- Intel Math Kernel Library (MKL). It's highly optimized, and  It's packaged in python.
+
+They use advance optimization techniques such as:
+
+- Loop unrolling
+- SIMD instructions
+- cache blocking
