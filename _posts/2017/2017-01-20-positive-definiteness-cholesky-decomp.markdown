@@ -2,7 +2,7 @@
 layout: post
 title: Math - Positive Definiteness and Cholesky Decomposition
 date: '2017-01-20 13:19'
-excerpt: "A matrix is positive definite, if it always sees the glass as half full. But why does the matrix still go to therapy? To break down its issues with Cholesky decomposition". Just Joking.
+excerpt: A matrix is positive definite, if it always sees the glass as half full. But why does the matrix still go to therapy? To break down its issues with Cholesky decomposition. Just Joking.
 comments: true
 ---
 
