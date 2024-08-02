@@ -1,7 +1,7 @@
 ---
 layout: post
 title: C++ - BLAS and LAPACK
-date: '2024-01-26 13:19'
+date: '2023-01-26 13:19'
 excerpt: Scientific Computing Libraries
 comments: true
 ---

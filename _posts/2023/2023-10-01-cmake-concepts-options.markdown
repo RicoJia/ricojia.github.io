@@ -1,7 +1,7 @@
 ---
 layout: post
-title: CMake Thingamagigs
-date: '2024-05-10 13:19'
+title: CMake - Concepts and Options
+date: '2023-10-01 13:19'
 excerpt: A Running List of CMake Thingamagigs
 comments: true
 ---
