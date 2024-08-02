@@ -44,6 +44,7 @@ l_{n1} & l_{n2} & \cdots & l_{nn}
 $$
 
 Let's focus on 1 row for now:
+
 $$
 \begin{gather*}
 A = \begin{bmatrix}
@@ -156,7 +157,7 @@ $$
 
 Block Cholesky Decomp. is basically the same as the above, but just operate on block. It is mainly used in GPU. Here's how:
 
-1. Choose a small size `rxr` for each block of A. 
+- Choose a small size `rxr` for each block of A. 
 
 $$
 \begin{gather*}
@@ -176,7 +177,7 @@ L_{41} & L_{42} & L_{43} & L_{44}
 \end{gather*}
 $$
 
-2. Let's start $A_{11}$ in the $L$ matrix:
+- Let's start $A_{11}$ in the $L$ matrix:
 
 $$
 \begin{gather*}
@@ -194,21 +195,16 @@ S & \hat{L}
 \end{gather*}
 $$
 
-3. From $A=LL^T$, we get 
+- From $A=LL^T$, we get:
 
 $$
+
 \begin{gather*}
-\begin{equation}
-A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11})
-\end{equation}
+A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11}) [1]
 \\
-\begin{equation}
-S = BL_{11}^{-T}
-\end{equation}
+S = BL_{11}^{-T} [2]
 \\
-\begin{equation}
-\hat{L}\hat{L}^T = \hat{A} - SS^T
-\end{equation}
+\hat{L}\hat{L}^T = \hat{A} - SS^T [3]
 \end{gather*}
 $$
 
