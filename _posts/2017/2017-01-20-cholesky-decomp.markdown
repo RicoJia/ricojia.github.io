@@ -44,6 +44,7 @@ l_{n1} & l_{n2} & \cdots & l_{nn}
 $$
 
 Let's focus on 1 row for now:
+
 $$
 \begin{gather*}
 A = \begin{bmatrix}
@@ -197,17 +198,14 @@ $$
 - From $A=LL^T$, we get:
 
 $$
-\begin{equation}
-A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11})
-\end{equation}
+
+\begin{gather*}
+A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11}) [1]
 \\
-\begin{equation}
-S = BL_{11}^{-T}
-\end{equation}
+S = BL_{11}^{-T} [2]
 \\
-\begin{equation}
-\hat{L}\hat{L}^T = \hat{A} - SS^T
-\end{equation}
+\hat{L}\hat{L}^T = \hat{A} - SS^T [3]
+\end{gather*}
 $$
 
 - For (1), We have chosen $r$ to be small enough, so $chol(A_{11})$ is relatively easy
