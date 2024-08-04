@@ -2,8 +2,10 @@
 layout: post
 title: C++ - Weird & Interesting Stuff I found
 date: '2023-01-05 13:19'
-excerpt: Oh boy, C++ is weird ... but also interesting :)
+subtitle: Oh boy, C++ is weird ... but also interesting :)
 comments: true
+tags:
+    - C++
 ---
 
 ## Strings

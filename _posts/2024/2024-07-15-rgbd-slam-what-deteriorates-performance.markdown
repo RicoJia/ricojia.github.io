@@ -2,9 +2,15 @@
 layout: post
 title: RGBD SLAM - What Deteriorates Its Performance
 date: '2024-07-15 13:19'
-excerpt: Lessons Learned From My RGBD SLAM Project 
+subtitle: Lessons Learned From My RGBD SLAM Project. Updates Come In Anytime
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - RGBD Slam
+    - Deep Learning
 comments: true
 ---
+
+> “Yeah It's on. But wait, it doesn't look good.”
 
 ## Motion Blur 
 

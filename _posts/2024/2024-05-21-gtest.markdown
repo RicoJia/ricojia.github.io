@@ -2,8 +2,10 @@
 layout: post
 title: Writing GTest for ROS
 date: '2024-05-21 13:19'
-excerpt: Test! Test! Test!
+subtitle: Test! Test! Test!
 comments: true
+tags:
+    - C++
 ---
 
 ## Concepts

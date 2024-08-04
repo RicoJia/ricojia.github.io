@@ -2,8 +2,10 @@
 layout: post
 title: Linux - Udev Rules And Systemd Services
 date: '2018-01-07 13:19'
-excerpt: Udev Rules Systemd Services
+subtitle: Udev Rules Systemd Services
 comments: true
+tags:
+    - Linux
 ---
 
 ## Udev
@@ -48,6 +50,15 @@ KERNEL=="iio*", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0ad5", MODE:="0777",
 # Applies the hid_sensor_custom driver on the specified device. HID subsystem is for mouse, keyboard, sensors, etc.
 # HID exposes sensor data through Industrial I/O (IIO) interface. 
 DRIVER=="hid_sensor_custom", ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0ad5", RUN+="/bin/sh -c 'chmod -R 0777 /sys/%p && chmod 0777 /dev/%k'"
+```
+
+- To check vendor ID, product IDs
+
+```bash
+lsusb
+# see Bus 004 Device 003: ID 8086:0ad3 Intel Corp. Intel(R) RealSense(TM) Depth Camera 415
+    # vendor ID: 8086, Product ID: 0ad3
+# Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
 ```
 
 ## Services

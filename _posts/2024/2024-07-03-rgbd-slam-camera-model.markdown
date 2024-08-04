@@ -2,8 +2,10 @@
 layout: post
 title: Going Back To The Basics - Pinhole Camera Model
 date: '2024-07-03 13:19'
-excerpt: This Blog Shows How A Small Magic Peek Hole Captures The World
+subtitle: This Blog Shows How A Small Magic Peek Hole Captures The World
 comments: true
+tags:
+    - RGBD Slam
 ---
 
 ## Introduction

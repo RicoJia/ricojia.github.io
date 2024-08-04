@@ -2,8 +2,10 @@
 layout: post
 title: C++ - Using GDB for ROS
 date: '2023-05-20 13:19'
-excerpt: GDB is a very useful that allows us to pause at a break point or failure and inspect.
+subtitle: GDB is a very useful that allows us to pause at a break point or failure and inspect.
 comments: true
+tags:
+    - C++
 ---
 
 ## Concepts

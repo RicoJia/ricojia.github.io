@@ -2,8 +2,10 @@
 layout: post
 title: RGBD SLAM - Bundle Adjustment From Zero To Hero, Part 1, Theories
 date: '2024-07-11 13:19'
-excerpt: RGBD SLAM Backend Introduction
+subtitle: RGBD SLAM Backend Introduction
 comments: true
+tags:
+    - RGBD Slam
 ---
 
 ## What is Optimization?

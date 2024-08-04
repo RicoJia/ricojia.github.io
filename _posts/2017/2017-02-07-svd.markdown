@@ -2,8 +2,10 @@
 layout: post
 title: Math - Null Space and Singular Value Decomposition (SVD)
 date: '2017-02-07 13:19'
-excerpt: How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?
+subtitle: How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?
 comments: true
+tags:
+    - Math
 ---
 
 ## Introduction

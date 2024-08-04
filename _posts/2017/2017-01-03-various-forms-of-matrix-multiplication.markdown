@@ -1,9 +1,11 @@
 ---
 layout: post
 title: Math - Various Useful Forms Of Matrix Multiplication
+subtitle: Inner & outer Product, Correlation Matrix, etc.
 date: '2017-01-03 13:19'
-excerpt: Inner & outer Product, Correlation Matrix, etc.
-comments: true
+header-img: "img/post-bg-2015.jpg"
+tags:
+    - Math
 ---
 
 

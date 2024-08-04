@@ -2,8 +2,10 @@
 layout: post
 title: RGBD SLAM - The PnP Problem
 date: '2024-07-09 13:19'
-excerpt: 
+subtitle: Solving the PnP problem - turning pixels into 3D positions! 
 comments: true
+tags:
+    - RGBD Slam
 ---
 
 ## Intro

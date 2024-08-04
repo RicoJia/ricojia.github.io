@@ -2,8 +2,10 @@
 layout: post
 title: RGBD SLAM Bundle Adjustment Part 2
 date: '2024-07-12 13:19'
-excerpt: RGBD SLAM Backend Introduction
+subtitle: RGBD SLAM Backend Introduction
 comments: true
+tags:
+    - RGBD Slam
 ---
 
 If you haven't, please check out the previous article on [how to formulate SLAM as an optimization problem](./2024-07-11-rgbd-slam-bundle-adjustment.markdown)

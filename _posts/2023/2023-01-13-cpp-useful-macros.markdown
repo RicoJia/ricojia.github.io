@@ -2,8 +2,10 @@
 layout: post
 title: C++ - Useful Macros
 date: '2023-01-05 13:19'
-excerpt: Why do we still need macros for C++? Please click in and take a look!
+subtitle: Why do we still need macros for C++? Please click in and take a look!
 comments: true
+tags:
+    - C++
 ---
 
 ## Introduction

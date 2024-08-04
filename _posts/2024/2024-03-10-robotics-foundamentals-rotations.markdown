@@ -2,8 +2,10 @@
 layout: post
 title: Robotics Fundamentals - Rotations
 date: '2024-03-10 13:19'
-excerpt: Getting back to the fundamentals? Let's roll with rotations
+subtitle: Getting back to the fundamentals? Let's roll with rotations
 comments: true
+tags:
+    - Robotics
 ---
 
 ## Representations of Rotation 

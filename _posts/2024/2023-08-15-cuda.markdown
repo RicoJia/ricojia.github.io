@@ -2,6 +2,8 @@
 layout: post
 title: My Journey Into CUDA 
 date: '2023-08-15 13:19'
-excerpt: Various things about CUDA that I learned...
+subtitle: Various things about CUDA that I learned...
 comments: true
+tags:
+    - CUDA
 ---
