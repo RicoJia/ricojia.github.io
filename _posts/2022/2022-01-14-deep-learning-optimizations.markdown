@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Deep Learning - Introduction
+title: Deep Learning - Optimizations
 date: '2023-02-04 13:19'
-subtitle: Why Do We Even Need Deep Neuralnets?
+subtitle: Batch Gradient Descent, RMSDrop, Adam Optimization
 comments: true
 tags:
     - Deep Learning
