@@ -8,11 +8,17 @@ tags:
     - Deep Learning
 ---
 
-## Intro
 
-### Why Do We Need Deep Learning
+## Why Do We Need Deep Learning
 
-### ML Design Process
+Any bounded continuous function can be approximated by an arbitrarily large single layer. W hy? The idea is roughly that the linear combinations of activation function can compose a pulses, like a sigmoid, or 4 ReLus. Then, the pulses can compose an arbitrary function
+
+<p align="center">
+<img src="https://github.com/RicoJia/Machine_Learning/assets/39393023/d1020b0c-776f-47c5-971f-b673d27e587b" height="300" width="width"/>
+<figcaption align="center">Pulses Can Approximate An Arbitrary Function</figcaption>
+</p>
+
+## ML Design Process
 
 ```text
 Choose dataset -> Choose network architecture (number of layers, number of hidden units on a layer, activation function at each layer, etc.)
@@ -37,5 +43,5 @@ Overfitting = high variance, underfitting = high bias.
     - So if your human error is 15%, then the 15% ML model error rate is not considered high bias.
     - The same model could be high biased in certain landscapes (meaning humans can do well, but the model is underfitting even in the training set), and high variance in others (high performance in the training set, but low performance in the validation set)
 
-High Bias? Larger Network, or even a different architecture
-High Variance: more data, regularization, neural network architecture. 
+When having high bias? Try a larger Network, or even a different architecture.
+When having high Variance: more data, regularization, neural network architecture.
