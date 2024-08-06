@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - RNN
-date: '2023-02-04 13:19'
+date: '2022-02-04 13:19'
 subtitle: Recurrent Neural Network!
 comments: true
 tags:
