@@ -10,7 +10,7 @@ tags:
 
 ## Introduction
 
-It's a common task to remove items in a sequential container that fits a criteria, like an array, vector, queue, etc. In C++, it's advised to use the **erase-remove** idiom, which does **in-place** element swap and remove.
+It's a common task to remove items in a sequential container that fits a criteria, like an array, vector, queue, etc. For this scenario in C++, it's advised to use the **erase-remove** idiom, which does **in-place** element swap and remove.
 
 ```cpp
 #include <iostream>
@@ -35,11 +35,11 @@ int main()
 }
 ```
 
-See, `remove_if(begin_iterator, end_iterator, predicate)` moves all elements that does NOT satisfy the predicate, i.e., eleemtns we want to keep.  
+See, `remove_if(begin_iterator, end_iterator, predicate)` **copies** all elements that does NOT satisfy the predicate, i.e., elements we want to keep.  
 
 `erase()` will:
 
-- Return iterator pointing to the end of the container. (which is `new_end` in the above snippet)
+- Return an iterator pointing to the end of the container. (which is `new_end` in the above snippet)
 - Invalidate references and iterators after the new end.
 - Change the underlying `size` parameter, of course.
 
@@ -61,7 +61,7 @@ ForwardIt remove_if(ForwardIt first, ForwardIt last, UnaryPred p)
 ```
 
 
-### profiling results
+### Profiling results
 
 One interesting finding is that `erase-remove` might not be faster than copying:
 

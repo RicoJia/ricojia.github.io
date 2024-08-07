@@ -25,19 +25,21 @@ FAST keypoint is very fast to calculate, but it does not have a descriptor. ORB 
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/90f44985-6c87-4a1d-8663-462b74e4b651" height="300" width="width"/>
 </p>
 
-Below is ORB's workflow:
+## ORB Feature Detection Workflow
 
 1. Generate an image pyramid of n level
+    1. Gaussian Blur the image because ORB is sensitive to noise
 
 2. Fast Feature Identification at a specific image pyramid level
     1. Find a pixel. Draw a circle with a radius of 3 pixels (16 pixels)
-    2. If you can find more than N consecutive pixels with an intensity greater than T, then this pixel is a keypoint.
+    2. If you can find **more than N consecutive pixels** with an intensity greater than T, then this pixel is a keypoint.
         - N=12 is FAST-12. For that, you can check pixel 1,5,9,13 to rule out.
     3. Repeat this on other pixels
     4. Apply non-maximal suppresion to avoid keypoint clustering
 
 3. Orientation Identification (Not in FAST)
-    - Compute the image moments, then the intensity centroid. Using the center of the 3x3 patch as the origin $O$
+    - Select a patch that centers the corner.
+    - Compute the image moments of the patch, then compute the intensity centroid. Use the center of the patch as the origin $O$
         $$
         m_{pq} = \sum_{x,y} x^{p} y^{q} I(x,y)
         \\
@@ -50,7 +52,9 @@ Below is ORB's workflow:
         $$
 
 4. Represent the descriptor in steered BRIEF
-    - Pre-select 256 pairs of pixels.
+    - Pre-select 256 pairs of pixels in the patch.
+        - In Rublee et al's paper, a large number of images were used to compare the image intensitiy of these selected pixels of keypoints. 
+        They mapped out the mean of all these image pairs, and the correlation within each pair.
     - Steer the descriptor. From the "normalized image" to the rotated one (the patch we have):
         $$
         S = R(\theta)[x_1,y_1; ... x_n, y_n]

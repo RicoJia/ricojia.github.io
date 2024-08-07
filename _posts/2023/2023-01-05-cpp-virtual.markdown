@@ -10,11 +10,11 @@ tags:
 
 ## Introduction
 
-The virutal keyword is very versatile. A really short and nasty summary is, it is to ensure the correct functions or base class is inherited / loaded during runtime.
+The virutal keyword is very versatile. A really short and nasty summary is, it is to **ensure the correct functions or base class is inherited / loaded during runtime**.
 
 ## Virtual Functions
 
-In Computer science, **dispatching** is the action of selecting which polymorphic function to call [2]. In C++, there are static dispatching (like templates) and dynamic dispatching (polymorphism). In static dispatching, the dispatched function is known during compile time, whereas in dynamic dispatching, the dispatched function won't be known until the runtime type of an object is known. This way, polymorphism could become useful when we have different types of objects with inheritance, and want to call their corresponding versions of a function.
+In general computer science, **dispatching** is the action of selecting which polymorphic function to call [2]. In C++, there are **static dispatching (like templates)** and **dynamic dispatching (polymorphism)**. In static dispatching, **the dispatched function is known during compile time**, whereas in dynamic dispatching, the dispatched function **won't be known until the runtime type of an object is known**. This way, polymorphism could become useful when we have different types of objects with inheritance, and want to call their corresponding versions of a function.
 
 The mechanism of dynamic dispatching in C++ is through a virtual function table (vtable), which stores pointers to all virtual functions' addresses. Vtable will only be looked up when polymorphism is used.
 
@@ -23,7 +23,7 @@ The mechanism of dynamic dispatching in C++ is through a virtual function table 
 <figcaption><a href="https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/">Source: Pablo Arias</a></figcaption>
 </p>
 
-By declaring a function `virtual` in base class, one can provide `overrride` functions in subclasses if necessary. One example is:
+By declaring a function `virtual` in base class, one should provide `overrride` functions in subclasses if they want to apply polymorphism on the function. One example is:
 
 ```cpp
 #include <iostream>
@@ -49,7 +49,7 @@ int main()
 }
 ```
 
-### If You Have A Base Class, Always Define Virtual Dtor it
+### If You Have A Base Class, Always Define A Virtual Dtor For It
 
 In C++ polymorphism, **IT IS REQUIRED TO DECLARE BASE CLASS'S DTOR AS VIRTUAL**
 
