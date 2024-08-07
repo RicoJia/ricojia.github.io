@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Overfitting and Exploding / Vanishing Gradients
+title: Deep Learning - Overfitting, Exploding And Vanishing Gradients
 date: '2022-01-16 13:19'
 subtitle: "When in doubt, be courageous, try things out, and see what happens!" - James Dellinger
 comments: true
