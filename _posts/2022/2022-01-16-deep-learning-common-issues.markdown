@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Overfitting, Exploding And Vanishing Gradients
 date: '2022-01-16 13:19'
-subtitle: "When in doubt, be courageous, try things out, and see what happens!" - James Dellinger
+subtitle: When in doubt, be courageous, try things out, and see what happens! - James Dellinger
 comments: true
 tags:
     - Deep Learning
@@ -60,7 +60,7 @@ Drop out is to force a fraction of neurons to zero during each iteration. Redund
 
 During Inferencing, there is no need to turn on drop-out. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
 
-But be careful with $J$ visualization, it becomes wonky because of the added randomness.
+But be careful with visualization of $J$, it becomes wonky because of the added randomness.
 
 ### Technique 3: Tanh Activation Function
 
