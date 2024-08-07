@@ -87,7 +87,7 @@ Stop training as you validate on the dev set. If you know realize that your trai
 
 ## Exploding & Vanishing Gradients
 
-In a very deep network, output of each layer might diminish, because their inputs are $W_1W_2...x$ (ignoring activation for now)
+In a very deep network, output of each layer might diminish, because these outputs are products $W_1W_2...x$ (ignoring activation for now)
 
 <div style="text-align: center;">
 <p align="center">
@@ -97,7 +97,7 @@ In a very deep network, output of each layer might diminish, because their input
 </p>
 </div>
 
-Let's pretend that this is a very deep network ;), and each node has exactly the same weights. Then, the final output is on the order of $W^nx$. So if $W$'s elements are slightly over 1, outputs could explode. On the other hand, if $W$'s elements are slightly below 1, output could diminish to 1. In [the batch gradient derivation](./2022-01-14-deep-learning-optimizations.markdown), we saw how gradient at one layer depends on the gradient of its output through **the chain rule**: $\frac{\partial{J}}{\partial{w_i}}$. Since the output is exponential w.r.t any layer, this gradient is also "exponential", intuitively.
+Let's pretend that the above is a very deep network ;), and each node has exactly the same weights. Then, the final output is on the order of $W^nx$. So if $W$'s elements are slightly over 1, outputs could explode. On the other hand, if $W$'s elements are slightly below 1, output could diminish to 0. In [the batch gradient derivation](./2022-01-14-deep-learning-optimizations.markdown), we saw how gradient at one layer depends on the gradient of its output through **the chain rule**: $\frac{\partial{J}}{\partial{w_i}}$. Since the output is exponential w.r.t any layer, this gradient is also "exponential", intuitively.
 
 $$
 \begin{gather*}
@@ -105,11 +105,11 @@ $$
 \end{gather*}
 $$
 
-### Weight Initializations
+### Weight Initialization
 
 Below is a summary from James' Dilenger's article [Weight Initialization in Neural Networks: A Journey From the Basics to Kaiming](https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79)
 
-Let's say we have a simple neural net like the one above. Each layer has 256 neurons, and the input is of size 256. We have 100 layers. Naively, without activation functions, if we initialize each layer randomly so that each weight has `mean=0`, unit `standard deviation=1`, it would look like:
+Let's say we have a simple neural net like the one above. Each layer has 256 neurons, and the input is of size 256. We have 100 layers. Naively, without activation functions, if we initialize each layer randomly so that each weight has `mean=0`, `standard deviation=1`, it would look like:
 
 ```python
 import torch
@@ -147,6 +147,7 @@ mean/10000, var/10000
 ```
 
 The math is that
+
 $$
 \begin{gather*}
 y = Wx =
@@ -233,7 +234,6 @@ In Xavier Glorot and Yoshua Bengio's paper: [Understanding the difficulty of tra
 1. Create uniformly distributed weights
 2. Normalized them to $\frac{\sqrt{6}}{\sqrt{n_i + n_{i+1}}}$, where $n_i$ and $n_{i+1}$ are "fan in" and "fan out" (number of inputs and outputs to the layer)
 
-
 ```python
 import math
 import torch
@@ -251,11 +251,3 @@ x.mean(), x.std()   # see (tensor(0.0047), tensor(0.0452))
 #### He (Kaiming) Initialization
 What if the activation function is **ReLu**? In his paper: [Delving Deep into Rectifiers:
 Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) (ICCV, 2015)  He Kaiming (何恺明) found that instead of scaling $\sqrt{1/n}$ (as in the naive scaling approach), we do $\sqrt{2/n}$, we could achieve good results. Why? Intuitively, half of the $y$ would turn to 0 after ReLu. So $y$'s variance will become half
-
-He (Kaiming) and Xavier Initializations.
-
-One way to partially deal with the exploding and vanishing gradients problem is to initialize weights randomly with **a designated variance**.
-
-
-
-
