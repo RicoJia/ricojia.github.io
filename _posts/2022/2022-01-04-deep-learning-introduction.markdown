@@ -45,3 +45,23 @@ Overfitting = high variance, underfitting = high bias.
 
 When having high bias? Try a larger Network, or even a different architecture.
 When having high Variance: more data, regularization, neural network architecture.
+
+### Data Normalization
+
+When data come in different scales, say feature 1 ranges from $[-100, 100]$, another ranges from $[-1, 1]$, then the cost over these two features could be quite elongated along feature 1. Therefore, feature 2's gradient could be really small, and the same learning rate may not perform as well.
+
+To mitigate this: 
+
+1. "Shift to the center" - subtract out the mean from inputs
+2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1. 
+
+Another note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different. 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/67600541-961e-4096-a656-747e608274f6" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+

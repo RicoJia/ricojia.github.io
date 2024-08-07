@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Going Back To The Basics - Pinhole Camera Model
-date: '2024-07-03 13:19'
+title: Computer Vision - Pinhole Camera Model
+date: '2024-01-03 13:19'
 subtitle: This Blog Shows How A Small Magic Peek Hole Captures The World
 comments: true
 tags:
-    - RGBD Slam
+    - Computer Vision
 ---
 
 ## Introduction
