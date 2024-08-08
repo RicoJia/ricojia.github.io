@@ -17,13 +17,30 @@ Before we delve in, I'd like to quote [from James Dellinger](https://towardsdata
 
 I share the same fear when I see some scary-looking math, too. However, one lesson I learned from life is most things could be conquered, or resolved partially to a satisfactory state, by simply spending time and "drilling" into it, step by step. At the end of the day, many scary-looking things would shatter and wouldn't be so scary anymore.
 
+### Bias And Variance
+
+Overfitting = high variance, underfitting = high bias.
+
+- Variance means **the difference from "high performance in training data, low performance in test data"**. That scenario is also called "overfitting".
+- Bias means **the difference between human performance and training data performance**. Poor performance on training set is "underfitting", and that could lead to high bias
+    - So if your human error is 15%, then the 15% ML model error rate is not considered high bias.
+    - The same model could be high biased in certain landscapes (meaning humans can do well, but the model is underfitting even in the training set), and high variance in others (high performance in the training set, but low performance in the validation set)
+
+- When having high bias? (underfitting) Try a larger Network, or even a different architecture.
+    - Do not add regularization. WHy??? you might be suffering exploding gradients?
+
+
+- When having high Variance, (overfitting): more data, regularization, neural network architecture. See the next section
+    - **Do NOT use a bigger neural net.** This is because overfitting usually means too complex of a network structure. Making it bigger or deeper will add to the complexity of it.
+    - So we need to decrease the complexity here. 
+
 ## Overfitting
 
 Capacity is the ability to fit a wide variety of functions. Models with complex patterns may also be overfitting, thus have smaller capacity.
 
-### Technique 1: Regulation
+### Technique 1: Regularization
 
-Regularization is to reduce overfitting by penalizing the "complexity" of the model. Common methods include:
+Regularization is to reduce overfitting by penalizing the "complexity" of the model. This is also called "weight decay". Common methods include:
 
 - L1 and L2 regularization:
     - L1 encourages sparsity: **NOT SUPER COMMON** $\lambda \sum_j || w_j ||$
@@ -58,7 +75,9 @@ Drop out is to force a fraction of neurons to zero during each iteration. Redund
 </p>
 </div>
 
-During Inferencing, there is no need to turn on drop-out. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
+- In computer vision, due to the nature of the data, it's default practice to apply drop out. **However in general, do not apply drop out if there's no overfitting.**
+
+**During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
 
 But be careful with visualization of $J$, it becomes wonky because of the added randomness.
 
@@ -75,7 +94,7 @@ Note: when the activation is tanh, when w is small, the intermediate output z of
 </p>
 </div>
 
-### Technique 4: data augmentation
+### Technique 4: Data Augmentation
 
 One can get a reflection of a cat, add random distortions, rotations,
 

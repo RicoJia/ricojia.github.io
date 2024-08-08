@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Introduction
-date: '2022-02-04 13:19'
+date: '2022-01-04 13:19'
 subtitle: Why Do We Even Need Deep Neuralnets?
 comments: true
 tags:
@@ -28,29 +28,18 @@ Nowadays, It's very hard to guess all these params right in one shot. Intuitions
 
 Another secret sauce is data partition. There are:
 - Training set
-- Hold out - for choosing the best model hyperparameters (number of layers, learning rate, etc.) before testing on the test set
-- Validation (or test) set
-- traditionally, the ratio of Training vs Hold out vs Validation is: 70/20/10. For Big data: 98%/1%/1%
+- Dev / Validation (or test) set: used to tune the models' hyperparameters, like number of layers, learning rate, etc. This should be done at the end of each epoch, and is helpful for deciding when to apply early stopping.
+- Hold out - for choosing the best model hyperparameters  before testing on the test set
+
+Traditionally, the ratio of Training vs Hold out vs Validation is: 70/20/10. For Big data: 98%/1%/1%
 
 Come from the same train/test distribution.
-
-### Bias And Variance
-
-Overfitting = high variance, underfitting = high bias.
-
-- Variance means **the difference from "high performance in training data, low performance in test data"**. That scenario is also called "overfitting".
-- Bias means **the difference between human performance and training data performance**. Poor performance on training set is "underfitting". 
-    - So if your human error is 15%, then the 15% ML model error rate is not considered high bias.
-    - The same model could be high biased in certain landscapes (meaning humans can do well, but the model is underfitting even in the training set), and high variance in others (high performance in the training set, but low performance in the validation set)
-
-When having high bias? Try a larger Network, or even a different architecture.
-When having high Variance: more data, regularization, neural network architecture.
 
 ### Data Normalization
 
 When data come in different scales, say feature 1 ranges from $[-100, 100]$, another ranges from $[-1, 1]$, then the cost over these two features could be quite elongated along feature 1. Therefore, feature 2's gradient could be really small, and the same learning rate may not perform as well.
 
-To mitigate this: 
+To make the cost function optimize faster:
 
 1. "Shift to the center" - subtract out the mean from inputs
 2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1. 
