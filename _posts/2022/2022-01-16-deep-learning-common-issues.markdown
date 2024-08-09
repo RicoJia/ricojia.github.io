@@ -44,7 +44,7 @@ Regularization is to reduce overfitting by penalizing the "complexity" of the mo
 
 - L1 and L2 regularization:
     - L1 encourages sparsity: **NOT SUPER COMMON** $\lambda \sum_j || w_j ||$
-    - L2 penalizes large weights: $ \lambda \sum_j || w_j^2 ||$. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter)
+    - L2 penalizes large weights: $ \frac{\lambda}{2m} \sum_j || w_j^2 ||$. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
     - The regularization term is a.k.a "weight decay"
 
 Effectively, some neurons' weight will be reduced, so hopefully, it will result in a simpler model that could perform better on the test set landscape.
@@ -75,7 +75,13 @@ Drop out is to force a fraction of neurons to zero during each iteration. Redund
 </p>
 </div>
 
+#### Notes For Dropout
+
 - In computer vision, due to the nature of the data, it's default practice to apply drop out. **However in general, do not apply drop out if there's no overfitting.**
+
+- One detail is that when calculating drop out, we need to scale the output of each layer by `1/keep_prob` so the final expected cost is the same. Accordingly, due to chain rule, the gradients of weights should be multiplied by `1/keep_prob` as well.
+
+- To implement drop out, we can simply apply a "drop-out" mask in foreprop (multiplied by `1/keep_prob` ). When calculating the weight gradients, apply the same mask again. 
 
 **During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
 
@@ -268,5 +274,18 @@ x.mean(), x.std()   # see (tensor(0.0047), tensor(0.0452))
 ```
 
 #### He (Kaiming) Initialization
+
 What if the activation function is **ReLu**? In his paper: [Delving Deep into Rectifiers:
 Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) (ICCV, 2015)  He Kaiming (何恺明) found that instead of scaling $\sqrt{1/n}$ (as in the naive scaling approach), we do $\sqrt{2/n}$, we could achieve good results. Why? Intuitively, half of the $y$ would turn to 0 after ReLu. So $y$'s variance will become half
+
+#### Remarks On Zero Initialization
+
+If our network's weights are initialized all to 0, then the output is the same value regardless of inputs. Gradients will be zero everywhere. This is called "symmetry". To break the symmetry, it's okay to initialize W zero and not including b. 
+
+Also, if the output is 0 and uses the **cross entropy loss**, we will get `inf` in the final cost.
+
+$$
+\begin{gather*}
+Loss = -y log(\hat{y}) + (1-y) log((1-\hat{y}))
+\end{gather*}
+$$

@@ -10,12 +10,12 @@ tags:
 
 ## Intro
 
-In SLAM and Computer Vision, distinguishing the same points across multiple camera views is necessary for visual odometry. These "distinguishable points" are called features. In general, we want our feature detection to be robust to: 
+In SLAM and Computer Vision, distinguishing the same points across multiple camera views is necessary for visual odometry. These "distinguishable points" are called features. In general, we want our feature detection to be robust to:
 
 - General camera motions, like Rotation, i.e., after rotating the camera, the same point can still be detected
 - Illumination changes
 
-Corners and edges are distinguishable. Before 2000, there are Harris Corner, FAST corner, etc. However, those are not sufficient especially in the case when the camera rotates. Therefore, methods like SIFT (David Lowe, ICCV 1999), SURF (Bay et al. ECCV 2004), ORB (Rublee et al. ICCV 2011) came about. These methods are composed of a keypoint, and a feature descriptor. SIFT (Scale-Invariant-Feature Transform) is most classic and considers changes in illumination, scale, rotation during image transformation. However, it comes with a significant computation cost which makes it not fast enough for a real-time system (but fast enough with GPU acceleration).
+Corners and edges are distinguishable. Before 2000, there are Harris Corner, FAST corner, etc. However, those are not sufficient especially in the case when the camera rotates. Therefore, methods like SIFT (David Lowe, ICCV 1999), SURF (Bay et al. ECCV 2004), ORB (Rublee et al. ICCV 2011) came about [1]. These methods are composed of a keypoint, and a feature descriptor. SIFT (Scale-Invariant-Feature Transform) is most classic and considers changes in illumination, scale, rotation during image transformation. However, it comes with a significant computation cost which makes it not fast enough for a real-time system (but fast enough with GPU acceleration).
 
 FAST keypoint is very fast to calculate, but it does not have a descriptor. ORB (Oriented FAST and Rotated BRIEF) uses a rotated BRIEF descriptor on top of the FAST detector. In some experiments, it can be over 300x faster than SIFT, while its performance is still decent. So ORB is a fair trade-off in SLAM.
 
@@ -83,4 +83,12 @@ There are two potentially parallel ways to find an approximate nearest neighbor,
 
 ## Implementation
 
-Here is the [OpenCV implementation](https://github.com/barak/opencv/blob/051e6bb8f6641e2be38ae3051d9079c0c6d5fdd4/modules/features2d/src/orb.cpp#L533)
+Here is the [OpenCV implementation](https://github.com/barak/opencv/blob/051e6bb8f6641e2be38ae3051d9079c0c6d5fdd4/modules/features2d/src/orb.cpp#L533). The algorithm applies below tricks:
+
+In step 3 orientation computation, OpenCV uses
+    - Integral Image (a.k.a summed area table). There's a [leetcode question](https://leetcode.com/problems/range-sum-query-2d-immutable/description/) for it. Give it a try!
+    - TODO: How Image Moment is calculated using the integral image, and half patch size
+
+## References
+
+[1] Rublee, E., Rabaud, V., Konolige, K., and Bradski, G. 2011. ORB: an efficient alternative to SIFT or SURF. In Proceedings of the 2011 International Conference on Computer Vision (ICCV '11). IEEE Computer Society, Washington, DC, USA, 2564-2571. DOI:https://doi.org/10.1109/ICCV.2011.6126544
