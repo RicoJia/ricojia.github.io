@@ -1,18 +1,12 @@
 ---
 layout: post
 title: ROS Infrastructure Notes
-date: '2023-04-01 13:19'
+date: '2024-04-01 13:19'
 subtitle: A Running List of ROS Infrastructure I found Useful
 comments: true
 tags:
     - ROS
 ---
-
-## ROS Basics
-
-### Where ROS binaries are stored
-
-In ROS, many packages come in the C++ binary form. They are installed through `apt`, and are stored in `/opt/ros/noetic/lib`. 
 
 ## ROS Actions
 
