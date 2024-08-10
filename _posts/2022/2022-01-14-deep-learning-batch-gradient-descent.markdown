@@ -62,6 +62,7 @@ $$
 =>
 \\
 \frac{\partial{J}}{\partial{w_i}} = (\hat{y} - y)x_i
+\\
 \frac{\partial{J}}{\partial{w_i}} = (\hat{y} - y)
 \\
 \end{gather*}
@@ -90,11 +91,11 @@ b = b - \lambda\nabla{J} = b - \lambda(\hat{y} - y)
 \end{gather*}
 $$
 
-## Neural Network and and Back Propagation
+## Neural Network And Back Propagation
 
 Now, to be consistent with mainstream notations, we represent the output of each node as $a$, instead of $\hat{y}$. 
 
-Imagine we have two layers, an input layer, and an output layer. To update all params $w$ to yield better final output, we first pass inputs $x^{(0)} ... x^{(m)}$ through the network, and get outputs $y^{(0)} ... y^{(m)}$. The output of each node $Lj$ is $a^{L}_{j}$, where $L$ is the layer number.
+Imagine we have two layers, an input layer, and an output layer. To update all params $w$ to yield better final output, we first pass inputs $x^{(0)} ... x^{(m)}$ through the network. The output of each node $Lj$ is $a^{L}_{j}$, where $L$ is the layer number. The target values are $y^{(0)} ... y^{(m)}$.
 
 ### When L is An Output Layer
 
@@ -224,3 +225,7 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         b^L_j = b^L - \frac{\partial{J}}{\partial{z^L}}
         \end{gather*}
         $$
+
+## Choosing Batch Sizes
+
+1. Batch Gradient Descent is the original way of optimziation. It runs the entire batch of inputs, gets its total cost and sum of weight gradients across the entire batch, then optimizes the weights with that. However it takes too long when `m >2000`. SGD is fast, but the cost-epoch trajectory also can be noisy. Mini batches is the way to go. A typical mini-batch size is `64 - 512`

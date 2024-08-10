@@ -29,7 +29,8 @@ Motion blur could cause lower number of features and feature mismatching. These 
 
 There are two types of methods: classical optimization methods, deep learning based methods. [In Roh et al's paper MBA-VO: Motion Blur Aware Visual Odometry (ICCV 2021)](https://doi.org/10.1109/ICCV48922.2021.01178) , Two choices of deep deblurring network were used:
 
-- An RNN that's slower but provides better quality (Tao et al: Scale-recurrent network for deep image deblurring., CVPR 2018)
+- An RNN that's slower but provides better quality [Tao et al: Scale-recurrent network for deep image deblurring., CVPR 2018](https://openaccess.thecvf.com/content_cvpr_2018/papers/Tao_Scale-Recurrent_Network_for_CVPR_2018_paper.pdf)
 - An CNN that's Fast but a bit worse (Kupyn et al: Deblurgan-v2: Deblurring (orders-of-magnitude) faster and better, ICCV 2019)
 
 Here I chose the RNN since my RGBD SLAM is an offline application. 
+
