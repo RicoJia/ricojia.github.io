@@ -228,6 +228,29 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         \end{gather*}
         $$
 
-## Choosing Batch Sizes
+## Batch Gradient Descent, MiniBatch Gradient Descent, Stochastic Gradient Descent
 
-1. Batch Gradient Descent is the original way of optimziation. It runs the entire batch of inputs, gets its total cost and sum of weight gradients across the entire batch, then optimizes the weights with that. However it takes too long when `m >2000`. SGD is fast, but the cost-epoch trajectory also can be noisy. Mini batches is the way to go. A typical mini-batch size is `64 - 512`
+Batch Gradient Descent is the original way of optimziation. It runs the entire batch of inputs, gets its total cost and sum of weight gradients across the entire batch, then optimizes the weights with that. However it takes too long when `m >2000`. 
+
+SGD is fast, but the cost-epoch trajectory also can be noisy. 
+
+Mini batches is the way to go. A typical mini-batch size is `64 - 512`
+
+A comparison of these three batching methods of epoch costs is shown below: 
+
+![Screenshot from 2024-08-11 15-01-49](https://github.com/user-attachments/assets/5c5fed43-623b-4dbf-afc0-a79eea1a43a5)
+![Screenshot from 2024-08-11 15-01-40](https://github.com/user-attachments/assets/369d6d6e-79b7-455f-9a2d-3b428884c883)
+
+### Mini-Batch Method
+
+1. Shuffle the inputs and labels. Before feeding to the network, shuffle $X$ and the corresponding $Y$.
+
+```python
+permutation = list(np.random.permutation(m))
+# each column is a feature
+shuffled_X = X[:, permutation]
+shuffled_Y = Y[:, permutation].reshape((1,m))
+inc = i
+```
+
+2. Partition the input data into batches of size `m`. **Powers of 2 are often chosen to be batch sizes**
