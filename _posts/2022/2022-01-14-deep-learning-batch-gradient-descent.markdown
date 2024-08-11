@@ -78,7 +78,9 @@ b = b - \lambda\nabla{J} = w - \lambda(\hat{y} - y)
 \end{gather*}
 $$
 
-**Now if we have a batch inputs, that is $x^{(0)} ... x^{(m)}$**
+Ideally, we feed the entire batch of training set into the network and optimize our weights using gradient descent. This is called "vectorization", because we put the entire batch in a matrix. Matrix operations are usually faster than their for-loop counterparts, because they make use of low-level optimization techniques like SIMD, parallel computing, etc. 
+
+**Now, if we have a batch inputs, that is $x^{(0)} ... x^{(m)}$**
 
 $$
 \begin{gather*}

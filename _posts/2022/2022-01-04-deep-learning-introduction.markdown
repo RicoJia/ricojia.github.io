@@ -24,7 +24,7 @@ Any bounded continuous function can be approximated by an arbitrarily large sing
 Choose dataset -> Choose network architecture (number of layers, number of hidden units on a layer, activation function at each layer, etc.)
 ```
 
-Nowadays, It's very hard to guess all these params right in one shot. Intuitions from one domain (speech recognition) doesn't transfer well to another. **So going over the above iterations is key.**
+Nowadays, It's very hard to guess all these params right in one shot. Intuitions from one domain (speech recognition) likely doesn't transfer well to another. **So going over the above iterations is key.** That said, one exception is that ConvNet/ResNet from computer vision transferred to speech recognition well.
 
 Another secret sauce is data partition. There are:
 - Training set

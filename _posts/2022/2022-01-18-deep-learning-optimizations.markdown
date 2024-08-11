@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Optimizations
-date: '2022-01-16 13:19'
+date: '2022-01-18 13:19'
 subtitle: Momentum, RMSProp, Adam, Local Minima
 comments: true
 tags:
@@ -52,7 +52,17 @@ $$
 - $\beta$ is commonly 0.9
 - No bias correction in momentum implementation
 
-- RMSProp (root mean squared Prop)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/956a851f-32b9-4371-8372-ccf12837d310" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+- (1) is gradient descent, (2) is with a small momentum, (3) is with a larger momentum
+
+## RMSProp (root mean squared Prop)
 
 When gradient has large oscillations, we might want to smooth it out. In the below illustration, gradient is large along W, but small along b. So to smooth out the magnitudes of W, we can apply "RMSProp". (Propsed by Hinton in a Coursera course, lol)
 
