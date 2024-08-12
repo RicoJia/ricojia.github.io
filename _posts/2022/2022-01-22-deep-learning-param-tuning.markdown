@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Hyper Parameter Tuning
+title: Deep Learning - Hyper Parameter Tuning 
 date: '2022-01-22 13:19'
 subtitle: It finally comes down to how much compute we have, actually...
 comments: true
@@ -34,25 +34,3 @@ Importance ratings:
 When trying different values, trying random values is better than trying on a grid, because you might be trying different values.
 
 Coarse to grid is the process to zoom in on a specific region in the hyper parameter space.
-
-### Batch Normalization
-
-We have seen that we normalize the input data based on their average and mean. We can apply the same with the output of each layer.
-
-```bash
-x -> z (normalize here) -> a
-```
-
-So similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
-
-$$
-z = \frac{z-\mu_z}{\sqrt{\beta^2 + \epsilon}}
-$$
-
-But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $z_tilda$ to a different learnable distribution. With $\gamma$ and $\beta$ being **learnable**:
-
-$$
-\tilde{z} = \gamma z_{norm} + \beta
-$$
-
-After this transformation, $\tilde{z}$ is fed into the next layer.

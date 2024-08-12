@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Optimizations
+title: Deep Learning - Optimizations Part 1
 date: '2022-01-18 13:19'
 subtitle: Momentum, RMSProp, Adam, Learning Rate Decay, Local Minima
 comments: true
@@ -215,4 +215,3 @@ But If we add **learning rate decay** on top of SGD and SGD with momentum, those
     </figure>
 </p>
 </div>
-
