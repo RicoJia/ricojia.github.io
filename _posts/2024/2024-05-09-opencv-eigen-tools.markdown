@@ -36,6 +36,19 @@ cv::Mat mat
 cv::minMaxIdx(mat, &min, &max);  // Find min and max depth values
 ```
 
+- `cv::Rect{}` is a commonly used data structure for storing upper left and bottom right coords. In OpenCV, the bottom right corner is **not** included, the top left corner is included. It can be instantiated mostly in two ways: 
+
+```cpp
+// Instantiating with top left corner and width, and height
+auto rec1 = cv::Rect{1,2, 2,2};
+std::cout<<"rec 1 br: "<<rec1.br()<<std::endl;  // see (3,4)
+// Instantiating with top left corner and bottom right corner
+auto rec2 = cv::Rect{cv::Point(1,2), cv::Point(3,4)};
+std::cout<<"Rec 2 br: "<<rec2.br()<<std::endl;  // see (3,4)
+// see 0, because row 3 and column 4 are not included
+std::cout<<"contains: (3,3)"<<rec1.contains(cv::Point(3,3))<<std::endl;
+```
+
 ## OpenCV Math Tools
 
 - Basic Representation of points
