@@ -14,6 +14,8 @@ tags:
 
 #### Create a cv::Mat
 
+In C++: 
+
 ```cpp
 // method 1
 cv::Mat(another_mat);
@@ -22,6 +24,12 @@ cv::Mat A = (cv::Mat_<uchar>(1,2)<<1,2);    //CV_8U
 ```
 
 - **Watch out**, if you pass another mat directly into `cv::Mat()` constructor, then the new mat will use the same pointer to the underlying data structure. To create a real copy, do `cv::Mat.clone()`
+
+To copy an image, in python: 
+
+```python
+output_img = cv2.cvtColor(input_img.copy(), cv2.COLOR_GRAY2RGB)
+```
 
 #### Check Image Size
 
@@ -88,6 +96,10 @@ $$
 
     - This function needs an image widget active. Otherwise, it would just become a delay.
 
+
+### OpenCV Errors
+
+- ```Unsupported combination of source format (=4), and buffer format (=5) in function 'getLinearRowFilter'``` means the input type needs to be changed (e.g., int -> float)
 
 ## Eigen Tools
 
