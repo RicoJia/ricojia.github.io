@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Computer Vision - Functions
+title: Python - Functions
 date: '2021-01-03 13:19'
 subtitle: Lambda (Under Active Updates)
 comments: true
