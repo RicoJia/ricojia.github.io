@@ -114,7 +114,7 @@ W = W - \lambda \frac{dW}{\sqrt{S_w + \epsilon}} \\
 b = b - \lambda \frac{db}{\sqrt{S_b + \epsilon}}  \\
 $$
 
-- So here, our hyper params are: $\beta_1$ (~0.9), $\beta_2$ (~0.999), $\lambda$
+- So here, our hyper params are: $\beta_1$ (~0.9), $\beta_2$ (~0.999), $\lambda$. Usually we don't need to change them. Momentum variable is more valuable than them. 
 
 ## Technique 5 - Learning Rate Decay
 

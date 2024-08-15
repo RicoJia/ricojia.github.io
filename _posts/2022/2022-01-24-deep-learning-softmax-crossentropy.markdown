@@ -86,7 +86,7 @@ When evaluating a model across epochs, the true distribution and its entropy $H(
 
 $$
 \begin{gather*}
-\text{cross entropy loss} = - \sum_x P(x)log(Q(x)) = - \sum_i y_i log(\hat{y_i})
+\text{cross entropy loss J} = - \sum_x P(x)log(Q(x)) = - \sum_i y_i log(\hat{y_i})
 \end{gather*}
 $$
 
@@ -95,3 +95,68 @@ $$
 **Cross-entropy loss** can be used with other activation functions like **ReLU**, **tanh**, etc., as long as we want the logit to be the probability distribution of the output.
 
 ## Gradient Descent With Softmax
+
+The gradient of cross entropy loss, $J$ w.r.t jth dimension of the output prediction $\hat{y_j}$ is:
+
+$$
+\begin{gather*}
+\frac{\partial J}{\partial y_j} = \frac{\partial \sum_i -y_i log(\hat{y_i})}{\partial \hat{y_i}} = \frac{\partial -y_jlog(\hat{y_j})}{\partial \hat{y_i}} = \frac{-y_j}{\hat{y_j}}
+\end{gather*}
+$$
+
+The gradient of the Softmax layer's output at jth dimension $\hat{y_j}$, w.r.t jth dimension of the input $z_j$ is (that is, its own logit):
+
+$$
+\begin{gather*}
+\hat{y}_j = \frac{e^{z_j}}{\sum_{K} e^{z_k}}
+\\
+\frac{\partial \hat{y}_j}{\partial z_j} = \frac{\partial}{\partial z_j} \left( \frac{e^{z_j}}{\sum_{k=1}^{C} e^{z_k}} \right)
+
+\end{gather*}
+$$
+
+Using the quotient rule:
+
+$$
+\begin{gather*}
+\frac{\partial \hat{y}_j}{\partial z_j} = \frac{\left(\sum_{k=1}^{C} e^{z_k}\right) \cdot \frac{\partial e^{z_j}}{\partial z_j} - e^{z_j} \cdot \frac{\partial}{\partial z_j} \left(\sum_{k=1}^{C} e^{z_k}\right)}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
+\end{gather*}
+
+\\
+= \frac{e^{z_j} \cdot \sum_{k=1}^{C} e^{z_k} - e^{z_j} \cdot e^{z_j}}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
+
+\\
+= \frac{e^{z_j} \cdot \left(\sum_{k=1}^{C} e^{z_k} - e^{z_j}\right)}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
+$$
+
+Since 
+
+$$
+\begin{gather*}
+\hat{y}_j = \frac{e^{z_j}}{\sum_{k=1}^{C} e^{z_k}}
+\end{gather*}
+$$
+
+We can get:
+
+$$
+\begin{gather*}
+\frac{\partial \hat{y}_j}{\partial z_j} = \hat{y}_j \left(1 - \hat{y}_j\right)
+\end{gather*}
+$$
+
+
+Similarly, the gradient of the Softmax layer's output at jth dimension $\hat{y_j}$, w.r.t cth dimension of the input $z_j$ is:
+
+
+$$
+\begin{gather*}
+\frac{\partial \hat{y}_j}{\partial z_c} = \frac{\partial}{\partial z_c} \left( \frac{e^{z_j}}{\sum_{k=1}^{C} e^{z_k}} \right)
+\\
+= \frac{0 \cdot \sum_{k=1}^{C} e^{z_k} - e^{z_j} \cdot e^{z_c}}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
+\\
+= -\frac{e^{z_j} \cdot e^{z_c}}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
+\\
+= -\hat{y}_j \cdot \hat{y}_c
+\end{gather*}
+$$

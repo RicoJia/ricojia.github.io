@@ -14,7 +14,7 @@ tags:
 
 #### Create a cv::Mat
 
-In C++: 
+In C++:
 
 ```cpp
 // method 1
@@ -127,6 +127,14 @@ cv::Mat r, R;
 // cv::Mat_<double>(3,1) is a template function?
 r = (cv::Mat_<double>(3,1) << 0, 0, CV_PI/2);
 cv::Rodrigues(r, R);
+```
+
+- Append another matrix to an existing one
+
+```cpp
+cv::vconcat(mat1, mat2, result); // vertically append mat2 to mat 1 and store it in result
+cv::hconcat(mat1, mat2, result); // horizontally append mat2 to mat 1 and store it in result
+
 ```
 
 - Calculate `atan2`: `cv::fastAtan2(y, x)`. Its accuracy is about 0.3 deg

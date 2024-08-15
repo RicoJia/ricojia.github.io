@@ -22,6 +22,14 @@ However, the same cannot be applied to learning rate, momentum parameter, or RMS
 1. Choose a range of log10 of posible values. E.g., if we want $[1e-3, 1]$ for learning rate, we choose $[-3, 0]$
 2. Uniformly sample in the log space.
 
+For example, to estimate `alpha`:
+
+```python
+r = -5 * np.random().rand()
+// gives 1e-5 to 1
+alpha = 10 ** r
+```
+
 ## Tuning Strategy On A High Level
 
 If you have lots of compute, you might be able to train multiple models at a time. If not, you might want to spawn 1 set of model parameters, "babysit" the training process, and based on the result, decide what the next set of parameters could be. This process could take days.
