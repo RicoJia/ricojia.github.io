@@ -14,6 +14,13 @@ tags:
 - Inner product: $<a,b> = \vec{a}^T \cdot \vec{b}$, which is a.k.a "dot product"
 - Outer product: $a \otimes b = \vec{a} \cdot \vec{b}^T$, which results in a matrix.
 
+## Hadamard (Schur) Product
+
+Hadamard (Schur) Product is Elementwise Product
+$$
+A \circ B = [A1*B1, A2*B2...]
+$$
+
 ## Matrix Multiplication And Outer Product
 
 The definition of Matrix Multiplication of $C = AB$ is $C_{ij} = \sum_k A_{ik}B_{kj}$, where A is `mxn`, B is `nxp`

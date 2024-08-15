@@ -21,6 +21,10 @@ In C++:
 cv::Mat(another_mat);
 // method 2
 cv::Mat A = (cv::Mat_<uchar>(1,2)<<1,2);    //CV_8U
+// method 3
+cv::Mat image = cv::Mat::zeros(height, width, CV_8UC1);
+// method 4: fixed size matrix
+cv::Matx31d point(k.pt.x, k.pt.y, 1.0);
 ```
 
 - **Watch out**, if you pass another mat directly into `cv::Mat()` constructor, then the new mat will use the same pointer to the underlying data structure. To create a real copy, do `cv::Mat.clone()`
@@ -67,18 +71,65 @@ std::cout<<"Rec 2 br: "<<rec.br()<<"width: "<<rec.width<<std::endl;  // see (1,2
 std::cout<<"contains: (1,2)"<<rec1.contains(cv::Point(1,2))<<std::endl;
 ```
 
+- How to set a block of matrix to a certain value in `cv::Mat`
+
+```cpp
+constexpr const int radius = 10;
+cv::Mat image = cv::Mat::zeros((radius+1) * 2, (radius+1) * 2, CV_8UC1);
+cv::Rect second_quadrant(0, 0, radius+1, radius+1);
+image(second_quadrant) = 1;
+```
+
+- How to shift a `cv::Rect`:
+
+```cpp
+// integers
+cv::Point shift_point(5, 10);  // Example shift values
+cv::Rect rect(0, 0, 100, 50);  // Example rectangle
+
+// float points
+cv::Point2f shift_point(5.5f, 10.5f);  // Example shift values
+cv::Rect rect(0, 0, 100, 50);          // Example rectangle
+
+// Convert the rectangle's top-left to Point2f and shift. 
+rect + cv::Point(shift_point);
+cv::Point(shift_point) + rect;  // this does not hold
+```
+
+## Random Access
+
+- `cv::MatExpr` is an intermediate data type that does not have `at()`. So for random access, one needs to:
+
+```cpp
+cv::Matx31d point(k.pt.x, k.pt.y, 1.0);
+// BAD
+auto rotated_pt = rotation_matrix * point;
+// GOOD
+cv::Mat rotated_pt = rotation_matrix * point;
+return {rotated_pt.at<int>(0), rotated_pt.at<int>(1)};
+```
+
+
+
 ## OpenCV Math Tools
 
 - Basic Representation of points
     - `cv::Point2f` is 32 bit single precision floating point
     - `cv::Point2i` is 32-bit single precision integer.
+
+- matrix operations:
+    - dot product: `a * b`
+    - element-wise product: `cv::multiply(mat1, mat2, result);`
 - Rotation Vector and Matrix:
+
 ```cpp
 cv::Mat r, R;
 // cv::Mat_<double>(3,1) is a template function?
 r = (cv::Mat_<double>(3,1) << 0, 0, CV_PI/2);
 cv::Rodrigues(r, R);
 ```
+
+- Calculate `atan2`: `cv::fastAtan2(y, x)`. Its accuracy is about 0.3 deg
 
 ### Integral Image
 - [`cv::integral`](https://docs.opencv.org/3.4/d7/d1b/group__imgproc__misc.html#ga97b87bec26908237e8ba0f6e96d23e28), which sums up all pixels from the top left corner to the given pixel. The result integral image will have a size `[column+1, row+1]`, and the value at (y,x) represents the sum from [0,0] to [y-1, x-1]. Left and top borders of the integral image are padded with 0. 
