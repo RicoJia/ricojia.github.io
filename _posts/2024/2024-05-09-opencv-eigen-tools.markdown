@@ -110,12 +110,12 @@ return {rotated_pt.at<int>(0), rotated_pt.at<int>(1)};
 ```
 
 
-
 ## OpenCV Math Tools
 
 - Basic Representation of points
     - `cv::Point2f` is 32 bit single precision floating point
     - `cv::Point2i` is 32-bit single precision integer.
+    - **Note**: `+` is NOT supported for `cv::Point` types
 
 - matrix operations:
     - dot product: `a * b`
@@ -132,10 +132,15 @@ cv::Rodrigues(r, R);
 - Append another matrix to an existing one
 
 ```cpp
-cv::vconcat(mat1, mat2, result); // vertically append mat2 to mat 1 and store it in result
-cv::hconcat(mat1, mat2, result); // horizontally append mat2 to mat 1 and store it in result
-
+if (!mat1.empty()){
+    cv::vconcat(mat1, mat2, result); // vertically append mat2 to mat 1 and store it in result
+    cv::hconcat(mat1, mat2, result); // horizontally append mat2 to mat 1 and store it in result
+}
+else{
+    result = mat2;
+}
 ```
+    - **IMPORTANT: `cv::vconcat(src, nsrc, dst)` requires `src` to be not empty!!** 
 
 - Calculate `atan2`: `cv::fastAtan2(y, x)`. Its accuracy is about 0.3 deg
 
