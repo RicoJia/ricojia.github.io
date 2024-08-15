@@ -141,7 +141,7 @@ $$
 \end{gather*}
 $$
 
-To further reduce $\frac{\partial{J}}{\partial{a^{L}_j}}$, with scalar derivative $\dot{\sigma{(z^{L+1}_q)}}$, node $(L+1,q)$'s parameter vector $w^{L+1}_{q}$, and the jth parameter $w^{L+1}_{q, j}$
+To further reduce $\frac{\partial{J}}{\partial{a^{L}_j}}$ , with scalar derivative $\dot{\sigma{(z^{L+1}_q)}}$, node $(L+1,q)$'s parameter vector $w^{L+1}_{q}$, and the jth parameter $w^{L+1}_{q, j}$
 
 $$
 \begin{gather*}
