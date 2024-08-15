@@ -54,3 +54,8 @@ Another note is **apply the same mean and variance on training and test inputs.*
 </p>
 </div>
 
+## Remarks On Programming Frameworks
+
+You might have heard of Caffe, Caffe2, PaddlePaddle, Keras, Theano, and TensorFlow, by the year 2024 however, Pytorch has become the most popular programming framework due to its **ease of use**, and speed.
+
+One thing is I'd pay more attention to is its true "open-sourceness". In the software industry, some frameworks were once open-source, but later moved to proprietary cloud service by the company that controlled it. Some examples include: Elastic and Kibana, Redis, MongoDB

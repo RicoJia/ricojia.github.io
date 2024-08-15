@@ -111,7 +111,7 @@ $$
 
 ### When L is A Hidden Layer
 
-For node $a^{Lj}$, we assume all nodes in layer $L-1$ are connected to $A^{Lj}$ (Fully Connected), outputs from $L-1$ is written as vector $a^{L-1}$. $w^{L}_{j}$ is parameter vector and $z^{L}_{j}$ are scalar intermediate outputs
+For node $a^{Lj}$, we assume all nodes in layer $L-1$ are connected to $A^{Lj}$ (Fully Connected), outputs from $L-1$ is written as vector $a^{L-1}$. Note that $w^{L}_{j}$ is parameter vector and $z^{L}_{j}$ are scalar intermediate outputs
 
 $$
 \begin{gather*}
