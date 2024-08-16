@@ -3,6 +3,7 @@ layout: post
 title: Computer Vision - Non Maximum Suppression
 date: '2021-01-05 13:19'
 subtitle: Non Maximum Suppression (NMS)
+header-img: "home/bg-o.jpg"
 comments: true
 tags:
     - Computer Vision
@@ -14,7 +15,7 @@ Inputs:
 
 - Bounding box coordinates. These bounding boxes may / may not be far from each other. 
 - Confidence score of each bounding box.
-- A threshold for determining if two bounding boxes are "separate enough", IOU (Intersection over union)
+- A threshold for determining if two bounding boxes are "separate enough", IOU (Intersection Over Union)
 
 <div style="text-align: center;">
 <p align="center">
