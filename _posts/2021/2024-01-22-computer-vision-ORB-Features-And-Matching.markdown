@@ -85,9 +85,10 @@ There are two potentially parallel ways to find an approximate nearest neighbor,
 
 Here is the [OpenCV implementation](https://github.com/barak/opencv/blob/051e6bb8f6641e2be38ae3051d9079c0c6d5fdd4/modules/features2d/src/orb.cpp#L533). The algorithm applies below tricks:
 
+Here is [my own implementation](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico/include/rgbd_slam_rico_exercises)
+
 In step 3 orientation computation, OpenCV uses
     - Integral Image (a.k.a summed area table). There's a [leetcode question](https://leetcode.com/problems/range-sum-query-2d-immutable/description/) for it. Give it a try!
-    - TODO: How Image Moment is calculated using the integral image, and half patch size
 
 ## References
 
