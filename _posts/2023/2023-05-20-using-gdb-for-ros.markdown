@@ -8,6 +8,10 @@ tags:
     - ROS
 ---
 
+## Introduction
+
+GDB is **EXTREMELY** handy. I used to doing a lot of print statements, but now I use GDB a lot. The reason is simple: I can check multiple things at once without recompiling everytime, especially my compilation time is long.
+
 ## Concepts
 
 Debug Symbols in C or C++ are mappings from machine code to function names, variable names, line numbers, etc.
@@ -57,11 +61,12 @@ Some common usages include:
 - `r`: run 
 - `c`: continue
 - `p <var_name>`: print a variable name
+- `info breakpoints`: check which breakpoints are available
+- `delete <BREAKPOINT_NUM>`: to delete a break point's number
 
-Some cautions: 
+Some cautions:
 
 - When debug printing an element in a `cv::Mat`, we need to specify its data type. To print it as a: 
     - double (`CV_64F`), do `(gdb) x/4g var`. 4 means the first 4 values, `g` means double precision. 
     - float (`CV_32F`): `(gdb) x/4f var`
     - int: `(gdb) x/4d var`
-
