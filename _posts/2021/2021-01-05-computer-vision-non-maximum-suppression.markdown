@@ -92,6 +92,6 @@ boxes = np.array([
 scores = np.array([0.8, 0.79, 0.75, 0.9])
 overlapping_thre = 0.3
 selected_indices = handcrafted_non_maximum_suppresion(scores=scores, boxes=boxes, overlapping_thre=overlapping_thre)
-# Should see [2,0]
+# Should see [3,0]
 print(selected_indices)
 ```
