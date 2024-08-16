@@ -4,6 +4,7 @@ title: Computer Vision - Blurring
 date: '2021-01-03 13:19'
 subtitle: Gaussian Blurring (Under Active Updates)
 comments: true
+header-img: "home/bg-o.jpg"
 tags:
     - Computer Vision
 ---

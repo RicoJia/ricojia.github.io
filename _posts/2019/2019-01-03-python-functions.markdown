@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Python - Functions
-date: '2021-01-03 13:19'
+date: '2019-01-03 13:19'
 subtitle: Lambda (Under Active Updates)
 comments: true
 tags:
