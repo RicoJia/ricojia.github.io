@@ -4,7 +4,7 @@ title: Deep Learning - TensorFlow Basics
 date: '2022-01-26 13:19'
 subtitle: Nothing Fancy, Just A Basic TF Network
 comments: true
-header-img: "img/bg-art.jpg"
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
