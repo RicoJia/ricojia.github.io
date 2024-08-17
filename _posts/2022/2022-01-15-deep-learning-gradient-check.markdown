@@ -4,6 +4,7 @@ title: Deep Learning - Gradient Checking
 date: '2022-01-04 13:19'
 subtitle: First Step To Debugging A Neural Net
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

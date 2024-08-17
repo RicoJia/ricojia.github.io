@@ -4,6 +4,7 @@ title: Deep Learning - Batch Gradient Descent
 date: '2022-01-14 13:19'
 subtitle: Batch Gradient Descent
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

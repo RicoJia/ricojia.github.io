@@ -4,6 +4,7 @@ title: Deep Learning - Overfitting
 date: '2022-01-16 13:19'
 subtitle: When in doubt, be courageous, try things out, and see what happens! - James Dellinger
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

@@ -4,6 +4,8 @@ title: Deep Learning - RNN
 date: '2022-02-04 13:19'
 subtitle: Recurrent Neural Network!
 comments: true
+header-img: "img/home-bg-art.jpg"
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

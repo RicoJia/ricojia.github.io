@@ -4,6 +4,7 @@ title: Deep Learning - Hyper Parameter Tuning
 date: '2022-01-22 13:19'
 subtitle: It finally comes down to how much compute we have, actually...
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

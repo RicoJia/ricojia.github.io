@@ -4,6 +4,7 @@ title: Deep Learning - Introduction
 date: '2022-01-04 13:19'
 subtitle: Why Do We Even Need Deep Neuralnets?
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

@@ -5,6 +5,7 @@ date: '2022-01-26 13:19'
 subtitle: Nothing Fancy, Just A Basic TF Network
 comments: true
 header-img: "img/home-bg-art.jpg"
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
@@ -44,3 +45,5 @@ y_test = tf.data.Dataset.from_tensor_slices(test_dataset['test_set_y'])
 ## Misc
 
 - `HDF5` is "Hierarchical Data Format 5", a data format designed for compressing, chuking, and storing complex data hierarchies. It's similar to a filesystem, for example, you can create "groups" within an HDF5 file like creating a folder. Datasets are similar to files. HDF5 allows **access from multiple processes**, and is supported by multiple languages, like C, C++, Python. 
+
+- ``

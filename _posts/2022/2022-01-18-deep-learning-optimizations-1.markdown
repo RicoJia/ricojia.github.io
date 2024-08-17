@@ -4,6 +4,7 @@ title: Deep Learning - Optimizations Part 1
 date: '2022-01-18 13:19'
 subtitle: Momentum, RMSProp, Adam, Learning Rate Decay, Local Minima
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---

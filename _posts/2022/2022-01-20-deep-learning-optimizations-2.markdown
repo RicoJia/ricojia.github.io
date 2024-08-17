@@ -4,6 +4,7 @@ title: Deep Learning - Optimizations Part 2
 date: '2022-01-20 13:19'
 subtitle: Batch Normalization (BN)
 comments: true
+header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
