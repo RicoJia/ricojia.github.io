@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Deep Learning - Common Issues 2: Exploding And Vanishing Gradients
-date: '2022-01-16 13:19'
+title: Deep Learning - Exploding And Vanishing Gradients
+date: '2022-01-17 13:19'
 subtitle: When in doubt, be courageous, try things out, and see what happens! - James Dellinger
 comments: true
 tags:
