@@ -4,6 +4,7 @@ title: Motion Estimation From Epipolar Constraints
 date: '2024-07-04 10:11'
 subtitle: This is an Introduction of Epipolar Constraints and 2D-2D Motion Estimation
 comments: true
+header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - RGBD Slam
 ---

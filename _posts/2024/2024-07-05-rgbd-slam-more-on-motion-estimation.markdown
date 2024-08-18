@@ -4,6 +4,7 @@ title: More On Motion Estimation
 date: '2024-07-05 10:11'
 subtitle: 5 Point Algorithm, How to solve DLT, and 8 point algorithm
 comments: true
+header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - RGBD Slam
 ---

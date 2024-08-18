@@ -4,6 +4,7 @@ title: RGBD SLAM Bundle Adjustment Part 2
 date: '2024-07-12 13:19'
 subtitle: RGBD SLAM Backend Introduction
 comments: true
+header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - RGBD Slam
 ---
