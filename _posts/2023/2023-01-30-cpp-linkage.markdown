@@ -60,7 +60,7 @@ int num=0;  // ODR violation: it's been defined in foo.hpp!!
 In many cases, it's a common mistake. However, there could be times when:
 
 - We want to define the variable in a translation unit
-- Or define it in header file, but a translational decides to use its own copy (internal linkage, TODO: in what use case?)
+- Or define it in header file, but a translational decides to use its own copy
 
 Below we will walk through these two cases.
 
@@ -77,7 +77,7 @@ int num = 0;
 std::cout<<"main, num: "<<num<<std::endl;
 ```
 
-People claim that this is helpful for declaring variables in modules. However, I find that declaring in header files (the vanilla method) more intuitive. Both methods will give the multiple definition errors if more than two definitions of the same variables are found.
+People claim that this is helpful for declaring variables in modules. However, I find declaring in header files (the vanilla method) more intuitive. Both methods would give the multiple definition errors if more than two definitions of the same variables are found.
 
 ### Internal Linkage
 
