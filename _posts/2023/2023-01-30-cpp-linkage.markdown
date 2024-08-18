@@ -81,7 +81,7 @@ People claim that this is helpful for declaring variables in modules. However, I
 
 ### Internal Linkage
 
-Another alternative is internal linkage. This method allows us (and forces us if necessary) to instantiate a separate copy of the variable in a source file. 
+Another alternative is internal linkage. This method allows us (and forces us if necessary) to instantiate a separate copy of the variable in a source file.
 
 ```cpp
 // foo.hpp
@@ -97,6 +97,6 @@ int num = 100;
 static int num = 0; 
 ```
 
-Without the static keyword, the compiler will throw a multiple definition error: `multiple definition of 'num'; /tmp/ccKTJUBw.o:(.data+0x0): first defined here`. 
+Without the static keyword, the compiler will throw a multiple definition error: `multiple definition of 'num'; /tmp/ccKTJUBw.o:(.data+0x0): first defined here`.
 
 With the static keyword, `foo_funcs.cpp` creates its own copy of `num`. This technique could be useful for creating isolating environments (e.g., for testing).
