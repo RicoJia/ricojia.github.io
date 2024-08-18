@@ -9,6 +9,11 @@ tags:
     - C++
 ---
 
+As a very high level summary, the keyword `static` has two uses: 
+
+- File scope static variables and functions can be only accessed within the current translation unit (i.e., the `cpp` source file)
+- Class static variables and functions belong to the class and do not need to be accessed through any class object.
+
 ## Static Variable
 
 ### Static Variable In Function Scope
@@ -22,8 +27,8 @@ void num_dec_inside_function(){
     another_num ++;
     std::cout<<"another num: "<<another_num<<std::endl;
 }
-num_dec_inside_function();
-num_dec_inside_function();  // see 3
+num_dec_inside_function();  // another num: 2
+num_dec_inside_function();  // another num: 3
 ```
 
 ### Static Variable In Global Scope
@@ -45,14 +50,17 @@ class Foo{
         }
 };
 
-// This is how to initialize static member func, this is definition
+// This is how to initialize static member variable
 int Foo::i(123); 
 
-Foo f;
-// see 123
-f.print_i();
-// see 124
-std::cout<<"class variable: "<<Foo::i<<std::endl;
+int main(){
+    Foo f;
+    // see 123
+    f.print_i();
+    // see 124
+    std::cout<<"class variable: "<<Foo::i<<std::endl;
+
+}
 ```
 
 - Non-static functions can access static members. **One does not need to specify the class name!**
@@ -73,12 +81,13 @@ class Foo{
         static int i; 
         // can declare static func inside class
         static void foo_static(){
-            cout<<__FUNCTION__<<endl;
+            cout<<__FUNCTION__<<endl;   // Outputs: foo_static
         }
-        // calls static, if in the same class, no need to add class name
+        
         void foo(){
             foo_static();
-            Foo::foo_static();
+            // no need to add class name since both functions are in the same class
+            // Foo::foo_static();
         }
 };
 
@@ -92,19 +101,23 @@ A static function function defined at the file level has internal linkage, meani
 
 ```cpp
 // foo.hpp
-static void test_bar();
+// Comment out the function declaration
+// void test_bar(); 
 
-// foo_funcs.cpp
-void test_bar(){
-    //TODO
-    std::cout<<"foo funcs test bar"<<std::endl;
+// using static to restrict this function to be accessible only in the current source file 
+static void test_bar(){
+    std::cout<<"foo funcs test bar"<<std::endl; // foo funcs test bar
 }
 
-// foo_main.cpp
-void test_bar(){
-    //TODO
-    std::cout<<"main"<<std::endl;
+// using static to restrict this function to be accessible only in the current source file
+// and avoid potential naming conflict
+static void test_bar(){
+    std::cout<<"test bar: main"<<std::endl;
 }
 
-test_bar(); // see "main"
+int main(){
+    test_bar(); // test bar: main
+}
 ```
+
+Note that defining a static function in a header file syntatically is fine, as long as the each translation unit defines its own version of the function. However, without `static`, a function **by default has external linkage which could be shared**. defining a static function in a header file would unnecessarily expose the function signature and is **NOT a common practice**.
