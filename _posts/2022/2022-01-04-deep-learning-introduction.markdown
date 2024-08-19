@@ -28,11 +28,14 @@ Choose dataset -> Choose network architecture (number of layers, number of hidde
 Nowadays, It's very hard to guess all these params right in one shot. Intuitions from one domain (speech recognition) likely doesn't transfer well to another. **So going over the above iterations is key.** That said, one exception is that ConvNet/ResNet from computer vision transferred to speech recognition well.
 
 Another secret sauce is data partition. There are:
-- Training set
-- Dev / Validation / Test set: used to tune the models' hyperparameters, like number of layers, learning rate, etc. This should be done at the end of each epoch, and is helpful for deciding when to apply early stopping.
-- Hold out - for showing the overall model performance after training & testing. This is helpful for choosing hyperparameters.
 
-Traditionally, the ratio of Training vs Hold out vs Validation is: 70/20/10. For Big data: 98%/1%/1%
+- Training set
+- Validation set: unbias evaluation of the model fit for hyperparameter tuning. It can be also used for early stopping and regularization. So a validation set is often used in between epochs.
+- Test Set: the final evaluation of the model's performance. If the dataset has never been seen in training, it's also called a **holdout** dataset.
+
+The terms "validation set" and "test set" are intermixed in academia and industry.
+
+Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
 
 Come from the same train/test distribution.
 
