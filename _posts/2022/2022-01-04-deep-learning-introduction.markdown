@@ -29,8 +29,8 @@ Nowadays, It's very hard to guess all these params right in one shot. Intuitions
 
 Another secret sauce is data partition. There are:
 - Training set
-- Dev / Validation (or test) set: used to tune the models' hyperparameters, like number of layers, learning rate, etc. This should be done at the end of each epoch, and is helpful for deciding when to apply early stopping.
-- Hold out - for choosing the best model hyperparameters  before testing on the test set
+- Dev / Validation / Test set: used to tune the models' hyperparameters, like number of layers, learning rate, etc. This should be done at the end of each epoch, and is helpful for deciding when to apply early stopping.
+- Hold out - for showing the overall model performance after training & testing. This is helpful for choosing hyperparameters.
 
 Traditionally, the ratio of Training vs Hold out vs Validation is: 70/20/10. For Big data: 98%/1%/1%
 
