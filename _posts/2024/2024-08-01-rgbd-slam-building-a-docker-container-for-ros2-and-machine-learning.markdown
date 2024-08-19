@@ -12,5 +12,5 @@ comments: true
 ---
 
 
-
-    - How stable is this layer?
+### Docker Runtime Args
+- `--runtime=nvidia`: enable Nvidia Container Runtime, a "runtime" that connects Nvidia GPU with docker. If your laptop doesn't have an Nvidia GPU, simply remove this arg.

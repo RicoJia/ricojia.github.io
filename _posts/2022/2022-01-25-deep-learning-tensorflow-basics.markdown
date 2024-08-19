@@ -42,8 +42,13 @@ y_test = tf.data.Dataset.from_tensor_slices(test_dataset['test_set_y'])
 - `tf.Tensor` is a tensor, an equivalent to numpy array with information for the computational graph.
 - `tf.Variable(dtype)` it's best to specify the datatype here!
 
+## TODO
+
+`tf.keras.losses.categorical_crossentropy(tf.transpose(labels), tf.transpose(logits), from_logits=True, )`
+
+- `from_logits` is more numerically stable. We are trying to map the entire real number set using a floating number, that is, +- `2^32`. 
+
 ## Misc
 
-- `HDF5` is "Hierarchical Data Format 5", a data format designed for compressing, chuking, and storing complex data hierarchies. It's similar to a filesystem, for example, you can create "groups" within an HDF5 file like creating a folder. Datasets are similar to files. HDF5 allows **access from multiple processes**, and is supported by multiple languages, like C, C++, Python. 
+- `HDF5` is "Hierarchical Data Format 5", a data format designed for compressing, chuking, and storing complex data hierarchies. It's similar to a filesystem, for example, you can create "groups" within an HDF5 file like creating a folder. Datasets are similar to files. HDF5 allows **access from multiple processes**, and is supported by multiple languages, like C, C++, Python.
 
-- ``

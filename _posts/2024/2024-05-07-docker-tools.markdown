@@ -37,3 +37,9 @@ To Check what's in the ECR registry:
 aws ecr describe-repositories --region <REGION>
 aws ecr describe-images --repository-name <REGISTRY_NAME> --region <REGION>
 ```
+
+## Docker Image Building 
+
+### Environment Variables
+
+- `DEBIAN_FRONTEND`: this is an environment variable for Debian-based Systems (like Ubuntu) to control prompts in apt-get. `ENV DEBIAN_FRONTEND=noninteractive` will assume default answers to all prompts
