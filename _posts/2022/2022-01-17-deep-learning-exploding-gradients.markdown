@@ -9,9 +9,9 @@ tags:
     - Deep Learning
 ---
 
-## Exploding & Vanishing Gradients
+## Why Exploding & Vanishing Gradients Happen
 
-In a very deep network, output of each layer might diminish, because these outputs are products $W_1W_2...x$ (ignoring activation for now)
+In a very deep network, output of each layer might diminish / explodes. This is mainly because layer outputs are products of $W_1W_2...x$ (ignoring activation for now)
 
 <div style="text-align: center;">
 <p align="center">
@@ -49,11 +49,11 @@ Assume we have normalized our inputs to `mean=0`, unit `standard deviation=1`. T
 
 In the above example, the kernel would have trouble even at layer 31! Why?!
 
-#### Why Gradient Explodes
+#### Why Standard Normalization Wouldn't Work
 
-It's because for :
+The above initialization technique would still cause the gradient to explode. This is because :
 
-1. The output vector $y$ at layer 1 has 0 mean $0$, $1$.
+1. The output vector $y$ at layer 1 has `mean=0`, `variance = 1`.
 2. The standard deviation at each layer will keep growing.
 
 To see what's happening in this layer:
@@ -70,7 +70,7 @@ for i in range(10000):
 mean/10000, var/10000
 ```
 
-The math is that
+Mathematically, this is because:
 
 $$
 \begin{gather*}
