@@ -10,7 +10,7 @@ tags:
     - Deep Learning
 ---
 
-## Neuralnet:
+## Neuralnet
 
 - Softmax layer:
 
