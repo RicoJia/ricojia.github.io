@@ -36,6 +36,8 @@ Traditionally, the ratio of Training vs Hold out vs Validation is: 70/20/10. For
 
 Come from the same train/test distribution.
 
+**ML Ops**: Machine Learning Operations is similar to DevOps in general software engineering, is to quickly find the best model in a set of given hyper parameters, and deploy them. Also, changes in the machine learning model or data can be quickly tested.
+
 ### Data Normalization
 
 When data come in different scales, say feature 1 ranges from $[-100, 100]$, another ranges from $[-1, 1]$, then the cost over these two features could be quite elongated along feature 1. Therefore, feature 2's gradient could be really small, and the same learning rate may not perform as well.
