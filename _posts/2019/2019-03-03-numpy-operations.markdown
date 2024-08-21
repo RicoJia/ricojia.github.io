@@ -17,6 +17,17 @@ tags:
     - `np.sqrt()`, `np.sin()`, `np.cos()`
     - Broadcast.
 
+## Mathematical Matrix Operations
+
+### `np.max(array-like)`, `np.min(array-like)`
+
+- Find the max / min in an array-like object
+
+```python
+# see 1
+np.min((1,2))
+```
+
 ## Non-Mathematical Matrix Operations
 
 ### `np.where(pred)`
@@ -88,3 +99,20 @@ arr.squeeze()   # still sees np.array([1,2,3]) as no axis is of length 1.
 ### `np.array.reshape (new_row, new_cln)`
 
 - `np.array.reshape (new_row, new_cln)` is a common reshape function. 
+
+### `np.argmax(arr, axis)`
+
+- Finding the args of max of an array along an axis
+
+```python
+import numpy as np
+y = np.array([0, 2, 1, 3])
+# one hot vector
+one_hot = np.array([
+    [1, 0, 0, 0],  # Corresponds to class 0
+    [0, 0, 1, 0],  # Corresponds to class 2
+    [0, 1, 0, 0],  # Corresponds to class 1
+    [0, 0, 0, 1],  # Corresponds to class 3
+])
+np.argmax(one_hot, axis=1)
+```
