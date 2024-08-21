@@ -17,14 +17,14 @@ tags:
 assert (1==1)
 ```
 
-- For float assertions: 
+- For float assertions:
 
 ```python
 import pytest
 1.0==pytest.approx(1.0)
 ```
 
-- For numpy array assertions: 
+- For numpy array assertions:
 
 ```python
 import numpy as np
@@ -33,7 +33,7 @@ array2 = np.array([1, 2, 3])
 np.testing.assert_allclose(array1, array2)
 ```
 
-### Using VSCode With Pytest
+### Using VSCode Debugger With Pytest
 
 1. `ctrl+shift+p` choose `debug tests in the current file` or `debug all tests` (if you want to debug all tests under a configured directory)
 2. In my debugger, I found that I have to manually set a breakpoint before the failure point in Pytest. (I might miss an easier route to get around this)

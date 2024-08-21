@@ -55,3 +55,40 @@ A lambda expression is a function without name.
 b = lambda x:x+1
 print b(1)
 ```
+
+## Functools
+
+### partial
+
+-  `functools.partial` returns a wrapper with some args bound to given values.
+
+```python
+# 1 partial - we just need to bind the function with any keyworded args
+from functools import partial
+def func(a, b): 
+    print("func: ", a, b)
+func_w = partial(func, b = 12)
+func_w(a = 13)
+```
+
+- Its equivalent implementation is
+
+```python
+def rico_partial(func, *args, **kwargs):
+    # simplified version
+    # def wrapper(a): 
+    #     # kwargs here is a dict, need to unpack it
+    #     return func(a, **kwargs)
+    # return wrapper
+    def wrapper(*extra_args, **extra_kwargs):
+        # need nonlocal since we are reusing args, and kwargs, which will be true local vars
+        nonlocal args, kwargs
+        # args here is a tuple already
+        args = list(args)
+        args.extend(extra_args)
+        kwargs = {**kwargs, **extra_kwargs}
+        return func(*args, **kwargs)
+    return wrapper
+rico_func_w = rico_partial(func, b = 12)
+rico_func_w(a=13)
+```
