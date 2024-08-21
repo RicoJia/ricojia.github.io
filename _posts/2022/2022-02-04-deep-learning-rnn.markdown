@@ -48,3 +48,4 @@ All RNN "layers" share the same weights: U, V, W. If we unfold inputs at differe
 Each training sample is a time series with vectors of the same dimensions, but its length can vary. Backpropagation Through Time is used here: **BPTT**
 
 RNN can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.
+
