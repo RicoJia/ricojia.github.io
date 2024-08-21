@@ -4,6 +4,7 @@ title: C++ - Erase Remove
 date: '2023-01-06 13:19'
 subtitle: An efficient in-place way to remove elements in a container
 comments: true
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---

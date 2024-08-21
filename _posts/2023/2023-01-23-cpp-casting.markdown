@@ -4,6 +4,7 @@ title: C++ - Casting
 date: '2023-01-23 13:19'
 subtitle: Ever tried convincing your boss that your need for vacation is a 'const' by using const_cast? Welcome to C++ casting!
 comments: true
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---

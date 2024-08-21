@@ -4,7 +4,7 @@ title: C++ - Linkage
 date: '2023-01-30 13:19'
 subtitle: In C++, Linkage is Either External Or Internal
 comments: true
-header-img: "img/post-bg-unix-linux.jpg"
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---

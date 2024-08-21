@@ -4,6 +4,7 @@ title: C++ - Bit Operations
 date: '2023-01-07 13:19'
 subtitle: A Mumbo Jumbo List About Bit and Byte Operations
 comments: true
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---

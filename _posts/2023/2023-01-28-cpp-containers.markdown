@@ -4,6 +4,7 @@ title: C++ - Container Operations
 date: '2023-01-28 13:19'
 subtitle: Vector, Map, etc.
 comments: true
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---

@@ -4,6 +4,7 @@ title: ROS Infrastructure Notes
 date: '2024-04-01 13:19'
 subtitle: A Running List of ROS Infrastructure I found Useful
 comments: true
+header-img: "img/post-bg-alitrip.jpg"
 tags:
     - ROS
 ---
