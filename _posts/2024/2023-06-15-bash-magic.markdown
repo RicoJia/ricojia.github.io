@@ -42,9 +42,23 @@ Bash has 1D indexed array (the common array we normally see), and associative ar
 An indexed array is "common". However, it doesn't guarantee that items are stored contiguously. 
 
 ```bash
+#!/bin/bash
 declare -a array1 array2    # one can declare multiple variables
-array1=("apple", "peach")
-echo ${array1[0]}   # see apple,
+array1=("apple" "peach")
+echo ${array1[1]}   # see apple,
+echo ${array1[@]}   # see apple,peach
+array2=("pear")
+# $array2 is the first element in array2 only, similar to c.
+# array1+=$array2 #applepear peach 
+
+# This is also applepear peach
+# array1+="${array2[@]}"
+
+array1+=("${array2[@]}")    #see apple, peach, pear ?
+echo ${array1[@]}   # see apple,peach
+
+array1+=("pecan")   
+echo ${array1[@]}   #see apple, peach, pear, pecan
 ```
 
 #### Associative Array
