@@ -28,6 +28,17 @@ tags:
 np.min((1,2))
 ```
 
+### `np.sum(arr)`
+
+- `np.sum(arr)` takes in array of booleans, ints, floats.
+
+### Comparisons
+
+- `np.allclose(arr2, arr1)` returns `True` or `False`
+- `np.isclose(arr2, arr1)` returns an array of `[True, False, ...]`
+
+
+
 ## Non-Mathematical Matrix Operations
 
 ### `np.where(pred)`
