@@ -158,7 +158,23 @@ Number of Epochs could matter, too. In a "circle within circles" examle, at firs
 
 ### Adam Optimizer
 
-TODO
+In this example, the Adam optimizer does have higher convergence speed.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/4d9600b3-4340-4e9a-8d3f-247a2be64697" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/dd603246-1409-4ece-a46d-cdfe2da810b0" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
 ## Final Thoughts
 
