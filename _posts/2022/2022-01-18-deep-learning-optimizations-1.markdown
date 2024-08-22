@@ -44,10 +44,12 @@ As $t \rightarrow \inf$, $v_t$ will go to 1, so the exponentially weighted avera
 When gradient is low, it might be helpful to use the weight itself as part of the momentum to amplify the gradient. So momentum is defined as:
 
 $$
-dW' = \beta dW + (1-\beta)dW, 
-db' = \beta dW + (1-\beta)dW
+V_{dw} = \beta V_{dw} + (1-\beta) dw
 \\
-W = W - \lambda dW', b = b - \lambda db'
+V_{db} = \beta V_{db} + (1-\beta) db
+\\
+W = W - \lambda V_{dw} \\
+b = b - \lambda V_{db}
 $$
 
 - $\beta$ is commonly 0.9
@@ -101,9 +103,8 @@ Adam combines the RMSProp and momentum all together. For each weight update, we 
 $$
 \text{momentum}
 \\
-dW = \beta_1 W + (1-\beta_1) dW \\
-db = \beta_1 b + (1-\beta_1) db
-\\
+V_{dw} = \beta_1 V_{dw} + (1-\beta_1) dw \\
+V_{db} = \beta_1 V_{db} + (1-\beta_1) db \\
 \text{RMS Prop}
 \\
 S_w = \beta_2 S_w + (1-\beta_2)(dW)^2 \\
@@ -111,11 +112,19 @@ S_b = \beta_2 S_b + (1-\beta_2)(db)^2 \\
 
 \text{Weight Update}
 \\ 
-W = W - \lambda \frac{dW}{\sqrt{S_w + \epsilon}} \\
-b = b - \lambda \frac{db}{\sqrt{S_b + \epsilon}}  \\
+W = W - \lambda \frac{V_{dw}}{\sqrt{S_w + \epsilon}} \\
+b = b - \lambda \frac{V_{dw}}{\sqrt{S_b + \epsilon}}  \\
 $$
 
-- So here, our hyper params are: $\beta_1$ (~0.9), $\beta_2$ (~0.999), $\lambda$. Usually we don't need to change them. Momentum variable is more valuable than them. 
+- Additionally, $V_{dw}$, $V_{db}$, $S_w$, $S_b$ can be in their "corrected" form.
+
+- **Hyperparameter Choices**:
+    - $\lambda$
+    - $\beta_1$ (~0.9)
+    - $\beta_2$ (~0.999)
+    - $\epsilon$ (~10^{-8})
+
+Usually we don't need to change them. Momentum variable is more probably valuable than the rest.
 
 ## Technique 5 - Learning Rate Decay
 

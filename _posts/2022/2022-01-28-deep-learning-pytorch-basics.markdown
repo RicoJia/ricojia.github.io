@@ -51,3 +51,14 @@ np_array = tensor.detach().numpy()
 ```
 
 - If an `np_array` is of `float64`, then to convert it to other datatypes using `torch_tensor.float()`
+
+### Reshaping
+
+```python
+import torch
+tensor_a = torch.randn(2, 3, 4)  # Tensor with some shape
+tensor_b = torch.randn(6, 4)     # Another tensor with a different shape
+
+# Reshape tensor_b to match the shape of tensor_a
+reshaped_tensor = tensor_b.reshape(tensor_a.shape)
+```
