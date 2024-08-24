@@ -1,10 +1,9 @@
 ---
 layout: post
-title: Deep Learning - 
+title: Deep Learning - Insights From Training FCN Models On 2D Input Data
 date: '2022-01-28 13:19'
 subtitle: Basic Torch Network With Some Notes on Syntax
 comments: true
-header-img: "img/home-bg-art.jpg"
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning

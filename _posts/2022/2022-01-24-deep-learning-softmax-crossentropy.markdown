@@ -4,7 +4,6 @@ title: Deep Learning - Softmax And Cross Entropy Loss
 date: '2022-01-24 13:19'
 subtitle: Softmax, Cross Entropy Loss, and MLE 
 comments: true
-header-img: "img/post-sample-image.jpg"
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
