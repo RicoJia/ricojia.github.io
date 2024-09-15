@@ -127,3 +127,12 @@ one_hot = np.array([
 ])
 np.argmax(one_hot, axis=1)
 ```
+
+### `np.in1d`
+
+- Check if elements in a list has appeared in a list
+
+```python
+ls=["a", "b", "c"]
+np.in1d(["a", "z", "f"], ls)
+```
