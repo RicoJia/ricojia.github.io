@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Python - Numpy Operations Mumbo Jumbo
+title: Python - Numpy and Pandas Operations
 date: '2019-03-03 13:19'
-subtitle: A Mumbo Jumbo Of Python Operations
+subtitle: A Mumbo Jumbo Of Numpy and Pandas Operations and Examples
 comments: true
 header-img: "img/home-bg-2015.jpg"
 tags:
@@ -136,3 +136,67 @@ np.argmax(one_hot, axis=1)
 ls=["a", "b", "c"]
 np.in1d(["a", "z", "f"], ls)
 ```
+
+## Pandas
+
+### Example Of Preparing Data For Training.
+
+```python
+import os
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv("./bank-additional/bank-additional-full.csv", sep=";")
+# trucated columns set to 500 so we can see all columns
+pd.set_option("display.max_columns", 500)
+pd.set_option("display.max_rows", 50)
+
+data["no_previous_contact"] = np.where(data["pdays"] == 999, 1, 0)
+data["not_working"] = np.where(
+    np.in1d(data["job"], ["student", "retired", "unemployed"]), 1, 0
+)
+
+model_data = pd.get_dummies(data)
+model_data = model_data.drop([ "y_no", ], axis=1,)
+
+train_data, test_data = np.split(
+    model_data.sample(frac=1, random_state=1729), [int(0.9 * len(model_data))]
+)
+train_x = train_data.iloc[:, :-1]
+train_y = train_data.iloc[:, 59]
+
+test_x = test_data.iloc[:, :-1]
+test_y = test_data.iloc[:, 59]
+
+from sklearn.model_selection import train_test_split
+
+X, val_X, y, val_y = train_test_split(
+    train_x, train_y, test_size=0.2, random_state=2022, stratify=train_y
+)
+```
+
+#### `model_data=pd.get_dummies(data)`
+
+- Converts categorical variables into one-hot encoded variables. So if our data frame looks like:
+
+| job        | marital   | education |
+|------------|-----------|-----------|
+| student    | single    | primary   |
+| retired    | married   | secondary |
+| unemployed | divorced  | tertiary  |
+
+to:
+
+| job_student | job_retired | job_unemployed | marital_single | marital_married | marital_divorced | education_primary | education_secondary | education_tertiary |
+|-------------|-------------|----------------|----------------|-----------------|------------------|-------------------|---------------------|--------------------|
+| 1           | 0           | 0              | 1              | 0               | 0                | 1                 | 0                   | 0                  |
+| 0           | 1           | 0              | 0              | 1               | 0                | 0                 | 1                   | 0                  |
+| 0           | 0           | 1              | 0              | 0               | 1                | 0                 | 0                   | 1                  |
+
+#### `model_data.drop(["y_no"], axis=1)`
+
+- Drops columns "y_no". `axis=1` indicates that it's the columns that we are interested in.
+
+#### `df.iloc[row, column]`
+
+- Selects elements in a dataframe by its integer location: `df.iloc[1]` selects the first row, `df.iloc[:, 1]` selects the first column

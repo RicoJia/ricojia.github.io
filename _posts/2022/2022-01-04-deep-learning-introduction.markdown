@@ -37,7 +37,7 @@ The terms "validation set" and "test set" are intermixed in academia and industr
 
 Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
 
-Come from the same train/test distribution.
+It is important that all datasets come from the same distribution. One way to do this is **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup in the population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.
 
 **ML Ops**: Machine Learning Operations is similar to DevOps in general software engineering, is to quickly find the best model in a set of given hyper parameters, and deploy them. Also, changes in the machine learning model or data can be quickly tested.
 
