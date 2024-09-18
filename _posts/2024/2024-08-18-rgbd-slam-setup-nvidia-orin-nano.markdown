@@ -16,10 +16,9 @@ comments: true
 - Jetson Orin Nano Developer Kit (8GB)
 - MicroSD Card (128GB)
     - My microSD card's read and write speed can reach up to 140MB/s. An NVMe SSD could be 1500MB/s or more. So **try with an SSD if speed has become a bottle neck**
-
+- **A data capable USB-C cable**
 - Complete datasheet (very lengthy, feel free to skip)
     - [Jetpack SDK](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/index.html) Jetpack SDK includes accelerated software libraries, APIs, sample applications, developer tools and documentation.
-- **A data capable USB-C cable**
 
 ## Successful Attempt
 
@@ -31,8 +30,9 @@ I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nr
 4. `cd ~/nvidia/nvidia_sdk/JetPack_6.0_Linux_JETSON_ORIN_NANO_TARGETS/Linux_for_Tegra && sudo ./flash.sh jetson-orin-nano-devkit mmcblk0p1`. This flashed nvidia linux succssfully onto my machine
 5. Configure linux on the board
 6. `sudo apt update && sudo apt upgrade && sudo apt install nvidia-jetpack`
-7. [Optional] A diagnostic tool `jtop` is recommended but optional: `sudo apt install python3-pip && sudo -H pip3 install -U jetson-stats`
-8. [Optional] `jtop` and go to tab 7. The only missing item should be OpenCV.
+7. `dpkg -l | grep nvidia-jetpack` should see version like `6.0-bXXX`
+8. [Optional] A diagnostic tool `jtop` is recommended but optional: `sudo apt install python3-pip && sudo -H pip3 install -U jetson-stats`
+9. [Optional] `jtop` and go to tab 7. The only missing item should be OpenCV.
 
 ## Failed Attempt
 
