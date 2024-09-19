@@ -177,21 +177,27 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
     $$
 
 - For kernel gradient $\frac{\partial J}{\partial K}$, it's cross correlation: $x \ast \frac{\partial J}{\partial y}$
+
     $$
+    \begin{gather*}
     \frac{\partial J}{\partial k_{11}} = \frac{\partial J}{\partial y_{11}}x_{11} + \frac{\partial J}{\partial y_{12}}x_{12} + \frac{\partial J}{\partial y_{21}}x_{21} + \frac{\partial J}{\partial y_{22}}x_{22}
     \\
     \frac{\partial J}{\partial k_{12}} = \frac{\partial J}{\partial y_{11}}x_{12} + \frac{\partial J}{\partial y_{12}}x_{13} + \frac{\partial J}{\partial y_{21}}x_{22} + \frac{\partial J}{\partial y_{22}}x_{23}
+    \end{gather*}
     $$
 
 - For bias gradient, there is only 1 bias value per output channel; so, we apply it to all elements of one channel. Its gradient is the sum across all channels, so its output gradient $\sum_c \frac{\partial J}{\partial y_c}$
 
 - For input gradient, $\frac{J}{X}$, it's actually convolution: $k \circledast \frac{\partial J}{\partial y}$
     $$
+    \begin{gather*}
     \frac{J}{x_{11}} = \frac{J}{y_{11}}k_{11} 
-    \frac{J}{x_{12}} = \frac{J}{y_{11}}k_{12} + \frac{J}{y_{12}}k_{11}
-    \frac{J}{x_{13}} = \frac{J}{y_{11}}k_{13} + \frac{J}{y_{12}}k_{12} + \frac{J}{y_{12}}k_{11}
+    \\ \frac{J}{x_{12}} = \frac{J}{y_{11}}k_{12} + \frac{J}{y_{12}}k_{11}
+    \\ \frac{J}{x_{13}} = \frac{J}{y_{11}}k_{13} + \frac{J}{y_{12}}k_{12} + \frac{J}{y_{12}}k_{11}
     ...
+    \end{gather*}
     $$
+
     - See? This is convolution!
 
 ## Implementation

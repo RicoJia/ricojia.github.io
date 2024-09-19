@@ -47,15 +47,3 @@ cp: cannot stat '/home/rico/Downloads/bootFromExternalStorage/R35.4.1/Linux_for_
 3. `git clone https://github.com/jetsonhacks/bootFromExternalStorage.git`, this is a set of helper scripts.
 
 - Note this is downloading `R35.4.1` of Nvidia Linux. So replace all its instances with the current version: `for file in *; do sed -i 's/'R35.4.1/R36.3.0/g "$file"; done`
-
-Test
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/50ccb85a-9d80-4c33-80c8-8a5e3fbd19d5" height="300" alt=""/>
-        <figcaption><a href="">Test </a></figcaption>
-    </figure>
-</p>
-</div>
-
