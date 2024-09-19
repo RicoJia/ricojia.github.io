@@ -156,20 +156,24 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
 
 - Given input X, kernel K, if we expand an element in the output Y:
 
-$$
-\begin{gather*}
-y_{11} = x_{11}k_{11} + x_{12}k_{12} + x_{13}k_{13} + ... 
-\\
-y_{12} = x_{12}k_{11} + x_{13}k_{12} + x_{14}k_{13} + ...
-\\
-y_{21} = x_{21}k_{11} + x_{22}k_{12} + x_{23}k_{13} + ...
-\end{gather*}
+    $$
+    \begin{gather*}
+    y_{11} = x_{11}k_{11} + x_{12}k_{12} + x_{13}k_{13} + ... 
+    \\
+    y_{12} = x_{12}k_{11} + x_{13}k_{12} + x_{14}k_{13} + ...
+    \\
+    y_{21} = x_{21}k_{11} + x_{22}k_{12} + x_{23}k_{13} + ...
+    \end{gather*}
+    $$
 
 - We need to get $\frac{J}{W}$ and $\frac{J}{X}$.
+
     $$
+    \begin{gather*}
     \frac{\partial J}{\partial x_{11}} = \frac{\partial J}{\partial y_{11}}k_{11}
     \\
     \frac{\partial J}{\partial x_{12}} = \frac{\partial J}{\partial y_{11}}k_{12} + \frac{\partial J}{\partial y_{12}}k_{11}
+    \end{gather*}
     $$
 
 - For kernel gradient $\frac{\partial J}{\partial K}$, it's cross correlation: $x \ast \frac{\partial J}{\partial y}$
