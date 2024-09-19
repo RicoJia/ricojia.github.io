@@ -51,14 +51,14 @@ Why?
 
 Why padding?
 
-- Keeps info at the borders. Information at the borders will be washed away too quickly
-- Allows us to design deeper neural networks, Otherwise the inputs will diminish
+- **Keeps info at the borders**. Information at the borders will be washed away too quickly
+- **Allows us to design deeper neural networks**, Otherwise the inputs will diminish
 
-With kernel size `n`, stride `s`, padding (conventionally one side only)`p`, **the padding formula** is:
+With image size `n`, kernel size "f", stride `s`, padding (conventionally one side only)`p`, **the padding formula** is:
 
 $$
 \begin{gather*}
-\frac{n - 2*p}{s} + 1
+\frac{n + 2*p - f}{s} + 1
 \end{gather*}
 $$
 

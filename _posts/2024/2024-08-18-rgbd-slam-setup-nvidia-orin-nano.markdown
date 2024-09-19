@@ -3,7 +3,7 @@ layout: post
 title: RGBD SLAM - Setting Up Nvidia Orin Nano
 date: '2024-08-18 13:19'
 subtitle: A Summary Of Setting Up Nvidia Orin Nano
-header-img: "img/post-bg-unix
+header-img: "img/post-bg-unix"
 tags:
     - RGBD Slam
     - CUDA

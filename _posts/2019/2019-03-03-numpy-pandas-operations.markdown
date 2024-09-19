@@ -37,7 +37,30 @@ np.min((1,2))
 - `np.allclose(arr2, arr1)` returns `True` or `False`
 - `np.isclose(arr2, arr1)` returns an array of `[True, False, ...]`
 
+### Padding
 
+- `np.pad(array, pad_width, mode='constant', constant_values=(4, 6))` pads an array with:
+    - `pad_width` is `[before, after]`, the constants in (4,6) before and after the array in the given axis
+
+```python
+import numpy as np
+a = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
+np.pad(a, ((2, 3), (1,2)), 'constant', constant_values=(4, 6))
+```
+
+The result is:
+
+```python
+array([[4, 4, 4, 4, 4, 4, 6, 6],
+       [4, 4, 4, 4, 4, 4, 6, 6],
+       [4, 1, 2, 3, 4, 5, 6, 6],
+       [4, 1, 2, 3, 4, 5, 6, 6],
+       [4, 6, 6, 6, 6, 6, 6, 6],
+       [4, 6, 6, 6, 6, 6, 6, 6],
+       [4, 6, 6, 6, 6, 6, 6, 6]])
+```
+
+See how along axis = 0 (rows) we have 4 before the array's row and 6 after, then along axis=1 (columns) we have 4 before the existing columns and 6 after?
 
 ## Non-Mathematical Matrix Operations
 
