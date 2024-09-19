@@ -31,15 +31,15 @@ $$
 
 In signal processing, a filter convolves with an image by reversing the filter horizontally and vertically.
     $$
-    1,2
-    \\
-    3,4
-    \\
-    =>
-    \\
-    4,3
-    \\
-    2,1
+    \begin{bmatrix}
+    1 & 2\\
+    3 & 4
+    \end{bmatrix}
+    \\ =>
+    \begin{bmatrix}
+    4 & 3\\
+    2 & 1
+    \end{bmatrix}
     $$
 
 Why?
@@ -156,12 +156,13 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
 
 - Given input X, kernel K, if we expand an element in the output Y:
     $$
+    \begin{gather*}
     y_{11} = x_{11}k_{11} + x_{12}k_{12} + x_{13}k_{13} + ... 
     \\
     y_{12} = x_{12}k_{11} + x_{13}k_{12} + x_{14}k_{13} + ...
     \\
     y_{21} = x_{21}k_{11} + x_{22}k_{12} + x_{23}k_{13} + ...
-    $$
+    \end{gather*}
 - We need to get $\frac{J}{W}$ and $\frac{J}{X}$.
     $$
     \frac{\partial J}{\partial x_{11}} = \frac{\partial J}{\partial y_{11}}k_{11}
