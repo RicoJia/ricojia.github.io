@@ -12,6 +12,7 @@ tags:
 Magic command `%command` is a **function in IPython**.
 
 - Make sure `matplotlib` is rendered inline
+- Immediately autoreload modules if they are changed outside
 
 ```python
 %matplotlib inline
@@ -25,4 +26,13 @@ plt.rcParams['image.cmap'] = 'gray'
 # everytime they are changed before code execution.
 # So we don't need to restart the kernel upon changes to modules
 %autoreload 2
+```
+
+- **%timeit**: runs the command under test multiple loops, each loop multiple times to get the Gaussian statistics of its speed. 
+
+```python
+from logging import getLogger
+logger = getLogger("Logger")
+# see 574 μs ± 55.2 μs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+%timeit logger.warn("hello_world")
 ```
