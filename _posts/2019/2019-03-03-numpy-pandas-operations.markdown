@@ -28,9 +28,27 @@ tags:
 np.min((1,2))
 ```
 
-### `np.sum(arr)`
+### Sum
 
 - `np.sum(arr)` takes in array of booleans, ints, floats.
+
+### Average
+
+- `np.mean(arr, axis=0)` might be slightly faster, and always returns the single mean value along the specified axis
+- `np.average(arr, axis=0, weights=None, returned=False)` calculates the weighted average along the specified axis
+    - If `weights` is None, `np.average` is pretty much the same as `np.mean`. Otherwise, one can specify the weights of each item along the specified axis
+    - `Returned=True` when we want to return a tuple `(avg, summed_weights)`
+
+```python
+import numpy as np
+a = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
+print(np.mean(a, axis=1))  # See array([3., 3.])
+print(np.average(a, axis=1))   # Also see array([3., 3.])
+
+weights = [0.1, 0.1, 0.1, 0.2, 0.5]
+avg, summed_weights = np.average(a, axis=1, weights=weights, returned=True)
+print(f'Weighted average: {avg}, sumed_weights: {summed_weights}')
+```
 
 ### Comparisons
 
