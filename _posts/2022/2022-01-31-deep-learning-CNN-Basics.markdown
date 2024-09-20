@@ -96,9 +96,11 @@ There are three types of padding:
 
 ## Pooling
 
-There are average pooling (less commonly used) and max pooling (more commonly used)
+Pooling is a form of downsampling. There are average pooling (less commonly used) and max pooling (more commonly used)
 
 Max pooling is to get the max within a window to retain the most salient feature. Then, move the kernel to the right and to the left by stride after 1 operation. Average pooling is instead of taking the max within a window, take the average.
+
+**Global max pooling** is to condense a feature map into a single value, so it can be used to detect if a feature is present or not. This helps reduce overfitting.
 
 ### Example
 

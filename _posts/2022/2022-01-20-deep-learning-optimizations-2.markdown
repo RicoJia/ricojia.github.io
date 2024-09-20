@@ -76,6 +76,8 @@ $$
 \end{gather*}
 $$
 
+- $\beta_\mu$, $\beta_v$ are momentum constants.
+
 Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
 
 ## Why Batch Normalization Works?
