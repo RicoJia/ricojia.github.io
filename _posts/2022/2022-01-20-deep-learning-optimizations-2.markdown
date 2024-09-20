@@ -23,7 +23,7 @@ $$
 z_{norm} = \frac{z-\mu_z}{\sqrt{\beta^2 + \epsilon}}
 $$
 
-But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $z_tilda$ to a different learnable distribution. With $\gamma$ and $\beta$ being **learnable**:
+But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $\tilde{z}$ to a different learnable distribution. With $\gamma$ and $\beta$ being **learnable**:
 
 $$
 \tilde{z} = \gamma z_{norm} + \beta = \gamma \frac{z-\mu_z}{\beta} + \beta
@@ -80,7 +80,7 @@ Now one might ask: does the order of mini batches affect the learned mean and va
 
 ## Why Batch Normalization Works?
 
-**Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution $P(Y|X)$ remains the same. Some examples are:
+**Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
 
 - In a cat classifier, training data are black cats, but test data are orange cats
 - In an image deblurring system, images are brighter than test data.
