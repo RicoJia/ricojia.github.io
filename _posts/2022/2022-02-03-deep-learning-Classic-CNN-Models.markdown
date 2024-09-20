@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Classic CNN Models
-date: '2022-01-28 13:19'
+date: '2022-02-03 13:19'
 subtitle: LeNet-5, AlexNet, VGG-16, ResNet
 comments: true
 header-img: "img/home-bg-art.jpg"
@@ -18,7 +18,14 @@ The LeNet-5 architecture (LeCun, 1998) and is still very widely used. 5 is simpl
 3. The 6th layer is a FCN that connects to each output pixel of the last CNN. Activation is Sigmoid.
 4. The 7th layer is another FCN layer with 10 neurons that uses a non-popular classifier (Euclidean Radial Basis Function, RBF). Nowadays, we use Softmax.
 
-![Screenshot from 2024-09-19 21-52-33](https://github.com/user-attachments/assets/57b7026e-701e-49a3-9505-5f9f261ba6bb)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/57b7026e-701e-49a3-9505-5f9f261ba6bb" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
 
 Other architectural aspects:
 - Activation functions were **Sigmoid and Tanh**, rather than ReLU (ReLU came out with AlexNet).
@@ -28,9 +35,17 @@ Other architectural aspects:
 
 ## AlexNet (65M Params)
 
-![Screenshot from 2024-09-19 22-23-37](https://github.com/user-attachments/assets/208d3b4b-dcaa-4446-b8fe-bb9ca25ac896)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/208d3b4b-dcaa-4446-b8fe-bb9ca25ac896" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
 
 Input: `227x227x3`. From the image net dataset
+
 - 1st layer: CNN with 11x11, stride = 4. Output: `55x55x96`
 - 2nd layer: Maxpooling layer with 3x3 kernel size, stride=2. Output `27x27x96`
 - 3nd layer: CNN with Same Cross-Correlation. Output: `27x27x256`
@@ -39,23 +54,33 @@ Input: `227x227x3`. From the image net dataset
 - 8th layer is a maxpooling layer with a kernel size 3x3, stride = 2
 - 9th layer is a flattening layer
 - 10th and 11th layer is A FCN. Output are `4096 x 1`
-- 11th layer is softmax with 1000 output classes 
+- 12th layer is a FCN layer with 1000 output classes. Its outputs are then fed into a softmax
 
 Highlights include:
-- Trained on a much larger network than LeNet-5
-- Use of ReLU
+- Trained on a **much larger network** than LeNet-5
+- **Use of ReLU**
 
 Historical Constraints:
+
 - Back then GPU was slower, and the training of layers were split on 2 GPUs.
-- Local Response Normalization: normalize the same window across channels to avoid high activation values. But Later people didn't find it universally helpful
+- Local Response Normalization: normalize the **same patch of a layer across channels** to avoid high activation values. But Later people didn't find it universally helpful
 
 AlexNet paper is relatively easy to read. And it's a milestone that drew people's serious attention in neuralnetwork.
 
-## VGG-16 (138M parameters )
+## VGG-16 (138M parameters)
 
-There are 16 layers that have parameters. The architecture of VGG 16 is realitively simpler.
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/72119760-f953-4e05-9f80-fc150fa094e9" height="300" alt=""/>
+        <figcaption><a href="https://lekhuyen.medium.com/an-overview-of-vgg16-and-nin-models-96e4bf398484">Source: Le Khuyen</a></figcaption>
+    </figure>
+</p>
+</div>
 
-Upside is the architecture is quite simple. Downside is it's large even by modern standard 
+There are **16 layers that have parameters**. The architecture of VGG 16 is realitively simpler.
+
+Upside is the architecture is **quite simple**. Downside is it's large even by modern standard 
 
 ## ResNet
 
