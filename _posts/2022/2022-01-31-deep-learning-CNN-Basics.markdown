@@ -309,5 +309,5 @@ c.backward()
 ### Benefits Of Using Convolutional Layer
 
 - Reduces the number of parameters, thus reduces the overfitting problem.
-- **Smaller number of parameters also mean smaller sets of training images**
+- **Smaller number of parameters also means smaller sets of training images**
 - Convolutional Layers also benefit from **sparsity of connections**. This means that the activation of the next layer is only affected by a small number of activations from the previous layer (the ones in the corresponding filtered area)
