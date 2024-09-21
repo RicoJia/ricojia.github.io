@@ -105,7 +105,7 @@ $$
 1 & 5 & 3 & 7 & 4 & 8 \\
 5 & 4 & 9 & 8 & 3 & 5
 \end{bmatrix}
-\quad \times \quad 
+\quad \times \quad
 \begin{bmatrix}
 2 & 4
 \end{bmatrix}
@@ -183,10 +183,11 @@ The bottleneck building block is to reduce the number of parameters while increa
 
 3. Gradient flow can reach deeper. With skip connections, the input to a layer $x$ has more influence on the final output with less layers to go though $W_1W_2...x$. So gradients will be correspondingly higher and the vanishing gradient problem is mitigated.
 
-## Inception Network
+## Inception Network (Szegedy et al. 2014, Google, Going deeper with convolutions)
+
+### Motivation
 
 When hand-picking conv nets, we need to specify filter dimensions by hand. Inception network allows **a combo of conv and pooling layers**. Then, outputs in different output channels (depth) are stacked together. E.g., one can append 64 output layers from 1x1 conv, and 128 layers from 3x3 (convolution with `same` padding) together. The name "inception" was adopted by the GoogleNet team in 2014 to pay homage to the movie "inception" we need to go DEEPER.
-
 
 <div style="text-align: center;">
 <p align="center">
@@ -261,3 +262,109 @@ Convolution is expensive. Below network has `(5x5x28x28)x192x32=120422400` times
 The layer is called “bottleneck layer” because of the shape of the 1x1 layer compared to other larger layers.  
 Max pool layer itself will output the same num of channels. So we need 1x1 conv to shrink down
 
+### Inception Network Architecture
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/50c8d6c1-63db-459c-83f3-488607e8f79e" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+1x1 Conv is used to shrink (or summarize) the outputs from each conv sub-layer.
+
+Szegedy et al. proposed `GoogLeNet`, an Inception Network. The first few layers are regular convolutional layers, followed by inception modules.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/db212e75-d7a5-4240-9331-a0a89cf965a3" height="500" alt=""/>
+    </figure>
+</p>
+</div>
+
+There are two side branches with two softmax outputs. Each side branch is called an **auxilary classifier**. Instead of training separately, they are trained together with the main output. During back-propagation, the connected layers will be updated with the combined gradient from the main and auxilary branches. **This is to compensate for the vanishing gradient problem, so intermediate layers won't be too bad.**
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/3e6b2135-d97d-4888-9f43-56a6bcaa121e" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
+
+
+## MobileNet (Howard et al. )
+
+Mobilenet v1: MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
+
+### Depthwise Separable Convolution
+
+If you have an input of size a×b×3 and a regular convolution filter of size 3×3×5, you would have 3×3×3 filters for each of the 5 output channels. The output would be a×b×5, after summing across input channels.
+
+In a **depthwise convolution**, you would have 3 filters of size 3×3 (one for each input channel). Each input channel is **independently** convolved with its filter, so the output would remain a×b×3a×b×3 (same number of channels as the input).
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/1ba45f51-ba96-435e-9b7d-ad82ed596f82" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+Point-wise convolution is just another term for one-by-one multiplication
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/a4b57a73-740f-46fd-ae2c-fd39666dca34" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+**The combination of Depthwise convolution and pointwise convolution is called "depthwise separable convolution"**. That reduces the number of multiplications by quite a bit. E.g., when our input is `6x6x3`, we want our output is  `4x4x5`
+
+- In normal convolution, this would take 5 `3x3x3` filters. In total we need `3x3x3x4x4x5=2160` multiplications. 
+- Using depthwise separable convolution, we first have 1 `3x3x3` filters, then we have 5 `1x1x3` filters. That in total we have `4x4x3x3x3 + 4x4x3x5=672`. The ratio of the number of multiplications **between mobile net and regular convolution** is:
+
+$$
+\begin{gather*}
+\frac{1}{f^2} + \frac{1}{m}
+\end{gather*}
+$$
+
+where $m$ is the number of output channels, $f$ is the filter size. In some applications, $m$ is much larger, so the ratio is slightly larger than $\frac{1}{f^2}$
+
+### MobileNet Architectures
+
+In MobileNet V1, the architecture is quite simple: it's first a conv layer, then followed by 13 sets of depthwise-separable layers. Finally, it has an avg pool, FC, and a softmax layer.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/4dc56f26-3abe-42e8-a29e-2a636407e40a" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+In MobileNet V2, the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/8eff937b-241e-4a69-b877-a1ed564efa7f" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+In a bottleneck block, dimensions are jacked up so the network can learn a richer function. But they are projected down before moving the next bottleneck block so memory usage won't be too big.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/32afa29b-3146-4dd8-9dee-de772b633f70" height="200" alt=""/>
+    </figure>
+</p>
+</div>
