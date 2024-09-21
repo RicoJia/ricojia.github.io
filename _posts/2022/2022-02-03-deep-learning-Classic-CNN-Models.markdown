@@ -80,7 +80,7 @@ There are **16 layers that have parameters**. The architecture of VGG 16 is real
 
 Upside is the architecture is **quite simple**. Downside is it's large even by modern standard 
 
-## One by One Convolutions
+## One-by-One Convolutions
 
 An 1x1 filter is mainly used to shrink (summarize) or expand the number of channels, while the height and width of the feature maps remain the same (`nxnxm` -> `nxnxc`). This technique is also called **"pointwise convolution"**.
 
@@ -296,7 +296,7 @@ There are two side branches with two softmax outputs. Each side branch is called
 </div>
 
 
-## MobileNet (Howard et al. )
+## MobileNet (Howard et al.)
 
 Mobilenet v1: MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications
 
@@ -339,7 +339,7 @@ where $m$ is the number of output channels, $f$ is the filter size. In some appl
 
 ### MobileNet Architectures
 
-In MobileNet V1, the architecture is quite simple: it's first a conv layer, then followed by 13 sets of depthwise-separable layers. Finally, it has an avg pool, FC, and a softmax layer.
+In MobileNet V1, the architecture is quite simple: it's first a conv layer, then followed by 13 sets of depthwise-separable layers. Finally, it has an avg pool, FC, and a softmax layer. In total there are 1000 classes.
 
 <div style="text-align: center;">
 <p align="center">
@@ -349,7 +349,7 @@ In MobileNet V1, the architecture is quite simple: it's first a conv layer, then
 </p>
 </div>
 
-In MobileNet V2, the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. 
+In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. 
 
 <div style="text-align: center;">
 <p align="center">
@@ -368,3 +368,16 @@ In a bottleneck block, dimensions are jacked up so the network can learn a riche
     </figure>
 </p>
 </div>
+
+
+## General Advice
+
+- Sometimes it's hard for PhD students at top universities to replicate work from published papers. Fortunately, we can take a look at the opensource implementations. 
+- When you get a large neuralnet, especially in computer vision, always try transfer learning first. You can **freeze** certain layers, modify the later layers, and train those. Those pre-trained networks have been trained on millions of images, which could take days or even weeks on your machine.
+- Data augmentation: almost in all computer vision domains, the more data the better. 
+    - Distortions: mirroring, random cropping parts of the images, rotation, shearing, local warping are common.
+    - Color shifting: e.g., adding and subtracting certain values from R,G,B values. In AlexNet, PCA color augmentation keeps the overall color variation in an image.
+    - **Data augmentation can be done simultaneously while training takes place**
+- State of Computer Vision: Historically, computer vision has been very "hand-engineered" and very theory-based.
+    - Ensembling? TODO: Train several networks then independently average their outputs.
+    - At test time, do a 10-crop on test images. That is, generate 10 cropped images from an original image and average results.
