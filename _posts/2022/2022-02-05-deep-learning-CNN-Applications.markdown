@@ -110,31 +110,31 @@ So more complex architectures such as residual connections or multiple branches 
 The Functional API is more flexible than Sequential. It is able to build models with non-linear topologies (e.g., the skip connection), shared layers, as well as layers with multiple inputs and outputs. **The Sequential model is a straight line, whereas the Functional is a graph**.
 
 ```python
-    train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).batch(64)
-    test_dataset = tf.data.Dataset.from_tensor_slices((X_test, Y_test)).batch(64)
+train_dataset = tf.data.Dataset.from_tensor_slices((X_train, Y_train)).batch(64)
+test_dataset = tf.data.Dataset.from_tensor_slices((X_test, Y_test)).batch(64)
 
-    input_shape = (64, 64, 3)
-    input_img = tf.keras.Input(shape=input_shape)
-    ## CONV2D: 8 filters 4x4, stride of 1, padding 'SAME'
-    Z1 = tf.keras.layers.Conv2D(filters= 8 , kernel_size= 4 , padding='same')(input_img)
-    ## RELU
-    A1 = tf.keras.layers.ReLU()(Z1)
-    ## MAXPOOL: window 8x8, stride 8, padding 'SAME'
-    P1 = tf.keras.layers.MaxPool2D(pool_size=(8,8), strides=8, padding='same')(A1)
-    ## CONV2D: 16 filters 2x2, stride 1, padding 'SAME'
-    Z2 = tf.keras.layers.Conv2D(filters= 16 , kernel_size= 2 , padding='same')(P1)
-    ## RELU
-    A2 = tf.keras.layers.ReLU()(Z2)
-    ## MAXPOOL: window 4x4, stride 4, padding 'SAME'
-    P2 = tf.keras.layers.MaxPool2D(pool_size=(4,4), strides=4, padding='same')(A2)
-    ## FLATTEN
-    F = tf.keras.layers.Flatten()(P2)
-    ## Dense layer
-    ## 6 neurons in output layer. Hint: one of the arguments should be "activation='softmax'" 
-    outputs = tf.keras.layers.Dense(units=6, activation='softmax')(F)
-    
-    
-    model = tf.keras.Model(inputs=input_img, outputs=outputs)
+input_shape = (64, 64, 3)
+input_img = tf.keras.Input(shape=input_shape)
+## CONV2D: 8 filters 4x4, stride of 1, padding 'SAME'
+Z1 = tf.keras.layers.Conv2D(filters= 8 , kernel_size= 4 , padding='same')(input_img)
+## RELU
+A1 = tf.keras.layers.ReLU()(Z1)
+## MAXPOOL: window 8x8, stride 8, padding 'SAME'
+P1 = tf.keras.layers.MaxPool2D(pool_size=(8,8), strides=8, padding='same')(A1)
+## CONV2D: 16 filters 2x2, stride 1, padding 'SAME'
+Z2 = tf.keras.layers.Conv2D(filters= 16 , kernel_size= 2 , padding='same')(P1)
+## RELU
+A2 = tf.keras.layers.ReLU()(Z2)
+## MAXPOOL: window 4x4, stride 4, padding 'SAME'
+P2 = tf.keras.layers.MaxPool2D(pool_size=(4,4), strides=4, padding='same')(A2)
+## FLATTEN
+F = tf.keras.layers.Flatten()(P2)
+## Dense layer
+## 6 neurons in output layer. Hint: one of the arguments should be "activation='softmax'" 
+outputs = tf.keras.layers.Dense(units=6, activation='softmax')(F)
+
+
+model = tf.keras.Model(inputs=input_img, outputs=outputs)
 
 model.compile(optimizer='adam',
                   loss='categorical_crossentropy',
