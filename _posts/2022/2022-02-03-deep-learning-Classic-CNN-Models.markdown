@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Classic CNN Models
 date: '2022-02-03 13:19'
-subtitle: LeNet-5, AlexNet, VGG-16, ResNet
+subtitle: LeNet-5, AlexNet, VGG-16, ResNet, One-by-One Convolution, Inception Network, MobileNet
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -21,8 +21,7 @@ The LeNet-5 architecture (LeCun, 1998) and is still very widely used. 5 is simpl
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/57b7026e-701e-49a3-9505-5f9f261ba6bb" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
+        <img src="https://github.com/user-attachments/assets/57b7026e-701e-49a3-9505-5f9f261ba6bb" height="200" alt=""/>
     </figure>
 </p>
 </div>
@@ -33,13 +32,12 @@ Other architectural aspects:
 - LeNet-5 attaches a non-linear activation function after a CNN.
 - Nowadays, we often use max pooling instead of average pooling.
 
-## AlexNet (65M Params)
+## AlexNet (65M Params, Alex Krizhevsky 2012)
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
         <img src="https://github.com/user-attachments/assets/208d3b4b-dcaa-4446-b8fe-bb9ca25ac896" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>
@@ -82,47 +80,184 @@ There are **16 layers that have parameters**. The architecture of VGG 16 is real
 
 Upside is the architecture is **quite simple**. Downside is it's large even by modern standard 
 
-## ResNet
+## One by One Convolutions
 
-Deep Network suffer from exploding and vanishing gradients. ResNet created the notion of Residual Blocks, which is:
+An 1x1 filter is mainly used to shrink (summarize) or expand the number of channels, while the height and width of the feature maps remain the same (`nxnxm` -> `nxnxc`). This technique is also called **"pointwise convolution"**.
 
-```python
-a_l -> z_l+1 = w^T a_l + b-> a_{l+1} = g(z_l+1) -> z_{l+2} = w^T a_(l+1) -> a_{l+2} = g(z_l+1 + a_{l})
-```
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/febf43af-a45f-41c8-ba6f-2606b75a3072" height="300" alt=""/>
+        <figcaption><a href="https://community.deeplearning.ai/t/difference-between-1-1-convolution-and-pointwise-convolution/149338">Source: Deeplearning.ai</a></figcaption>
+    </figure>
+</p>
+</div>
 
-The difference is that we add `a_{l}` to the non linear activation function of `a_{l+2}`. 
-This residual block basically "boosts" the original signal. Such connections are also called "skip connections or short circuits".
+So if we have `pxqxm` input, we would have an `1x1xc` filter. Each output channel of the filter has a `1x1xm` kernel. Elements across all channels at the same `[x,y]` would sum up and multiply by the value at channel `n` of the filter. That's the output value at channel `n` is determined.
 
-In reality, deep plain networks will witness an increase in training errors without resnet. But ResNet overcomes this problem.
+$$
+\begin{gather*}
+\begin{bmatrix}
+1 & 2 & 3 & 6 & 5 & 8 \\
+3 & 5 & 5 & 1 & 3 & 4 \\
+2 & 1 & 3 & 4 & 9 & 3 \\
+4 & 7 & 8 & 5 & 7 & 9 \\
+1 & 5 & 3 & 7 & 4 & 8 \\
+5 & 4 & 9 & 8 & 3 & 5
+\end{bmatrix}
+\quad \times \quad 
+\begin{bmatrix}
+2 & 4
+\end{bmatrix}
+\quad = \quad
+\begin{bmatrix}
+2 & 4 & 6 & \cdots \\
+\vdots & & & \vdots \\
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+4 & 8 & 12 \cdots \\
+\vdots & & & \vdots \\
+\end{bmatrix}
+\end{gather*}
+$$
 
-TODO: plot in resnet training error going back up
+Winner of ImageNet Large Scale Visual Recognition Challenge (ILSVRC), GoogleNet(2014), ResNet and SqueezeNet all use one-by-one convolution as a major part of the network.
 
-This is because when weights and biases are zero, we can still get the signals from the previous layers, so our behavior is at least as good as the previous ones.
+## ResNet-50 (25M, Kaiming He et al. 2015)
 
-## One by One Filters
-1x1xn filter
+Deeper neuralnets in general are favourable: they are able to learn highly non-linear decision boundaries. When building deep neuralnets, Deep Network suffer from exploding and vanishing gradients. In the work Deep Residual Learning for Image Recognition, Kaiming He et al. introduced ResNet. ResNet-50 has in total 50 learnable layers. Compared to "plain networks", ResNet created the notion of **Residual Blocks** that makes uses of "skip connection" or "short circuits" (ResNet-34):
 
-It can shrink (summarize) the number of channels. So it can yield from nxnxm to nxnxc
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/333dc157-0d6b-4fa0-90bd-cfbd65ec81d4" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
+[Code of PyTorch Implementation in Torch Vision](https://github.com/pytorch/vision/blob/1aef87d01eec2c0989458387fa04baebcc86ea7b/torchvision/models/resnet.py#L75)
+
+$$
+\begin{gather*}
+a_l -> z_{l+1} = w^T a_l + b-> a_{l+1} = g(z_l+1) -> z_{l+2} = w^T a_{l+1} -> a_{l+2} = g(z_{l+1} + a_{l})
+\end{gather*}
+$$
+
+The difference is that we add `a_{l}` to the non linear activation function of `a_{l+2}`.
+
+This residual block basically "boosts" the original signal. In reality, deep plain networks suffer from two difficulties:
+
+1. It will witness an increase in training errors without resnet. This might be due to vanishing / exploding gradients
+2. Optimization difficulties
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/6635f6d8-a4be-4638-8eca-1220f5411d59" height="150" alt=""/>
+        <figcaption><a href="https://medium.com/data-science-community-srm/residual-networks-1890cec76dea">Source: Aditya Mangla </a></figcaption>
+    </figure>
+</p>
+</div>
+
+Another highlight in He et al.'s work is "bottleneck building block" architecture (ResNet-50):
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/7ee91657-c25c-4218-8e01-6d9dcbece339" height="200" alt=""/>
+        <figcaption><a href="https://arxiv.org/pdf/1512.03385">Source: Deep Residual Learning for Image Recognition, Kaiming He et al.</a></figcaption>
+    </figure>
+</p>
+</div>
+
+The bottleneck building block is to reduce the number of parameters while increasing the number of layers. The 1x1 conv layers reduce / increase channel dimensions, so the actual 3x3 conv layer has smaller dimensions to work with.
+
+### Why ResNet Works
+
+1. ResNet is able to learn "identity" when it's optimal to do so. That is, a residual block's $w$ and $b$ could be both zeros. So the final result will be no worse than that of a plain network. This requires the **input & output dimensions to match**
+
+- The original paper proposed "projection shortcut" as well, which is used when input & output dimensions do not match $H(x) = F(x) + W_sX$. However, this seems to be performing worse than the identity shortcut $H(x)=F(x)+X$ in the bottleneck building blocks.
+
+2. Each residual block's parameters are smaller, and the learned function is simpler. Given input $x$, in a plain network, a layer will learn an entire transformation $H(x)$. However in a residual block, it will learn $F(x)$ where $H(x) = X+F(x)$. There is a chance that the residual $F(x)$ is close to zero. Hence the parameters are smaller (note, **not fewer**). This is especially true when "identity" is the optimal transform $H(x)$.
+
+3. Gradient flow can reach deeper. With skip connections, the input to a layer $x$ has more influence on the final output with less layers to go though $W_1W_2...x$. So gradients will be correspondingly higher and the vanishing gradient problem is mitigated.
 
 ## Inception Network
 
-Inception network can do a combo of conv and pooling, or one of these. You can append outputs of different output channels together. E.g., one can append 64 output layers from 1x1 conv, and 128 layers from 3x3 (same conv) together.
+When hand-picking conv nets, we need to specify filter dimensions by hand. Inception network allows **a combo of conv and pooling layers**. Then, outputs in different output channels (depth) are stacked together. E.g., one can append 64 output layers from 1x1 conv, and 128 layers from 3x3 (convolution with `same` padding) together. The name "inception" was adopted by the GoogleNet team in 2014 to pay homage to the movie "inception" we need to go DEEPER.
 
-So, if the number of conv filters in use is learnable.
-Question: How does padding in max pooling work? Appending zeros
 
-![Screenshot from 2024-09-19 22-06-01](https://github.com/user-attachments/assets/760d0d88-56cc-421e-aac7-959c27c83509)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/760d0d88-56cc-421e-aac7-959c27c83509" height="300" alt=""/>
+        <figcaption>Output Channels From Different Feature Maps Are Stacked Together</figcaption>
+    </figure>
+</p>
+</div>
 
+### How Padding in 'Same' Max Pooling Works
+
+In the Inception Network, we need to retain the same output dimension. The trick is to pad the input first, then apply max pooling with the specified stride. E.g., given an input
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+1 & 3 & 2 & 1 \\
+4 & 6 & 5 & 7 \\
+2 & 1 & 4 & 9 \\
+1 & 3 & 7 & 6
+\end{bmatrix}
+\end{gather*}
+$$
+
+If we apply maxpooling with stride = 1, kernel `2x2`, the padded input would be:
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 3 & 2 & 1 & 0 \\
+0 & 4 & 6 & 5 & 7 & 0 \\
+0 & 2 & 1 & 4 & 9 & 0 \\
+0 & 1 & 3 & 7 & 6 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+\end{gather*}
+$$
+
+The maxpooling result would be:
+
+$$
+\begin{gather*}
+1 & 3 & 3 & 7 \\
+6 & 6 & 5 & 7 \\
+6 & 7 & 9 & 9 \\
+3 & 7 & 7 & 9
+\end{gather*}
+$$
 
 ### Problem With Covolution Layer
-Convolution is expensive. Below network is (5x5x28x28)x192x32 multiplication in its forward prop ( prod of dimensions of input and filters). 1x1 conv can effectively reduce the number of multiplications. The associated layer is called “bottleneck layer”
+Convolution is expensive. Below network has `(5x5x28x28)x192x32=120422400` times of multiplication in its forward prop (product of dimensions of input and output). 
 
-![Screenshot from 2024-09-19 22-06-28](https://github.com/user-attachments/assets/ca0d77b2-afb6-4041-b2e8-0ddad0382f60)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/ca0d77b2-afb6-4041-b2e8-0ddad0382f60" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
-"Bottleneck Layer"? TODO
+1x1 conv can effectively reduce the number of multiplications: `28x28x192x16 + 28x28x16x5x5x32=12443648` multiplications.
 
-![Screenshot from 2024-09-19 22-06-57](https://github.com/user-attachments/assets/0546d9e8-7f59-47e3-ae69-67944c273495)
-
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/0546d9e8-7f59-47e3-ae69-67944c273495" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+The layer is called “bottleneck layer” because of the shape of the 1x1 layer compared to other larger layers.  
 Max pool layer itself will output the same num of channels. So we need 1x1 conv to shrink down
 
