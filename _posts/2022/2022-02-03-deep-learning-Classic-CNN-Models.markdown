@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Classic CNN Models
 date: '2022-02-03 13:19'
-subtitle: LeNet-5, AlexNet, VGG-16, ResNet, One-by-One Convolution, Inception Network, MobileNet
+subtitle: LeNet-5, AlexNet, VGG-16, ResNet-50, One-by-One Convolution, Inception Network, MobileNet
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -122,6 +122,8 @@ $$
 \end{gather*}
 $$
 
+In one-by-one convolutions, 'same' and 'valid' give the same result as no padding is needed on the input images.
+
 Winner of ImageNet Large Scale Visual Recognition Challenge (ILSVRC), GoogleNet(2014), ResNet and SqueezeNet all use one-by-one convolution as a major part of the network.
 
 ## ResNet-50 (25M, Kaiming He et al. 2015)
@@ -173,11 +175,45 @@ Another highlight in He et al.'s work is "bottleneck building block" architectur
 
 The bottleneck building block is to reduce the number of parameters while increasing the number of layers. The 1x1 conv layers reduce / increase channel dimensions, so the actual 3x3 conv layer has smaller dimensions to work with.
 
+There are two types of blocks in ResNet:
+
+- Identity Block: input and output have the same dimension. Here, the first Conv 2D is 1x1 conv, the second Conv2D is a custom `fxf` 'same' convolution. The third one is also a 'valid' 1x1 conv. **The Batch Normalization layer independently normalizes each feature map.**
+- Convolutional Block: input and output do not have the same dimension. Here, a Conv2D is added to the short cut. It's 1x1 convolution, but with a **stride=2**
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/513e82d3-beee-41f3-aaef-4534d9677f9a" height="150" alt=""/>
+        <figcaption>Identity Block </figcaption>
+    </figure>
+</p>
+</div>
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/f2fd66d4-9d3b-40c7-a2e3-494124982aee" height="150" alt=""/>
+        <figcaption> Convolutional Block </figcaption>
+    </figure>
+</p>
+</div>
+
+Overall, there are 50 trainable layers in ResNet-50. Stage 1: 1 conv layer. Stage 2-stage 5: `3 x 16 = 48`, stage 6: 1 FC layer.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/5dd883af-d120-449b-8890-a5aefd3ba16f" height="150" alt=""/>
+        <figcaption>Source: Overall ResNet-50 Architecture</figcaption>
+    </figure>
+</p>
+</div>
+
 ### Why ResNet Works
 
 1. ResNet is able to learn "identity" when it's optimal to do so. That is, a residual block's $w$ and $b$ could be both zeros. So the final result will be no worse than that of a plain network. This requires the **input & output dimensions to match**
 
-- The original paper proposed "projection shortcut" as well, which is used when input & output dimensions do not match $H(x) = F(x) + W_sX$. However, this seems to be performing worse than the identity shortcut $H(x)=F(x)+X$ in the bottleneck building blocks.
+    - The original paper proposed "projection shortcut" as well, which is used when input & output dimensions do not match $H(x) = F(x) + W_sX$. However, this seems to be performing worse than the identity shortcut $H(x)=F(x)+X$ in the bottleneck building blocks.
 
 2. Each residual block's parameters are smaller, and the learned function is simpler. Given input $x$, in a plain network, a layer will learn an entire transformation $H(x)$. However in a residual block, it will learn $F(x)$ where $H(x) = X+F(x)$. There is a chance that the residual $F(x)$ is close to zero. Hence the parameters are smaller (note, **not fewer**). This is especially true when "identity" is the optimal transform $H(x)$.
 
@@ -240,7 +276,7 @@ $$
 $$
 
 ### Problem With Covolution Layer
-Convolution is expensive. Below network has `(5x5x28x28)x192x32=120422400` times of multiplication in its forward prop (product of dimensions of input and output). 
+Convolution is expensive. Below network has `(5x5x28x28)x192x32=120422400` times of multiplication in its forward prop (product of dimensions of input and output).
 
 <div style="text-align: center;">
 <p align="center">
@@ -295,6 +331,7 @@ There are two side branches with two softmax outputs. Each side branch is called
 </p>
 </div>
 
+Inception networks has a slight regularization effect. Why?? TODO
 
 ## MobileNet (Howard et al.)
 
@@ -374,6 +411,7 @@ In a bottleneck block, dimensions are jacked up so the network can learn a riche
 
 - Sometimes it's hard for PhD students at top universities to replicate work from published papers. Fortunately, we can take a look at the opensource implementations. 
 - When you get a large neuralnet, especially in computer vision, always try transfer learning first. You can **freeze** certain layers, modify the later layers, and train those. Those pre-trained networks have been trained on millions of images, which could take days or even weeks on your machine.
+    - If the training datasets are small, we can choose to freeze most layers, and only train a very small number of layers.
 - Data augmentation: almost in all computer vision domains, the more data the better. 
     - Distortions: mirroring, random cropping parts of the images, rotation, shearing, local warping are common.
     - Color shifting: e.g., adding and subtracting certain values from R,G,B values. In AlexNet, PCA color augmentation keeps the overall color variation in an image.
