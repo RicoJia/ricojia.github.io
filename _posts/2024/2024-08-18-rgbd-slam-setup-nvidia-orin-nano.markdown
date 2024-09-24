@@ -72,7 +72,11 @@ I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nr
             sudo ufw allow from fc00:1:1:0::2 to any port nfs
             sudo ufw allow from fc00:1:1::/48 to any port nfs
             ```
-
+5. If `nvcc` is not a recognized command, add below to `~/.bashrc`:
+```bash
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+```
 
 ## Failed Attempt
 
