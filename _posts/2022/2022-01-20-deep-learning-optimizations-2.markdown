@@ -78,6 +78,8 @@ $$
 
 - $\beta_\mu$, $\beta_v$ are momentum constants.
 
+So in total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
+
 Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
 
 ## Why Batch Normalization Works?
@@ -98,3 +100,8 @@ Batch normalization overcomes the covariate shift in **hidden layers**.
     - BN can reduce the magnitude of outputs, hence the gradients and the weights (**This is regularization**)
 
 However batch normalization doesn't reduce the model complexity so the regularization is very mild.
+
+## Practical Use Notes
+
+- It's quite common to see the pattern `conv -> BN -> ReLu`
+

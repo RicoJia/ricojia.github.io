@@ -386,7 +386,7 @@ In MobileNet V1, the architecture is quite simple: it's first a conv layer, then
 </p>
 </div>
 
-In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. 
+In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. MobileNet V2 has 155 layers.
 
 <div style="text-align: center;">
 <p align="center">
@@ -402,6 +402,17 @@ In a bottleneck block, dimensions are jacked up so the network can learn a riche
 <p align="center">
     <figure>
         <img src="https://github.com/user-attachments/assets/32afa29b-3146-4dd8-9dee-de772b633f70" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+Overall, MobileNet V2 has 155 layers. There are 16 inverted residual (bottlenck) blocks. Some blocks have skip connections to the block after the next one. Usually, in each bottleneck block, after an expansion and a depthwise convolution, there is a batch normalization and ReLu. After a downsizing projection, there is a batch normalization.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/e9e5502a-8c50-4b71-8791-a8a1c35e88b2" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>
