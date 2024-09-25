@@ -406,7 +406,7 @@ In a bottleneck block, dimensions are jacked up so the network can learn a riche
 </p>
 </div>
 
-Overall, MobileNet V2 has 155 layers. There are 16 inverted residual (bottlenck) blocks. Some blocks have skip connections to the block after the next one. Usually, in each bottleneck block, after an expansion and a depthwise convolution, there is a batch normalization and ReLu. After a downsizing projection, there is a batch normalization.
+Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residual (bottlenck) blocks. Some blocks have skip connections to the block after the next one. Usually, in each bottleneck block, after an expansion and a depthwise convolution, there is a batch normalization and ReLu. After a downsizing projection, there is a batch normalization.
 
 <div style="text-align: center;">
 <p align="center">

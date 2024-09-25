@@ -63,3 +63,7 @@ RUN npm install --production
 
 - Stage 0 creates artifacts / build of the custom app (e.g., `RUN npx run build`). It consists of several layers
 - Stage 1 is created by launching a new base image `node:18-alpine` and copying the build artifacts from Stage 0. The final image **only contains layers from the last stage and files copied from previous stages**. So Stage 0 is effectively discarded.
+
+## Docker Commands
+
+- `docker kill` vs `docker stop`. `docker kill` sends a `SIGKILL` signal to the container, which forcibly kills a container, terminating it immediately without waiting for a graceful shutdown. `docker stop` sends a `SIGTERM` signal, which waits for the container to shutdown gracefully.
