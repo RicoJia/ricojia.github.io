@@ -65,3 +65,5 @@ Another note is **apply the same mean and variance on training and test inputs.*
 You might have heard of Caffe, Caffe2, PaddlePaddle, Keras, Theano, and TensorFlow, by the year 2024 however, Pytorch has become the most popular programming framework due to its **ease of use**, and speed.
 
 One thing is I'd pay more attention to is its true "open-sourceness". In the software industry, some frameworks were once open-source, but later moved to proprietary cloud service by the company that controlled it. Some examples include: Elastic and Kibana, Redis, MongoDB
+
+ONNX (o'nnex) (Open Neural Network Exchange) is an open source format for **deep learning and traditional AI** models. It defines an extensible computation graph model, operators, and data types. So models of different platforms can be converted between each other. E.g., TensorRT <-> TensorFlow <-> Pytorch. **Pitfall: Certain Platforms may not have the most updated versions of the model, so we need to upgrade/downgrade versioning.**
