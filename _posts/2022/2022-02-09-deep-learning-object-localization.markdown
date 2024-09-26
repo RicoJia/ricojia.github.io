@@ -101,7 +101,33 @@ L_{\text{conf\_noobj}} = \lambda_{\text{noobj}} \sum_{i=0}^{S^2} \sum_{j=0}^B \m
 \end{gather*}
 $$
 
+### Anchor Boxes
+
+An anchor box is a pre-defined bounding box that "anchors" to a cell. It has a pre-defined aspect ratio and a size. For example, if we define a 3x3 grid over an image, at each grid cell, we can define 3 anchor boxes: 1:1 small square, 2:1 tall rectangle, and 1:2 wide rectangle. During inferencing, if a grid cell has an object in it, the model will output `[confidence, location offset, aspect ratio offset]` to closely fit the object.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/e8f06970-164d-4118-a623-f4d280e0f097" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+It's used in Faster R-CNN, YOLO V2, and SSD
+
+## Comparison Between AlexNet, OverFeat, and YOLO V1
+
+AlexNet: `Conv+max|Conv+max|Conv|Conv+max|Dense|Dense|Dense|`
+
+OverFeat: `Conv+max|Conv+max|Conv|Conv+max|Dense|Dense|Dense|`
+
+YOLO V1: `Conv+max|Conv+max|bottleneck Conv + max block | bottleneck Conv+max block | bottleneck Conv + max block | Conv Block | Dense | Dense |`
+
+So OverFeat and AlexNet’s architectures looks very similar. AlexNet is just image classification, while Overfeat is image classification + object detection.
+
+YOLO V1 (24 conv layers + 2 FC layers) is larger than AlexNet and OverFeat. 1 forward pass in Overfeat is equivalent to sliding one fixed-size window. YOLO V1 however, can output window of any size (the network will learn the window size from the training data)
+
 ## References
 
-- [1] Pierre Sermanet, David Eigen, Xiang Zhang, Michael Mathieu, Rob Fergus, and Yann LeCun. 2014. OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks. In Proceedings of the International Conference on Learning Representations (ICLR), 2014.
-- [2] Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You Only Look Once: Unified, Real-Time Object Detection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016 (pp. 779-788). IEEE.
+- [1] [Pierre Sermanet, David Eigen, Xiang Zhang, Michael Mathieu, Rob Fergus, and Yann LeCun. 2014. OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks. In Proceedings of the International Conference on Learning Representations (ICLR), 2014.](https://arxiv.org/pdf/1312.6229)
+- [2] [Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You Only Look Once: Unified, Real-Time Object Detection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016 (pp. 779-788). IEEE.](https://arxiv.org/pdf/1506.02640)

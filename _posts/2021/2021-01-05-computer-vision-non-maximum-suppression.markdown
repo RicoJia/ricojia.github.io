@@ -38,6 +38,7 @@ The basic idea is to go through every pair of bounding boxes, following the desc
 </div>
 
 Well, let's jump right into the code!
+- First, delete the boxes with a confidence lower than 0.6
 
 ```python
 #! /usr/bin/env python3
@@ -95,3 +96,5 @@ selected_indices = handcrafted_non_maximum_suppresion(scores=scores, boxes=boxes
 # Should see [3,0]
 print(selected_indices)
 ```
+
+- IoU threshold is often 0.5
