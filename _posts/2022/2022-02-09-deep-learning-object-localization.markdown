@@ -59,7 +59,7 @@ OverFeat, however, still suffers from some inaccuracies in bounding box location
 
 ## You Only Look Once (YOLO) V1
 
-YOLO V1 makes use of the *Region-Based CNN architecture* (R-CNN). The main idea is to divide an image into a `7x7` grid. Each grid will detect the existence of 2 bounding box whose center is within the grid cell with `[p_1, bx_1, by_1, bw_1, bh_1, p_2, bx_2, by_2, bw_2, bh_2, c1, ... c20]`, a `7x7x30` tensor.
+The main idea is to divide an image into a `7x7` grid. Each grid will detect the existence of 2 bounding box whose center is within the grid cell with `[p_1, bx_1, by_1, bw_1, bh_1, p_2, bx_2, by_2, bw_2, bh_2, c1, ... c20]`, a `7x7x30` tensor.
 
 <div style="text-align: center;">
 <p align="center">
