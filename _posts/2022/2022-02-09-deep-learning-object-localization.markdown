@@ -73,7 +73,7 @@ The architecture starts off with conv layers, and ends with 2 fully connected (F
 
 During model training, the first 20 layers were first trained with on the ImageNet dataset. They were appended with an avg pool layer and a FC layer. This process took **Redmon et al. approx. a WEEK.** Then, they learned from Ren et al. That adding both Conv and FC layers can improve performance. So they added 4 Conv layers with 2 FC layers. Those have randomly initialized weights.
 
-**Loss calculation:** In training, **when calculating loss**, one channel (vector of `30`) is broken into two bounding boxes. Then both bounding boxes are compared against the groundtruth bounding box(es). The ones with the highest Intersection Over Union (IoU) are "responsible" for the corresonding groundtruth bounding box(es). Then, loss can be calculated by adding the weighted confidence loss and localization loss:
+**Loss calculation:** In training, **when calculating loss**, one channel (vector of `30`) is broken into two bounding boxes. Then both bounding boxes are compared against the groundtruth bounding box(es). The ones with the highest [Intersection Over Union (IoU)](../2021/2021-01-05-computer-vision-non-maximum-suppression.markdown) are "responsible" for the corresonding groundtruth bounding box(es). Then, loss can be calculated by adding the weighted confidence loss and localization loss:
 
 Then, because this loss is second order, gradient descent will be first order.
 
