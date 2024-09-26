@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Object Detection Notes
 date: '2022-02-09 13:19'
-subtitle: Convolution Implementation Of Sliding Window, OverFeat, YOLO V1
+subtitle: Convolution Implementation of Sliding Window, OverFeat, YOLO V1
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
