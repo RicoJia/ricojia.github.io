@@ -172,7 +172,26 @@ plt.tight_layout()
 plt.imshow(img)
 ```
 
+## Model Definition
+
+- Inplace operation uses no extra memory. So it's more friendly for large models
+
+```python
+self.relu=nn.ReLU(inplace=True)
+```
+
+- `nn.Sequential(*layers)` is a container that allows stacking of layers. The number of layers is determined during **runtime**. During forward pass, input x is fed through the layers in sequence. During backward pass, back prop is conducted in sequence as well. (this is the very definition of a "Sequential model")
+
+- Batch norm layers `self.bn1` and `self.bn2` can't be shared because they have well, 4 different params each. (mean, variance, exponential decay's parameters )
+
+- `nn.Identity()` is basically no-op.
+
+- `m = nn.AdaptiveAvgPool2d((5, 7))`: given input `m x n x c`, output `5x7xc`.
+
+- `x = torch.flatten(x, start_dim=1)` flattens `[batch_size, 64, 1, 1]` to `[batch_size, 64]`. 
+
 ### Model Training
 
+- `model.load_state_dict(torch.load(MODEL_PATH, weights_only=False))`: torch models actually could have tensors for GPUs. So if your model is trained on a GPU, it can't be loaded onto a CPU. This can be mitigated by `model.load_state_dict(torch.load(MODEL_PATH, map_location=device))`
 - `loss.item()` gives the average loss across the current batch
-- `model.eval()` and `model.train()`?
+- `model.eval()` and `model.train()`: to set dropout and batch normalization in the `eval` or `training` mode.

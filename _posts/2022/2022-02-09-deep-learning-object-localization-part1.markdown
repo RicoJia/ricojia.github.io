@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Object Detection Notes Part 1
+title: Deep Learning - Object Detection Notes
 date: '2022-02-09 13:19'
 subtitle: Convolution Implementation of Sliding Window, OverFeat
 comments: true
@@ -30,7 +30,7 @@ For example, if there are 4 classes, `[Pedestrian, Cars, Motorcycles, Background
 </p>
 </div>
 
-## Objection
+## Object Detection
 
 In **Object Detection**, we should be able to get multiple instances of different types of objects. A classic method is the **sliding window method**. With different window sizes, we slide a window across the image. In each window, we run an image classification algorithm to detect if there is any labelled object that could be detected. In the past, image classification was done with hand-engineered feature detection, which is relatively cheap. Nowadays, we are using Conv nets, but they are slower.
 
@@ -57,77 +57,45 @@ In a larger image (`28x28x3`), we can see that due to `max_pooling_window=2, str
 
 OverFeat, however, still suffers from some inaccuracies in bounding box location.
 
-## You Only Look Once (YOLO) V1
+#### OverFeat Classification and Localization
 
-The main idea is to divide an image into a `7x7` grid. Each grid will detect the existence of 2 bounding box whose center is within the grid cell and outputs `[p_1, bx_1, by_1, bw_1, bh_1, p_2, bx_2, by_2, bw_2, bh_2, c1, ... c20]`, a `7x7x30` tensor.
+I found some slides [from Stanford CS231](http://vision.stanford.edu/teaching/cs231b_spring1415/slides/overfeat_eric.pdf). They say “the fully connected layer of the classifier is replaced by a regressor”. Then freeze the classifer, and train the network again on labeled input with bounding boxes.
 
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/482fc3dd-310c-4e0c-8ded-97f11c735f1f" height="300" alt=""/>
-    </figure>
-</p>
-</div>
-
-The architecture starts off with conv layers, and ends with 2 fully connected (FC) layers. In total, 24 Conv Layers. **The 1x1 convolutions reduce the feature space from preceding layers**. This is very interesting. The first FC layer is connected to the flattened output of the last Conv layer. The last FC layer is reshaped into `7x7x30`.
-
-During model training, the first 20 layers were first trained with on the ImageNet dataset. They were appended with an avg pool layer and a FC layer. This process took **Redmon et al. approx. a WEEK.** Then, they learned from Ren et al. That adding both Conv and FC layers can improve performance. So they added 4 Conv layers with 2 FC layers. Those have randomly initialized weights.
-
-**Loss calculation:** In training, **when calculating loss**, one channel (vector of `30`) is broken into two bounding boxes. Then both bounding boxes are compared against the groundtruth bounding box(es). The ones with the highest [Intersection Over Union (IoU)](../2021/2021-01-05-computer-vision-non-maximum-suppression.markdown) are "responsible" for the corresonding groundtruth bounding box(es). Then, loss can be calculated by adding the weighted confidence loss and localization loss:
-
-Then, because this loss is second order, gradient descent will be first order.
-
-- Localization error if a ground truth bounding box appear in a cell $i$. The responsible predicted bounding box is $j$.  $\lambda_{\text{coord}}=5$ and has a larger weight.
-
-$$
-\begin{gather*}
-L_{\text{loc}} = \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^B \mathbb{1}_{ij}^{\text{obj}} \left[ (x_i - \hat{x}_i)^2 + (y_i - \hat{y}_i)^2 + (\sqrt{w_i} - \sqrt{\hat{w}_i})^2 + (\sqrt{h_i} - \sqrt{\hat{h}_i})^2 \right]
-\end{gather*}
-$$
-
-- Confidence loss: when a ground truth bounding box exists in cell $j$, this penalizes confidence deviations across classes:
-
-$$
-\begin{gather*}
-L_{\text{conf\_obj}} = \sum_{i=0}^{S^2} \sum_{j=0}^B \mathbb{1}_{ij}^{\text{obj}} (C_i - \hat{C}_i)^2
-\end{gather*}
-$$
-
-- For grids without an object, $\lambda_{\text{noobj}}=0.5$:
-
-$$
-\begin{gather*}
-L_{\text{conf\_noobj}} = \lambda_{\text{noobj}} \sum_{i=0}^{S^2} \sum_{j=0}^B \mathbb{1}_{ij}^{\text{noobj}} (C_i - \hat{C}_i)^2
-\end{gather*}
-$$
-
-### Anchor Boxes
-
-An anchor box is a pre-defined bounding box that "anchors" to a cell. It has a pre-defined aspect ratio and a size. For example, if we define a 3x3 grid over an image, at each grid cell, we can define 3 anchor boxes: 1:1 small square, 2:1 tall rectangle, and 1:2 wide rectangle. During inferencing, if a grid cell has an object in it, the model will output `[confidence, location offset, aspect ratio offset]` to closely fit the object.
+- The regressor will finally output [(x,y) of top left, top right corners] .  The regressor network is as follows:
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/e8f06970-164d-4118-a623-f4d280e0f097" height="200" alt=""/>
+        <img src="https://global.discourse-cdn.com/dlai/original/3X/4/3/43219e22c2ccfb4f44e6c50f0f7546e883f17906.png" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>
 
-It's used in Faster R-CNN, YOLO V2, and SSD
+After a quick scan, I didn’t see the how training is done in the first author, [Sermanet’s C++ implementation though](https://github.dev/sermanet/OverFeat/tree/master/src)
 
-## Comparison Between AlexNet, OverFeat, and YOLO V1
+So to figure out what the regressor network really look like, I found this [YouTube Video](https://www.youtube.com/watch?app=desktop&v=JKTzkcaWfuk) that came up with an explanation that looks mostly reasonable to me, but **please take it with a grain of salt**
 
-AlexNet: `Conv+max|Conv+max|Conv|Conv+max|Dense|Dense|Dense|`
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://global.discourse-cdn.com/dlai/original/3X/2/c/2c2240374e33ab56c77d6d555b1e34e31034626e.png" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
 
-OverFeat: `Conv+max|Conv+max|Conv|Conv+max|Dense|Dense|Dense|`
+**I’m not sure about the 1x1x4096 implementation though**
 
-YOLO V1: `Conv+max|Conv+max|bottleneck Conv + max block | bottleneck Conv+max block | bottleneck Conv + max block | Conv Block | Dense | Dense |`
+My understanding of the regressor network is:
 
-So OverFeat and AlexNet’s architectures looks very similar. AlexNet is just image classification, while Overfeat is image classification + object detection.
+    First train the classification network. Freeze it and add the localizer network in.
+    Layer 1 in the regressor has input 6x7x256, output 2x3x4096, so I believe it’s 5x5x256x4096 (Convolutional)
+    Layer 2: input: 2x3x4096, output 2x3x1024. This looks like an 1x1x1024 convolution to me?
+    Output layer: input: 2x3x1024, output 2x3x4. So this can be also achieved by 1x1x4 convolution?
 
-YOLO V1 (24 conv layers + 2 FC layers) is larger than AlexNet and OverFeat. 1 forward pass in Overfeat is equivalent to sliding one fixed-size window. YOLO V1 however, can output window of any size (the network will learn the window size from the training data)
+I put question marks at the 1x1 convolution is 1x1 conv was introduced by Network In [Network (NiN) Architecture (Lin et al., 2013)](http://d2l.ai/chapter_convolutional-modern/nin.html), and was heavily used in GooLeNet in 2014. However I don’t see either of these in the OverFeat paper’s reference.
 
 ## References
 
 - [1] [Pierre Sermanet, David Eigen, Xiang Zhang, Michael Mathieu, Rob Fergus, and Yann LeCun. 2014. OverFeat: Integrated Recognition, Localization and Detection using Convolutional Networks. In Proceedings of the International Conference on Learning Representations (ICLR), 2014.](https://arxiv.org/pdf/1312.6229)
-- [2] [Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You Only Look Once: Unified, Real-Time Object Detection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016 (pp. 779-788). IEEE.](https://arxiv.org/pdf/1506.02640)
