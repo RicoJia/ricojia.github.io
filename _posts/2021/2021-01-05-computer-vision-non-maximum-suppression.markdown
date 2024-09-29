@@ -2,7 +2,7 @@
 layout: post
 title: Computer Vision - Non Maximum Suppression
 date: '2021-01-05 13:19'
-subtitle: Non Maximum Suppression (NMS)
+subtitle: Non Maximum Suppression (NMS), Intersection over Union (IoU)
 header-img: "home/bg-o.jpg"
 comments: true
 tags:
