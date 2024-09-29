@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - CNN Basics
 date: '2022-01-31 13:19'
-subtitle: Filters, Convolutions
+subtitle: Filters, Padding, Convolution and Its Back Propagation, Receptive Field
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -313,3 +313,39 @@ c.backward()
 - Reduces the number of parameters, thus reduces the overfitting problem.
 - **Smaller number of parameters also means smaller sets of training images**
 - Convolutional Layers also benefit from **sparsity of connections**. This means that the activation of the next layer is only affected by a small number of activations from the previous layer (the ones in the corresponding filtered area)
+
+## Receptive Field
+
+A receptive field of a feature of an element in a feature map refers to **the size of region of the input that produces this feature**. E.g., say we have 2 CNN layers:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/a69ffcac-a7b6-4203-9f95-1ebe430b8c9f" height="300" alt=""/>
+        <figcaption><a href="https://www.researchgate.net/figure/The-receptive-field-of-each-convolution-layer-with-a-3-3-kernel-The-green-area-marks_fig4_316950618">Source: Research Gate </a></figcaption>
+    </figure>
+</p>
+</div>
+
+We denote the input as $f_0$, output of layer $l$ as $f_l$. The receptive field of layer $l$ is $r_l$, but really **it's the number of cells on layer $l$ that a reference layer output sees**. In the below example, $r_0=8$ at the input, w.r.t the second layer. It would be different w.r.t a different layer.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/6020572c-bbeb-46bf-b901-1b73f436fdd6" height="300" alt=""/>
+        <figcaption><a href="https://www.baeldung.com/cs/cnn-receptive-field-size">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+With the above in mind, from the reference layer output to the input layer, recursively:
+
+$$
+\begin{gather*}
+r_{l-1} = s_lr_l + k_l-s_l
+\end{gather*}
+$$
+
+For more formulas and an interactive representation, [please see Araujo's work](https://distill.pub/2019/computing-receptive-fields/).
+
+
