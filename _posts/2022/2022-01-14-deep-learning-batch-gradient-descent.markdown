@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Batch Gradient Descent
 date: '2022-01-14 13:19'
-subtitle: Batch Gradient Descent
+subtitle: Batch Gradient Descent, Mini-Batch
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -242,7 +242,15 @@ A comparison of these three batching methods of epoch costs is shown below:
 ![Screenshot from 2024-08-11 15-01-49](https://github.com/user-attachments/assets/5c5fed43-623b-4dbf-afc0-a79eea1a43a5)
 ![Screenshot from 2024-08-11 15-01-40](https://github.com/user-attachments/assets/369d6d6e-79b7-455f-9a2d-3b428884c883)
 
-### Mini-Batch Method
+## Mini-Batch Method
+
+### Minibatch vs Batch
+
+A huge batch could take a lot of time to evaluate for gradient descent. Instead, if data is independent enough, we can break a huge batch of training data into smaller batches so each update from a minibactch could help parameter convergence faster (mini-batch).
+
+Another alternative is to have batch size being one (stochastic gradient descent). SGD is more noisy because a single update's gradient could be farther away from its true value, but updates are faster. Minibatches are always used for more stability. Usually minibatch sizes are `[64, 512]`
+
+### How to Create A MiniBatch
 
 1. Shuffle the inputs and labels. Before feeding to the network, shuffle $X$ and the corresponding $Y$.
 
