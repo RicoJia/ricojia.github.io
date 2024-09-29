@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Object Detection Notes
 date: '2022-02-13 13:19'
-subtitle: YOLO V1, R-CNN, U-Net
+subtitle: YOLO V1, R-CNN
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -11,7 +11,7 @@ tags:
 
 ## You Only Look Once (YOLO) V1
 
-The main idea is to divide an image into a `7x7` grid. Each grid will detect the existence of 2 bounding box whose center is within the grid cell and outputs `[p_1, bx_1, by_1, bw_1, bh_1, p_2, bx_2, by_2, bw_2, bh_2, c1, ... c20]`, a `7x7x30` tensor.
+The main idea is to divide an image into a `7x7` grid. Each grid will detect the existence of 2 bounding box whose center is within the grid cell and outputs `[p_1, bx_1, by_1, bw_1, bh_1, p_2, bx_2, by_2, bw_2, bh_2, c1, ... c20]`, a `7x7x30` tensor. bounding box size parameters, `bw, bh` are percentages relative to the corresponding image width and height. 
 
 <div style="text-align: center;">
 <p align="center">
@@ -55,7 +55,11 @@ $$
 
 ### Anchor Boxes
 
-An anchor box is a pre-defined bounding box that "anchors" to a cell. It has a pre-defined aspect ratio and a size. For example, if we define a 3x3 grid over an image, at each grid cell, we can define 3 anchor boxes: 1:1 small square, 2:1 tall rectangle, and 1:2 wide rectangle. During inferencing, if a grid cell has an object in it, the model will output `[confidence, location offset, aspect ratio offset]` to closely fit the object.
+In YOLO V2, V3, and V4, Aa anchor box is a pre-defined bounding box that "anchors" to a cell. It has a pre-defined aspect ratio and a size. For example, if we define a 3x3 grid over an image, at each grid cell, we can define 3 anchor boxes: 1:1 small square, 2:1 tall rectangle, and 1:2 wide rectangle. 
+
+During training, the goal is to leared the best `[b_w, b_h]` where `b_w, b_h` are percentages relative to the **pre-defined anchor box sizes**
+
+During inferencing, if a grid cell has an object in it, the model will output `[confidence, location offset, aspect ratio offset]` to closely fit the object.
 
 <div style="text-align: center;">
 <p align="center">
@@ -65,7 +69,7 @@ An anchor box is a pre-defined bounding box that "anchors" to a cell. It has a p
 </p>
 </div>
 
-It's used in Faster R-CNN, YOLO V2, and SSD
+In YOLO V2, each object is assigned to the grid cell that has the object's midpoint. The object is also assigned to the anchorbox with the highest IoU (between the groudtruth and the detected boxes) inside the cell. It's also used in Faster R-CNN and SSD. 
 
 ### Comparison Between AlexNet, OverFeat, and YOLO V1
 
