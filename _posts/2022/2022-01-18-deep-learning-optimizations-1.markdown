@@ -44,12 +44,14 @@ As $t \rightarrow \inf$, $v_t$ will go to 1, so the exponentially weighted avera
 When gradient is low, it might be helpful to use the weight itself as part of the momentum to amplify the gradient. So momentum is defined as:
 
 $$
+\begin{gather*}
 V_{dw} = \beta V_{dw} + (1-\beta) dw
 \\
 V_{db} = \beta V_{db} + (1-\beta) db
 \\
 W = W - \lambda V_{dw} \\
 b = b - \lambda V_{db}
+\end{gather*}
 $$
 
 - $\beta$ is commonly 0.9
@@ -83,13 +85,14 @@ When gradient has large oscillations, we might want to smooth it out. In the bel
 Mathematically, it is
 
 $$
+\begin{gather*}
 S_w = \beta S_{dw} + (1-\beta) dW^2 \\
 S_b = \beta S_{db} + (1-\beta) db^2 \\
 S_w^{corrected} = \frac{S_w}{1-\beta^t} \\
 S_b^{corrected} = \frac{S_b}{1-\beta^t} \\
 W = W - \lambda \frac{dW}{\sqrt{S_w^{corrected}} + \epsilon} \\
 b = b - \lambda \frac{db}{\sqrt{S_b^{corrected}} + \epsilon}
-
+\end{gather*}
 $$
 
 - $dW^2$ are element wise squares. So we have root, and squares. (but no "mean"??)
@@ -101,6 +104,7 @@ $$
 Adam combines the RMSProp and momentum all together. For each weight update, we calculate add momentum to the weight, optionally correct it, then divide it by the sum of squared weights. Mathematically, it is:
 
 $$
+\begin{gather*}
 \text{momentum}
 \\
 V_{dw} = \beta_1 V_{dw} + (1-\beta_1) dw \\
@@ -114,6 +118,8 @@ S_b = \beta_2 S_b + (1-\beta_2)(db)^2 \\
 \\ 
 W = W - \lambda \frac{V_{dw}}{\sqrt{S_w + \epsilon}} \\
 b = b - \lambda \frac{V_{dw}}{\sqrt{S_b + \epsilon}}  \\
+
+\end{gather*}
 $$
 
 - Additionally, $V_{dw}$, $V_{db}$, $S_w$, $S_b$ can be in their "corrected" form.

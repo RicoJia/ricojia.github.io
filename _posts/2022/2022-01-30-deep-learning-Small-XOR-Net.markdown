@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Insights From Training FCN Models On 2D Input Data
+title: Deep Learning - Start Easy, Things I Learned From Training Small Neural Nets 
 date: '2022-01-28 13:19'
 subtitle: Basic Torch Network With Some Notes on Syntax
 comments: true
@@ -21,7 +21,7 @@ On:
 - Gradient norms across layers
 - Final cost  
 
-Along with that, I created a visualization suite which could be used to visualize higher dimension Fully Connected Neuralnet (FCN) as well. [For the full code, please check here](https://github.com/RicoJia/Machine_Learning/blob/master/RicoNeuralNetPrototype/utils/debug_tools.py)
+Along with that, I created a visualization suite which could be used to visualize higher dimension Fully Connected neural nets as well. [For full code, please check here](https://github.com/RicoJia/Machine_Learning/blob/master/RicoNeuralNetPrototype/utils/debug_tools.py)
 
 ## Simple Neural Network
 
@@ -140,7 +140,6 @@ Number of Epochs could matter, too. In a "circle within circles" examle, at firs
 <p align="center">
     <figure>
         <img src="https://github.com/user-attachments/assets/8f99e367-99ee-44aa-af9c-816d4aa6bb7b" height="600" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>
@@ -149,7 +148,6 @@ Number of Epochs could matter, too. In a "circle within circles" examle, at firs
 <p align="center">
     <figure>
         <img src="https://github.com/user-attachments/assets/5dd5be64-7f9a-4158-ae0d-dc8ed576742e" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>

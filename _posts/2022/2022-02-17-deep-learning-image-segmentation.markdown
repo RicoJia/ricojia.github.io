@@ -81,6 +81,12 @@ The foundation of U-Net is the **encoder-decoder network**, and **FCN**[1]. The 
 
 When combining shallow and deep layer outputs, U-Net **concatenates them together**. This preserves full information from both the encoder and the decoder.
 
+### U-Net Architecture Summary
+
+- Contracting Path (decoder)
+- Cropping Path
+- Expansion Path (encoder)
+
 Finally, the output is `hxwxk`, where `k` is the output class number.
 
 ## References

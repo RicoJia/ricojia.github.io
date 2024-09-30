@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Introduction
 date: '2022-01-04 13:19'
-subtitle: Why Do We Even Need Deep Neuralnets?
+subtitle: Why Do We Even Need Deep Neuralnets? Data Partition, ML Ops, Data Normalization
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -27,10 +27,13 @@ Choose dataset -> Choose network architecture (number of layers, number of hidde
 
 Nowadays, It's very hard to guess all these params right in one shot. Intuitions from one domain (speech recognition) likely doesn't transfer well to another. **So going over the above iterations is key.** That said, one exception is that ConvNet/ResNet from computer vision transferred to speech recognition well.
 
-Another secret sauce is data partition. There are:
+
+### Data Partition
+
+There are optionally two/three sets:
 
 - Training set
-- Validation set: unbias evaluation of the model fit for hyperparameter tuning. It can be also used for early stopping and regularization. So a validation set is often used in between epochs.
+- Holdout set (optional): unbias evaluation of the model fit for hyperparameter tuning. It can be also used for early stopping and regularization. So a validation set is often used in between epochs.
 - Test Set: the final evaluation of the model's performance. If the dataset has never been seen in training, it's also called a **holdout** dataset.
 
 The terms "validation set" and "test set" are intermixed in academia and industry.
@@ -39,7 +42,9 @@ Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. 
 
 It is important that all datasets come from the same distribution. One way to do this is **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup in the population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.
 
-**ML Ops**: Machine Learning Operations is similar to DevOps in general software engineering, is to quickly find the best model in a set of given hyper parameters, and deploy them. Also, changes in the machine learning model or data can be quickly tested.
+### ML Ops
+
+Machine Learning Operations is similar to DevOps in general software engineering, is to quickly find the best model in a set of given hyper parameters, and deploy them. Also, changes in the machine learning model or data can be quickly tested.
 
 ### Data Normalization
 
@@ -48,7 +53,7 @@ When data come in different scales, say feature 1 ranges from $[-100, 100]$, ano
 To make the cost function optimize faster:
 
 1. "Shift to the center" - subtract out the mean from inputs
-2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1. 
+2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1.
 
 Another note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different. 
 
