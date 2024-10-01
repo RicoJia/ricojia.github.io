@@ -54,8 +54,7 @@ To make the cost function optimize faster:
 
 1. "Shift to the center" - subtract out the mean from inputs
 2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1.
-
-Another note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different. 
+ note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different. 
 
 <div style="text-align: center;">
 <p align="center">
@@ -72,3 +71,25 @@ You might have heard of Caffe, Caffe2, PaddlePaddle, Keras, Theano, and TensorFl
 One thing is I'd pay more attention to is its true "open-sourceness". In the software industry, some frameworks were once open-source, but later moved to proprietary cloud service by the company that controlled it. Some examples include: Elastic and Kibana, Redis, MongoDB
 
 ONNX (o'nnex) (Open Neural Network Exchange) is an open source format for **deep learning and traditional AI** models. It defines an extensible computation graph model, operators, and data types. So models of different platforms can be converted between each other. E.g., TensorRT <-> TensorFlow <-> Pytorch. **Pitfall: Certain Platforms may not have the most updated versions of the model, so we need to upgrade/downgrade versioning.**
+
+In machine frameworks, there is a "backend" and high level APIs
+
+### Machine Learning Backend
+
+In ML, low level operations are handled by a backend:
+
+- Tensor (multidimensional matrix) manipulations such as convolution, matrix multiplication.
+- Hardware Abstraction: CPU, GPU, TPU.
+- Automatic Differentiation (partial derivatives)
+
+Common Backend platforms include: TensorFlow (Google), PyTorch (Facebook), CNTK (Microsoft Cognitive Toolkit), Theano, JAX (Google's library for numerical computing).
+
+### High level APIs
+
+Keras was started out as a standalone project. As of TensorFlow 2.x, Keras has been fully integrated into TensorFlow and is now serving as the default.
+
+Other High Level APIs include:
+- PyTorch Lightning: wrapper around PyTorch so PyTorch Code could be more boiler plate; simplifies workflows such as for distributed training.
+- Gluon (Apache MXNet)
+- Sonnet (DeepMind)
+- Flax (by Google For JAX).

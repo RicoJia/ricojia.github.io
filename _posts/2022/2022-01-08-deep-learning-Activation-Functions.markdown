@@ -86,3 +86,29 @@ However, now with more tricks like batch normalization,
         - it's continuous and differentiable
         - Combines MAE and MSE.
     - Requires tuning $\delta$
+
+6. Sparse Entropy Loss: designed for image segmentation, where one-hot encoding is used in model output (after softmax) but training data only has labels. The loss per pixel is $l = -log(p_{true})$
+
+For example: 
+
+For 3 pixels, training data labels are: `[2,1,0]`
+
+Output data:
+
+$$
+\begin{gather*}
+0.1 & 0.7 & 0.2 \\
+0.3 & 0.7 & 0.0 \\
+0.5 & 0.4 & 0.1 \\
+\end{gather*}
+$$
+
+Then, the loss for each pixel is:
+
+$$
+\begin{gather*}
+-log(0.2) & -log(0.3) & -log(0.5)
+\end{gather*}
+$$
+
+You can add up the losses and get the sum of it

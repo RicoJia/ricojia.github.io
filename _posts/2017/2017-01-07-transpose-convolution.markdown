@@ -185,3 +185,8 @@ Transpose = nn.ConvTranspose2d(in_channels =1,
 Transpose.weight.data = Kernel
 Transpose(Input)
 ```
+
+## Remarks
+
+- What does "same" padding mean in TensorFlow's transpose_convolution? Answer: 'same' would yield `output_size = stride * input_size`. Please [see here](https://community.deeplearning.ai/t/week4-question-to-the-padding-of-conv2dtranspose/25331/3?u=ricoruotongjia).
+    - A common mistake in using TensorFlow Convolution or transpose_convolution is: **accidentally putting channels at the wrong dimension.** E.g., Why would I get (1,2,4,1) if my input is (1,1,2,2) for transpose_convolution? Because by default, `data_format = "channels_last"`. If your input is (1,1,2,2) with 1 output filter channel, you will get (1,2,4,1).
