@@ -55,7 +55,7 @@ What this classifier really does is to solve an Maximum Likelihood Estimation Pr
 
 ## Cross Entropy Loss
 
-Before introducing cross entropy as a loss, let's talk about entropy. Entropy is a measure of how "disperse" a system is. For a random variable, if its distribution is fairly "concentrated", its entropy is fairly small. E.g., a random variable with $P(x_1) = 0$ and $P(x_2) = 1$. This system is "concentrated" and its entropy is zero. On the other hand, if a random variable is "all over the place", like with a uniform distribution, then its entropy is high. The entropy is represented as:
+Before introducing cross entropy as a loss, let's talk about entropy. Entropy is a measure of how "disperse" a system is. For a random variable, if its distribution is fairly "concentrated", its entropy is fairly small. E.g., a random variable with $P(x_1) = 0$ and $P(x_2) = 1$. This system is "concentrated" and its entropy is zero. On the other hand, if a random variable is "all over the place", like in a uniform distribution, then its entropy is high. The entropy is represented as:
 
 $$
 \begin{gather*}
@@ -73,7 +73,7 @@ $$
 
 - Cross entropy can be thought of as the "cost" to represent the distribution $P(x)$ using distribution $Q(x)$.
 
-Now, to measure the "information loss" for using $Q(x)$ to represent $P(x)$, one metric the **Kullback-Leibler (KL) Divergence**:
+Now, to measure the "information loss" for using $Q(x)$ to represent $P(x)$, one metric is the **Kullback-Leibler (KL) Divergence**:
 
 $$
 \begin{gather*}
@@ -82,7 +82,7 @@ D_{KL}(P || Q) = - \sum_x P(x)log(\frac{P(x)}{Q(x)})
 \end{gather*}
 $$
 
-When evaluating a model across epochs, the true distribution and its entropy $H(P)$ remains the same for each input. The difference of the model's performance each time is determined by $H(P,Q)$. Thus, the cross entropy can be used as a loss
+When evaluating a model across epochs, **the true distribution and its entropy $H(P)$ remains the same for each input**. The difference of the model's performance each time is determined by $H(P,Q)$. Thus, the cross entropy can be used as a loss
 
 $$
 \begin{gather*}
@@ -90,9 +90,38 @@ $$
 \end{gather*}
 $$
 
-- Note that we always represent the ground truth label $y_i$ as an one hot vector, where the true class has a probability 1, and other classes have a probability 0. So the one hot vector actually represents the true output distribution. **This is why cross entropy can be used as a loss in deep learning.**. $i$ is the dimension of the output vector.
+- Note that we always represent the ground truth label $y_i$ as an one-hot vector, where the true class has a probability 1, and other classes have a probability 0. So the one hot vector actually represents the true output distribution. **This is why cross entropy can be used as a loss in deep learning.**. $i$ is the dimension of the output vector.
 
 **Cross-entropy loss** can be used with other activation functions like **ReLU**, **tanh**, etc., as long as we want the logit to be the probability distribution of the output.
+
+## Softmax With Cross Entropy Loss
+
+So combine Softmax and Cross Entropy Loss together:
+
+- Given output one-hot vector $\hat_{y}, $compute softmax of each output class in one prediction
+
+$$
+softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
+\begin{bmatrix}
+e^{\hat{y1}}, e^{\hat{y2}} ...
+\end{bmatrix}
+$$
+
+- Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
+
+$$
+\begin{gather*}
+L = -\sum y_i \cdot log(\hat{p_i}) = - log(\hat{p_m}) 
+\\
+= - \hat{y_m} + log(\sum_i(e^{\hat{y_i}}))
+\end{gather*}
+$$
+
+Where `m` is the correct predicted class. This trick is also called the **log-sum-exp** trick
+
+**The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $e^{\hat{y}}$ can be large, so we subtract values by the largest element in $\hat{y}$, $\hat{y_{max}}$. So, we get $\sum_i e^{\hat{y_i} - \hat{y_{max}}}$ for better stability
+
+In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.softmax_cross_entropy_with_logits(labels, logits)`
 
 ## Gradient Descent With Softmax
 
