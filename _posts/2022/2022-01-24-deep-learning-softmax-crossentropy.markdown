@@ -35,7 +35,7 @@ Then, the classifier picks the highest scored class as its final output.
 
 ### Properties of Softmax
 
-- Softmax is effectively just choosing the highest scored predicted class, so it does not change how the raw score is calculated. So, if we have a perceptron network, all outputs will be a linear combination of the inputs. Adding a softmax will keep the decision boundaries linear 
+- Softmax is effectively just choosing the highest scored predicted class, so it does not change how the raw score is calculated. So, if we have a perceptron network, all outputs will be a linear combination of the inputs. Adding a softmax will keep the decision boundaries linear
 
 <div style="text-align: center;">
 <p align="center">
@@ -98,7 +98,7 @@ $$
 
 So combine Softmax and Cross Entropy Loss together:
 
-- Given output one-hot vector $\hat_{y}, $compute softmax of each output class in one prediction
+1. Given output one-hot vector $\hat_{y}$, compute softmax of each output class in one prediction
 
 $$
 softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
@@ -107,7 +107,7 @@ e^{\hat{y1}}, e^{\hat{y2}} ...
 \end{bmatrix}
 $$
 
-- Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
+2. Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
 
 $$
 \begin{gather*}
@@ -158,7 +158,7 @@ $$
 = \frac{e^{z_j} \cdot \left(\sum_{k=1}^{C} e^{z_k} - e^{z_j}\right)}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
 $$
 
-Since 
+Since:
 
 $$
 \begin{gather*}
