@@ -98,7 +98,7 @@ $$
 
 So combine Softmax and Cross Entropy Loss together:
 
-1. Given output one-hot vector $\hat_{y}$, compute softmax of each output class in one prediction
+1. Given output one-hot vector $\hat{y}$, compute softmax of each output class in one prediction
 
 $$
 softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
