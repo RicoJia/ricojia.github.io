@@ -94,9 +94,25 @@ $$
 
 **Cross-entropy loss** can be used with other activation functions like **ReLU**, **tanh**, etc., as long as we want the logit to be the probability distribution of the output.
 
+### Categorical Cross Entropy 
+
+Categorical Cross Entropy loss is designed for multi-class problems. There are two kinds:
+
+- Categorical Cross-Entropy: Use when labels are **one-hot encoded**.
+- Sparse Categorical Cross-Entropy: Use when labels are integers. It is memory-efficient since it doesn't require one-hot encoding.
+
+Implementations
+
+- `tf.keras.losses.SparseCategoricalCrossentropy`
+- `torch.nn.CrossEntropyLoss()` works with its integer labels. When working with 1-hot labels, after converting them to class indices??? (You don't convert to class indices?), this will be LSE
+
+Categorical cross-entropy loss functions will transfrom one-hot encoded vectors into integers, then utilize `SparseCategoricalCrossentropy`.
+
+The purpose of using the Log-Sum-Exp Trick (LSE) Numerical Stability: it helps prevent Overflow/Underflow where logits (raw inputs into softmax) can be very large or very small.
+
 ## Softmax With Cross Entropy Loss
 
-So combine Softmax and Cross Entropy Loss together:
+By combining the softmax activation and cross-entropy loss into a single operation, implementations avoid computing the softmax probabilities explicitly, which enhances numerical stability and computational efficiency.
 
 1. Given output one-hot vector $\hat{y}$, compute softmax of each output class in one prediction
 
@@ -122,6 +138,7 @@ Where `m` is the correct predicted class. This trick is also called the **log-su
 **The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $e^{\hat{y}}$ can be large, so we subtract values by the largest element in $\hat{y}$, $\hat{y_{max}}$. So, we get $\sum_i e^{\hat{y_i} - \hat{y_{max}}}$ for better stability
 
 In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.softmax_cross_entropy_with_logits(labels, logits)`
+
 
 ## Gradient Descent With Softmax
 
