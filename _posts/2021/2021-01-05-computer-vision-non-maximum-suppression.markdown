@@ -2,7 +2,7 @@
 layout: post
 title: Computer Vision - Non Maximum Suppression
 date: '2021-01-05 13:19'
-subtitle: Non Maximum Suppression (NMS), Intersection over Union (IoU)
+subtitle: Non Maximum Suppression (NMS), Intersection over Union (IoU), TensorFlow non_max_suppression
 header-img: "home/bg-o.jpg"
 comments: true
 tags:
@@ -97,4 +97,77 @@ selected_indices = handcrafted_non_maximum_suppresion(scores=scores, boxes=boxes
 print(selected_indices)
 ```
 
+- There's a smarter way:
+
+```python
+def iou(box1, box2):
+    """Implement the intersection over union (IoU) between box1 and box2
+    
+    Arguments:
+    box1 -- first box, list object with coordinates (box1_x1, box1_y1, box1_x2, box_1_y2)
+    box2 -- second box, list object with coordinates (box2_x1, box2_y1, box2_x2, box2_y2)
+    """
+
+    (box1_x1, box1_y1, box1_x2, box1_y2) = box1
+    (box2_x1, box2_y1, box2_x2, box2_y2) = box2
+
+    # Follows the convention that (0,0) is the top-left corner of an image, (1,0) is the upper-right corner, and (1,1) is the lower-right corner. This is easier than using the midpoint.
+
+    xi1 = max(box1_x1, box2_x1)
+    yi1 = max(box1_y1, box2_y1)
+    xi2 = min(box1_x2, box2_x2)
+    yi2 = min(box1_y2, box2_y2)
+    inter_width = xi2 - xi1
+    inter_height =  yi2 - yi1
+    inter_area = inter_width * inter_height
+    
+    # Calculate the Union area by using Formula: Union(A,B) = A + B - Inter(A,B)
+    box1_area = (box1_x2 - box1_x1 ) * (box1_y2 - box1_y1)
+    box2_area = (box2_x2 - box2_x1 ) * (box2_y2 - box2_y1)
+    union_area = box1_area + box2_area - inter_area
+    
+    print(union_area)
+    # When there's no overlap, the inter_width and inter_height would be negative. 
+    iou = inter_area / union_area if inter_width > 0  and inter_height > 0 else 0
+    
+    return iou
+```
+
 - IoU threshold is often 0.5
+
+## TensorFlow Implementation
+
+```python
+tf.image.non_max_suppression(
+    boxes,
+    scores,
+    max_output_size,
+    iou_threshold=0.5,
+    score_threshold=float(&#x27;-inf'),
+    name=None
+)
+
+```
+
+- Bounding boxes are supplied as `[y1, x1, y2, x2]`, where `(y1, x1)` and `(y2, x2)` are the coordinates of any diagonal pair of box corners
+- A scalar integer Tensor representing the maximum number of boxes to be selected by non-max suppression. 
+
+- `tf.gather()`: The bounding box coordinates corresponding to the selected indices can then be obtained using the tf.gather operation.
+
+```python
+boxes = tf.constant([
+    [0.1, 0.2, 0.3, 0.4],  # Box 1
+    [0.5, 0.6, 0.7, 0.8],  # Box 2
+    [0.2, 0.3, 0.4, 0.5],  # Box 3
+    [0.6, 0.7, 0.8, 0.9]   # Box 4
+])
+
+# Let's say the selected indices after a selection operation are:
+selected_indices = tf.constant([0, 2])  # Select Box 1 and Box 3
+
+# see: tf.Tensor(
+[[0.1 0.2 0.3 0.4]
+ [0.2 0.3 0.4 0.5]], shape=(2, 4), dtype=float32)
+
+selected_boxes = tf.gather(boxes, selected_indices)
+```

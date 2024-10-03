@@ -15,7 +15,7 @@ Early papers found out that Rectified Linear Unit (ReLu) is always faster than S
 
 However, now with more tricks like batch normalization, 
 
-1. ReLu: `y=max(0, x)`, at `x=0` it's technically non-differentiable. But we can still fake it simply: `y' = 0 or 1`  
+- ReLu: `y=max(0, x)`, at `x=0` it's technically non-differentiable. But we can still fake it simply: `y' = 0 or 1`  
     <p align="center">
     <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/d34a1631-c183-4a2e-b5f3-6bedc24b12a3" height="300" width="width"/>
     <figcaption align="center">ReLu</figcaption>
@@ -30,7 +30,21 @@ However, now with more tricks like batch normalization,
         - Dead neurons: neurons may not be activated if their weights make the output negative values.
         - Unbounded outputs
 
-2. tanh: $\frac{2}{1+e^{-2x}}-1$
+- Leaky ReLU
+
+Regular ReLU would lead to dead neurons when $x=0$. That could cause learning to be stuck. Leaky ReLU can unstuck this situation by having a small negative slope and allowing backprop flow correspondingly.
+
+$$
+\begin{gather*}
+y = x (x >0 )
+\\
+y = \alpha x (x <=0)
+\end{gather*}
+$$
+
+- Typically $\alpha=0.01$
+
+- tanh: $\frac{2}{1+e^{-2x}}-1$
         <p align="center">
         <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/22e4e9f7-8a9e-4e3c-9601-4f778281975c" height="300" width="width"/>
         <figcaption align="center">tanh</figcaption>
@@ -42,7 +56,7 @@ However, now with more tricks like batch normalization,
         - For large and small values, gradients are zero (vanishing gradient problem)
         - Could be moderately expensive to train (with exponentials)
 
-3. Sigmoid (or "Logistic Function")
+- Sigmoid (or "Logistic Function")
     <p align="center">
     <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/c552631a-861f-4c9b-a6b4-615130f53dab" height="300" width="width"/>
     <figcaption align="center">sigmoid</figcaption>

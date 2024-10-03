@@ -10,6 +10,70 @@ tags:
     - Deep Learning
 ---
 
+## Basic Operations
+
+- Immutable (`tf.constant`) vs Variable (`tf.Variable`), notice the different capitalization:
+- `tf.math.reduce_max()`: find the max along certain dimension(s).
+
+```python
+# immutable vs variable
+import tensorflow as tf
+
+var = tf.Variable([[1, 2], [3, 4]])
+con = tf.constant([[1, 2], [3, 4]])
+
+# Calculate the max along certain dimension(s). Doc says: 
+# If axis is None, all dimensions are reduced, and a tensor with a single element is returned.
+# By default, keepdims is False, so this will collapse the matrix
+tf.math.reduce_max(
+    var, axis=0, 
+)   # see <tf.Tensor: shape=(2,), dtype=int32, numpy=array([3, 4], dtype=int32)>
+
+tf.math.reduce_max(
+    var
+)   # see <tf.Tensor: shape=(2,), dtype=int32, numpy=4>
+
+```
+
+- [`tf.math.argmax`](https://www.tensorflow.org/api_docs/python/tf/math/argmax): returns the index with the largest value across axes of a tensor. **By default, it returns max along axis=0**
+
+```python
+var = tf.Variable([[2,1], [3, 4]])
+tf.math.argmax(var, axis=-1)    # see <tf.Tensor: shape=(2,), dtype=int64, numpy=array([0, 1])>
+tf.math.argmax(var) # <tf.Tensor: shape=(2,), dtype=int64, numpy=array([1, 1])>
+```
+
+- Broadcasting: this is similar to numpy
+
+```python
+([0.9, 0.3, 0.4, 0.5, 0.1] < 0.4) # see [False, True, False, False, True]
+```
+
+- Masking: this is similar to numpy as well. Its numpy equivalent is `tensor[mask]`. Note that from the doc:
+
+> `0 < dim(mask) = K <= dim(tensor)`, and mask's shape must match the first K dimensions of tensor's shape. We then have: `boolean_mask(tensor, mask)[i, j1,...,jd] = tensor[i1,...,iK,j1,...,jd]` where (i1,...,iK) is the ith True entry of mask (row-major order). The axis could be used with mask to indicate the axis to mask from.
+
+**So masking will collapse all matching dims into one**
+
+```python
+# 3x2
+tensor = [[1, 2], [3, 4], [5, 6]]
+# 3
+mask = np.array([True, False, True])
+# so the two's 1st dimension match! based on that, all the matching dimensions will be collapsed into 1, while the other dims will remain
+tf.boolean_mask(tensor, mask)  # [[1, 2], [5, 6]]
+```
+
+- Element-wise multiplications: `*` and `tf.multiply()`
+
+```python
+tensor1 = tf.constant([0, 1, 2, 3])  # 1-D example
+tensor2 = tf.constant([1, 2, 3, 4])  # 1-D example
+tensor1 * tensor2
+tf.multiply(tensor1, tensor2) # see <tf.Tensor: shape=(4,), dtype=int32, numpy=array([ 0,  2,  6, 12], dtype=int32)>
+tensor1 .* tensor2  # Invalid
+```
+
 ## Basic Neural Net
 
 The core features of TensorFlow (and many other Deep Learning Frames like PyTorch) are: 

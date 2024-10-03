@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Object Detection Notes
+title: Deep Learning - Object Detection Notes Part 1
 date: '2022-02-09 13:19'
 subtitle: Convolution Implementation of Sliding Window, OverFeat
 comments: true
