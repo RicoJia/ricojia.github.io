@@ -1,8 +1,8 @@
 ---
 layout: post
-title: RGBD SLAM - Setting Up Nvidia Orin Nano
+title: RGBD SLAM - GPU Setup
 date: '2024-08-18 13:19'
-subtitle: Summary Of Nvidia Orin Nano Setup And Docker For Machine Learning
+subtitle: Summary Of Nvidia Orin Nano Setup, Docker For General Machine Learning
 header-img: "img/post-bg-unix"
 tags:
     - RGBD Slam
@@ -100,3 +100,79 @@ cp: cannot stat '/home/rico/Downloads/bootFromExternalStorage/R35.4.1/Linux_for_
 3. `git clone https://github.com/jetsonhacks/bootFromExternalStorage.git`, this is a set of helper scripts.
 
 - Note this is downloading `R35.4.1` of Nvidia Linux. So replace all its instances with the current version: `for file in *; do sed -i 's/'R35.4.1/R36.3.0/g "$file"; done`
+
+## Coursera GPU Set Up
+
+If you are a paid Coursera member, you can get free GPU access [in the Residual Networks assignment](https://www.coursera.org/learn/convolutional-neural-networks/home/week/3). As of Sept 25 2024, I can see:
+
+```
+%!nvidia-smi
+Wed Sep 25 17:46:22 2024       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.85.05    Driver Version: 525.85.05    CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A10G         On   | 00000000:00:1C.0 Off |                    0 |
+|  0%   42C    P0   140W / 300W |  12940MiB / 23028MiB |     23%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+
+Here an `Nvidia A10G` is used. It's an industrial grade GPU: 150W, Ampere Architecture, It's 31.2 TF (FP32), and 250 TOPS (INT8).
+
+**A huge pitfall is after a certain number of hours (1h?), the ipynb kernel is deactivated and you are no longer eligible to train.**
+
+### SSL PITFALL
+
+When I was trying to do
+
+```python
+from torchvision import models
+model_ft = models.resnet18(weights='DEFAULT')
+```
+
+I saw:
+
+```python
+Downloading: "https://download.pytorch.org/models/resnet18-f37072fd.pth" to /root/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth
+
+---------------------------------------------------------------------------
+SSLEOFError                               Traceback (most recent call last)
+File /usr/lib/python3.8/urllib/request.py:1354, in AbstractHTTPHandler.do_open(self, http_class, req, **http_conn_args)
+   1353 try:
+-> 1354     h.request(req.get_method(), req.selector, req.data, headers,
+   1355               encode_chunked=req.has_header('Transfer-encoding'))
+   1356 except OSError as err: # timeout error
+   ...
+URLError: <urlopen error EOF occurred in violation of protocol (_ssl.c:1131)>
+```
+
+According to this post, it might be that Python version on the jupyter notebook does not support TLS1.1 +. I tried the solution there but to no avail. So for now, this notebook is **only good for Training from scratch, not for transfer learning.**
+
+```python
+import ssl
+urlopen('https://www.howsmyssl.com/a/check', context=ssl._create_unverified_context()).read()
+```
+
+### Clean Up
+
+At the end, let's be good citizens and free up memories for others:
+
+```python
+%%javascript
+IPython.notebook.save_checkpoint();
+if (confirm("Clear memory?") == true)
+{
+    IPython.notebook.kernel.restart();
+}
+```
