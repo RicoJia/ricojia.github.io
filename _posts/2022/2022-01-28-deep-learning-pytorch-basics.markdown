@@ -2,14 +2,15 @@
 layout: post
 title: Deep Learning - PyTorch Basics
 date: '2022-01-28 13:19'
-subtitle: Basic Torch Network With Some Notes on Syntax
+subtitle: Neural Network Model Components, Common Operations
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
 
-## Neuralnet
+
+## Neural Network Model Components
 
 - Softmax layer:
 

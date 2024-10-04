@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - PyTorch Data Loading
 date: '2022-02-21 13:19'
-subtitle: RESNET-50 Data Loading, Data Transforms
+subtitle: RESNET-50 Data Loading, Data Transforms, Custom Data Loading
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -128,3 +128,101 @@ plt.imshow(img)
     </figure>
 </p>
 </div>
+
+## Custom Data Loading
+
+For image classification, one custom way to store images is to save images under directories named with its class. Then, save a label -> class name mapping.
+
+Here, we are loading PASCAL VOC (Visual Object Classification) 2007 Dataset to test a neural net trained for CIFAR_10. Some key nuances include:
+
+- CIFAR-10 takes in `32x32` images and we need to supply some class name mappings. Input data normalization is done as usual
+- We do not add images and their labels if the labels don't appear in the class name mapping
+- A custom `torch.utils.data.Dataset` needs to subclass `Dataset` and has  `__len__(self)` and `__getitem__(self)` methods.
+
+```python
+import torch
+from torch.utils.data import Dataset
+voc_root = './data'
+year = '2007'
+transform_voc = transforms.Compose([
+    v2.Resize((32,32)),
+    v2.ToTensor(),
+    v2.Normalize(mean, std), #normalize with CIFAR mean and std
+])
+
+# These are handpicked VOC->CIFAR-10 mapping. If VOC's label doesn't fall into this dictionary, we shouldn't feed it to the model.
+class_additional_mapping = {'aeroplane': 'airplane', 'car': 'automobile', 'bird':'bird', 'cat':'cat', 'dog':'dog', 'frog':'frog'}
+
+mean = [0.4914, 0.4822, 0.4465]
+std = [0.2470, 0.2435, 0.2616]
+
+class FilteredVOCtoCIFARDataset(Dataset):
+    def __init__(self, root, year, image_set, transform=None, class_mapping=None):
+        self.voc_dataset = torchvision.datasets.VOCDetection(
+            root=root,
+            year=year,
+            image_set=image_set,
+            download=True,
+            transform=None  # Transform applied manually later
+        )
+        self.transform = transform
+        self.class_mapping = class_mapping
+        self.filtered_indices = self._filter_indices()
+
+    def _filter_indices(self):
+        indices = []
+        for idx in range(len(self.voc_dataset)):
+            target = self.voc_dataset[idx][1]  # Get the annotation
+            objects = target['annotation'].get('object', [])
+            if not isinstance(objects, list):
+                objects = [objects]  # Ensure it's a list of objects
+            if len(objects) > 1:
+                continue
+            obj = objects[0]
+            label = obj['name']
+            if label in self.class_mapping:  # Check if class is in our mapping
+                indices.append(idx)
+        return indices
+
+    def __len__(self):
+        return len(self.filtered_indices)
+
+    def __getitem__(self, idx):
+        actual_idx = self.filtered_indices[idx]
+        image, target = self.voc_dataset[actual_idx]
+        
+        # Apply transformations to the image
+        if self.transform:
+            image = self.transform(image)
+
+        # Map VOC labels to CIFAR-10 labels
+        objects = target['annotation'].get('object', [])
+        if not isinstance(objects, list):
+            objects = [objects]  # Ensure it's a list of objects
+
+        # Create a list of labels for the image
+        labels = []
+        for obj in objects:
+            label = obj['name']
+            if label in self.class_mapping:
+                labels.append(self.class_mapping[label])
+
+        # Return the image and the first label (as a classification task)
+        return image, labels[0]  # In classification, return a single label per image
+
+dataset = FilteredVOCtoCIFARDataset(
+    root=voc_root,
+    year='2007',
+    image_set='val',
+    transform=transform_voc,
+    class_mapping=class_additional_mapping
+)
+
+dataloader = torch.utils.data.DataLoader(
+    dataset,
+    batch_size=16,          # Adjust based on your memory constraints
+    shuffle=True,
+    num_workers=2,         # Adjust based on your system
+    pin_memory=True
+)
+```
