@@ -27,6 +27,8 @@ After face recognition, liveness detection has been big in China.
 </p>
 </div>
 
+Today's commercialized face recognition systems are trained on very large datasets. So this is one realm where transfer learning is nice.
+
 ## One-Shot Learning Problem
 
 Conventional neural network `input -> CNN -> softmax(x)` is not scalable. One-shot learning allows you to have only one reference image. Then you can
@@ -40,11 +42,22 @@ $$
 
 ### DeepFace
 
+**Contribution:** DeepFace (2014 CVPR) focuses on **learning encodings of input frontal views of face images**.
 
-DeepFace focuses on **learning encodings of input frontal views of face images**. It does so by training a single convolutional neural network (CNN) to map each face image to their labels. They are connected to an FC layer that gets activated by softmax, and outputs class labels. The second last layer outputs embeddings (a 4096-vector), so during inference, this layer is often discarded.
+**Method:** It does so by training a single convolutional neural network (CNN) to map each face image to their labels. They are connected to an FC layer that gets activated by softmax, and outputs class labels. The second last layer outputs embeddings (a 4096-vector), so during inference, this layer is often discarded.
 
 In the deepface paper, they didn't use triplet to train. That's the work from FaceNet
 
+**Rationale behind each method:**
+
+
+#### TODO: tech details
+
+- Max-pooling makes output of conv more robust to local translations. How is this correct? From an "activation perspective"? I'm thinking about the scenario where you have the same picture but translated. Then, oh, your output image will have activations shifted too, right?
+- "several levels of pooling would cause the network to lose information about the precise position of detailed facial structure and micro-textures" I guess that's true
+    - "Hence, we apply max-pooling only to the first convolutional layer. We interpret these first layers as a front-end adaptive pre-processing stage" - but this is not the case for resnet, yolo etc., right? So this is ok?
+
+- The loss is the regular softmax-loss
 
 ### Encoding Learning
 
@@ -64,16 +77,55 @@ A **Siamese** network first learns the **encoding** of an image. This idea was i
 
 After learning the encoding of two images, a similarity function can be formulated as a **triplet loss**:
 
+#### Definitions
+
+- Anchor: image of a person
+- Positive: image of the same person
+- Negative: image of a different person
+
 $$
 \begin{gather*}
 L(A, P, N) = max(|f(A) - f(P)|^2 - |f(A) - f(N)|^2 + \alpha, 0)
 \end{gather*}
 $$
 
-Where $f(P)$ is the encoding of a "positive" image (image of the same person), and $f(N)$ is that of a negative image.
+Where $f(P)$ is the encoding of a "positive" image, and $f(N)$ is that of a negative image.
 We append $\alpha$ to the loss function because we don't want the learned encoding is 0. This way, the model will learn an encoding such that distances between positive images are far smaller than those between negative images.
 
 Triplet selection has to be careful too. We want to choose triplets `(image, true image, negative image)` that are hard to train on. Easy
+
+## Triplet Selection TODO
+
+Some triplets already satisfy the loss. Why would it be a hassle to select them? There's no harm in incorporating them, but they could significantly slow down your training. Some negative images are already far
+
+- But you have to calculate embeddings of each image, right? Small subset of the data?
+    - Online Triplet mining: in a mini-batch, for each anchor image
+        1. calculate embedding of the entire batch
+        2. find the farthest distance positive image, and the closest distance negative image. Those are "hard triplets"
+
+    - When do you calculate embedding for batches? store the final output?
+
+### Alternative 1: Binary Classification
+
+The idea is to put two twin networks together, and try to have 1 neuron with weights $W$ and activation $\sigma(x)$ to learn if the two images are the same.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/8564259c-a447-4bb2-8bb8-58c369155186" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+This would become:
+
+$$
+\begin{gather*}
+\sigma(\sum_K w_k |f(x^i)_k - f(x^j)_k| + b)
+\end{gather*}
+$$
+
+Here, the similarity of two images can also be [Chi-Squared Similarity](../2017/2017-06-05-math-distance-metrics.markdown). For anchor images, we can store the pre-computed value.
 
 ## References
 
