@@ -24,6 +24,18 @@ $$
 - $KL(x) \ge 0$, when $p(x)=q(x)$, $KL(x)=0$
 - If from counting, we find that $q(x_i)=0$ for a certain value $x_i$, technically, $D_{KL}(p(x) || q(x)) = \sum_X p(x) \frac{p(x)}{0} = \inf$. However, this could cause a lot of issues. instead, we can assume $q(x) = \epsilon = 10^{-3}$ in this case to avoid numerical errors
 
+### Chi-Squared Similarity
+
+Chi-Squared Similarity is often used to measure probability distributions of categoritcal data, such as histograms, counts, text data represented by term frequencies.
+
+$$
+\begin{gather*}
+\chi^2(P,Q) = \frac{(P_i-Q_i)^2}{(P_i+Q_i)}
+\end{gather*}
+$$
+
+Where $P_i$, $Q_i$ are bins for distributions $P$, $Q$. Denometer $P_i + Q_i$ brings a normalization effect, which considers different scales of the distributions.
+
 ### Bhattacharyya Distance
 
 TODO

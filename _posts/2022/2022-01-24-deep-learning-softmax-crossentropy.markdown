@@ -53,7 +53,7 @@ What this classifier really does is to solve an Maximum Likelihood Estimation Pr
 
 - Is the MLE specific to Softmax? No.  MLE is the general theoretical framework of many types of models. However for classification, Softmax is a common and more intuitive way to implement MLE, especially when it's combined with **Cross-Entropy Loss**.
 
-## Cross Entropy Loss
+## Cross Entropy Loss (a.k.a Softmax Loss)
 
 Before introducing cross entropy as a loss, let's talk about entropy. Entropy is a measure of how "disperse" a system is. For a random variable, if its distribution is fairly "concentrated", its entropy is fairly small. E.g., a random variable with $P(x_1) = 0$ and $P(x_2) = 1$. This system is "concentrated" and its entropy is zero. On the other hand, if a random variable is "all over the place", like in a uniform distribution, then its entropy is high. The entropy is represented as:
 
