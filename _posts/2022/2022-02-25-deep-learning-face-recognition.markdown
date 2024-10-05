@@ -63,7 +63,7 @@ In the deepface paper, they didn't use triplet to train. That's the work from Fa
 
 Why is the network called Siamese? Is that Thai? No, it came from "Siamese Twins", where you have two identical "twin networks" that share the same weights and same architecture. The twins just take in different inputs. Actually, It's a concept that was explored before DeepFace.
 
-A **Siamese** network first learns the **encoding** of an image. This idea was introduced by DeepFace [1]. 
+A **Siamese** network first learns the **encoding** of an image. This idea was introduced by DeepFace [1].
 
 <div style="text-align: center;">
 <p align="center">
@@ -82,6 +82,7 @@ After learning the encoding of two images, a similarity function can be formulat
 - Anchor: image of a person
 - Positive: image of the same person
 - Negative: image of a different person
+- Triplet Loss is:
 
 $$
 \begin{gather*}
@@ -94,16 +95,23 @@ We append $\alpha$ to the loss function because we don't want the learned encodi
 
 Triplet selection has to be careful too. We want to choose triplets `(image, true image, negative image)` that are hard to train on. Easy
 
-## Triplet Selection TODO
+## Triplet Selection
 
-Some triplets already satisfy the loss. Why would it be a hassle to select them? There's no harm in incorporating them, but they could significantly slow down your training. Some negative images are already far
+Some triplets already satisfy the loss. Why would it be a hassle to select them? There's no harm in incorporating them, but they could significantly slow down your training. To address this, Online Triplet Mining is employed within each mini-batch to select the most informative triplets that actively contribute to learning. Here's how it works:
 
-- But you have to calculate embeddings of each image, right? Small subset of the data?
-    - Online Triplet mining: in a mini-batch, for each anchor image
-        1. calculate embedding of the entire batch
-        2. find the farthest distance positive image, and the closest distance negative image. Those are "hard triplets"
+1. Calculate embeddings of all images using the current model. (These will be computed in parallel in PyTorch/TensorFlow)
+2. Compute each pair's similarity.
+3. For each anchor, find the farthest distance positive image, and the closest distance negative image. Those are "hard triplets"
+4. Total triplet loss is $\sum_m L(A, P, N) = \sum_m max(|f(A) - f(P)|^2 - |f(A) - f(N)|^2 + \alpha, 0)$ over batch $m$, or one can take the average as well.
+5. Backpropagation starts with final output gradient:
 
-    - When do you calculate embedding for batches? store the final output?
+$$
+\begin{gather*}
+\frac{\partial L}{\partial f(A)} = 2(f(A) - f(P)) - 2(f(A) - f(N)) = 2(f(N) - f(P))
+\end{gather*}
+$$
+
+This can be handled by auto-diff and the gradient's computational graph.
 
 ### Alternative 1: Binary Classification
 
