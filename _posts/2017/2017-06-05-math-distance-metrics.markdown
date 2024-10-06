@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Distance Metrics
-subtitle: Various Distance / Divergence Metrics 
+subtitle: KL Divergence , Chi-Squared Similarity
 date: '2017-06-05 13:19'
 header-img: "img/bg-walle.jpg"
 tags:
