@@ -38,6 +38,12 @@ So,
 
 - **True Negatives (TN)**: These are the boys that the machine correctly classified as "boys." Since the class has 5 boys in total, and the machine incorrectly labeled 3 as girls, it correctly identified 2 boys as boys:
 
+### Confusion Matrix
+
+| | Predicted Positive |	Predicted Negative |
+| -------- | -------- | -------- |
+| Actual Positive | |
+| Actual Negative | |
 
 ## ROC (Receiver Operating Characteristic Curve)
 
