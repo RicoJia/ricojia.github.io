@@ -2,18 +2,20 @@
 layout: post
 title: Deep Learning - Performance Metrics
 date: '2022-02-15 13:19'
-subtitle: mean Average Precision (mAP)
+subtitle: mean Average Precision (mAP), ROC Curve
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
 
-## mean Average Precision (mAP)
+## Terminology
 
-### Precision (查准率) and Recall (查全率)
+### Area Under Curve
 
-#### Motivating Example
+Area Under Curve = AUC. 
+
+### True Positives, False Positives, True Negatives, False Negatives.
 
 Suppose a class has 10 students, 5 boys and 5 girls. You use a machine to find the girls, and the machine returns the following results:
 
@@ -21,10 +23,78 @@ Suppose a class has 10 students, 5 boys and 5 girls. You use a machine to find t
 | Boy | Girl | Girl | Boy | Girl | Boy |
 ```
 
+Mathematically,
+
+- Positives: The 6 results returned by the machine (these are called Positives because the machine identified them as "girls").
+- Negatives: The 4 remaining students who were not returned by the machine are considered Negatives.
+
+So,
+
+- **True Positives**: These are the items (students) that the machine classified as "girls" and are actually girls. In this case, the machine correctly identified 3 out of the 5 girls:
+
+- **False Positives (FP)**: These are the items the machine classified as "girls," but they are actually boys. In this case, the machine wrongly classified 3 boys as "girls".
+
+- **False Negatives (FN)**: These are the actual girls that the machine missed (classified as "boys"). Since there are 5 actual girls and the machine found 3 of them, it missed 2 girls
+
+- **True Negatives (TN)**: These are the boys that the machine correctly classified as "boys." Since the class has 5 boys in total, and the machine incorrectly labeled 3 as girls, it correctly identified 2 boys as boys:
+
+
+## ROC (Receiver Operating Characteristic Curve)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/929f74c6-ef03-42f4-9ecf-8b14f63920e8" height="300" alt=""/>
+        <figcaption><a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
+
+ROC curve measures the performance of a binary classifier at different decision threshold (TODO what is decision threshold?).
+
+The y axis is True Positive Rate: "what percentage of the positives have you classified" This is the same as "recall" as below
+
+$$
+\begin{gather*}
+\frac{TP}{TP + FN}
+\end{gather*}
+$$
+
+The x axis is False Positive Rate: "what percentage of the negatives have you classified".
+
+$$
+\begin{gather*}
+\frac{FP}{FP + TN}
+\end{gather*}
+$$
+
+A decision threshold of a binary classifier is the threshold of probability or confidence above which a class can be identified as true. **A ROC curve is made when the decision threshold is varied.**
+
+- A random classfier would have equal FPR and TPR rates.
+
+Why it's called **ROC**: In World War II, the ROC curve was used by the radar operators to detect enemies. Receiver means "radar receiver equipment", and the curve measures the radar receiver's ability to distinguish enemies, out of all the enemies, versus false signals like flying objects like birds out of all non-enemy flying objects.
+
+In general, people uses AUC to describe a ROC curve. **Pitfalls** of ROC include:
+
+- In imbalanced datasets, when positives are rare, even good models might easily have a low TPR, which results in a low ROC value. An example is medical imaging where the positive (disease) could be rare.
+- So, negative predicted value should be measured along with ROC
+
+$$
+\begin{gather*}
+NPV = \frac{TN}{TN + FN}
+\end{gather*}
+$$
+
+- Precision should be measured along with ROC, see below
+
+
+## mean Average Precision (mAP)
+
+### Precision (查准率) and Recall (查全率)
+
 The precision is: 3/6 = 0.5. Interpretation: It is "#accurate items / #items being returned"
 The recall is: 3/5 = 0.6. Interpretation: This is "#accurate items / #total number of target items", like how many of the total items you've "recalled" into your search. 
 
-Mathematically, Items being found in the search are **Positives**, items not being found are **Negatives**. "accurate items" are **True Positives** (TP), "items being returned" is **True Positives + False Positives** (TP+FP), "total number of target items" is **True Positives + False Negatives**.
 
 $$
 \begin{gather*}
@@ -71,7 +141,7 @@ In this real world example, we have found 7 bounding boxes. We sort them by thei
 
 **Note that the IoU of box 7 is 0. We usually discard boxes with IoU lower than 0.5.**. So we discard that one.
 
-Average Precision (AP) is the **Area Under Curve(AUC) of the precision-recall curve.** In real life, we want a fast way to calculate an approximate of that. Because precision and recall are values in `[0, 1]`, the final AP is also `[0, 1]`
+Average Precision (AP) is the **AUC of the precision-recall curve.** In real life, we want a fast way to calculate an approximate of that. Because precision and recall are values in `[0, 1]`, the final AP is also `[0, 1]`
 
 #### PASCAL VOC (Visual Object Classes) 11-Point Interpolation, Pre-2010
 
