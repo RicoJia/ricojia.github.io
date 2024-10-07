@@ -62,3 +62,9 @@ tensor_b = torch.randn(6, 4)     # Another tensor with a different shape
 # Reshape tensor_b to match the shape of tensor_a
 reshaped_tensor = tensor_b.reshape(tensor_a.shape)
 ```
+
+- Checking for unique values:
+
+```python
+print(torch.unique(target))
+```

@@ -40,6 +40,8 @@ So,
 
 ### Confusion Matrix
 
+This measures how "confused" a binary classifier is in predictions
+
 | | Predicted Positive |	Predicted Negative |
 | -------- | -------- | -------- |
 | Actual Positive | |
