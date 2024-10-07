@@ -95,7 +95,7 @@ $$
 
 Solution:
 
-**Padding controls how much space is added around the output.** It is the padded area around the intermediate output, so we just need to carve it out and get the output**
+**Padding controls how much space is added around the output.** It is the padded area around the intermediate output, so we just need to carve it out and get the output
 
 Intermediate output Height: $H = Stride \times (H_{input}-1) + H_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$
 Intermediate output Width: $W = Stride \times (W_{input}-1) + W_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$
