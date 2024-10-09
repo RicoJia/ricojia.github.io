@@ -7,6 +7,7 @@ comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
+    - Hands-On
 ---
 
 
