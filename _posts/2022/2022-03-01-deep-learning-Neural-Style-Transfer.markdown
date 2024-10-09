@@ -82,6 +82,13 @@ $$
 
 ![Screenshot from 2024-10-08 17-57-49](https://github.com/user-attachments/assets/1790ce15-3327-4ebb-890e-f97fb11a571c)
 
+- In neural style transfer, we train the pixels of an image, and not the parameters of a network. How? 
+    1. Generate a random image $I$
+    2. Have a conv net like VGG-19 as the backbone for feature extraction
+    3. Calculate Gram Matrix,  the loss $J(C,S)$, and the partial derivatives $\frac{\partial L}{\partial I}$ through back propagation
+    4. Update image value by $I = I - \lambda \frac{\partial L}{\partial I}$
+
+
 ## Reference
 
 [1] [Zeiler, M. D., & Fergus, R. (2014). Visualizing and understanding convolutional networks. In European Conference on Computer Vision (ECCV) (pp. 818-833). Springer. https://doi.org/10.1007/978-3-319-10590-1_53](https://arxiv.org/abs/1311.2901) 

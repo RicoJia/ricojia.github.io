@@ -91,7 +91,7 @@ L(A, P, N) = max(|f(A) - f(P)|^2 - |f(A) - f(N)|^2 + \alpha, 0)
 $$
 
 Where $f(P)$ is the encoding of a "positive" image, and $f(N)$ is that of a negative image.
-We append $\alpha$ to the loss function because we don't want the learned encoding is 0. This way, the model will learn an encoding such that distances between positive images are far smaller than those between negative images.
+We append $\alpha$ to the loss function because we don't want the learned encoding is 0. This way, the model will learn an encoding such that distances between positive images are far smaller than those between negative images. **$\alpha$ is usually a hyperparameter (so not trainable)**
 
 Triplet selection has to be careful too. We want to choose triplets `(image, true image, negative image)` that are hard to train on. Easy
 
