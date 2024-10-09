@@ -21,7 +21,7 @@ When we build a classifier for cat classification, at the end of training, it's 
 </p>
 </div>
 
-- The raw unnomalized output of the network, which is the input of the softmax layer, $Y_i$ is also know as "Logit".
+- The raw unnomalized output of the network, which is the input of the softmax layer, $Y_i$ is also know as **"Logit"**.
 
 The softmax opertation is:
 
@@ -94,6 +94,100 @@ $$
 
 **Cross-entropy loss** can be used with other activation functions like **ReLU**, **tanh**, etc., as long as we want the logit to be the probability distribution of the output.
 
+### Softmax With Cross Entropy Loss And Log-Sum-Exp Trick
+
+By combining the softmax activation and cross-entropy loss into a single operation, implementations avoid computing the softmax probabilities explicitly, which enhances numerical stability and computational efficiency.
+
+1. Given output one-hot vector $\hat{y}$, compute softmax of each output class in one prediction
+
+$$
+softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
+\begin{bmatrix}
+e^{\hat{y1}}, e^{\hat{y2}} ...
+\end{bmatrix}
+$$
+
+2. Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
+
+$$
+\begin{gather*}
+L = -\sum y_i \cdot log(\hat{p_i}) = - log(\hat{p_m}) 
+\\
+= - \hat{y_m} + log(\sum_i(e^{\hat{y_i}}))
+\end{gather*}
+$$
+
+Where `m` is the correct predicted class. This trick is also called the **log-sum-exp** trick
+
+**The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $e^{\hat{y}}$ can be large, so we subtract values by the largest element in $\hat{y}$, $\hat{y_{max}}$. So, we get $\sum_i e^{\hat{y_i} - \hat{y_{max}}}$ for better stability
+
+In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.softmax_cross_entropy_with_logits(labels, logits)`
+
+## Cross Entropy Loss Variants
+
+### Categorical Cross Entropy
+
+Categorical Cross Entropy loss is designed for multi-class problems. There are two kinds:
+
+- Categorical Cross-Entropy: Use when labels are **one-hot encoded**.
+- Sparse Categorical Cross-Entropy: Use **when labels are integers**. It is memory-efficient since it doesn't require one-hot encoding.
+
+The purpose of using the Log-Sum-Exp Trick (LSE) Numerical Stability: it helps prevent Overflow/Underflow where logits (raw inputs into softmax) can be very large or very small.
+
+#### TensorFlow Implementations
+
+- `tf.keras.losses.SparseCategoricalCrossentropy(from_logits: bool)`
+    - If `from_logits=True`, tf will expect predictions being a probability distribution. Example:
+        ```python
+        y_true = [1, 2]
+        y_pred = [[0.05, 0.95, 0], [0.1, 0.8, 0.1]]
+        scce = keras.losses.SparseCategoricalCrossentropy()
+        scce(y_true, y_pred)
+        ```
+- Categorical cross-entropy loss functions will transfrom one-hot encoded vectors into integers, then utilize `SparseCategoricalCrossentropy`.
+
+- `torch.nn.CrossEntropyLoss()` works with 1-hot labels. Internally, it first converts them to class indices, Then applies LSE (like categorical cross-entropy)
+
+#### PyTorch Implementations
+
+- `nn.CrossEntropyLoss(ignore_index)`
+    - Input for per-pixel loss with `C` number of classes should have dimension: `(minibatch,C,d1​,d2​,...,dK​) with K≥1K≥1 for the K-dimensional case`
+    - Input target will be in the shape of `(minibatch, d1, d2..dk)`. Each number should be the class label
+
+### Binary-Cross-Entropy Loss
+
+For binary classifiers, the output layer is usually 1 single unit. To normalize the output to `[0, 1]`, it's common to use a sigmoid function:
+
+$$
+\begin{gather*}
+\sigma(x) = \frac{1}{1 + e^{-x}}
+\end{gather*}
+$$
+
+Then, calculate the loss:
+
+$$
+\begin{gather*}
+L = -(ylog(\sigma(\hat{y})) + (1-y)log(1-\sigma(\hat{y})))
+\end{gather*}
+$$
+
+In PyTorch, this is `torch.nn.BCEWithLogitsLoss()`. **Using this function is more numerically stable than calculating the sigmoid and Cross-Entropy separately.** Here is the reason:
+
+- Above can be written as:
+
+$$
+\begin{gather*}
+-[-log(1 + e^{-\hat{y}})y + (1-y)(log^{-\hat{y}} - log(1 + e^{-|\hat{y}|}))] 
+\\
+= 
+\\
+max(\hat{y}, 0) - \hat{y}y + log(1 + e^{-|\hat{y}|})
+\end{gather*}
+$$
+
+When $\hat{y} \rightarrow \infty$, using the vanilla function will lead to underflow and you will get $-\infty$. The updated function is more accurate.
+
 ## Gradient Descent With Softmax
 
 The gradient of cross entropy loss, $J$ w.r.t jth dimension of the output prediction $\hat{y_j}$ is:
@@ -160,84 +254,3 @@ $$
 = -\hat{y}_j \cdot \hat{y}_c
 \end{gather*}
 $$
-
-## Cross Entropy Loss Variants
-
-### Softmax With Cross Entropy Loss
-
-By combining the softmax activation and cross-entropy loss into a single operation, implementations avoid computing the softmax probabilities explicitly, which enhances numerical stability and computational efficiency.
-
-1. Given output one-hot vector $\hat{y}$, compute softmax of each output class in one prediction
-
-$$
-softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
-\begin{bmatrix}
-e^{\hat{y1}}, e^{\hat{y2}} ...
-\end{bmatrix}
-$$
-
-2. Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
-
-$$
-\begin{gather*}
-L = -\sum y_i \cdot log(\hat{p_i}) = - log(\hat{p_m}) 
-\\
-= - \hat{y_m} + log(\sum_i(e^{\hat{y_i}}))
-\end{gather*}
-$$
-
-Where `m` is the correct predicted class. This trick is also called the **log-sum-exp** trick
-
-**The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $e^{\hat{y}}$ can be large, so we subtract values by the largest element in $\hat{y}$, $\hat{y_{max}}$. So, we get $\sum_i e^{\hat{y_i} - \hat{y_{max}}}$ for better stability
-
-In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.softmax_cross_entropy_with_logits(labels, logits)`
-
-### Categorical Cross Entropy
-
-Categorical Cross Entropy loss is designed for multi-class problems. There are two kinds:
-
-- Categorical Cross-Entropy: Use when labels are **one-hot encoded**.
-- Sparse Categorical Cross-Entropy: Use when labels are integers. It is memory-efficient since it doesn't require one-hot encoding.
-
-Implementations
-
-- `tf.keras.losses.SparseCategoricalCrossentropy`
-- `torch.nn.CrossEntropyLoss()` works with its integer labels. When working with 1-hot labels, after converting them to class indices??? (You don't convert to class indices?), this will be LSE
-
-Categorical cross-entropy loss functions will transfrom one-hot encoded vectors into integers, then utilize `SparseCategoricalCrossentropy`.
-
-The purpose of using the Log-Sum-Exp Trick (LSE) Numerical Stability: it helps prevent Overflow/Underflow where logits (raw inputs into softmax) can be very large or very small.
-
-### Binary-Cross-Entropy Loss
-
-For binary classifiers, the output layer is usually 1 single unit. To normalize the output to `[0, 1]`, it's common to use a sigmoid function:
-
-$$
-\begin{gather*}
-\sigma(x) = \frac{1}{1 + e^{-x}}
-\end{gather*}
-$$
-
-Then, calculate the loss:
-
-$$
-\begin{gather*}
-L = -(ylog(\sigma(\hat{y})) + (1-y)log(1-\sigma(\hat{y})))
-\end{gather*}
-$$
-
-In PyTorch, this is `torch.nn.BCEWithLogitsLoss()`. **Using this function is more numerically stable than calculating the sigmoid and Cross-Entropy separately.** Here is the reason:
-
-- Above can be written as:
-
-$$
-\begin{gather*}
--[-log(1 + e^{-\hat{y}})y + (1-y)(log^{-\hat{y}} - log(1 + e^{-|\hat{y}|}))] 
-\\
-= 
-\\
-max(\hat{y}, 0) - \hat{y}y + log(1 + e^{-|\hat{y}|})
-\end{gather*}
-$$
-
-When $\hat{y} \rightarrow \infty$, using the vanilla function will lead to underflow and you will get $-\infty$. The updated function is more accurate.
