@@ -54,8 +54,9 @@ u(y_4)
 \end{pmatrix}
 $$
 
-
 - `INTER_LANCZOS4`: Lanczos interpolation: sinusoid (1988) [2]
+
+**So here is a short summary:**
 
 | Method | Pros | Cons |
 | ------ | ---- | ---- |
@@ -70,10 +71,10 @@ $$
 
 Lanczos filter might introduce ringing artifacts. 
 
-With ringing:
+Without ringing
 ![Ringing_artifact_example_-_original](https://github.com/user-attachments/assets/0ea4ebc9-fac5-40db-9651-6d5b0bdedd54)
 
-Without ringing
+With ringing:
 ![Ringing_artifact_example](https://github.com/user-attachments/assets/c094954a-2511-48b4-9f6c-cd87031ffae6)
 
 ## Reference
