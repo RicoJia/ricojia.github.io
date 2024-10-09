@@ -9,7 +9,7 @@ tags:
     - Deep Learning
 ---
 
-## What Conv Net Learns? 
+## What Do Conv Nets Learn? 
 
 For the ease of explanation, below I will use an example, where a conv layer has 3 input channels, and 5 output channels. As a recap: this layer has 3 filters, each filter is a **3D kernel kernel**: `HxWx5`; the output feature map of a filter is the sum of result of the input passing through the 3 kernels. An activation or neuron in the context of CNN refers to an element in an output feature map.Each activation can "see" a region in the initial input images, the region is called "receptive field". 
 
@@ -26,14 +26,14 @@ In the experiment result, we can see that the shallow layers learn local feature
 
 ### How To Find the Similarity of Styles
 
-The great intuition from Gatys et al's work is how to extract "style" from an image. **A style can be roughly summarized as: having a set of patterns in the same spatial windows across an image.** Some cases are: caligraphers have their own distinct strokes, painters perfer certain patterns in specific colors. With that in mind, the "style" of an image can be measured by:
+The great intuition from Gatys et al's work is how to extract "style" from an image. **A style can be roughly summarized as having a set of patterns in the same spatial windows across an image.** Some cases include: caligraphers have their own distinct strokes, painters perfer certain patterns in specific colors. With that in mind, the "style" of an image can be measured by:
 
 1. Passing the image through a series of conv layers. 
 2. Take the output feature maps from a given layer. 
-3. Multiply **all pairs of feature maps `F` together**, then add them together. This will get us a style matrix, or **gram matrix**, `G(I)`
+3. Multiply **all pairs of feature maps `F` together**, then add them together. This will get us a style matrix, or **gram matrix**, `G(I)`. For an element `G(I)_{i,j}`, across all channels `K`,
 
 $$
-G(I) = \sum_K F_{k1}F_{K2}
+G(I)_{i,j} = \sum_K F_i \cdot F_j
 $$
 
 Note:
