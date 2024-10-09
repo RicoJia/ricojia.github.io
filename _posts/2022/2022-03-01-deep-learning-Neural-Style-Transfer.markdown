@@ -15,7 +15,7 @@ For the ease of explanation, below I will use an example, where a conv layer has
 
 Because all color channels are considered, a kernel itself learns one type of **feature**. It could be a pattern like an edge, a corner, or a texture like a certain curve in a certain color. So, **high activations on a feature map correponds to the existence of the learned features of the corresponding kernels, in those spatial locations.**
 
-Zeiler et al. proposed a "Deconvnet" that identifies the receptive field in an input that leads to most activation on the output feature map of a conv layer [1]. TODO: How?
+Zeiler et al. proposed a "Deconvnet" that identifies the receptive field in an input that leads to most activation on the output feature map of a conv layer [1]. 
 
 In the experiment result, we can see that the shallow layers learn local features such as edges, corners, due to small receptive fields. Mid layers learn contours, shapes (like squares), and color combinations. Deep layers have large receptive fields and can learn complex shapes like faces, semantic concepts
 
