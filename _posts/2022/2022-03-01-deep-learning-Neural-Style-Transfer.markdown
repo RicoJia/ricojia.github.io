@@ -24,9 +24,9 @@ In the experiment result, we can see that the shallow layers learn local feature
 
 ## Neural Style Transfer 
 
-### How To Find the Similarity of Styles
+### Similarity of Styles
 
-The great intuition from Gatys et al's work is how to extract "style" from an image. **A style can be roughly summarized as having a set of patterns in the same spatial windows across an image.** Some cases include: caligraphers have their own distinct strokes, painters perfer certain patterns in specific colors. With that in mind, the "style" of an image can be measured by:
+One great intuition from Gatys et al's work is how to extract "style" from an image. **A style can be roughly summarized as having a set of patterns in the same spatial windows across an image.** Some cases include: caligraphers have their own distinct strokes, painters perfer certain patterns in specific colors. With that in mind, the "style" of an image can be measured by:
 
 1. Passing the image through a series of conv layers. 
 2. Take the output feature maps from a given layer. 
