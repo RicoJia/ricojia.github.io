@@ -234,8 +234,11 @@ F1 = \frac{2}{\frac{1}{precision} + \frac{1}{recall}}
 \end{gather*}
 $$
 
+### Satisficing Metric
+
+Satisficing here means "satisfying a certain metric suffices". It's a kind of metric that we set a minumum requirement for, but do not care so much afterwards. For example, in a classifier, as long as recall is over 90%, we don't care about it as much; or in a recommendation system, we set a minimum for speed, but after that we care a lot more on the accuracy.
+
 ## References
 
-https://cloud.tencent.com/developer/article/2318730
-
-https://medium.com/lifes-a-struggle/mean-average-precision-map-%E8%A9%95%E4%BC%B0%E7%89%A9%E9%AB%94%E5%81%B5%E6%B8%AC%E6%A8%A1%E5%9E%8B%E5%A5%BD%E5%A3%9E%E7%9A%84%E6%8C%87%E6%A8%99-70a2d2872eb0
+[1] [深入了解平均精度(mAP)：通过精确率-召回率曲线评估目标检测性能](https://cloud.tencent.com/developer/article/2318730)
+[2] [mean Average Precision (mAP) — 評估物體偵測模型好壞的指標](https://medium.com/lifes-a-struggle/mean-average-precision-map-%E8%A9%95%E4%BC%B0%E7%89%A9%E9%AB%94%E5%81%B5%E6%B8%AC%E6%A8%A1%E5%9E%8B%E5%A5%BD%E5%A3%9E%E7%9A%84%E6%8C%87%E6%A8%99-70a2d2872eb0)
