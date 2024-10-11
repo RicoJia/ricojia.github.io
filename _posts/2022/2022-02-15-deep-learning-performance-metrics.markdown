@@ -214,13 +214,23 @@ $$
 And each $AP$ is taken over 101 recall levels.
 
 
-## Mean Average Precision (mAP)
+### Mean Average Precision (mAP)
 
 Finally, mean Average Precision mAP is to take the mean of Average Precion across all classes
 
 $$
 \begin{gather*}
 mAP = \frac{\sum_C AP(c)}{C}
+\end{gather*}
+$$
+
+## F1 Score
+
+Having a single-value metric makes evaluation intuitive. An F1 score is the "harmonic average" of Precision, and Recall
+
+$$
+\begin{gather*}
+F1 = \frac{2}{\frac{1}{precision} + \frac{1}{recall}}
 \end{gather*}
 $$
 
