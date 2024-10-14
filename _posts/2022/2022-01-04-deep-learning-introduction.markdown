@@ -40,7 +40,9 @@ The terms "validation set" and "test set" are intermixed in academia and industr
 
 Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
 
-It is important that all datasets come from the same distribution. One way to do this is **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup in the population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.
+#### Principle 1 - Data Should Come From The Distribution
+
+It is important that all datasets **come from the same distribution**. One way to do this is through **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup (a.k.a strata) in a population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.
 
 ### ML Ops
 

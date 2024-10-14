@@ -2,7 +2,7 @@
 layout: post
 title: Math - Gram Schmidt Orthogonolization And QR Decomposition
 date: '2017-01-05 13:19'
-subtitle: Super useful in finding forming an orthogonal vector basis, e.g., Singular Value Decomposition
+subtitle: Gram Matrix; Super useful in finding forming an orthogonal vector basis, e.g., Singular Value Decomposition
 comments: true
 tags:
     - Math
@@ -190,3 +190,22 @@ y_3 = r_33
 $$
 
 So x can be solved quite easily through substitution.
+
+## Gram Matrix
+
+Gram Matrix `G` is defined as: 
+
+$$
+\begin{gather*}
+V = \begin{bmatrix}
+v_1 & v_2 & ... & v_n
+\end{bmatrix}
+
+\\
+G = V^TV
+\\ => 
+G_{ij} = V_i^TV_J = V_i \cdot V_j
+\end{gather*}
+$$
+
+In otherwords, `G` compares the similarity of V against its own columns
