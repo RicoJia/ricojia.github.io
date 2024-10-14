@@ -82,7 +82,7 @@ Upside is the architecture is **quite simple**. Downside is it's large even by m
 
 ## One-by-One Convolutions
 
-An 1x1 filter is mainly used to shrink (summarize) or expand the number of channels, while the height and width of the feature maps remain the same (`nxnxm` -> `nxnxc`). This technique is also called **"pointwise convolution"**.
+An 1x1 filter is mainly used to shrink (summarize) or expand the number of channels, while the height and width of the feature maps remain the same (`nxnxm` -> `nxnxc`). This technique is also called **"pointwise convolution"**. An 1x1 convolution is effectively a weighted sum across all feature maps, and is also called a "feature pooler".
 
 <div style="text-align: center;">
 <p align="center">
@@ -300,6 +300,8 @@ Max pool layer itself will output the same num of channels. So we need 1x1 conv 
 
 ### Inception Network Architecture
 
+#### Inception Block
+
 <div style="text-align: center;">
 <p align="center">
     <figure>
@@ -308,7 +310,9 @@ Max pool layer itself will output the same num of channels. So we need 1x1 conv 
 </p>
 </div>
 
-1x1 Conv is used to shrink (or summarize) the outputs from each conv sub-layer.
+The first step is **dimensionality reduction** using 1x1 Conv to shrink (or summarize) the outputs from each conv sub-layer. This is to reduce the computations followed by `3x3` and `5x5` conv layers. Since `3x3` and `5x5` conv layers operate on a reduced number of layers after `1x1` conv layers, this is to emulate a "sparse" architecture where direct dense connections from input channels to outputs of the conv layers could be close to 0.
+
+#### Overal Architecture
 
 Szegedy et al. proposed `GoogLeNet`, an Inception Network. The first few layers are regular convolutional layers, followed by inception modules.
 
@@ -320,7 +324,7 @@ Szegedy et al. proposed `GoogLeNet`, an Inception Network. The first few layers 
 </p>
 </div>
 
-There are two side branches with two softmax outputs. Each side branch is called an **auxilary classifier**. Instead of training separately, they are trained together with the main output. During back-propagation, the connected layers will be updated with the combined gradient from the main and auxilary branches. **This is to compensate for the vanishing gradient problem, so intermediate layers won't be too bad.**
+There are two side branches with two softmax outputs. Each side branch is called an **auxilary classifier**. Instead of training separately, they are trained together with the main output. During back-propagation, the connected layers will be updated with the combined gradient from the main and auxilary branches. **This is to compensate for the vanishing gradient problem, so intermediate layers won't be too bad.** This is only in GoogLeNet v1 though.
 
 <div style="text-align: center;">
 <p align="center">
@@ -331,7 +335,25 @@ There are two side branches with two softmax outputs. Each side branch is called
 </p>
 </div>
 
-Inception networks has a slight regularization effect. Why?? TODO
+Putting everything together:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/44a027a8-ae7e-4c0d-96b0-866256529767" height="500" alt=""/>
+    </figure>
+</p>
+</div>
+
+### Remarks About Inception Network
+
+- Szegedy et al state that "the main idea of the inception architecture is based on finding out how an optimal local sparse structure in a convolutional vision network can be approximated and covered by readily available dense components."
+    - 
+
+- Each inception block creates an "Ensemble-Like" effect. Ensembles are trained separately, like stacking. An Inception Network is trained as a whole, so it's not an ensemble per se. But it stacks the ouptuts from parallel conv blocks - that's similar to ensembles.
+
+- Slight regularization effects:
+    - **1x1 conv reduces the parameter volume = reduces chances of overfitting.**
 
 ## MobileNet (Howard et al.)
 
@@ -428,5 +450,8 @@ Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residu
     - Color shifting: e.g., adding and subtracting certain values from R,G,B values. In AlexNet, PCA color augmentation keeps the overall color variation in an image.
     - **Data augmentation can be done simultaneously while training takes place**
 - State of Computer Vision: Historically, computer vision has been very "hand-engineered" and very theory-based.
-    - Ensembling? TODO: Train several networks then independently average their outputs.
     - At test time, do a 10-crop on test images. That is, generate 10 cropped images from an original image and average results.
+
+## References
+
+[1] Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Erhan, D., Vanhoucke, V., & Rabinovich, A. (2015). Going Deeper with Convolutions. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (pp. 1-9).

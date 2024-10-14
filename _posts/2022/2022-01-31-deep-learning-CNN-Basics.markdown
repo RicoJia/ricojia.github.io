@@ -150,6 +150,10 @@ Example: say we have an 32x32x1 grayscale image:
 
 ## Theories
 
+### What is a Neuron in CNN? 
+
+A neuron in machine learning can be thought of as "a unit that outputs the weighted sum of an input tensor". So, a whole filter with n feature maps is a logic embodiment of the neuron concept in CNN, in my opinion. 
+
 ### How does back propagation on a kernel `K` work?
 
 Below was inspired by the  [Youtube channel far1din](https://www.youtube.com/watch?v=z9hJzduHToc)
@@ -314,6 +318,10 @@ c.backward()
 - **Smaller number of parameters also means smaller sets of training images**
 - Convolutional Layers also benefit from **sparsity of connections**. This means that the activation of the next layer is only affected by a small number of activations from the previous layer (the ones in the corresponding filtered area)
 
+### Hebbian Principle
+
+In 1949, psychologist Donald Hebb proposed the Hebbian Learning Rule, which can be summarized as "neurons that fire togther, wire together". That suggests that a synaptic connection between two neurons are strengthened if they are activated simultaneously. In the context of CNN, we probably don't want connections between neurons at different layers that don't fire together, as in a large fully connected yet sparse CNN [1]
+
 ## Receptive Field
 
 A receptive field of a feature of an element in a feature map refers to **the size of region of the input that produces this feature**. E.g., say we have 2 CNN layers:
@@ -348,4 +356,6 @@ $$
 
 For more formulas and an interactive representation, [please see Araujo's work](https://distill.pub/2019/computing-receptive-fields/).
 
+## References
 
+[1] Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Erhan, D., Vanhoucke, V., & Rabinovich, A. (2015). Going Deeper with Convolutions. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (pp. 1-9).
