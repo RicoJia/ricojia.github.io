@@ -13,7 +13,7 @@ tags:
 
 ## Data Loading
 
-Data
+When making a dataset, do NOT use `jpeg` and stick to png instead. `Jpeg` will compress the data and will corrupt the labels.
 
 - Pascal VOC 20 classes, including humans.
 - Subtract means and std deviation of ImageNet in pascal is okay since ImageNet is a large enough dataset.
@@ -23,3 +23,11 @@ Data
 - Using `interpolation=InterpolationMode.NEAREST` is important in downsizing, why?
     - Because when downsizing, we need to combine multiple pixels together. Interpolation handles that.
     - Other interpolation methods like bicubic will create continuous float values.
+
+## Training
+
+THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This is because the dataset is imbalanced and has way many more zeros than other classes. In that case, do not use cross entropy. 
+
+## References
+
+[PyTorch-Unet](https://github.com/milesial/Pytorch-UNet)
