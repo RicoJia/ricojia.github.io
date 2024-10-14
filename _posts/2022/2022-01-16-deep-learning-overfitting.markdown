@@ -43,10 +43,11 @@ Capacity is the ability to fit a wide variety of functions. Models with complex 
 
 Regularization is to reduce overfitting by reduce the complexity of the model. Direct regularization does this by penalizing high weights of the model. This is also called **"weight decay"**. Common methods include:
 
-- L1 and L2 regularization:
-    - L1 encourages sparsity: **NOT SUPER COMMON**. Final Loss is  $L = loss + \lambda \sum_j | w_j |$
-    - L2 penalizes large weights: $ L = loss + \frac{\lambda}{2m} \sum_j | w_j^2 |$. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
-    - The regularization term is a.k.a "weight decay"
+L1 and L2 regularization:
+
+- L1 encourages sparsity: **NOT SUPER COMMON**. Final Loss is  $L = loss + \lambda \sum_j | w_j |$
+- L2 penalizes large weights: $ L = loss + \frac{\lambda}{2m} \sum_j | w_j^2 |$. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
+- The regularization term is a.k.a "weight decay"
 
 Effectively, some neurons' weight will be reduced, so hopefully, it will result in a simpler model that could perform better on the test set landscape.
 
