@@ -9,7 +9,7 @@ tags:
     - Deep Learning
 ---
 
-## What Do Conv Nets Learn? 
+## What Do Conv Nets Learn?
 
 For the ease of explanation, below I will use an example, where a conv layer has 3 input channels, and 5 output channels. As a recap: this layer has 3 filters, each filter is a **3D kernel kernel**: `HxWx5`; the output feature map of a filter is the sum of result of the input passing through the 3 kernels. An activation or neuron in the context of CNN refers to an element in an output feature map.Each activation can "see" a region in the initial input images, the region is called "receptive field". 
 
@@ -19,10 +19,15 @@ Zeiler et al. proposed a "Deconvnet" that identifies the receptive field in an i
 
 In the experiment result, we can see that the shallow layers learn local features such as edges, corners, due to small receptive fields. Mid layers learn contours, shapes (like squares), and color combinations. Deep layers have large receptive fields and can learn complex shapes like faces, semantic concepts
 
-![Screenshot from 2024-10-08 17-47-18](https://github.com/user-attachments/assets/d136c6f0-1069-4f05-b515-de87906cbf46)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/d136c6f0-1069-4f05-b515-de87906cbf46" height="200" alt=""/>
+    </figure>
+</p>
+</div>
 
-
-## Neural Style Transfer 
+## Neural Style Transfer
 
 ### Similarity of Styles
 
@@ -43,7 +48,7 @@ Note:
 Then, **dissimilarity** of two images' styles is equivalent to detecting the similarity of their activations to a given set of learned features spatially. That can be done by comparing their gram matrices
 
 $$
-J_{style}(I1, I2) = \frac{1}{(2n_H n_W n_C)^2}|G(I1) - G(I2)|
+J_{style}(I1, I2) = \frac{1}{(2n_H n_W n_C)^2}|G(I1) - G(I2)|^2
 $$
 
 The distance metric being in use is the "Squared Frobenius Norm". Also note that there's a normalizing factor in the style cost.
@@ -54,6 +59,10 @@ $$
 J_{style}(S,G) = \sum_L \lambda^l J^l_{style}(I1, I2)
 $$
 
+### Hands-On Notes
+
+Different from content scoring, style scoring is better done with multiple layers. In general, we want to capture high level style elements. So we assign higher weights to deeper layers. 
+
 ## How To Find the Similarity of Content
 
 Between two images, it's relatively intuitive to find the similarity of their contents at layer `l`.
@@ -62,11 +71,40 @@ $$
 J_{content}(I1, I2) = \frac{1}{2} \sum_I (F^l(I1) - F^l(I2))^2
 $$
 
+- One goal for NST is to match the content of the generate image with the source image. In practice, compare the outputs from a middle activation layer of these two. To do that:
+
+1. Forward propagate generated image `G` through the network. Then snatch the output from the activation layer `L`. This should be a `HxWxC` tensor.
+2. Forward propagate source image `C` through the network. Then snatch the output from the activation layer `L`. This should be a `HxWxC` tensor.
+
+To conveniently do that, let's unroll the outputs into a 2D tensor:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/a373ae90-e4e8-44ec-9830-05d26d5bef05" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+Content cost is defined as 
+
+$$
+\begin{gather*}
+J_{content}(C, G) = \frac{1}{4\times H \times W \times C} \sum_{all-entries}(a^{C} - a^{G})^2
+\end{gather*}
+$$
+
 ### Putting Content And Style Together
 
 Gatys et al proposed a method to generate a picture that resembles content C, but in the style of S.
 
-![Screenshot from 2024-10-08 16-58-18](https://github.com/user-attachments/assets/b6eafb34-cca8-4433-98d3-0fc0d166b4e2)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/b6eafb34-cca8-4433-98d3-0fc0d166b4e2" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
 - This is done by crafting a cost function, with `G` being the generate dimage, `C` being the original image, and `S` being the styleimage. Some may argue that $\alpha$ and $\beta$ are redundant, but those are the notations used by Gatys et al.
 
@@ -78,15 +116,25 @@ $$
 
 - The 2nd step is to generate a random image.
 - The 3rd step is to do gradient descent on the network with the current image using the cost function. 
-- Over iterations, the images should look like below: 
+- Over iterations, the images should look like below:
 
-![Screenshot from 2024-10-08 17-57-49](https://github.com/user-attachments/assets/1790ce15-3327-4ebb-890e-f97fb11a571c)
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/1790ce15-3327-4ebb-890e-f97fb11a571c" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
-- In neural style transfer, we train the pixels of an image, and not the parameters of a network. How? 
-    1. Generate a random image $I$
-    2. Have a conv net like VGG-19 as the backbone for feature extraction
-    3. Calculate Gram Matrix,  the loss $J(C,S)$, and the partial derivatives $\frac{\partial L}{\partial I}$ through back propagation
-    4. Update image value by $I = I - \lambda \frac{\partial L}{\partial I}$
+- In neural style transfer, we train the pixels of an image, and not the parameters of a network. How?
+    1. Load the Content Image `C`
+    2. Load the style image `S`
+    3. Generate a random image $I$
+    4. Initialize a VGG19 model as the backbone for feature extraction
+    5. Compute the content cost
+    6. Compute the style cost
+    7. Calculate Gram Matrix,  the loss $J(C,S)$, and the partial derivatives $\frac{\partial L}{\partial I}$ through back propagation
+    8. Update image value by $I = I - \lambda \frac{\partial L}{\partial I}$
 
 
 ## Reference

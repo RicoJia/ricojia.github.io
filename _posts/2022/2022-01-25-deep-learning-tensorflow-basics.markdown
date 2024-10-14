@@ -12,6 +12,7 @@ tags:
 
 ## Basic Operations
 
+### Max Operations
 - Immutable (`tf.constant`) vs Variable (`tf.Variable`), notice the different capitalization:
 - `tf.math.reduce_max()`: find the max along certain dimension(s).
 
@@ -43,6 +44,36 @@ tf.math.argmax(var, axis=-1)    # see <tf.Tensor: shape=(2,), dtype=int64, numpy
 tf.math.argmax(var) # <tf.Tensor: shape=(2,), dtype=int64, numpy=array([1, 1])>
 ```
 
+### Reshaping
+
+- Transpose: `tf.transpose(T)`
+- Permutation: `A_t = tf.transpose(A, perm=[0, 2, 1])`
+- Reshape: `tf.reshape(tensor, shape)`
+
+```python
+# 2x3
+t = tf.constant([[1, 2, 3],
+                 [4, 5, 6]])
+# reshaping into 3x2
+reshaped_tensor = tf.reshape(t, [3, 2])
+
+batch_size, H, W = 3, 2, 3
+tensor = tf.random.normal([batch_size, H, W])
+tf.reshape(tensor, [-1, H*W])
+```
+   - `-1` will make tf infer the previous tensor sizes
+
+- Squeeze: `tf.squeeze(tensor, dim)` to remove dims with only one element
+
+```python
+t = tf.constant([[[1, 2, 3],
+                 [4, 5, 6]]])
+# squeezing into 3x2
+reshaped_tensor = tf.squeeze(t)
+```
+
+### Element-wise Operations
+
 - Broadcasting: this is similar to numpy
 
 ```python
@@ -51,7 +82,7 @@ tf.math.argmax(var) # <tf.Tensor: shape=(2,), dtype=int64, numpy=array([1, 1])>
 
 - Masking: this is similar to numpy as well. Its numpy equivalent is `tensor[mask]`. Note that from the doc:
 
-> `0 < dim(mask) = K <= dim(tensor)`, and mask's shape must match the first K dimensions of tensor's shape. We then have: `boolean_mask(tensor, mask)[i, j1,...,jd] = tensor[i1,...,iK,j1,...,jd]` where (i1,...,iK) is the ith True entry of mask (row-major order). The axis could be used with mask to indicate the axis to mask from.
+> `0 < dim(mask) = K <= Element-wisedim(tensor)`, and mask's shape must match the first K dimensions of tensor's shape. We then have: `boolean_mask(tensor, mask)[i, j1,...,jd] = tensor[i1,...,iK,j1,...,jd]` where (i1,...,iK) is the ith True entry of mask (row-major order). The axis could be used with mask to indicate the axis to mask from.
 
 **So masking will collapse all matching dims into one**
 
@@ -72,6 +103,48 @@ tensor2 = tf.constant([1, 2, 3, 4])  # 1-D example
 tensor1 * tensor2
 tf.multiply(tensor1, tensor2) # see <tf.Tensor: shape=(4,), dtype=int32, numpy=array([ 0,  2,  6, 12], dtype=int32)>
 tensor1 .* tensor2  # Invalid
+```
+
+- Elementwise exponentiation:
+
+```python
+tensor ** 2
+```
+
+- Elementwise sum:
+
+```python
+tf.reduce_sum(tensor)
+
+```
+
+### Gradient
+
+- `tf.GradientTape()`: record operations on tensors so we can calculate gradients more easily. `GradientTape` is a context manager that records operations
+
+```python
+import tensorflow as tf
+
+# Example variables
+x = tf.constant(3.0)
+w = tf.Variable(2.0)
+
+# Gradient computation using GradientTape
+with tf.GradientTape() as g:
+    # Watch the variable `w` (automatically watched since it's a Variable)
+    y = w * x + 2  # Compute some operation
+
+# Compute the gradient of `y` with respect to `w`
+grad = g.gradient(y, w)
+
+print(f"Gradient of y with respect to w: {grad}")
+```
+
+- Apply gradient on an image. $\alpha$ should be set in optimizer initialization already.
+
+```python
+optimizer.apply_gradients([(grad, generated_image)])
+generated_image.assign(clip_0_1(generated_image))
 ```
 
 ## Basic Neural Net
@@ -102,11 +175,27 @@ x_test = tf.data.Dataset.from_tensor_slices(test_dataset['test_set_x'])
 y_test = tf.data.Dataset.from_tensor_slices(test_dataset['test_set_y'])
 ```
 
-- `GradientTape` is a context manager that records operations?
 - `tf.Tensor` is a tensor, an equivalent to numpy array with information for the computational graph.
 - `tf.Variable(dtype)` it's best to specify the datatype here!
 
+### Neural Net Operations
+
+- Checking net layers: `vgg.layers`
+- Checking layer output: `vgg.get_layer('block5_conv4').output`
+
 ## Data Loading
+
+- Some pictures may have 4 channels: RGBA. To keep RGB:
+
+```python
+from PIL import Image
+img_size = 400
+content_image = np.array(
+    Image.open("images/trout.png")
+    .convert('RGB')
+    .resize((img_size, img_size))
+)
+```
 
 - In cases where we are loading the dataset from a directory,
 
@@ -173,8 +262,6 @@ preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
 ```
 
 ## Model Definition
-
-TODO
 
 ```python
 def alpaca_model(image_shape=IMG_SIZE, data_augmentation=data_augmenter()):
