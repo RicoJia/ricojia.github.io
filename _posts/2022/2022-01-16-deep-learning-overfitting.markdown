@@ -45,9 +45,23 @@ Regularization is to reduce overfitting by reduce the complexity of the model. D
 
 L1 and L2 regularization:
 
-- L1 encourages sparsity: **NOT SUPER COMMON**. Final Loss is  $L = loss + \lambda \sum_j |w_j|$
-- L2 penalizes large weights: $ L = loss + \frac{\lambda}{2m} \sum_j |w_j^2|$. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
-- The regularization term is a.k.a "weight decay"
+- L1 encourages sparsity: **NOT SUPER COMMON**. Final Loss is $
+
+$$
+\begin{gather*}
+L = loss + \lambda \sum_j |w_j|
+\end{gather*}
+$$
+
+- L2 penalizes large weights is defined as below. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
+
+$$
+\begin{gather*}
+L = loss + \frac{\lambda}{2m} \sum_j |w_j^2|
+\end{gather*}
+$$
+
+- The regularization term is a.k.a **"weight decay"**
 
 Effectively, some neurons' weight will be reduced, so hopefully, it will result in a simpler model that could perform better on the test set landscape.
 

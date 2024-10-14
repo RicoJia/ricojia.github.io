@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Face Recognition
 date: '2022-02-25 13:19'
-subtitle: Siamese Network
+subtitle: Siamese Network, Deep Face
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -48,22 +48,20 @@ $$
 
 In the deepface paper, they didn't use triplet to train. That's the work from FaceNet
 
-**Rationale behind each method:**
+Some key contributions from DeepFace:
 
+- Max-pooling makes output of conv more robust to local translations. Then the output image will have activations shifted too
 
-#### TODO: tech details
-
-- Max-pooling makes output of conv more robust to local translations. How is this correct? From an "activation perspective"? I'm thinking about the scenario where you have the same picture but translated. Then, oh, your output image will have activations shifted too, right?
-- "several levels of pooling would cause the network to lose information about the precise position of detailed facial structure and micro-textures" I guess that's true
+- "Several levels of pooling would cause the network to lose information about the precise position of detailed facial structure and micro-textures" I guess that's true
     - "Hence, we apply max-pooling only to the first convolutional layer. We interpret these first layers as a front-end adaptive pre-processing stage" - but this is not the case for resnet, yolo etc., right? So this is ok?
 
 - The loss is the regular softmax-loss
 
-### Encoding Learning
+### FaceNet
 
 Why is the network called Siamese? Is that Thai? No, it came from "Siamese Twins", where you have two identical "twin networks" that share the same weights and same architecture. The twins just take in different inputs. Actually, It's a concept that was explored before DeepFace.
 
-A **Siamese** network first learns the **encoding** of an image. This idea was introduced by DeepFace [1].
+A **Siamese** network first learns the **encoding** of an image. This idea was introduced by DeepFace [1]. FaceNet learns directly from a face image, so it's end-to-end learning.
 
 <div style="text-align: center;">
 <p align="center">
@@ -95,7 +93,7 @@ We append $\alpha$ to the loss function because we don't want the learned encodi
 
 Triplet selection has to be careful too. We want to choose triplets `(image, true image, negative image)` that are hard to train on. Easy
 
-## Triplet Selection
+### Triplet Selection
 
 Some triplets already satisfy the loss. Why would it be a hassle to select them? There's no harm in incorporating them, but they could significantly slow down your training. To address this, Online Triplet Mining is employed within each mini-batch to select the most informative triplets that actively contribute to learning. Here's how it works:
 
@@ -113,7 +111,7 @@ $$
 
 This can be handled by auto-diff and the gradient's computational graph.
 
-### Alternative 1: Binary Classification
+#### Alternative 1: Binary Classification
 
 The idea is to put two twin networks together, and try to have 1 neuron with weights $W$ and activation $\sigma(x)$ to learn if the two images are the same.
 
@@ -135,7 +133,36 @@ $$
 
 Here, the similarity of two images can also be [Chi-Squared Similarity](../2017/2017-06-05-math-distance-metrics.markdown). For anchor images, we can store the pre-computed value.
 
+#### Implementation
+
+1. Use a pretrained Inception Network to compute encodings of faces.
+    - Input: `160x160` RGB images shaped into `(𝑚,160,160,3)`.
+    - Output: `128-vector`. **This layer needs to be added to the original Inception Network**
+        ```
+        GoogLeNet: Convolutional Layers --> 1000-D FC Layer --> Softmax (Classification)
+        FaceNet: Convolutional Layers --> 128-D FC Layer --> L2 Normalization (Embedding)
+        ```
+        - The output `128-vector` in the Inception network is a design trade off for small memory footprint and distinctiveness. In the original inception network, Szegedy et al. did NOT add an 128 output. The embeddings were also learned in the meantime.
+    - Another difference between FaceNet and Inception Network is the FaceNet does NOT have an auxillary layer.
+    - FaceNet also uses L2 norm in the triplet loss
+    - Image Resizing should be handled here
+
+2. Pass two faces through the Siamese Network.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/b666c15b-9a6f-4901-a9e3-d25119118e4f" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+3. Triplet loss will try to push the encodings of two images of the same person (anchor and positive) close, while anchor and negative farther.
+
 ## References
 
 [1] [Taigman, Y., Yang, M., Ranzato, M. A., & Wolf, L. 2014. DeepFace: Closing the Gap to Human-Level Performance in Face Verification. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2014, 1701-1708. DOI: https://doi.org/10.1109/CVPR.2014.220](https://www.cs.toronto.edu/~ranzato/publications/taigman_cvpr14.pdf)
 
+[2] [Schroff, F., Kalenichenko, D., & Philbin, J. (2015). FaceNet: A Unified Embedding for Face Recognition and Clustering. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 815-823. https://doi.org/10.1109/CVPR.2015.7298682](https://arxiv.org/pdf/1503.03832)
+
+[3] [David Sandberg's Github Implementation for FaceNet](https://github.com/davidsandberg/facenet)

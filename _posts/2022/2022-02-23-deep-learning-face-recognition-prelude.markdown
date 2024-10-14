@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Face Recognition Prelude
 date: '2022-02-23 13:19'
-subtitle: Face Frontalization
+subtitle: 2D Frontalization, 3D Face Alignment
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:

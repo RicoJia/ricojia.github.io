@@ -180,8 +180,9 @@ y_test = tf.data.Dataset.from_tensor_slices(test_dataset['test_set_y'])
 
 ### Neural Net Operations
 
-- Checking net layers: `vgg.layers`
-- Checking layer output: `vgg.get_layer('block5_conv4').output`
+- Check net layers: `vgg.layers`
+- Check layer output: `vgg.get_layer('block5_conv4').output`
+- Check model input: `model.inputs`
 
 ## Data Loading
 
@@ -343,12 +344,19 @@ history_fine = model2.fit(
 )
 ```
 
+## Prediction
+
+- `predict` and `predict_on_batch(x_train)`  both outputs `np.ndarray`
+
+```python
+embedding = model.predict_on_batch(x_train)
+```
 
 ## TODO
 
 `tf.keras.losses.categorical_crossentropy(tf.transpose(labels), tf.transpose(logits), from_logits=True, )`
 
-- `from_logits` is more numerically stable. We are trying to map the entire real number set using a floating number, that is, +- `2^32`. 
+- `from_logits` is more numerically stable. We are trying to map the entire real number set using a floating number, that is, +- `2^32`.
 
 ## Misc
 
