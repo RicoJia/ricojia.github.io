@@ -176,3 +176,23 @@ if (confirm("Clear memory?") == true)
     IPython.notebook.kernel.restart();
 }
 ```
+
+## Wifi Pitfall
+
+`network-manager` is a quite wonky. Sometimes the dhcp registration would suddenly drop on my Wifi, and ethernet doesn't work either. After a LOT of trial and error, this is the solution I came up with. It's quite painless, all you need to do is to paste this in `~/.bashrc`, source it, and type in the console `wifi_orin_connect`
+
+```
+wifi_orin_connect(){
+    # if you see wpa issues, do wpa_passphrase <SSID> <PASSWORD> | sudo tee /etc/wpa_supplicant.conf
+    
+    set -ex
+
+    sudo rfkill unblock wifi
+    sudo ip link set wlan0 up
+    sudo wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
+    echo "this might take a while"
+    # add google and cloudflare your DNS servers
+    echo "prepend domain-name-servers 8.8.8.8 1.1.1.1;" | sudo tee -a /etc/dhcp/dhclient.conf
+    sudo dhclient wlan0
+}
+```

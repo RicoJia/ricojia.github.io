@@ -40,6 +40,12 @@ The terms "validation set" and "test set" are intermixed in academia and industr
 
 Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
 
+But if there are data whose distribution won't show up in real life, you don't add it.
+
+If you have data from a distribution, it's not exactly problematic to add them to the training data. Adding them to the test / dev sets are problematic though.
+
+If you have some new data to take into account, but they are pretty small. Augment them would be a good idea.
+
 #### Principle 1 - Data Split Should Keep The Same Distribution
 
 It is important that all datasets **come from the same distribution**. One way to do this is through **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup (a.k.a strata) in a population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.

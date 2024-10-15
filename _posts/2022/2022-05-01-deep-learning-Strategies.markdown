@@ -30,6 +30,8 @@ Don't stick to an metric that doesn't capture the characteristics of the system,
 - User uploads pictures with less resolution while your model is trained with high resolution. In that case, include resolution in the evaluation metric
 - Classifier needs to work with very important / sensitive data. Misclassifying that data comes with a high cost in reality.
 
+[The "less" important metrics are called "satisficing metric"](./2022-02-15-deep-learning-performance-metrics.markdown). They are usually the **first thing you should ** figure out when starting a project
+
 But if you don't have a clear idea yet, define one and get stared. Later, refine it.
 
 Then, worry **separately** about how to perform well on this metric.
@@ -58,7 +60,13 @@ v
 Dev error
 ```
 
-Usually so long as your system is worse than human performance, you might want to start thinking "why humans are doing better?"
+If you have surpassed human level performance, you might be overfitting. So it's kind of hard to tell whether you should focus on reducing bias or variance. Structured data tasks, like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But for perception tasks such as vision or audio, they are harder for the relative lack of data and humans are usually pretty good at them.
+
+## What To Do To Improve Performance
+
+**First and foremost, what is worth our effort?** Do an error analysis on a small set of mislabelled data and get a sense of what the common errors are. It's probably worth it to count the number of mislabelled data of each category, then that could help you find if you need to focus on misclassification of dogs, great cats, etc.
+
+**Second is to improve in the area we have chosen.** Usually so long as your system is worse than human performance, you might want to start thinking "why humans are doing better?"
 
 If avoidable bias is high, maybe try:
 
@@ -66,10 +74,28 @@ If avoidable bias is high, maybe try:
 - Try better optimization algo (RMSprop, Momentum, Adam)
 - Try a bigger model
 - Another architecture
+- Maybe decrease regularization (if variance is low)
 
-If the variance is high: 
+If the variance is high:
 
 - Try more data
 - try regularization: L2, dropout, data augmentation
 
-If you have surpassed human level performance, you might be overfitting. So it's kind of hard to tell whether you should focus on reducing bias or variance. Structured data tasks, like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But for perception tasks such as vision or audio, they are harder for the relative lack of data and humans are usually pretty good at them.
+**Third, what if there is some mislabelling?** DL algorithms have some robustness to "random" mislablling at a small amount. So in error analysis, maybe it's a good idea to count:
+
+- The number of mislabelling in the general subdataset we looked at. That gives us the overall mislabelling rate.
+- The percentage of errors that were due to mislabelling. If this rate is high, maybe it'd be worth it to fix it.
+
+Dev set is to tell which classifier A&B is better. If you fix labels in the dev set, fix some in the test set as well.
+
+**Fourth, it's important to note that correcting wrong labels training set is a bit less important than correcting the dev/test set**, because your DL algorithm is somewhat robust to training set errors.
+
+## Start Your Application Early, Then Iterate
+
+Even after many years in speech recognition, Andrew still had some difficulties bringing up a speech recognition system that's super robust to noises. So, start your application early by:
+
+- Setting up dev/test sets, metrics
+- Start training a model, maybe two
+- Use bias/variance analysis and error analysis to prioritize next step. 
+
+Most of the times, people overthink and build something too complicated
