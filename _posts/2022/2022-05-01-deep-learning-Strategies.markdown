@@ -38,6 +38,10 @@ Then, worry **separately** about how to perform well on this metric.
 
 Bayes Optimal Error is the error rate of best-possible error that can never be surpassed. A model's accuracy usually increases fast until it reaches "human level accuracy". After that, it will slow down as it approaches Bayes Optimal Error. Many times though, we **assume that human level accuracy is close to Bayes Optimal Error and use human level accuracy as a proxy to Bayes Optimal Error**
 
+- This on the other hand, determines "what is human error?" An amateur human level performance, or expert? The Bayes error can only be lower than the expert, so which one do you think ;)
+
 The gap between Bayes Optimal Error and the current training error is called **"avoidable bias"**. **Variance** is then the difference in training set and dev sets' error rates.
 
 Usually so long as your system is worse than human performance, you might want to start thinking "why humans are doing better?"
+
+If you have surpassed human level performance, you might be overfitting. So it's kind of hard to tell whether you should focus on reducing bias or variance. Structured data tasks, like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But for perception tasks such as vision or audio, they are harder for the relative lack of data and humans are usually pretty good at them.
