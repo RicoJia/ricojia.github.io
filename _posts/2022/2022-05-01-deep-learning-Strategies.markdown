@@ -42,6 +42,34 @@ Bayes Optimal Error is the error rate of best-possible error that can never be s
 
 The gap between Bayes Optimal Error and the current training error is called **"avoidable bias"**. **Variance** is then the difference in training set and dev sets' error rates.
 
+```
+Human Level
+^
+|
+avoidable bias
+|
+v
+Training Error
+^
+|
+variance
+|
+v
+Dev error
+```
+
 Usually so long as your system is worse than human performance, you might want to start thinking "why humans are doing better?"
+
+If avoidable bias is high, maybe try:
+
+- Train Longer
+- Try better optimization algo (RMSprop, Momentum, Adam)
+- Try a bigger model
+- Another architecture
+
+If the variance is high: 
+
+- Try more data
+- try regularization: L2, dropout, data augmentation
 
 If you have surpassed human level performance, you might be overfitting. So it's kind of hard to tell whether you should focus on reducing bias or variance. Structured data tasks, like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But for perception tasks such as vision or audio, they are harder for the relative lack of data and humans are usually pretty good at them.
