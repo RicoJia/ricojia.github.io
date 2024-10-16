@@ -98,6 +98,25 @@ $$
 - $dW^2$ are element wise squares. So we have root, and squares. (but no "mean"??)
 - In real life, to avoid numerical issues when $dW^2$ is small, we want to add a small number $\epsilon$ (typically $10^{-8}$). 
 - "RMSProp" is used when Adam is not used.
+- Typical values:
+    - Learning rate: $[10^(-3), 10^{-2}]$
+    - Weight decay: $[10^{-5}, 10^{-4}]$
+
+### PyTorch Implementation
+
+[In PyTorch](https://pytorch.org/docs/stable/generated/torch.optim.RMSprop.html), momentum $\mu B$ and weight decay on the gradients $\lambda_w \cdot W$ are also incorporated. For the sake of conciseness, I'm omitting calculation for bias.
+
+$$
+\begin{gather*}
+dW = dW + \lambda_w \cdot W
+\\
+S_w = \beta S_{dw} + (1-\beta) dW^2 \\
+S_w^{corrected} = \frac{S_w}{1-\beta^t} \\
+B = \mu B + \frac{dW}{\sqrt{S_w^{corrected}} + \epsilon}
+\\
+W = W - \lambda B \\
+\end{gather*}
+$$
 
 ## Technique 4 - Adam (Adaptive Momentum Estimation)
 

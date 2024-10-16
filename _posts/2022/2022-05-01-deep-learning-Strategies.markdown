@@ -96,6 +96,14 @@ Even after many years in speech recognition, Andrew still had some difficulties 
 
 - Setting up dev/test sets, metrics
 - Start training a model, maybe two
-- Use bias/variance analysis and error analysis to prioritize next step. 
+- Use bias/variance analysis and error analysis to prioritize next step.
 
 Most of the times, people overthink and build something too complicated
+
+### What If Training Data Is A Different Distribution?
+
+Say you have 1000 pictures of your cats, but you also have access to a 100000 cat images on the internet that look quite different from your cats. Then, what should you do?
+
+Option 1 is to mix these pictures together and shuffle them, so you will have the same distribution across train/dev/test sets. However, your target distribution will be different. 
+
+Option 2 is to have your test/dev sets only to be from the target distributions. You can add some of your cat pictures to your training set. This way. at least your target distribution will be what you want. **This is better for the long term.**

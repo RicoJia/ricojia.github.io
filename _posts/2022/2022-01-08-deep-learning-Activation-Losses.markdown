@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Deep Learning - Activation and Cost Functions
+title: Deep Learning - Activation and Loss Functions
 date: '2022-01-08 13:19'
-subtitle: Sigmoid, ReLU, Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss
+subtitle: Sigmoid, ReLU, Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -126,3 +126,42 @@ $$
 $$
 
 You can add up the losses and get the sum of it
+
+### IoU and Dice Loss
+
+- IoU Loss
+    IoU loss is: `1 - IoU`
+    <div style="text-align: center;">
+    <p align="center">
+        <figure>
+            <img src="https://github.com/user-attachments/assets/212cfcc3-b6cb-49bd-9197-9b1c850147e1" height="300" alt=""/>
+            <figcaption><a href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fkorlakuntasaikamal10.medium.com%2Fintersection-over-union-a8e04c3d03b3&psig=AOvVaw1Goh-uTS9ihTL4MTDw-fX2&ust=1723930055452000&source=images&cd=vfe&opi=89978449&ved=0CBcQjhxqFwoTCIijnYm6-ocDFQAAAAAdAAAAABAE">Source: Kamal_DS </a></figcaption>
+        </figure>
+    </p>
+    </div>
+
+- Dice Loss is $1 - frac{2overlap}{total_area}$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/35686620-3da7-45bb-abf7-b86a5498afd7" height="300" alt=""/>
+        <figcaption><a href="https://cvinvolution.medium.com/dice-loss-in-medical-image-segmentation-d0e476eb486">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+When training accuracy (overlap) increases, IoU loss is more sensitive to it at the very beginning, but not as sensitive when training accuracy is already high. Comparatively, Dice loss is more sensitive in high training accuracies, largely due to `2*overlap`. This can be proven by taking the derivative of the two losses.
+
+My implementation:
+
+```python
+intersect = (pred == labels)
+dice_loss = 1 - 2 * (intersect.sum().item())/ (pred.shape + labels.shape)
+```
+
+Along with weighted cross entropy loss, Dice loss (or the sensitivity) function were Introduced by Sudre in 2017 [1].
+
+## References
+
+[1] Sudre, C. H., Li, W., Vercauteren, T., Ourselin, S., & Cardoso, M. J. Generalised Dice overlap as a deep learning loss function for highly unbalanced segmentations. Deep Learning in Medical Image Analysis and Multimodal Learning for Clinical Decision Support: 3rd International Workshop, DLMIA 2017, and 7th International Workshop, ML-CDS 2017 Held in Conjunction with MICCAI 2017, Quebec City, QC, Canada, September 14, 2017, Proceedings, pp. 240–248. Springer, 2017.

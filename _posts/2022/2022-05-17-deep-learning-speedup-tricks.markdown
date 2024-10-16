@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Speedup Tricks
 date: '2022-05-17 13:19'
-subtitle: Op Determinisim
+subtitle: Op Determinisim, Mixed Precision Training
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -26,3 +26,15 @@ Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions
         ```
         - This effectively sets the pseudorandom number generators (PRNGs) in  Python seed, the NumPy seed, and the TensorFlow seed.
         - Without setting the seed, ` tf.random.normal` would raise `RuntimeError`, but Python and Numpy won't
+
+## Mixed Precision Training
+
+Using `float 16` for training
+
+- Needs channel last format `NHWC`
+
+```python
+model = model.to(memory_format = torch.channels_last)
+input_tensor = input.to(memory_format=torch.channels_last)
+output = model(input_tensor)
+```

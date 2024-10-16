@@ -85,7 +85,7 @@ For data transforms
 - When downsizing, there could be **jagged edges** or **Moire Pattern** due to violation of the Nyquist Theorem. Antialiasing will apply low-pass filtering (smoothing out edges), resample with a different frequency
 - `v2.Normalize(mean, std)` normalizes data around a mean and std, which does NOT clip under 1.0 (float) or 255 (int). This helps the training to converge faster, but visualization would require clipping in 1.0 or 255.
 - `torch.utils.data.Dataset` stores the data and their labels
-- `torch.utils.data.DataLoader` stores an iterable to the data. You can specify batch size so you can create mini-batches off of it.
+- `torch.utils.data.DataLoader` stores an iterable to the data. You can specify batch size so you can create mini-batches off of it. By default, it returns data in `CHW` format
 - some data are in CHW format (Channel-Height-Weight), so we need to flip it by `tensor.permute(1,2,0)`
 
 We normalize the pixel values to [0,1], then subtract out the [mean and std of the CIFAR-10 dataset](https://stackoverflow.com/questions/66678052/how-to-calculate-the-mean-and-the-std-of-cifar10-data). It's a common practice to normalize input data so images have consistent data distributions over RGB channels (imaging very high and low values)
