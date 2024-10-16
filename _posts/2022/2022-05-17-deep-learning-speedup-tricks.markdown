@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Speedup Tricks
 date: '2022-05-17 13:19'
-subtitle: Op Determinisim, Mixed Precision Training
+subtitle: Op Determinisim, Torch Optimizer Tricks, Mixed Precision Training
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -26,6 +26,40 @@ Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions
         ```
         - This effectively sets the pseudorandom number generators (PRNGs) in  Python seed, the NumPy seed, and the TensorFlow seed.
         - Without setting the seed, ` tf.random.normal` would raise `RuntimeError`, but Python and Numpy won't
+
+## Torch Optimizer Tricks
+
+### `RMSProp`
+
+`foreach` option updates weights in a vectorized, batched manner, based on gradients and moving averages like momentum. This is more efficient than python `for loops` and uses optimized linear algebra libraries, like `BLAS`, `cuBLAS`. Without `foreach`, the vanilla RMSProp would be:
+
+```python
+# each param is the weight tensor of a layer
+for param in model.parameters():
+    # Compute gradient g_i
+    g_i = param.grad
+
+    # Update running average of squared gradients
+    s_i = alpha * s_i + (1 - alpha) * (g_i ** 2)
+
+    # Update parameter
+    param -= eta * g_i / (sqrt(s_i) + epsilon)
+```
+
+But with `foreach`, the GPU can calculate the stacked weights altogether with stacked gradients and running averages
+
+```
+[
+  W^{(1)} (matrix of size m x n),
+  b^{(1)} (vector of size n),
+  W^{(2)} (matrix of size n x p),
+  b^{(2)} (vector of size p)
+]
+```
+
+Caveat:
+
+- Slight numerical differences
 
 ## Mixed Precision Training
 

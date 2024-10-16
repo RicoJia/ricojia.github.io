@@ -96,7 +96,7 @@ b = b - \lambda \frac{db}{\sqrt{S_b^{corrected}} + \epsilon}
 $$
 
 - $dW^2$ are element wise squares. So we have root, and squares. (but no "mean"??)
-- In real life, to avoid numerical issues when $dW^2$ is small, we want to add a small number $\epsilon$ (typically $10^{-8}$). 
+- In real life, to avoid numerical issues when $dW^2$ is small, we want to add a small number $\epsilon$ (typically $10^{-8}$).
 - "RMSProp" is used when Adam is not used.
 - Typical values:
     - Learning rate: $[10^(-3), 10^{-2}]$
@@ -115,6 +115,20 @@ S_w^{corrected} = \frac{S_w}{1-\beta^t} \\
 B = \mu B + \frac{dW}{\sqrt{S_w^{corrected}} + \epsilon}
 \\
 W = W - \lambda B \\
+\end{gather*}
+$$
+
+Note that
+
+- Weight decay $dW = dW + \lambda_w \cdot W$ is finally applied on parameters. This is equivalent to **L2 regularization** which eventually adds an $-\lambda_w W$ term in weight update
+
+$$
+\begin{gather*}
+L = L(W) + \frac{\lambda_w}{2} W^2
+\\
+=> L' = L(W)' + \lambda_w W
+\\
+=> W = W - \lambda \cdot [gradients] \cdot L'
 \end{gather*}
 $$
 
