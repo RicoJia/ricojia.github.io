@@ -2,14 +2,14 @@
 layout: post
 title: Deep Learning - Strategies Part 1 Before Model Training
 date: '2022-05-17 13:19'
-subtitle: Orthogonalization
+subtitle: Start Development Early, Error Metric Setup, Data Preparation Principles
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
 
-## Start Your Application Early, Then Iterate
+## Start Your Development Early, Then Iterate
 
 Even after many years in speech recognition, Andrew still had some difficulties bringing up a speech recognition system that's super robust to noises. So, start your application early by:
 
@@ -41,6 +41,8 @@ There are optionally two/three sets:
 - **Test / validation set**: the final evaluation of the model's performance. The dataset should never have been seen in training.
 
 Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
+
+But you can also have a **Train-Dev set** to ensure about performance on variance.
 
 ### Data Split Should Keep The Same Distribution
 
