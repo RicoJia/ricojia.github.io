@@ -27,29 +27,6 @@ Choose dataset -> Choose network architecture (number of layers, number of hidde
 
 Nowadays, It's very hard to guess all these params right in one shot. Intuitions from one domain (speech recognition) likely doesn't transfer well to another. **So going over the above iterations is key.** That said, one exception is that ConvNet/ResNet from computer vision transferred to speech recognition well.
 
-
-### Data Partition
-
-There are optionally two/three sets:
-
-- Training set
-- Holdout set (optional): unbias evaluation of the model fit for hyperparameter tuning. It can be also used for early stopping and regularization. So a validation set is often used in between epochs.
-- Test Set: the final evaluation of the model's performance. If the dataset has never been seen in training, it's also called a **holdout** dataset.
-
-The terms "validation set" and "test set" are intermixed in academia and industry.
-
-Traditionally, the ratio of Training vs Hold out vs Validation is: 70%/20%/10%. For Big data: 98%/1%/1%
-
-But if there are data whose distribution won't show up in real life, you don't add it.
-
-If you have data from a distribution, it's not exactly problematic to add them to the training data. Adding them to the test / dev sets are problematic though.
-
-If you have some new data to take into account, but they are pretty small. Augment them would be a good idea.
-
-#### Principle 1 - Data Split Should Keep The Same Distribution
-
-It is important that all datasets **come from the same distribution**. One way to do this is through **"stratified sampling"**. Stratified sampling is commonly used in surveys, where each subgroup (a.k.a strata) in a population is proportionately drawn from. That is, if we have a city with 60% population over 40, then in a survey for 100 people, we want to choose 60 people over 40.
-
 ### ML Ops
 
 Machine Learning Operations is similar to DevOps in general software engineering, is to quickly find the best model in a set of given hyper parameters, and deploy them. Also, changes in the machine learning model or data can be quickly tested.
