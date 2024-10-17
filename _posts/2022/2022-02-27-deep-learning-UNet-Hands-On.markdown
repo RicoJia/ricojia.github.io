@@ -28,6 +28,10 @@ When making a dataset, do NOT use `jpeg` and stick to png instead. `Jpeg` will c
 
 THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This is because the dataset is imbalanced and has way many more zeros than other classes. In that case, do not use cross entropy. 
 
+- Pascal VOC 2007 has only 209 images for training, 213 images for validation.  This is far from being enough for training. Pascal VOC 2012 has 1,464 images for training, 1449 for validation.
+
+- `torchvision.transforms.CenterCrop(size)` was necessary because after convolutions, the skip connections are slightly larger than their upsampled peers.
+
 ## References
 
 [PyTorch-Unet](https://github.com/milesial/Pytorch-UNet)

@@ -92,3 +92,35 @@ def rico_partial(func, *args, **kwargs):
 rico_func_w = rico_partial(func, b = 12)
 rico_func_w(a=13)
 ```
+
+### cached, lru_cache
+
+`lru_cache` caches the result of up to a maximum number of recent calls. Once there are more functions than the max, the least called functions are discarded. 
+
+- **It came with Python 3.2**
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def expensive_function(x):
+    print(f"Computing for {x}")
+    return x * 2
+
+print(expensive_function(2))  # Computes and caches the result
+print(expensive_function(2))  # Returns cached result
+```
+
+`cache` came with `Python 3.9`. It simply caches results of all functions. It's equivalent to `lru_cache(maxsize=None)`
+
+```python
+from functools import cache  # Python 3.9+
+
+@cache
+def expensive_function(x):
+    print(f"Computing for {x}")
+    return x * 2
+
+print(expensive_function(2))  # Computes and caches the result
+print(expensive_function(2))  # Returns cached result
+```
