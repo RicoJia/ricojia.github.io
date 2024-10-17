@@ -44,3 +44,23 @@ experiment.config.update(
 # [optional] finish the wandb run, necessary in notebooks                                                                      
 wandb.finish()
 ```
+
+## tqdm
+
+`tqdm` creates a progress bar for iterables. Here, I have an example:
+
+```python
+from tqdm import tqdm
+
+with tqdm(total=image_num, desc=f'Epoch {epoch}/{epochs}', unit='img') as pbar: 
+    pbar.update(inputs.size(0))  # Increment progress bar by number of images in the batch
+    ...
+    pbar.set_postfix(**{'loss (batch)': loss.item()})
+```
+
+unit is 'img' so we can see 'img/s' at the progress bar.
+You should be able to see a progress bar:
+
+```
+Epoch 1/10:  |███████████-------| 600/1000 [00:30<00:15, 25.00img/s, loss (batch)=0.542]
+```

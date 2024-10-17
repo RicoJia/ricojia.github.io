@@ -39,3 +39,28 @@ On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome
 3. Choose `focus on hover`, 
     - If you don't want to see the other window that's out of focus already, choose "Raise Window When Focused"
 4. Press Alt + F2, type r, and press Enter. **This restarts the GNOME Shell without logging out.**
+
+## What If I Can't See Images From Remote Machine?
+1. Log onto remote server
+
+2. `echo $DISPLAY` This should display your current X11 display, something like `localhost:10.0`
+
+3. `xauth list` If nothing prints on console, it means ssh did not automatically generate the X11 authorization cookies on the local display properly.
+    1. If you don't see this, first `sudo vim /etc/ssh/sshd_config`
+    2. Make sure these exists:
+        ```python
+        X11Forwarding yes
+        X11UseLocalhost yes
+        ```
+    3. Restart the SSH console:
+        ```python
+        sudo systemctl restart ssh
+        ```
+    4. Remove `.Xauthority`
+        ```python
+        rm ~/.Xauthority
+        ```
+    5. Log out and reconnect to generate X11 authorization cookies
+        ```python
+        ssh -Y rico@rico-orin
+        ```

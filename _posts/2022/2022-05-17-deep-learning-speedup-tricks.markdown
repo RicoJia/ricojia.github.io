@@ -9,6 +9,23 @@ tags:
     - Deep Learning
 ---
 
+## General Speed-Up Tricks
+
+- `tensor.contiguous()` creates a new tensor that uses contiguous blocks of memory. You might need this after `permute()`, `view()`, `transpose()`, where the underlying memory is not contiguous.
+
+- `torch.cuda.empty_cache()` empties cached variables on GPU. So please do this **before sending anything to the GPU** 
+
+- `@torch.inference_mode()` turns off autograd overhead and can be used for evaluate. There's no gradient tensor whatsoever. Accordingly, tensors created under this mode are **immutable**. This is great for **model evaluation**
+
+```python
+@torch.inference_mode()
+def evaluate_model(input_data):
+    output = model(input_data)
+    return output
+```
+
+    - `torch.no_grad():` might still have intermediate tensors that carry gradients, and **allows for operations that modify tensors in place.**
+
 ## Op Determinisim
 
 Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions/r2.9/api_docs/python/tf/config/experimental/enable_op_determinism). Below is how this story goes
@@ -65,7 +82,11 @@ Caveat:
 
 Using `float 16` for training
 
-- Needs channel last format `NHWC`
+```python
+grad_scaler = torch.cuda.amp.GradScaler(enabled=amp)
+```
+
+- TODO? Needs channel last format `NHWC`
 
 ```python
 model = model.to(memory_format = torch.channels_last)

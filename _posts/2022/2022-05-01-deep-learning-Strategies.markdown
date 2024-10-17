@@ -104,6 +104,8 @@ Most of the times, people overthink and build something too complicated
 
 Say you have 1000 pictures of your cats, but you also have access to a 100000 cat images on the internet that look quite different from your cats. Then, what should you do?
 
-Option 1 is to mix these pictures together and shuffle them, so you will have the same distribution across train/dev/test sets. However, your target distribution will be different. 
+- Option 1 is to mix these pictures together and shuffle them, so you will have the same distribution across train/dev/test sets. However, your target distribution will be different.
 
-Option 2 is to have your test/dev sets only to be from the target distributions. You can add some of your cat pictures to your training set. This way. at least your target distribution will be what you want. **This is better for the long term.**
+- Option 2 is to have your test/dev sets only to be from the target distributions. You can add some of your cat pictures to your training set. This way. at least your target distribution will be what you want. **This is better for the long term.**
+
+- Option 3 is to carve out a small portion of the training set and use it as a training-dev set. This way, you can ensure if there's overfitting in the training set. Otherwise, there might be a **data mismatch** problem where the dev set comes from a different distribution.
