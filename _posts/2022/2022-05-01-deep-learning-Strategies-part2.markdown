@@ -116,3 +116,39 @@ This section is from my own training experience
     - Try artificial data synthesis. For example, in speech recognition, superpositioning car noise on human speech is a great boost.
 
 - If you are overfitting. it's kind of hard to tell whether you should focus on reducing bias or variance.
+
+### Simulated Scenarios (From Coursera)
+
+You are employed by a startup building self-driving cars. You are in charge of detecting road signs (stop sign, pedestrian crossing sign, construction ahead sign) and traffic signals (red and green lights) in images. The goal is to recognize which of these objects appear in each image.
+
+1. Your 100,000 labeled images are taken using the front-facing camera of your car. This is also the distribution of data you care most about doing well on. You think you might be able to get a much larger dataset off the internet, which could be helpful for training even if the distribution of internet data is not the same. Suppose that you came from working with a project for human detection in city parks, so you know that detecting humans in diverse environments can be a difficult problem. What is the first thing you do? Assume each of the steps below would take about an equal amount of time (a few days).
+
+- A. Train a basic model and proceed with error analysis.
+- B. Leave aside the pedestrian detection, to move faster and then later solve the pedestrian problem alone.
+- C. Spend a few days collecting more data to determine how hard it will be to include more pedestrians in your dataset.
+- D. Start by solving pedestrian detection, since you already have the experience to do this.
+
+**Answer**: Though C might be true, it's always better to start the iteration earlier.
+
+
+2. If some pictures were collected with labels that only contain `[car, pedestrian]`, without the remaining classes, what should you do? 
+
+- A. Make the missing labels as 1 (detected)
+- B. Calculate loss that only considers `[car, pedestrian]`
+
+**Answer: ** A is more "false positive" prone. B is more reasonable to use.
+
+3. Your training set error is quite much higher than that of humans. So:
+
+- A. You have a variance issue
+- B. You have an avoidable issue
+
+**Answer: ** A.
+
+4. If your errors due to mislabelling is 4.2%, does that mean your accuracy will increase by 4.2% after we fix them? 
+
+**Answer: ** No. That's the ceiling. There might be other issues with the associated data.
+
+5. If your errors are mostly due to occlusion. Should you work on it immediately?
+
+**Answer: ** Maybe not. We have to weight how easy it is to get more images for that. 
