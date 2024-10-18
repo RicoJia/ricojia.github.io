@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Strategies Part 1 Before Model Training
 date: '2022-05-17 13:19'
-subtitle: Start Development Early, Error Metric Setup, Data Preparation Principles
+subtitle: Error Metrics, Data Preparation Principles, Transfer Learning, Multi-Task Learning
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -69,3 +69,56 @@ Say you have 1000 pictures of your cats, but you also have access to a 100000 ca
 - The percentage of errors that were due to mislabelling. If this rate is high, maybe it'd be worth it to fix it.
 - Dev set is to tell which classifier A&B is better. If you fix labels in the dev set, fix some in the test set as well.
 - **It's important to note that correcting wrong labels in training set is a bit less important than correcting the dev/test set**, because your DL algorithm is somewhat robust to training set errors.
+
+## Transfer Learning
+
+If you are working on cancer image detection, you can probably take a pre-trained image recognition model, then do transfer learning. In that case, the pre-trained model already recognizes low level features such as corners and edges. If you:
+
+- have **a large training dataset**, you might be able to retrain the entire model. This is called **"fine-tuning"**
+- have a **small training dataset**, you could train just the last few custom layers. This is called **feature extraction**
+
+However, if your pre-trained model is NOT trained on a large enough dataset, (say relatively small dataset), then the pretaining is probably not super beneficial.
+
+### Multi-task Learning
+
+When you work on a multi-object detection task, a single image could have multiple objects. Now, you have two options:
+
+1. Train a network for each class
+2. Train a single network for all classes at once.
+
+Option 2 is called multi-task learning. Rich Caruana stated that multi-task learning won't hurt learning performance as long as the network is big enough. Multi-task learning will benefit most if **the tasks are related** so information learned from one task can be shared to others, such as learning a car, a pedestrian, etc. One note of caution is, maybe sticking to transfer learning is the best if your training data is not much.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/9aaabb88-f48a-4266-8e66-e3f1c12f4da4" height="300" alt=""/>
+        <figcaption><a href="https://www.geeksforgeeks.org/introduction-to-multi-task-learningmtl-for-deep-learning/">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+### End-To-End Learning
+
+End-to-end (e2e) learning is a hot topic, who doesn't want "one model that handles all"? 
+
+Speech Recognition is one good example, where the entire `audio -> features -> phonemes (distinc units of sounds like 'cuh'-'a'-'th' for cat) -> words -> transcript` chain is learned. 
+
+- Though Andrew argues that phonemes is a human-created artifact that's easy for humans to understand, but not by machines.
+
+However, e2e learning depends on the amount of **data** that you have. Some counter examples include:
+
+- Face recognition leverages a two stage process "face-localization -> face comparison". The reason is these two steps are relatively easier, and either has lots of data but not combined.
+- Hand xray->age recognition for medical uses: the two step process `Image -> bones -> age` has more data than the two steps combined.
+
+More specifically, the `x->y` mapping is crucial in deciding whether or not to use e2e learning. In autonomous vehicles' workflows,
+
+```
+Image, Lidar, IMU -> Car, pedestrian -> Route -> Steering
+```
+
+`Image, Lidar, IMU -> Car` can be handled by DL pretty well. But the motion planning algorithms and steering control requires a lot of data that has the above mapping. However, currently (as of 2024) we still don't have good real-world data on this front yet.
+
+
+## References
+
+[1] [Rich Caruana's Ph.D thesis, Carnegie Melon University, 1997](http://reports-archive.adm.cs.cmu.edu/anon/1997/CMU-CS-97-203.pdf)

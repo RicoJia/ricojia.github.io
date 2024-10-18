@@ -30,6 +30,36 @@ softmax_output = softmax_layer(logits)
 print(softmax_output)
 ```
 
+- Focal Loss: `nn.softmax()` and `Tensor.gather()`
+
+```python
+import torch
+
+# (m, class_num, h, w)
+model_preds = torch.Tensor([[
+    # two channels
+    [[0.1, 0.4, 0.2]],
+    [[0.3, 0.6, 0.7]],
+]])
+
+# label (m, h, w), only 1 correct class
+targets = torch.Tensor([
+    [[0, 1, 0]]
+]).long()
+probs = torch.nn.functional.softmax(inputs, dim=1)
+# See
+# tensor([[[[0.4502, 0.4502, 0.3775]],
+
+#          [[0.5498, 0.5498, 0.6225]]]])
+print(probs)
+# See
+# tensor([[[[0.4502, 0.5498, 0.3775]]]])
+probs.gather(1, targets.unsqueeze(1))
+```
+
+- `softmax` creates a softmax across these two channels.
+- `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
+
 ## Common Operations
 
 ### Convertions Between An Numpy Array And Its Torch Tensor
@@ -67,4 +97,13 @@ reshaped_tensor = tensor_b.reshape(tensor_a.shape)
 
 ```python
 print(torch.unique(target))
+```
+
+### Misc
+
+- Printing full tensors
+
+```python
+torch.set_printoptions(profile="full")  # Set print options to 'full'
+print(predicted_test)
 ```

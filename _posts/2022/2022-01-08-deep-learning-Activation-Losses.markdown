@@ -162,6 +162,24 @@ dice_loss = 1 - 2 * (intersect.sum().item())/ (pred.shape + labels.shape)
 
 Along with weighted cross entropy loss, Dice loss (or the sensitivity) function were Introduced by Sudre in 2017 [1].
 
+### Focal Loss
+
+Focal loss addresses the class imbalance problem by penalizing the correctly idenfied classes. $\gamma$ is a hyperparameter, $p_t$ is the probability of correct classification.
+
+$$
+\begin{gather*}
+FL = (1-p_t)^{\gamma} (-log(p_t))
+\end{gather*}
+$$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/c551930b-edc4-4cf5-b11c-892367381e70" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
 ## References
 
 [1] Sudre, C. H., Li, W., Vercauteren, T., Ourselin, S., & Cardoso, M. J. Generalised Dice overlap as a deep learning loss function for highly unbalanced segmentations. Deep Learning in Medical Image Analysis and Multimodal Learning for Clinical Decision Support: 3rd International Workshop, DLMIA 2017, and 7th International Workshop, ML-CDS 2017 Held in Conjunction with MICCAI 2017, Quebec City, QC, Canada, September 14, 2017, Proceedings, pp. 240–248. Springer, 2017.
