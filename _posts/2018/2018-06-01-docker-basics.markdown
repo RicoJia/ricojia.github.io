@@ -64,6 +64,11 @@ RUN npm install --production
 - Stage 0 creates artifacts / build of the custom app (e.g., `RUN npx run build`). It consists of several layers
 - Stage 1 is created by launching a new base image `node:18-alpine` and copying the build artifacts from Stage 0. The final image **only contains layers from the last stage and files copied from previous stages**. So Stage 0 is effectively discarded.
 
+- To use a custom Dockerfile, use the `-f` arg: `docker build -f Dockerfile_test_container . -t ros-noetic-simple-robotics-tests`
+
 ## Docker Commands
 
 - `docker kill` vs `docker stop`. `docker kill` sends a `SIGKILL` signal to the container, which forcibly kills a container, terminating it immediately without waiting for a graceful shutdown. `docker stop` sends a `SIGTERM` signal, which waits for the container to shutdown gracefully.
+
+- `docker rm` when there's such an error: `docker run -it --rm --name rico_test simple-robotics-test-image
+docker: Error response from daemon: Conflict. The container name "/rico_test" is already in use by container "2d89e3acb2f3ea839e44deec08fa8d1c365e0102ee621022961f9f95e4f2df0b". You have to remove (or rename) that container to be able to reuse that name.`
