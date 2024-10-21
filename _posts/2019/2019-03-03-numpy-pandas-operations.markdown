@@ -9,7 +9,9 @@ tags:
     - Python
 ---
 
-## General Programming Rules In Numpy
+## Numpy 
+
+### General Programming Rules In Numpy
 
 1. `np` allocates memory like C, so it's contiguous.
 2. Math operations can be applied to all elements, which is a lot faster than for loop and use math module. Some examples include:
@@ -17,9 +19,9 @@ tags:
     - `np.sqrt()`, `np.sin()`, `np.cos()`
     - Broadcast.
 
-## Mathematical Matrix Operations
+### Mathematical Matrix Operations
 
-### `np.max(array-like)`, `np.min(array-like)`
+#### `np.max(array-like)`, `np.min(array-like)`
 
 - Find the max / min in an array-like object
 
@@ -28,11 +30,11 @@ tags:
 np.min((1,2))
 ```
 
-### Sum
+#### Sum
 
 - `np.sum(arr)` takes in array of booleans, ints, floats.
 
-### Average
+#### Average
 
 - `np.mean(arr, axis=0)` might be slightly faster, and always returns the single mean value along the specified axis
 - `np.average(arr, axis=0, weights=None, returned=False)` calculates the weighted average along the specified axis
@@ -50,12 +52,12 @@ avg, summed_weights = np.average(a, axis=1, weights=weights, returned=True)
 print(f'Weighted average: {avg}, sumed_weights: {summed_weights}')
 ```
 
-### Comparisons
+#### Comparisons
 
 - `np.allclose(arr2, arr1)` returns `True` or `False`
 - `np.isclose(arr2, arr1)` returns an array of `[True, False, ...]`
 
-### Padding
+#### Padding
 
 - `np.pad(array, pad_width, mode='constant', constant_values=(4, 6))` pads an array with:
     - `pad_width` is `[before, after]`, the constants in (4,6) before and after the array in the given axis
@@ -80,9 +82,24 @@ array([[4, 4, 4, 4, 4, 4, 6, 6],
 
 See how along axis = 0 (rows) we have 4 before the array's row and 6 after, then along axis=1 (columns) we have 4 before the existing columns and 6 after?
 
-## Non-Mathematical Matrix Operations
+### Random Number Generation
 
-### `np.where(pred)`
+- `np.random.choice(a, size, replace=True, p=None)` randomly draws values from input `a`.
+
+    - `a` is a list of numbers to draw from
+    - `size` is the number of samples to draw
+    - `replace` is if the same number can be drawn multiple times
+    - `p` is the probability of each class. Uniform distribution is the default.
+
+```python
+arr = [1, 2, 3, 4, 5]
+result = np.random.choice(arr, size=3)
+# see [3,1,3]
+```
+
+### Non-Mathematical Matrix Operations
+
+#### `np.where(pred)`
 
 - Returns a tuple where `ith` element represents the indices along `ith` axis that satisfies the pred
 
@@ -103,7 +120,7 @@ array = np.array([10, 5, 8, 3, 12])
 res = np.where(array > 5, array, 0)
 ```
 
-### ```np.unravel_index(indices, shape)```
+#### ```np.unravel_index(indices, shape)```
 
 - Convert `indices` of a linear array, into those in an n-d array with `shape`
 
@@ -117,9 +134,9 @@ np.unravel_index([2,3], (3,4))
 (array([0, 0]), array([2, 3]))
 ```
 
-### `np.meshgrid`
+#### `np.meshgrid`
 
-- Generate coordinate matrices (grids) from coordinate vectors. It's often used in plotting functions, i.e., when you need to evaluate functions on a grid. 
+- Generate coordinate matrices (grids) from coordinate vectors. It's often used in plotting functions, i.e., when you need to evaluate functions on a grid.
 
 ```python
 # See two "grid" generated. The result is [2,5,3]
@@ -138,7 +155,7 @@ np.unravel_index([2,3], (3,4))
 res = np.mgrid[0:5, 0:3]
 ```
 
-### `np.array.squeeze()`
+#### `np.array.squeeze()`
 
 - remove axes with length 1. Example
 
@@ -148,11 +165,11 @@ arr.squeeze() # np.array([1,2,3])
 arr.squeeze()   # still sees np.array([1,2,3]) as no axis is of length 1.
 ```
 
-### `np.array.reshape (new_row, new_cln)`
+#### `np.array.reshape (new_row, new_cln)`
 
-- `np.array.reshape (new_row, new_cln)` is a common reshape function. 
+- `np.array.reshape (new_row, new_cln)` is a common reshape function.
 
-### `np.argmax(arr, axis)`
+#### `np.argmax(arr, axis)`
 
 - Finding the args of max of an array along an axis
 
@@ -169,7 +186,7 @@ one_hot = np.array([
 np.argmax(one_hot, axis=1)
 ```
 
-### `np.in1d`
+#### `np.in1d`
 
 - Check if elements in a list has appeared in a list
 

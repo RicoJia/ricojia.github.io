@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - RNN
 date: '2022-03-04 13:19'
-subtitle: Sequence Models
+subtitle: Sequence Models, RNN Architectures
 comments: true
 header-img: "img/home-bg-art.jpg"
 header-img: "img/home-bg-art.jpg"
@@ -10,13 +10,13 @@ tags:
     - Deep Learning
 ---
 
-## Sequence Model
+## Sequence Models
 
-Some common sequence models include: DNA sequencing, audio clips, sentiment classification, etc. Another example is name indexing, where names in news for a past period of time will be searched so they can be indexed and searched appropriately. 
+Some common sequence models include: DNA sequencing, audio clips, sentiment classification, etc. Another example is name indexing, where names in news for a past period of time will be searched so they can be indexed and searched appropriately.
 
 The first step to NLP is to build a dictionary, $X$. Say we have the most common 10000 English words, we can use one-hot encoding to represent a word, and the word can be indexed as $x^{i}$. If we see a word that's not in the dictionary, the word is indexed $x^{unk}$ as "unknown".
 
-A fully connected network doesn't work well for sequence data: 1. The sequence could be of arbitrary lengths 2. There's no weight sharing in these sequence models.
+A fully connected network / CNN doesn't work well for sequence data: 1. The sequence could be of arbitrary lengths 2. There's no weight sharing in these sequence models.
 
 <div style="text-align: center;">
 <p align="center">
@@ -26,9 +26,9 @@ A fully connected network doesn't work well for sequence data: 1. The sequence c
 </p>
 </div>
 
-## Basics
+## RNN Architecture & Forward Propagation
 
-The word "recurrent" means "appearing repeatedly". In an RNN, we have What's it called??? $a$, sequential input $x$, output $\hat{y}$. Each superscript $i$ represents timestamp, e.g., $a^1$ means a at time $1$
+The word "recurrent" means "appearing repeatedly". In an RNN, we have **hidden states** $a^{(t)}$, sequential inputs $x^{(t)}$, output $\hat{y}^{(t)}$. Each superscript $i$ represents timestamp, e.g., $a^1$ means a at time $1$
 
 <div style="text-align: center;">
 <p align="center">
@@ -40,14 +40,15 @@ The word "recurrent" means "appearing repeatedly". In an RNN, we have What's it 
 
 $$
 \begin{gather*}
-a^{t} = g_0(W_{aa} a^{t-1} + W_{ax} x^{t} + b_a)
+a^{t} = g_0(W_{aa} a^{(t-1)} + W_{ax} x^{(t)} + b_a)
 \\
-\hat{y}^{i} = g_1(W_{ya} a^{t} + b_y)
+\hat{y}^{i} = g_1(W_{ya} a^{(t)} + b_y)
 \end{gather*}
 $$
 
 - $a^{0}$ is usually zero or randomly generated values.
 - $g_0$ could be tanh (more common) or relu, $g_1$ could be sigmoid.
+    - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
 - $W_ax$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_aa$
 
 We can simplify this notation into:
@@ -61,42 +62,119 @@ a^{t} = g_0(W_{a}[a^{t-1}, x^{t}]^T + b_a)
 \end{gather*}
 $$
 
+#### Architectures
 
-Disadvantage: inputs in the early sequence are not influenced by inputs later in the sequence. One example is "Teddy bear is on sale", Teddy is not a name, while many times it is.
-
-## Old Notes (TODO)
-
-FCN or CNN cannot handle sequential data well (time series data). Recurrent network has 1 input, 1 output , and output at each time is fed back into itself N times? (how does weight sharing work here?)
+- Above is **many to many**, meaning you have multiple inputs and have multiple outputs.
+- There's another type of **many to many**, where we have different lengths of outputs and inputs e.g., machine translation
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/5d2a4106-60b5-46d0-9e77-b3176416ea33" height="200" alt=""/>
+        <img src="https://github.com/user-attachments/assets/b4963c3e-c98b-492f-9b58-6ff95a2d82a9" height="200" alt=""/>
     </figure>
 </p>
 </div>
 
-All RNN "layers" share the same weights: U, V, W. If we unfold inputs at different times:
+- We also have **many to one**, meaning you have multiple inputs and one output, like sentiment analysis
+
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/35add241-e857-4710-8cdb-3d5e057f3972" height="200" alt=""/>
+        <img src="https://github.com/user-attachments/assets/c946f898-eaf5-4b04-adae-cc9c08c2ab76" height="200" alt=""/>
     </figure>
 </p>
 </div>
+
+- We also have **one to many**, like music generation that takes in one prompt input and generates multiple notes.  
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/fa68f6d1-dc25-40e3-a07e-ae820d8cd657" height="200" alt=""/>
+        <img src="https://github.com/user-attachments/assets/0a19bd68-5bc6-4163-bee9-51e3a7a82684" height="200" alt=""/>
     </figure>
 </p>
 </div>
 
-- `s (hidden units) = tanh(W*output_{t-1} + U*x_{t})`
-- `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
+Disadvantages:
 
-Each training sample is a time series with vectors of the same dimensions, but its length can vary. Backpropagation Through Time is used here: **BPTT**
+- Inputs in the early sequence are not influenced by inputs later in the sequence. One example is "Teddy bear is on sale", Teddy is not a name, while many times it is.
 
-RNN can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.
+## Language Modelling
+
+A language model takes in a sequence of words and outputs new sequence like in speech recognition and machine translation. The output is the **most probable** output. E.g.,
+
+```
+English input: I love Turkish coffee
+Turkish output: Ben türkçe kahvesi seviyorum
+```
+
+Input: Tokenize the sentence into one-hot vectors. Add an end-of-sentence token `<EOS>` to be explicit. If there's a word that's not in the vocabulary, use an unknown token to represent that `<UNK>`. Before outputing probablities, we need `softmax` to normalize.
+
+This is equivalent to a Markov Decision Process. Let's walk through an example with arbitrarily-assigned probabilities.
+
+
+1. I (one-hot vector is [0, , ... 1, ... 0]) -> $P(y_0 = Ben)$ = 0.4 (so take 'Ben' as output)
+2. love -> P(seviyor) = 0.00003, P(seviyorum) = 0.00001 
+    1. P(seviyor | Ben) = 1e-10, $P(\text{seviyorum} | y_0 = \text{Ben}) = 0.4$
+    2. So take the most probable sequence 'Ben seviyorum' as output.
+3. `Turkish` -> $P(Türkçe) = 0.5$
+    1. $P(y_2 = \text{Türkçe} | y_0 = \text{Ben}, y_1 = \text{seviyorum}) = 8e^{-10}$, $P(y_1 = \text{Türkçe} | y_0 = \text{Ben}, y_2 = \text{seviyorum}) = 6e^{-7}$
+    2. So take 'Ben Türkçe seviyorum' as output
+4. `Coffee` -> `P(Kahve) = 0.7, P(Kahvesi) = 0.2`:
+    1. $P(y_3 = \text{Kahve} | y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_2 = \text{seviyorum}) = 7e^{-15}$
+    1. ...
+    1. $P(y_2 = \text{Kahvesi} | y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_3 = \text{seviyorum}) = 9e^{-9}$
+    1. The most probable sequence is `Ben türkçe kahvesi seviyorum` as the output
+
+- The sentence `Türkçe kahvesi seviyorum` has a probability of $9e^{-9}$ and is the highest among all sentences.
+
+**One note is the above example is NOT how modern machine translation works using Neural Machine Translation (NMT). It's a simplification of word-by-word translation.**
+
+- Modern NMTs, expecially transformers, do not rely on Markov Assumptions and consider not just previous words, but the entire input sequence.
+
+- Probablities like $P(y_2 = \text{Türkçe} | y_0 = \text{Ben}, y_1 = \text{seviyorum})$ are computed by complex neural networks to  based on learned representations of both the source and target languages.
+
+#### Training
+
+The training set is a large corpus of English -> Turkish text.
+Loss function is:
+
+$$
+\begin{gather*}
+L(y^{(t)}, \hat{y^{(t)}}) = -\sum_i y_i^{(t)} log (\hat{y}^{(t)})
+\\
+L = -\sum_t L(y^{(t)}, \hat{y^{(t)}})
+\end{gather*}
+$$
+
+Where $i$ is the dimension of one-hot vectors, and $t$ is time.
+
+### Sampling Novel Sequences
+
+After training a model, the model should have learned the conditional probability distribution $P(y_t | y_1, ... y_{t-1})$. we can informally get a sense of what the model learned by sampling novel sequences. For example, our vocabulary is `['I', 'you', 'love', 'coffee', 'apple']`
+
+1. At `t=0`
+    1. Choose start tokens $a^{(0)} = 0, x^{(0)} = 0$ (Start-Of-Sequence `<SOS>` token),
+    2. Generate hidden state $a^{(0)} = W_{ax} x^{(0)} + b_a$
+    3. Generate distribution $y^{(0)} = softmax(W_{ya}a^{0} + b_y) = [0.6, 0.2, 0.05, 0.05, 0.1]$.
+    2. Use a sampling strategy from the distribution $y^{(0)}$
+        - **Greedy sampling**: choose the token with the highest probability. You might miss less probable but plausible sequences.
+        - **Stochastic sampling**: treat $y^{(0)}$ as a  **categorical distribution** , then randomly draw a sample from it. one can use `np.random.choice()`.
+        - In this step, we draw `'I'` and add it to the sequence
+2. At `t=1`
+    1. Generate hidden state $a^{(1)} = W_{ax} x^{(1)} + b_a$
+    2. Generate distribution $y^{(1)} = softmax(W_{ya}a^{1} + b_y) = [0.2, 0.2, 0.4, 0.1, 0.1]$.
+    3. After stochastic sampling, we draw 'love' and add it to the sequence
+
+...
+
+### Character-Level RNN
+
+Above is "word-level" RNN. If inputs are charaters `[a-z, A-Z, 0-9, ...]`, you wouldn't have to worry about `<UKN>` tokens. But one disadvantage is your output sequence is much longer so the **long-range dependencies** might be missed. This is more computationally expensive.
+
+## BackPropagation Through Time (BPTT)
+
+TODO
+
+`RNN` can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.

@@ -15,9 +15,27 @@ Test Workflow is done through Github Actions. Here we are going to create a work
 
 - Create a `.github/workflows/test.yml`
 - Add a custom docker file `Docker_test_container`  in the root directory
-TODO
-
 - In the `Actions` Tab on your repo's panel, you can check test runs
+- For a full example, please see here: TODO
+
+Note: `pre-commit` can be used to run tests even before commiting.
+
+1. `pip install pre-commit`
+1. Create a .pre-commit-config.yaml file in your project’s root directory with the following content:
+
+```markdown
+repos:
+- repo: https://github.com/psf/black
+    rev: 23.1.0  # Use the latest version of black
+    hooks:
+    - id: black
+```
+1. Run the following command to install the pre-commit hooks, so black will run automatically before commit and fix formatting issues:
+
+```bash
+pre-commit install
+```
+
 
 To enforce that tests pass before allowing a pull request to be merged, you can enable branch protection rules:
 
@@ -41,10 +59,10 @@ Additionally, we can add a status badge, which **dynamically updates** based on 
 
 - Copy the Markdown snippet and open your repository's README.md file.
 
-```python
+```markdown
 # My Project
-
 ![Run Tests](https://github.com/YOUR-USERNAME/YOUR-REPO/actions/workflows/test.yml/badge.svg)
-
 This is my project description...
 ```
+
+## Set Up Github Pypi Workflow

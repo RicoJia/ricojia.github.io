@@ -32,6 +32,18 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
 
 - `torchvision.transforms.CenterCrop(size)` was necessary because after convolutions, the skip connections are slightly larger than their upsampled peers.
 
+- `focal loss` seems useful, but it was a bit tricky to check. I checked with the one-hot version of output labels, and compare against itself. That was supposed to be the "perfect" example, and I expected to see a loss of 0. However, due to the softmax operation in focal loss, I got 0.78. This was resolved by doing `100 * one_hot_labels`. **Just using focal loss alone did NOT get around the imbalance issue for Pascal VOC 207**
+
+- However, UNet works on the Carvana dataset pretty well, with 97% accuracy (training set only) for a PoC. I haven't measured dev / test set yet. 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/3e426cdc-5133-4049-afc0-76044af69b05" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
 ## References
 
 [PyTorch-Unet](https://github.com/milesial/Pytorch-UNet)
