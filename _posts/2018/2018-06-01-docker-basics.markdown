@@ -70,5 +70,5 @@ RUN npm install --production
 
 - `docker kill` vs `docker stop`. `docker kill` sends a `SIGKILL` signal to the container, which forcibly kills a container, terminating it immediately without waiting for a graceful shutdown. `docker stop` sends a `SIGTERM` signal, which waits for the container to shutdown gracefully.
 
-- `docker rm` when there's such an error: `docker run -it --rm --name rico_test simple-robotics-test-image
-docker: Error response from daemon: Conflict. The container name "/rico_test" is already in use by container "2d89e3acb2f3ea839e44deec08fa8d1c365e0102ee621022961f9f95e4f2df0b". You have to remove (or rename) that container to be able to reuse that name.`
+    - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
+    - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
