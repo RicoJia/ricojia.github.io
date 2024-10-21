@@ -64,3 +64,6 @@ You should be able to see a progress bar:
 ```
 Epoch 1/10:  |███████████-------| 600/1000 [00:30<00:15, 25.00img/s, loss (batch)=0.542]
 ```
+
+- Binary bytes
+    - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB

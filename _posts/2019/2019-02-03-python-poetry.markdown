@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Python - Create a Poetry Package, Push It To Pypi Through Github
+title: Python - Poetry Packaging System and Pip
 date: '2019-02-03 13:19'
-subtitle: Poetry
+subtitle: Poetry, Pip
 comments: true
 header-img: "img/home-bg-2015.jpg"
 tags:
@@ -83,9 +83,12 @@ poetry config pypi-token.pypi your_pypi_token_here
 
     - `poetry build` to build a package, which includes `dist` with `simple_robotics_python_utils-1.0.0-py3-none-any.whl` and `simple_robotics_python_utils-1.0.0.tar.gz`
 
-## Set Up Github Test Workflow
+## Pip
 
-- Create a workflow on Github's default runner
+### Installation
 
-- Create a `.github/workflows/test.yml`
-- Add a custom docker file `Docker_test_container`  in the root directory
+- `--user`  installs the package in a local directory where the current user has permissions. 
+
+```bash
+pip install --user <PKG>
+```
