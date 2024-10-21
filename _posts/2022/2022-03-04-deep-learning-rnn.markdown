@@ -14,7 +14,7 @@ tags:
 
 Some common sequence models include: DNA sequencing, audio clips, sentiment classification, etc. Another example is name indexing, where names in news for a past period of time will be searched so they can be indexed and searched appropriately.
 
-The first step to NLP is to build a dictionary, $X$. Say we have the most common 10000 English words, we can use one-hot encoding to represent a word, and the word can be indexed as $x^{i}$. If we see a word that's not in the dictionary, the word is indexed $x^{unk}$ as "unknown".
+The first step to NLP is to build a dictionary, $X$. Say we have the most common 10000 English words, we can use one-hot encoding to represent a word, and the word can be indexed as $x^{i}$. If we see a word that's not in the dictionary, the word is indexed `<UNK>` as "unknown".
 
 A fully connected network / CNN doesn't work well for sequence data: 1. The sequence could be of arbitrary lengths 2. There's no weight sharing in these sequence models.
 
@@ -48,8 +48,8 @@ $$
 
 - $a^{0}$ is usually zero or randomly generated values.
 - $g_0$ could be tanh (more common) or relu, $g_1$ could be sigmoid.
-    - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
-- $W_ax$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_aa$
+  - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
+- $W_{ax}$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_{aa}$
 
 We can simplify this notation into:
 
@@ -76,7 +76,6 @@ $$
 </div>
 
 - We also have **many to one**, meaning you have multiple inputs and one output, like sentiment analysis
-
 
 <div style="text-align: center;">
 <p align="center">
@@ -113,9 +112,8 @@ Input: Tokenize the sentence into one-hot vectors. Add an end-of-sentence token 
 
 This is equivalent to a Markov Decision Process. Let's walk through an example with arbitrarily-assigned probabilities.
 
-
 1. I (one-hot vector is [0, , ... 1, ... 0]) -> $P(y_0 = Ben)$ = 0.4 (so take 'Ben' as output)
-2. love -> P(seviyor) = 0.00003, P(seviyorum) = 0.00001 
+2. love -> P(seviyor) = 0.00003, P(seviyorum) = 0.00001
     1. P(seviyor | Ben) = 1e-10, $P(\text{seviyorum} | y_0 = \text{Ben}) = 0.4$
     2. So take the most probable sequence 'Ben seviyorum' as output.
 3. `Turkish` -> $P(Türkçe) = 0.5$
