@@ -17,25 +17,6 @@ There are 2 types of LiDARs: ToF LiDARs and FMCW LiDARs. The mainstream is ToF, 
 
 ### Concepts
 
-#### Multi-Channel LiDAR
-
-Multi-Channel LiDARs such as a 16, 32, or 64-channel LiDAR have multiple channels, or emitter-receiver pairs stacked vertically. Their vertical fov is typically ±10° to ±30°. Each receiver receives light from a fixed angle. The angle is determined by the orientation of the emitter and the receiver pair.
-
-Imagine a stack of lasers and detectors aligned vertically, each pointing at a slightly different angle up or down. As the LiDAR spins around its axis, these channels sweep out horizontal slices at their respective vertical angles, collectively scanning the surrounding environment in 3D.
-
-Multi-channel LiDARs are widely used in self-driving cars for obstacle detection and environment mapping. ToF cameras (Flash LiDAR) are used more in consumer electronics.
-
-LiDAR systems are engineered to prevent interference between channels.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/af5d77fa-8bb9-4f6c-ab31-851e20531ff9" height="300" alt=""/>
-        <figcaption><a href="https://www.nature.com/articles/s41598-022-26394-6">Source: Nature</a></figcaption>
-    </figure>
-</p>
-</div>
-
 #### Single Return vs Dual Return
 
 The term "dual return" refers to the system's ability to detect and record multiple reflections of a single laser pulse as it encounters objects at different distances in its path. This is particularly useful in environments where the laser pulse may pass through partially transparent or semi-obstructive objects like vegetation, windows, or dust, and then reflect off a more solid object behind them.
@@ -52,7 +33,7 @@ The term "dual return" refers to the system's ability to detect and record multi
 
 $\Delta t$ is measured between the emission and reception of the laser pulse with picosecond ($10^-{12}$s) resolution. The distance is $d = \frac{c \times \Delta t}{2}$
 
-To generate a 3D depth map, **a ToF LiDAR's receive can be modeled as a pinhole camera model, where each pixel on the field of view corresponds to a point that's at an angle to the optical center.**
+To generate a 3D depth map, **a ToF LiDAR's receiver can be modeled as a pinhole camera where each pixel on the field of view corresponds to a point that's at an angle to the optical center.**
 
 <p align="center">
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/aa1eb110-f272-4939-b586-44eecae787ef" height="300"/>
@@ -61,6 +42,25 @@ To generate a 3D depth map, **a ToF LiDAR's receive can be modeled as a pinhole 
 ### Mechanical LiDAR
 
 There is a step motor that drives a vertical lidar emitter to scan the environment. The mechanical part is hard to maintain. Example: Google car?
+
+#### Channels
+
+Mechanical LiDARs have channels, i.e emitter-receiver pairs that are stacked vertically. 16, 32, or 64 are typical channel numbers. Vertical FoV are typically ±10° to ±30°. On a LiDAR, each receiver receives light from a fixed angle, which is determined by the orientation of the emitter and the receiver pair.
+
+Imagine a stack of lasers and detectors aligned vertically, each pointing at a slightly different angle up or down. As the LiDAR spins around its axis, these channels sweep out horizontal slices at their respective vertical angles, collectively scanning the surrounding environment in 3D.
+
+Multi-channel LiDARs are widely used in self-driving cars for obstacle detection and environment mapping. ToF cameras (Flash LiDAR) are used more in consumer electronics.
+
+LiDAR systems are engineered to prevent interference between channels.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/af5d77fa-8bb9-4f6c-ab31-851e20531ff9" height="300" alt=""/>
+        <figcaption><a href="https://www.nature.com/articles/s41598-022-26394-6">Source: Nature</a></figcaption>
+    </figure>
+</p>
+</div>
 
 ### Hybrid Solid State LiDAR
 
