@@ -72,3 +72,6 @@ RUN npm install --production
 
     - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
     - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
+
+- `docker run`: this is how to start a docker container. Args that I use quite often are:
+    - `-w ${WORKDIR}`: set `WORKDIR` such that when logging in, one will be in `WORKDIR`. If there's `/WORKDIR /home/${USER_NAME}` it'd work, too.
