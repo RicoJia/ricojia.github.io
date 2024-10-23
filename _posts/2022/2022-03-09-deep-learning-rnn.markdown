@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - RNN
-date: '2022-03-04 13:19'
+date: '2022-03-09 13:19'
 subtitle: Sequence Models, RNN Architectures
 comments: true
 header-img: "img/home-bg-art.jpg"
@@ -33,7 +33,7 @@ The word "recurrent" means "appearing repeatedly". In an RNN, we have **hidden s
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/3e339dde-e16d-43ae-99c3-e689dc20cbcd" height="200" alt=""/>
+        <img src="https://github.com/user-attachments/assets/424591b0-a5ba-499f-a26e-2bc8f62905ce" height="300" alt=""/>
     </figure>
 </p>
 </div>
@@ -110,13 +110,15 @@ Turkish output: Ben türkçe kahvesi seviyorum
 
 Input: Tokenize the sentence into one-hot vectors. Add an end-of-sentence token `<EOS>` to be explicit. If there's a word that's not in the vocabulary, use an unknown token to represent that `<UNK>`. Before outputing probablities, we need `softmax` to normalize.
 
-This is equivalent to a Markov Decision Process. Let's walk through an example with arbitrarily-assigned probabilities.
+This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ is $p(y^{(t)} | y^{(0)}, y^{(1)} ... y^{(t-1)})$. The whole sentence's probability is $p(y^{(0)}, y^{(1)} ... y^{(t-1)}, y^{(t)})$
+
+ Let's walk through an example with arbitrarily-assigned probabilities.
 
 1. I (one-hot vector is [0, , ... 1, ... 0]) -> $P(y_0 = Ben)$ = 0.4 (so take 'Ben' as output)
 2. love -> P(seviyor) = 0.00003, P(seviyorum) = 0.00001
     1. P(seviyor | Ben) = 1e-10, $P(\text{seviyorum} | y_0 = \text{Ben}) = 0.4$
     2. So take the most probable sequence 'Ben seviyorum' as output.
-3. `Turkish` -> $P(Türkçe) = 0.5$
+3. `Turkish` -> $P(\text{Türkçe}) = 0.5$
     1. $P(y_2 = \text{Türkçe} | y_0 = \text{Ben}, y_1 = \text{seviyorum}) = 8e^{-10}$, $P(y_1 = \text{Türkçe} | y_0 = \text{Ben}, y_2 = \text{seviyorum}) = 6e^{-7}$
     2. So take 'Ben Türkçe seviyorum' as output
 4. `Coffee` -> `P(Kahve) = 0.7, P(Kahvesi) = 0.2`:
