@@ -13,7 +13,7 @@ tags:
 
 - `tensor.contiguous()` creates a new tensor that uses contiguous blocks of memory. You might need this after `permute()`, `view()`, `transpose()`, where the underlying memory is not contiguous.
 
-- `torch.cuda.empty_cache()` empties cached variables on GPU. So please do this **before sending anything to the GPU** 
+- `torch.cuda.empty_cache()` empties cached variables on GPU. So please do this **before sending anything to the GPU**
 
 - `@torch.inference_mode()` turns off autograd overhead and can be used for evaluate. There's no gradient tensor whatsoever. Accordingly, tensors created under this mode are **immutable**. This is great for **model evaluation**
 
@@ -31,18 +31,21 @@ def evaluate_model(input_data):
 Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions/r2.9/api_docs/python/tf/config/experimental/enable_op_determinism). Below is how this story goes
 
 - Tensor operations are not necessarily deterministic:
-    - `tf.nn.softmax_cross_entropy_with_logits` (From a quick search, it's still not clear to me why this is non-deterministic. Mathematically, the quantity should be deterministic.)
+  - `tf.nn.softmax_cross_entropy_with_logits` (From a quick search, it's still not clear to me why this is non-deterministic. Mathematically, the quantity should be deterministic.)
 - Op Determinisim will make sure you get the same output with the same code, same hardware. But it will disable asynchronicity, so **it will slow down these operations**
-    - Use the same software environment in every run (OS, checkpoints, version of CUDA and TensorFlow, environmental variables, etc). Note that determinism is not guaranteed across different versions of TensorFlow.
+  - Use the same software environment in every run (OS, checkpoints, version of CUDA and TensorFlow, environmental variables, etc). Note that determinism is not guaranteed across different versions of TensorFlow.
 - How to enable Op Determinism?
-    - PyTorch
-    - TensorFlow:
+  - PyTorch
+  - TensorFlow:
+
         ```python
         tf.keras.utils.set_random_seed(1)
         tf.config.experimental.enable_op_determinism()
         ```
-        - This effectively sets the pseudorandom number generators (PRNGs) in  Python seed, the NumPy seed, and the TensorFlow seed.
-        - Without setting the seed, ` tf.random.normal` would raise `RuntimeError`, but Python and Numpy won't
+
+    - This effectively sets the pseudorandom number generators (PRNGs) in  Python seed, the NumPy seed, and the TensorFlow seed.
+    - Without setting the seed, `tf.random.normal` would raise `RuntimeError`, but Python and Numpy won't
+        
 
 ## Torch Optimizer Tricks
 

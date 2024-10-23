@@ -86,13 +86,11 @@ def test_with_model(X_train, y_train, X_test, y_test, X_validation=None, y_valid
                 print(f'Validation Loss: {loss}')
 ```
 
-
 ## Experiements
 
 ### SGD Optimizer
 
 - 💡 In a typical successful run, the weight and bias norms initially increase across all layers, then decrease to almost 0 and oscillates around there (so learning is stablized)
-
 
 <div style="text-align: center;">
 <p align="center">
@@ -151,7 +149,6 @@ Number of Epochs could matter, too. In a "circle within circles" examle, at firs
     </figure>
 </p>
 </div>
-
 
 ### Adam Optimizer
 

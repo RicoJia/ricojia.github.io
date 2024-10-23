@@ -98,7 +98,6 @@ class BasicIdentityBlock(nn.Module):
         return out
 ```
 
-
 - RESNET-20 For CIFAR-10 dataset
 
 ```python
@@ -249,7 +248,7 @@ Some other notes:
 - `model.load_state_dict(torch.load(MODEL_PATH, weights_only=False))`: torch models actually could have tensors for GPUs. So if your model is trained on a GPU, it can't be loaded onto a CPU. This can be mitigated by `model.load_state_dict(torch.load(MODEL_PATH, map_location=device))`
 - `loss.item()` gives the average loss across the current batch
 - `model.eval()` vs `model.train()`: in the 'eval' mode, dropout and batch normalization are turned off
--  0.001 as learning rate is common for `Adam`, 0,1 is common for SGD.
+- 0.001 as learning rate is common for `Adam`, 0,1 is common for SGD.
 
 ### Result
 

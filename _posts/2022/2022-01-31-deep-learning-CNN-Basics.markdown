@@ -150,9 +150,9 @@ Example: say we have an 32x32x1 grayscale image:
 
 ## Theories
 
-### What is a Neuron in CNN? 
+### What is a Neuron in CNN?
 
-A neuron in machine learning can be thought of as "a unit that outputs the weighted sum of an input tensor". So, a whole filter with n feature maps is a logic embodiment of the neuron concept in CNN, in my opinion. 
+A neuron in machine learning can be thought of as "a unit that outputs the weighted sum of an input tensor". So, a whole filter with n feature maps is a logic embodiment of the neuron concept in CNN, in my opinion.
 
 ### How does back propagation on a kernel `K` work?
 
@@ -164,7 +164,7 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
 
     $$
     \begin{gather*}
-    y_{11} = x_{11}k_{11} + x_{12}k_{12} + x_{13}k_{13} + ... 
+    y_{11} = x_{11}k_{11} + x_{12}k_{12} + x_{13}k_{13} + ...
     \\
     y_{12} = x_{12}k_{11} + x_{13}k_{12} + x_{14}k_{13} + ...
     \\
@@ -197,14 +197,14 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
 - For input gradient, $\frac{J}{X}$, it's actually convolution: $k \circledast \frac{\partial J}{\partial y}$
     $$
     \begin{gather*}
-    \frac{J}{x_{11}} = \frac{J}{y_{11}}k_{11} 
+    \frac{J}{x_{11}} = \frac{J}{y_{11}}k_{11}
     \\ \frac{J}{x_{12}} = \frac{J}{y_{11}}k_{12} + \frac{J}{y_{12}}k_{11}
     \\ \frac{J}{x_{13}} = \frac{J}{y_{11}}k_{13} + \frac{J}{y_{12}}k_{12} + \frac{J}{y_{12}}k_{11}
     ...
     \end{gather*}
     $$
 
-    - See? This is convolution!
+  - See? This is convolution!
 
 ## Implementation
 

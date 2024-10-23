@@ -29,4 +29,4 @@ checkpointing can be used on functions as well.
 
 ## Training
 
-- ` model.n_channels       print(f'model.n_channels: {} ')`
+- `model.n_channels       print(f'model.n_channels: {} ')`

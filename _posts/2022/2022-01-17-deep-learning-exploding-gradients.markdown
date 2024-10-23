@@ -97,7 +97,7 @@ y_{256}
 \end{gather*}
 $$
 
-In code, we can see that the mean is 0. This is because for independent variables $w$ and $x$: 
+In code, we can see that the mean is 0. This is because for independent variables $w$ and $x$:
 
 $$
 \begin{gather*}
@@ -105,7 +105,7 @@ E[wx] = E[w]E[x] = 0
 \end{gather*}
 $$
 
-And the standard deviation is almost $\sqrt{256}$. This is because for a single product $wx$: 
+And the standard deviation is almost $\sqrt{256}$. This is because for a single product $wx$:
 
 $$
 \begin{gather*}
@@ -121,9 +121,9 @@ Var(A + B) = E[(A+B)^2] = E[A^2] + 2E[A^B] + E[B^2] = E[A^2] + E[A^2] = 2
 \end{gather*}
 $$
 
-Then, the variance of $Y$ across all $y_i$ is 256. The standard deviation of $y$ is 16. If y is a Gaussian distribution, this means 33.3% of y will lie outside of $[-16, 16]$. 
+Then, the variance of $Y$ across all $y_i$ is 256. The standard deviation of $y$ is 16. If y is a Gaussian distribution, this means 33.3% of y will lie outside of $[-16, 16]$.
 
-In the next layer, the standard deviation will be amplified further and further. 
+In the next layer, the standard deviation will be amplified further and further.
 
 #### Naive Initialization For Perceptron Networks
 
@@ -151,7 +151,7 @@ i   # see 99
 
 #### Xavier Initialization
 
-However, we have to add the non-linear activation back in so a neural net can classify complex patterns non-linearly in its landscape, such as handwritten digit classification. 
+However, we have to add the non-linear activation back in so a neural net can classify complex patterns non-linearly in its landscape, such as handwritten digit classification.
 
 In Xavier Glorot and Yoshua Bengio's paper: [Understanding the difficulty of training deep feedforward neural networks](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf), they believed one good way to initialize is to:
 
@@ -179,7 +179,7 @@ Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org
 
 #### Remarks On Zero Initialization
 
-If our network's weights are initialized all to 0, then the output is the same value regardless of inputs. Gradients will be zero everywhere. This is called "symmetry". To break the symmetry, it's okay to initialize W zero and not including b. 
+If our network's weights are initialized all to 0, then the output is the same value regardless of inputs. Gradients will be zero everywhere. This is called "symmetry". To break the symmetry, it's okay to initialize W zero and not including b.
 
 Also, if the output is 0 and uses the **cross entropy loss**, we will get `inf` in the final cost.
 

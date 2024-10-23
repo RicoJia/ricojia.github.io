@@ -53,7 +53,7 @@ Some key contributions from DeepFace:
 - Max-pooling makes output of conv more robust to local translations. Then the output image will have activations shifted too
 
 - "Several levels of pooling would cause the network to lose information about the precise position of detailed facial structure and micro-textures" I guess that's true
-    - "Hence, we apply max-pooling only to the first convolutional layer. We interpret these first layers as a front-end adaptive pre-processing stage" - but this is not the case for resnet, yolo etc., right? So this is ok?
+  - "Hence, we apply max-pooling only to the first convolutional layer. We interpret these first layers as a front-end adaptive pre-processing stage" - but this is not the case for resnet, yolo etc., right? So this is ok?
 
 - The loss is the regular softmax-loss
 
@@ -138,10 +138,12 @@ Here, the similarity of two images can also be [Chi-Squared Similarity](../2017/
 1. Use a pretrained Inception Network to compute encodings of faces.
     - Input: `160x160` RGB images shaped into `(𝑚,160,160,3)`.
     - Output: `128-vector`. **This layer needs to be added to the original Inception Network**
+
         ```
         GoogLeNet: Convolutional Layers --> 1000-D FC Layer --> Softmax (Classification)
         FaceNet: Convolutional Layers --> 128-D FC Layer --> L2 Normalization (Embedding)
         ```
+
         - The output `128-vector` in the Inception network is a design trade off for small memory footprint and distinctiveness. In the original inception network, Szegedy et al. did NOT add an 128 output. The embeddings were also learned in the meantime.
     - Another difference between FaceNet and Inception Network is the FaceNet does NOT have an auxillary layer.
     - FaceNet also uses L2 norm in the triplet loss

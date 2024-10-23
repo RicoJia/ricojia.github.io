@@ -27,6 +27,7 @@ The LeNet-5 architecture (LeCun, 1998) and is still very widely used. 5 is simpl
 </div>
 
 Other architectural aspects:
+
 - Activation functions were **Sigmoid and Tanh**, rather than ReLU (ReLU came out with AlexNet).
 - Nowadays, a CNN layer would have `f x f x c` for each output channel, where `f` is the filter size, `c` is the number of input channels. But LeNet-5 creates filters of different sizes for different channels for the **small compute it had**.
 - LeNet-5 attaches a non-linear activation function after a CNN.
@@ -55,6 +56,7 @@ Input: `227x227x3`. From the image net dataset
 - 12th layer is a FCN layer with 1000 output classes. Its outputs are then fed into a softmax
 
 Highlights include:
+
 - Trained on a **much larger network** than LeNet-5
 - **Use of ReLU**
 
@@ -78,7 +80,7 @@ AlexNet paper is relatively easy to read. And it's a milestone that drew people'
 
 There are **16 layers that have parameters**. The architecture of VGG 16 is realitively simpler.
 
-Upside is the architecture is **quite simple**. Downside is it's large even by modern standard 
+Upside is the architecture is **quite simple**. Downside is it's large even by modern standard
 
 ## One-by-One Convolutions
 
@@ -276,6 +278,7 @@ $$
 $$
 
 ### Problem With Covolution Layer
+
 Convolution is expensive. Below network has `(5x5x28x28)x192x32=120422400` times of multiplication in its forward prop (product of dimensions of input and output).
 
 <div style="text-align: center;">
@@ -348,12 +351,12 @@ Putting everything together:
 ### Remarks About Inception Network
 
 - Szegedy et al state that "the main idea of the inception architecture is based on finding out how an optimal local sparse structure in a convolutional vision network can be approximated and covered by readily available dense components."
-    - 
+    -
 
 - Each inception block creates an "Ensemble-Like" effect. Ensembles are trained separately, like stacking. An Inception Network is trained as a whole, so it's not an ensemble per se. But it stacks the ouptuts from parallel conv blocks - that's similar to ensembles.
 
 - Slight regularization effects:
-    - **1x1 conv reduces the parameter volume = reduces chances of overfitting.**
+  - **1x1 conv reduces the parameter volume = reduces chances of overfitting.**
 
 ## MobileNet (Howard et al.)
 
@@ -385,7 +388,7 @@ Point-wise convolution is just another term for one-by-one multiplication
 
 **The combination of Depthwise convolution and pointwise convolution is called "depthwise separable convolution"**. That reduces the number of multiplications by quite a bit. E.g., when our input is `6x6x3`, we want our output is  `4x4x5`
 
-- In normal convolution, this would take 5 `3x3x3` filters. In total we need `3x3x3x4x4x5=2160` multiplications. 
+- In normal convolution, this would take 5 `3x3x3` filters. In total we need `3x3x3x4x4x5=2160` multiplications.
 - Using depthwise separable convolution, we first have 1 `3x3x3` filters, then we have 5 `1x1x3` filters. That in total we have `4x4x3x3x3 + 4x4x3x5=672`. The ratio of the number of multiplications **between mobile net and regular convolution** is:
 
 $$
@@ -439,18 +442,17 @@ Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residu
 </p>
 </div>
 
-
 ## General Advice
 
-- Sometimes it's hard for PhD students at top universities to replicate work from published papers. Fortunately, we can take a look at the opensource implementations. 
+- Sometimes it's hard for PhD students at top universities to replicate work from published papers. Fortunately, we can take a look at the opensource implementations.
 - When you get a large neuralnet, especially in computer vision, always try transfer learning first. You can **freeze** certain layers, modify the later layers, and train those. Those pre-trained networks have been trained on millions of images, which could take days or even weeks on your machine.
-    - If the training datasets are small, we can choose to freeze most layers, and only train a very small number of layers.
-- Data augmentation: almost in all computer vision domains, the more data the better. 
-    - Distortions: mirroring, random cropping parts of the images, rotation, shearing, local warping are common.
-    - Color shifting: e.g., adding and subtracting certain values from R,G,B values. In AlexNet, PCA color augmentation keeps the overall color variation in an image.
-    - **Data augmentation can be done simultaneously while training takes place**
+  - If the training datasets are small, we can choose to freeze most layers, and only train a very small number of layers.
+- Data augmentation: almost in all computer vision domains, the more data the better.
+  - Distortions: mirroring, random cropping parts of the images, rotation, shearing, local warping are common.
+  - Color shifting: e.g., adding and subtracting certain values from R,G,B values. In AlexNet, PCA color augmentation keeps the overall color variation in an image.
+  - **Data augmentation can be done simultaneously while training takes place**
 - State of Computer Vision: Historically, computer vision has been very "hand-engineered" and very theory-based.
-    - At test time, do a 10-crop on test images. That is, generate 10 cropped images from an original image and average results.
+  - At test time, do a 10-crop on test images. That is, generate 10 cropped images from an original image and average results.
 
 ## References
 

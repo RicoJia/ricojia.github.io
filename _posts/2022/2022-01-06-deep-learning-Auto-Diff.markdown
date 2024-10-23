@@ -11,9 +11,10 @@ tags:
 
 ## Introduction
 
-- Gradients here refer to scalar to matrix gradient. 
+- Gradients here refer to scalar to matrix gradient.
 - We need to accumulate gradients for mini-batch training.
 
 Elementwise Multiplication gradients:
 A * B = C
+
 - del C / del A_ij = B_ij -> del C/ del A = B

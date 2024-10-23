@@ -38,7 +38,7 @@ $$
 To address the above issue, we increase "the memory" of the RNN.
 
 1. We define **memory cell**, `C`. C is the same as input a $C^{(t)} = a^{(t)}$, but that's not the case in LSTM.
-2. We introduce an intermediate value, $\tilde{C}$, 
+2. We introduce an intermediate value, $\tilde{C}$,
 3. In the meantime, calculate the gate coefficient $\Gamma_u$ from $C^{(t-1)}$, $x^{(t)}$ using sigmoid
     - $u$ means "update"
 

@@ -99,8 +99,8 @@ $$
 - In real life, to avoid numerical issues when $dW^2$ is small, we want to add a small number $\epsilon$ (typically $10^{-8}$).
 - "RMSProp" is used when Adam is not used.
 - Typical values:
-    - Learning rate: $[10^(-3), 10^{-2}]$
-    - Weight decay: $[10^{-5}, 10^{-4}]$
+  - Learning rate: $[10^(-3), 10^{-2}]$
+  - Weight decay: $[10^{-5}, 10^{-4}]$
 
 ### PyTorch Implementation
 
@@ -148,7 +148,7 @@ S_w = \beta_2 S_w + (1-\beta_2)(dW)^2 \\
 S_b = \beta_2 S_b + (1-\beta_2)(db)^2 \\
 
 \text{Weight Update}
-\\ 
+\\
 W = W - \lambda \frac{V_{dw}}{\sqrt{S_w + \epsilon}} \\
 b = b - \lambda \frac{V_{dw}}{\sqrt{S_b + \epsilon}}  \\
 
@@ -158,10 +158,10 @@ $$
 - Additionally, $V_{dw}$, $V_{db}$, $S_w$, $S_b$ can be in their "corrected" form.
 
 - **Hyperparameter Choices**:
-    - $\lambda$
-    - $\beta_1$ (~0.9)
-    - $\beta_2$ (~0.999)
-    - $\epsilon$ (~10^{-8})
+  - $\lambda$
+  - $\beta_1$ (~0.9)
+  - $\beta_2$ (~0.999)
+  - $\epsilon$ (~10^{-8})
 
 Usually we don't need to change them. Momentum variable is more probably valuable than the rest.
 
@@ -183,7 +183,6 @@ $$
 \end{gather*}
 $$
 
-
 <div style="text-align: center;">
 <p align="center">
     <figure>
@@ -191,7 +190,6 @@ $$
     </figure>
 </p>
 </div>
-
 
 ## Local Optima
 
@@ -205,7 +203,7 @@ When people think about `gradient=0` in optimizations, local minima immediately 
 </p>
 </div>
 
-However, in a high-dimensional space, the opportunity to encounter a local minima is very low. Instead, we are more likely to hit a saddle point like the one below (with Andrew Ng's Horse) 
+However, in a high-dimensional space, the opportunity to encounter a local minima is very low. Instead, we are more likely to hit a saddle point like the one below (with Andrew Ng's Horse)
 
 <div style="text-align: center;">
 <p align="center">
@@ -249,6 +247,7 @@ So, momentum, Adam are really helpful for getting off the plateaus.
 Momentum helps, but when the learning rate is low, it doesn't create a big of a difference. Adam has really shown its power: there must have been some dimensions that oscillate relatively more intensively than others. On simple datasets, all three could converge to good results. But Adam would converge faster.
 
 Advantages of Adam:
+
 - Relatively low memory requirements (higher than SGD and SGD with momentum)
 - Works well with little hyperparameter tuning (except alpha.)
 

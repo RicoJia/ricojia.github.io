@@ -66,4 +66,4 @@ Epoch 1/10:  |███████████-------| 600/1000 [00:30<00:15, 2
 ```
 
 - Binary bytes
-    - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB
+  - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB

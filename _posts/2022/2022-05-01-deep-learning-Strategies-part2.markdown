@@ -81,7 +81,7 @@ Test Set Accuracy
 This section is from my own training experience
 
 - Avoidable bias is very high:
-    - If training set accuracy does not increase
+  - If training set accuracy does not increase
         1. Did you set backpropagation right?
             - Made a mistake where I called
 
@@ -100,20 +100,20 @@ This section is from my own training experience
         5. Try a bigger model
         6. Try another architecture
 
-    - If training set accuracies have increased but capped at a certain value.
-        - Debug from the end result from prediction. Does the end result match with what you expected: shape, datatype, data value, etc.?
+  - If training set accuracies have increased but capped at a certain value.
+    - Debug from the end result from prediction. Does the end result match with what you expected: shape, datatype, data value, etc.?
 
-    - Loss could be defined better?
-        - In Image Segmentation tasks, `cross entropy` loss does not handle data inbalance well (e.g., too many background pixels). `Dice Loss` or `Tversky Loss` could be better.
+  - Loss could be defined better?
+    - In Image Segmentation tasks, `cross entropy` loss does not handle data inbalance well (e.g., too many background pixels). `Dice Loss` or `Tversky Loss` could be better.
 
-    - Lastly, surpassing human level performance is hard. Structured data tasks like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But perception tasks such as vision or audio are harder for the relative lack of data and humans are usually pretty good at them.
+  - Lastly, surpassing human level performance is hard. Structured data tasks like ads recommendation, transit time predictions, loan approvals, are easier for machine learning systems because of the abundance of data. But perception tasks such as vision or audio are harder for the relative lack of data and humans are usually pretty good at them.
 
 - What if the variance is high:
     1. Try with more data.
     2. Try with more regularization: L2, dropout, data augmentation, adding momentum if you are using RMSProp.
 
 - What if data mismatching is significant:
-    - Try artificial data synthesis. For example, in speech recognition, superpositioning car noise on human speech is a great boost.
+  - Try artificial data synthesis. For example, in speech recognition, superpositioning car noise on human speech is a great boost.
 
 - If you are overfitting. it's kind of hard to tell whether you should focus on reducing bias or variance.
 
@@ -130,25 +130,24 @@ You are employed by a startup building self-driving cars. You are in charge of d
 
 **Answer**: Though C might be true, it's always better to start the iteration earlier.
 
-
-2. If some pictures were collected with labels that only contain `[car, pedestrian]`, without the remaining classes, what should you do? 
+2. If some pictures were collected with labels that only contain `[car, pedestrian]`, without the remaining classes, what should you do?
 
 - A. Make the missing labels as 1 (detected)
 - B. Calculate loss that only considers `[car, pedestrian]`
 
-**Answer: ** A is more "false positive" prone. B is more reasonable to use.
+**Answer:** A is more "false positive" prone. B is more reasonable to use.
 
 3. Your training set error is quite much higher than that of humans. So:
 
 - A. You have a variance issue
 - B. You have an avoidable issue
 
-**Answer: ** A.
+**Answer:** A.
 
-4. If your errors due to mislabelling is 4.2%, does that mean your accuracy will increase by 4.2% after we fix them? 
+4. If your errors due to mislabelling is 4.2%, does that mean your accuracy will increase by 4.2% after we fix them?
 
-**Answer: ** No. That's the ceiling. There might be other issues with the associated data.
+**Answer:** No. That's the ceiling. There might be other issues with the associated data.
 
 5. If your errors are mostly due to occlusion. Should you work on it immediately?
 
-**Answer: ** Maybe not. We have to weight how easy it is to get more images for that. 
+**Answer:** Maybe not. We have to weight how easy it is to get more images for that.

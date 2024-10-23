@@ -21,7 +21,6 @@ y = \sigma(z) = \frac{1}{1 + e^{-z}}
 \end{gather*}
 $$
 
-
 <p align="center">
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/49e6c48c-65e3-44c5-b130-db4138440499" height="300" width="width"/>
 <figcaption align="center">Image Source: Stackoverflow</figcaption>
@@ -52,10 +51,10 @@ For an individual partial derivative value,
 $$
 \begin{gather*}
 \frac{\partial{J}}{\partial{w_i}} = \frac{\partial{J}}{\partial{\hat{y}}} \frac{\partial{\hat{y}}}{\partial{z}} \frac{\partial{z}}{\partial{w_i}}
-\\ 
+\\
 \frac{\partial{J}}{\partial{\hat{y}}} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})}
 \\
-\frac{\partial{\hat{y}}}{\partial{z}} = \frac{e^{-z}}{(1 + e^{-z})^2} = \frac{1}{1 + e^{-z}} (1-\frac{1}{1 + e^{-z}}) 
+\frac{\partial{\hat{y}}}{\partial{z}} = \frac{e^{-z}}{(1 + e^{-z})^2} = \frac{1}{1 + e^{-z}} (1-\frac{1}{1 + e^{-z}})
 = \hat{y}(1-\hat{y})
 \\
 \frac{\partial{z}}{\partial{w_i}} = x_i
@@ -79,7 +78,7 @@ b = b - \lambda\nabla{J} = w - \lambda(\hat{y} - y)
 \end{gather*}
 $$
 
-Ideally, we feed the entire batch of training set into the network and optimize our weights using gradient descent. This is called "vectorization", because we put the entire batch in a matrix. Matrix operations are usually faster than their for-loop counterparts, because they make use of low-level optimization techniques like SIMD, parallel computing, etc. 
+Ideally, we feed the entire batch of training set into the network and optimize our weights using gradient descent. This is called "vectorization", because we put the entire batch in a matrix. Matrix operations are usually faster than their for-loop counterparts, because they make use of low-level optimization techniques like SIMD, parallel computing, etc.
 
 **Now, if we have a batch inputs, that is $x^{(0)} ... x^{(m)}$**
 
@@ -96,7 +95,7 @@ $$
 
 ## Neural Network And Back Propagation
 
-Now, to be consistent with mainstream notations, we represent the output of each node as $a$, instead of $\hat{y}$. 
+Now, to be consistent with mainstream notations, we represent the output of each node as $a$, instead of $\hat{y}$.
 
 Imagine we have two layers, an input layer, and an output layer. To update all params $w$ to yield better final output, we first pass inputs $x^{(0)} ... x^{(m)}$ through the network. The output of each node $Lj$ is $a^{L}_{j}$, where $L$ is the layer number. The target values are $y^{(0)} ... y^{(m)}$.
 
@@ -116,7 +115,7 @@ For node $a^{Lj}$, we assume all nodes in layer $L-1$ are connected to $A^{Lj}$ 
 
 $$
 \begin{gather*}
-w = w - \sum_{m}^{M}\lambda\nabla{J^{(m)}} 
+w = w - \sum_{m}^{M}\lambda\nabla{J^{(m)}}
 \\
 \nabla{J^{(m)}} = \frac{\partial{J}}{\partial{w^L_j}} = \frac{\partial{J^L_j}}{\partial{a^L_j}} \cdot \frac{\partial{a^L_j}}{\partial{z^L_j}} \cdot \frac{\partial{z^L_j}}{\partial{w^L_j}}
 \end{gather*}
@@ -154,9 +153,11 @@ a^{L+1} = \sigma{(z^{L+1})} => \dot{\sigma{(z^{L+1})}}
 \end{gather*}
 $$
 
-## Summary 
+## Summary
+
 That was a lot of details with chain rule. So in all, during back propagation, assume we have batch size of m, input size n and output size p.
-1. Start from the output layer and back track 
+
+1. Start from the output layer and back track
     - For context , compute $\frac{\partial{J}}{\partial{a^{L}_j}}$, given J being the binary cross entropy
 
         $$
@@ -203,7 +204,6 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         \end{gather*}
         $$
 
-
 3. Finally, during the update step:
     - For context, each individual neuron has
 
@@ -231,13 +231,13 @@ That was a lot of details with chain rule. So in all, during back propagation, a
 
 ## Batch Gradient Descent, MiniBatch Gradient Descent, Stochastic Gradient Descent
 
-Batch Gradient Descent is the original way of optimziation. It runs the entire batch of inputs, gets its total cost and sum of weight gradients across the entire batch, then optimizes the weights with that. However it takes too long when `m >2000`. 
+Batch Gradient Descent is the original way of optimziation. It runs the entire batch of inputs, gets its total cost and sum of weight gradients across the entire batch, then optimizes the weights with that. However it takes too long when `m >2000`.
 
-SGD is fast, but the cost-epoch trajectory also can be noisy. 
+SGD is fast, but the cost-epoch trajectory also can be noisy.
 
 Mini batches is the way to go. A typical mini-batch size is `64 - 512`
 
-A comparison of these three batching methods of epoch costs is shown below: 
+A comparison of these three batching methods of epoch costs is shown below:
 
 ![Screenshot from 2024-08-11 15-01-49](https://github.com/user-attachments/assets/5c5fed43-623b-4dbf-afc0-a79eea1a43a5)
 ![Screenshot from 2024-08-11 15-01-40](https://github.com/user-attachments/assets/369d6d6e-79b7-455f-9a2d-3b428884c883)

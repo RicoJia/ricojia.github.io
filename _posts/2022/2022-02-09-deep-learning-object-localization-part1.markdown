@@ -14,7 +14,7 @@ tags:
 Image classification is given an image, output a class lable of the image
 Image classification and Object localization is Object Detection.
 
-For example, if there are 4 classes, `[Pedestrian, Cars, Motorcycles, Background]`, we expect an output in `[p, cx, cy, cz, bx, by, bw, bh]`. 
+For example, if there are 4 classes, `[Pedestrian, Cars, Motorcycles, Background]`, we expect an output in `[p, cx, cy, cz, bx, by, bw, bh]`.
 
 - p is the **confidence of** whether there is an object (so background would make this False). `cx, cy, cz` is the one-hot vector of the output class label. `bx, by, bw, bh` are the (x,y) and (width, height) of the detected object.
 
@@ -48,7 +48,7 @@ In OverFeat [1], a conv net is used for image classification. Here, in the case 
 
 ![Screenshot from 2024-09-25 17-22-51](https://github.com/user-attachments/assets/1d4ca366-5ea4-46fd-8b45-32b940c66599)
 
-Interesting technique introduced by OverFeat is that the fully connected layers in the image classification model is replaced by conv layers. The first one is 4 `14x14x3` kernels so the output is `nxnx400` (which is equivalent to 400 neurons in a FC layer). The second one is 1x1 convolution. If we use an FC layer instead, then the output is fixed size (similar to prior work). 
+Interesting technique introduced by OverFeat is that the fully connected layers in the image classification model is replaced by conv layers. The first one is 4 `14x14x3` kernels so the output is `nxnx400` (which is equivalent to 400 neurons in a FC layer). The second one is 1x1 convolution. If we use an FC layer instead, then the output is fixed size (similar to prior work).
 
 ![Screenshot from 2024-09-25 17-06-41](https://github.com/user-attachments/assets/69abd2f1-749c-4134-a6c3-fa4acdb44efb)
 

@@ -109,9 +109,9 @@ $L$ can be BCE Loss for each class.
 
 ### End-To-End Learning
 
-End-to-end (e2e) learning is a hot topic, who doesn't want "one model that handles all"? 
+End-to-end (e2e) learning is a hot topic, who doesn't want "one model that handles all"?
 
-Speech Recognition is one good example, where the entire `audio -> features -> phonemes (distinc units of sounds like 'cuh'-'a'-'th' for cat) -> words -> transcript` chain is learned. 
+Speech Recognition is one good example, where the entire `audio -> features -> phonemes (distinc units of sounds like 'cuh'-'a'-'th' for cat) -> words -> transcript` chain is learned.
 
 - Though Andrew argues that phonemes is a human-created artifact that's easy for humans to understand, but not by machines.
 
@@ -127,7 +127,6 @@ Image, Lidar, IMU -> Car, pedestrian -> Route -> Steering
 ```
 
 `Image, Lidar, IMU -> Car` can be handled by DL pretty well. But the motion planning algorithms and steering control requires a lot of data that has the above mapping. However, currently (as of 2024) we still don't have good real-world data on this front yet.
-
 
 ## References
 

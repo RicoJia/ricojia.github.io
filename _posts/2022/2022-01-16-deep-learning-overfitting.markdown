@@ -12,7 +12,7 @@ tags:
 
 ## A Nice Quote 💡
 
-Before we delve in, I'd like to quote [from James Dellinger](https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79) that really hits home: 
+Before we delve in, I'd like to quote [from James Dellinger](https://towardsdatascience.com/weight-initialization-in-neural-networks-a-journey-from-the-basics-to-kaiming-954fb9b47c79) that really hits home:
 
 > I think the journey we took here showed us that this knee-jerk response of feeling of intimidated, while wholly understandable, is by no means unavoidable. Although the Kaiming and (especially) the Xavier papers do contain their fair share of math, we saw firsthand how experiments, empirical observation, and some straightforward common sense were enough to help derive the core set of principals underpinning what is currently the most widely-used weight initialization scheme.
 
@@ -24,16 +24,15 @@ Overfitting = high variance, underfitting = high bias.
 
 - Variance means **the difference from "high performance in training data, low performance in test data"**. That scenario is also called "overfitting".
 - Bias means **the difference between human performance and training data performance**. Poor performance on training set is "underfitting", and that could lead to high bias
-    - So if your human error is 15%, then the 15% ML model error rate is not considered high bias.
-    - The same model could be high biased in certain landscapes (meaning humans can do well, but the model is underfitting even in the training set), and high variance in others (high performance in the training set, but low performance in the validation set)
+  - So if your human error is 15%, then the 15% ML model error rate is not considered high bias.
+  - The same model could be high biased in certain landscapes (meaning humans can do well, but the model is underfitting even in the training set), and high variance in others (high performance in the training set, but low performance in the validation set)
 
 - When having high bias? (underfitting) Try a larger Network, or even a different architecture.
-    - Do not add regularization. WHy??? you might be suffering exploding gradients?
-
+  - Do not add regularization. WHy??? you might be suffering exploding gradients?
 
 - When having high Variance, (overfitting): more data, regularization, neural network architecture. See the next section
-    - **Do NOT use a bigger neural net.** This is because overfitting usually means too complex of a network structure. Making it bigger or deeper will add to the complexity of it.
-    - So we need to decrease the complexity here.
+  - **Do NOT use a bigger neural net.** This is because overfitting usually means too complex of a network structure. Making it bigger or deeper will add to the complexity of it.
+  - So we need to decrease the complexity here.
 
 ## Overfitting
 
@@ -97,7 +96,7 @@ Drop out is to force a fraction of neurons to zero during each iteration. This e
 
 - One detail is that when calculating drop out, we need to scale the output of each layer by `1/keep_prob` so the final expected cost is the same. Accordingly, due to chain rule, the gradients of weights should be multiplied by `1/keep_prob` as well.
 
-- To implement drop out, we can simply apply a "drop-out" mask in foreprop (multiplied by `1/keep_prob` ). When calculating the weight gradients, apply the same mask again. 
+- To implement drop out, we can simply apply a "drop-out" mask in foreprop (multiplied by `1/keep_prob` ). When calculating the weight gradients, apply the same mask again.
 
 **During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
 

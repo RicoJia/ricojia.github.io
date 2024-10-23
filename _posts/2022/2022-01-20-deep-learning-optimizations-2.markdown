@@ -95,13 +95,12 @@ Batch normalization overcomes the covariate shift in **hidden layers**.
 
 - BN reduces sensitivity to weight initialization and learning rate
 - BN reduces model overfitting.
-    - The network sees somewhat different input distributions in each batch, so this prevents the network from "memorizing" the training data and overfitting.
-    - And that adds noise to weight gradient in each mini-batch. 
-    - BN can reduce the magnitude of outputs, hence the gradients and the weights (**This is regularization**)
+  - The network sees somewhat different input distributions in each batch, so this prevents the network from "memorizing" the training data and overfitting.
+  - And that adds noise to weight gradient in each mini-batch.
+  - BN can reduce the magnitude of outputs, hence the gradients and the weights (**This is regularization**)
 
 However batch normalization doesn't reduce the model complexity so the regularization is very mild.
 
 ## Practical Use Notes
 
 - It's quite common to see the pattern `conv -> BN -> ReLu`
-

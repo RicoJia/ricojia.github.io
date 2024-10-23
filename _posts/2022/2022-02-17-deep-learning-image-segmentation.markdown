@@ -24,6 +24,7 @@ Fully Convolutional Networks (FCN) can output pixel-wise labels, this is also ca
 > Semantic segmentation faces an inherent tension between semantics and location global information resolves what while local information resolves where.
 
 To do pixel-perfect labelling:
+
 1. Use shallow conv layers for feature extraction. In these layers, the height and width of feature maps go down (downsampling)
 2. Output with dense layer cannot generate pixel-perfect labelling. Therefore, FCN upsamples from learned feature using [**transposed convolution.**](../2017/2017-01-07-transpose-convolution.markdown) The end of the next work is a Transposed Conv
 3. Add skip connection betweeen the shallow conv layers and the later deep upsampling conv layers. The shallow layers have spatial information (where features are), but in conventional Conv-Dense hybrid architectures, that information is lost at the dense layers.
@@ -43,7 +44,7 @@ Choices of CNN can be VGG-16, AlexNet, etc. There are three types of outputs:
 - FCN-16: The `16x16` feature map first gets upsampled to `32x32`, then it's added with a `32x32` coarse feature map with fine spatial information (from the Pool4 layer). Finally, it gets upsampled back to the original file size by a factor of 16.
 - FCN 8: similar to FCN-16, but it finally gets upsampled by a factor of 8.
 
-When combining shallow and deep layer outputs, FCN uses element-wise addition. It's simpler, memory over head is lower. 
+When combining shallow and deep layer outputs, FCN uses element-wise addition. It's simpler, memory over head is lower.
 
 Results
 
@@ -66,6 +67,7 @@ Fully convolutional computation is famously used in Semernet et al.'s OverFeat, 
 U-Net is a pioneering image segmentation network primarily designed for tumor image segmentation.
 
 The foundation of U-Net is the **encoder-decoder network**, and **FCN**[1]. The innovations in U-Net include:
+
 1. Adding a skip connection between every matching downsampling and upsampling block. This allows U-Net to transfer low and high level information more comprehensively.  
 2. Using a matching number of convolutions (for downsampling to feature maps) and transposed convolutions (for upsampling back to initial image size). This helps prevent model overfitting.
 3. Shallow layers **learns local features** such as edges, corners. Their outputs are responses to the local features with high spatial fidelity (localization), but they lack a global understanding of the scene.
@@ -179,12 +181,12 @@ unet.compile(optimizer='adam',
               metrics=['accuracy'])
 ```
 
-
 Questions:
+
 - Adding drop out? The paper mentions "Drop-out layers at the end of the contracting path perform further implicit data augmentation". In the meantime, data  the dataset for shift and rotation invariance.
 tf.keras.layers.dropout
 - Use cblock5 as expansive_input and cblock4 as contractive_input, with n_filters * 8. This is your bottleneck layer?
--  second element of the contractive block before the max pooling layer: isn't this the same as the input?
+- second element of the contractive block before the max pooling layer: isn't this the same as the input?
 - why not use one-hot encoding in image seg? you just use an integer?
 - What is sparse categorical loss?
 
@@ -213,8 +215,6 @@ unet.compile(
 )
 model_history = unet.fit(train_dataset, epochs=EPOCHS)
 ```
-
-
 
 ## References
 

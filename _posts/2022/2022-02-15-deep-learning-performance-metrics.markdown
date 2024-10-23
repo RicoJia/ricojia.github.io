@@ -13,9 +13,9 @@ tags:
 
 ### Area Under Curve
 
-Area Under Curve = AUC. 
+Area Under Curve = AUC.
 
-### True Positives, False Positives, True Negatives, False Negatives.
+### True Positives, False Positives, True Negatives, False Negatives
 
 Suppose a class has 10 students, 5 boys and 5 girls. You use a machine to find the girls, and the machine returns the following results:
 
@@ -42,7 +42,7 @@ So,
 
 This measures how "confused" a binary classifier is in predictions
 
-| | Predicted Positive |	Predicted Negative |
+| | Predicted Positive | Predicted Negative |
 | -------- | -------- | -------- |
 | Actual Positive | |
 | Actual Negative | |
@@ -95,14 +95,12 @@ $$
 
 - Precision should be measured along with ROC, see below
 
-
 ## mean Average Precision (mAP)
 
 ### Precision (查准率) and Recall (查全率)
 
 The precision is: 3/6 = 0.5. Interpretation: It is "#accurate items / #items being returned"
-The recall is: 3/5 = 0.6. Interpretation: This is "#accurate items / #total number of target items", like how many of the total items you've "recalled" into your search. 
-
+The recall is: 3/5 = 0.6. Interpretation: This is "#accurate items / #total number of target items", like how many of the total items you've "recalled" into your search.
 
 $$
 \begin{gather*}
@@ -170,7 +168,7 @@ AP = \frac{1}{11} \sum_{r \in [0.0, 0.1, 0.2...]}(P_{interpolated}(r))
 \end{gather*}
 $$
 
-where 
+where
 
 $$
 \begin{gather*}
@@ -203,7 +201,7 @@ So one difference from PASCAL VOC pre-2010 is we are calculating for **every rec
 </p>
 </div>
 
-COCO has its own metrics. The primary metric is AP `AP[.50:.05:.95]`. They are APs of images with IoUs from `[0.5, 0.95]` with 0.05 interval sizes. So they are: 
+COCO has its own metrics. The primary metric is AP `AP[.50:.05:.95]`. They are APs of images with IoUs from `[0.5, 0.95]` with 0.05 interval sizes. So they are:
 
 $$
 \begin{gather*}
@@ -212,7 +210,6 @@ AP = \frac{1}{10} \sum_{n=0}^{n=9}AP[0.5, 0.5+0.05n]
 $$
 
 And each $AP$ is taken over 101 recall levels.
-
 
 ### Mean Average Precision (mAP)
 

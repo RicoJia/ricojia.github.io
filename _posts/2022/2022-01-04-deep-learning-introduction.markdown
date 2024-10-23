@@ -39,7 +39,7 @@ To make the cost function optimize faster:
 
 1. "Shift to the center" - subtract out the mean from inputs
 2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1.
- note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different. 
+ note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different.
 
 <div style="text-align: center;">
 <p align="center">
@@ -74,6 +74,7 @@ Common Backend platforms include: TensorFlow (Google), PyTorch (Facebook), CNTK 
 Keras was started out as a standalone project. As of TensorFlow 2.x, Keras has been fully integrated into TensorFlow and is now serving as the default.
 
 Other High Level APIs include:
+
 - PyTorch Lightning: wrapper around PyTorch so PyTorch Code could be more boiler plate; simplifies workflows such as for distributed training.
 - Gluon (Apache MXNet)
 - Sonnet (DeepMind)

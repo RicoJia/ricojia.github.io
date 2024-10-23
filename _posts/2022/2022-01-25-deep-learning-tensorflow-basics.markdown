@@ -13,6 +13,7 @@ tags:
 ## Basic Operations
 
 ### Max Operations
+
 - Immutable (`tf.constant`) vs Variable (`tf.Variable`), notice the different capitalization:
 - `tf.math.reduce_max()`: find the max along certain dimension(s).
 
@@ -61,7 +62,8 @@ batch_size, H, W = 3, 2, 3
 tensor = tf.random.normal([batch_size, H, W])
 tf.reshape(tensor, [-1, H*W])
 ```
-   - `-1` will make tf infer the previous tensor sizes
+
+- `-1` will make tf infer the previous tensor sizes
 
 - Squeeze: `tf.squeeze(tensor, dim)` to remove dims with only one element
 
@@ -149,10 +151,10 @@ generated_image.assign(clip_0_1(generated_image))
 
 ## Basic Neural Net
 
-The core features of TensorFlow (and many other Deep Learning Frames like PyTorch) are: 
+The core features of TensorFlow (and many other Deep Learning Frames like PyTorch) are:
 
 - a cost function to calculate the model's total loss on the given inputs
-- a computational graph to calculate gradients 
+- a computational graph to calculate gradients
 - an optimizer that applies gradient descent and other assistive optimization techniques to find the local minima in weights.
 
 ```python
@@ -227,6 +229,7 @@ validation_dataset = image_dataset_from_directory(directory,
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 train_dataset = train_dataset.prefetch(buffer_size=AUTOTUNE)
 ```
+
     - `prefetch()` partially downloads the dataset in a background thread, stores it in memory, and when `next(iter(train_dataset))` is called, it will download and prepare the next batch. This way, memory usage is reduced. `AUTOTUNE` finds an optimized buffer size.
 
 - Data Augmentation
@@ -241,7 +244,7 @@ def data_augmenter():
     data_augmentation.add(RandomRotation(0.2)) #20% of a full circle
     return data_augmentation
 ```
-    
+
 - Visualize the dataset
 
 ```python
@@ -361,4 +364,3 @@ embedding = model.predict_on_batch(x_train)
 ## Misc
 
 - `HDF5` is "Hierarchical Data Format 5", a data format designed for compressing, chuking, and storing complex data hierarchies. It's similar to a filesystem, for example, you can create "groups" within an HDF5 file like creating a folder. Datasets are similar to files. HDF5 allows **access from multiple processes**, and is supported by multiple languages, like C, C++, Python.
-

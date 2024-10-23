@@ -11,9 +11,9 @@ tags:
 
 ## Activation Functions
 
-Early papers found out that Rectified Linear Unit (ReLu) is always faster than Sigmoid because of its larger derivatives, and non-zero derivatives at positive regions. 
+Early papers found out that Rectified Linear Unit (ReLu) is always faster than Sigmoid because of its larger derivatives, and non-zero derivatives at positive regions.
 
-However, now with more tricks like batch normalization, 
+However, now with more tricks like batch normalization,
 
 - ReLu: `y=max(0, x)`, at `x=0` it's technically non-differentiable. But we can still fake it simply: `y' = 0 or 1`  
     <p align="center">
@@ -22,7 +22,7 @@ However, now with more tricks like batch normalization,
     </p>
     - Advantages:
         - This helps avoid diminishing derivatives? because large values have derivative being 1.
-        - Computational efficiency. Easy to compute. 
+        - Computational efficiency. Easy to compute.
         - It outputs zero on negative values, which makes forward pass compute less, as well as the backward pass
         - Because fewer neurons have non-zero outputs, the less "sensitive" the system is to smaller changes in inputs. Making it a form of regulation. (See the regularization section).
     - Disadvantages:
@@ -49,12 +49,12 @@ $$
         <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/22e4e9f7-8a9e-4e3c-9601-4f778281975c" height="300" width="width"/>
         <figcaption align="center">tanh</figcaption>
         </p>
-    - Advantages:
-        - tanh starts from -1 to 1, so if we want negative values in output, go for tanh
-        - compared to sigmoid, its derivative in `[-1, 1]` has a larger range, which could help with the learning process.
-    - Disadvantages:
-        - For large and small values, gradients are zero (vanishing gradient problem)
-        - Could be moderately expensive to train (with exponentials)
+  - Advantages:
+    - tanh starts from -1 to 1, so if we want negative values in output, go for tanh
+    - compared to sigmoid, its derivative in `[-1, 1]` has a larger range, which could help with the learning process.
+  - Disadvantages:
+    - For large and small values, gradients are zero (vanishing gradient problem)
+    - Could be moderately expensive to train (with exponentials)
 
 - Sigmoid (or "Logistic Function")
     <p align="center">
@@ -103,7 +103,7 @@ $$
 
 6. Sparse Entropy Loss: designed for image segmentation, where one-hot encoding is used in model output (after softmax) but training data only has labels. The loss per pixel is $l = -log(p_{true})$
 
-For example: 
+For example:
 
 For 3 pixels, training data labels are: `[2,1,0]`
 

@@ -28,7 +28,7 @@ $$
 </p>
 </div>
 
-In a neural net, the gradient of a parameter $w$ w.r.t cost function can be formulated in a similar way. However, the numerical error of this method is in the order of $\epsilon$. E.g., if $\epsilon = 0.1$, this method will yield an error in the order of 0.01. Why? Please close your eyes and think for a moment before moving on? 
+In a neural net, the gradient of a parameter $w$ w.r.t cost function can be formulated in a similar way. However, the numerical error of this method is in the order of $\epsilon$. E.g., if $\epsilon = 0.1$, this method will yield an error in the order of 0.01. Why? Please close your eyes and think for a moment before moving on?
 
 Because:
 
@@ -67,4 +67,4 @@ If the result is above $10^{-3}$, then we should worry about it.
 ## Things To Note In Gradient Checking
 
 - **One thing to note is gradient check does NOT work with dropout. Because the final cost is influenced by turning off some other neurons as well.**
--  Let the neural net run for a while. Because when w and b are close to zero, the wrong gradients may not surface immediately
+- Let the neural net run for a while. Because when w and b are close to zero, the wrong gradients may not surface immediately

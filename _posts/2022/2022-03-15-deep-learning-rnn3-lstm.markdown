@@ -13,7 +13,7 @@ tags:
 
 LSTM came out in 1997 and GRU is a simplification of it. In LSTM, we have the "forget gate", $\Gamma_r$, the output gate $\Gamma_o$, and the update gate $\Gamma_u$. We do NOT have $\Gamma_r$
 
-$C^{(t-1)}$ can retain largely the $C^{(t)}$. 
+$C^{(t-1)}$ can retain largely the $C^{(t)}$.
 
 $$
 \begin{gather*}
@@ -44,7 +44,7 @@ $$
 \end{gather*}
 $$
 
-LSTM is historically the most proven architecture. GRU is simpler, newer, and potentially better for growing big 
+LSTM is historically the most proven architecture. GRU is simpler, newer, and potentially better for growing big
 
 ## Bi-Directional RNN
 
@@ -74,5 +74,5 @@ With RNN, GRU, LSTM blocks one can build deep RNNs.
 </p>
 </div>
 
-3 layers is already pretty deep for RNN, especially if we look at the impact of inputs from the first few time stamps. 
+3 layers is already pretty deep for RNN, especially if we look at the impact of inputs from the first few time stamps.
 It's not uncommon to connect the output `y` to fully connected layers, so temporally, the deeper network is not connected.

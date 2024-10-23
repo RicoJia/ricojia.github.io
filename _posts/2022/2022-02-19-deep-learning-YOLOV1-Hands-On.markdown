@@ -69,7 +69,7 @@ During inferencing, if a grid cell has an object in it, the model will output `[
 </p>
 </div>
 
-In YOLO V2, each object is assigned to the grid cell that has the object's midpoint. The object is also assigned to the anchorbox with the highest IoU (between the groudtruth and the detected boxes) inside the cell. It's also used in Faster R-CNN and SSD. 
+In YOLO V2, each object is assigned to the grid cell that has the object's midpoint. The object is also assigned to the anchorbox with the highest IoU (between the groudtruth and the detected boxes) inside the cell. It's also used in Faster R-CNN and SSD.
 
 ### Comparison Between AlexNet, OverFeat, and YOLO V1
 
@@ -146,4 +146,3 @@ One way to visualize the output of each grid cell is to plot the corresponding c
     </figure>
 </p>
 </div>
-

@@ -13,7 +13,7 @@ tags:
 
 [Zhihu](https://zhuanlan.zhihu.com/p/383167028)
 
-Regional Proposal is the core of R-CNN. It first uses a segmentation algorithm to find regions with objects, then use these regions as "region proposals" for CNN to run on [2]. Each region outputs `[label, bounding box]`. 
+Regional Proposal is the core of R-CNN. It first uses a segmentation algorithm to find regions with objects, then use these regions as "region proposals" for CNN to run on [2]. Each region outputs `[label, bounding box]`.
 
 <div style="text-align: center;">
 <p align="center">
@@ -25,7 +25,7 @@ Regional Proposal is the core of R-CNN. It first uses a segmentation algorithm t
 
 1. Use Selective Search Algorithm to come up with 2000 region proposals: TODO
     - Use Hierarchical Grouping Algorithm  (Felzenszwalb and Huttenlocher, 1999)
-        TODO: https://zhuanlan.zhihu.com/p/39927488
+        TODO: <https://zhuanlan.zhihu.com/p/39927488>
 2. Use AlexNet for Feature Extraction on 2000 region proposals.
     - Get 2000x4096 feature vector
 3. Classification & bounding box
@@ -42,5 +42,6 @@ Then came Faster R-CNN (Ren, He et al. NeurlPS 2015). They are all slower than Y
 - YOLOv4 and YOLOv5: 60fps+
 
 ## References
+
 - [1] [Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You Only Look Once: Unified, Real-Time Object Detection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016 (pp. 779-788). IEEE.](https://arxiv.org/pdf/1506.02640)
 - [2] [R. Girshick, J. Donahue, T. Darrell, and J. Malik, "Region-Based Convolutional Networks for Accurate Object Detection and Segmentation," in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2014, pp. 580–587.](https://www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Girshick_Rich_Feature_Hierarchies_2014_CVPR_paper.pdf)
