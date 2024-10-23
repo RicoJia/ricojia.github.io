@@ -49,7 +49,7 @@ COPY --from=build /app/dist ./dist
 CMD ["node", "dist/main.js"]
 ```
 
-**Layers:** Docker images are built in layers. 
+**Layers:** Docker images are built in layers.
 
 ```bash
 WORKDIR /app
@@ -70,8 +70,32 @@ RUN npm install --production
 
 - `docker kill` vs `docker stop`. `docker kill` sends a `SIGKILL` signal to the container, which forcibly kills a container, terminating it immediately without waiting for a graceful shutdown. `docker stop` sends a `SIGTERM` signal, which waits for the container to shutdown gracefully.
 
-    - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
-    - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
+  - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
+  - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
 
 - `docker run`: this is how to start a docker container. Args that I use quite often are:
-    - `-w ${WORKDIR}`: set `WORKDIR` such that when logging in, one will be in `WORKDIR`. If there's `/WORKDIR /home/${USER_NAME}` it'd work, too.
+  - `-w ${WORKDIR}`: set `WORKDIR` such that when logging in, one will be in `WORKDIR`. If there's `/WORKDIR /home/${USER_NAME}` it'd work, too.
+  - `/bin/bash -c {COMMAND}`: use bash to execute a command upon starting a container.
+
+## Common Scenarios and Use Cases
+
+- Enable reverse-i-search in the container:
+  - Method 1: inject a `.inputrc` during container starting time
+
+        ```python
+        docker run \
+            ...
+            ${IMAGE_NAME}:${TAG_NAME} /bin/bash -c "\
+        echo 'Creating .inputrc file' && \
+        cat <<EOL > /root/.inputrc
+    \"\e[A\": history-search-backward
+    \"\e[B\": history-search-forward
+    EOL
+        bash"
+        ```
+  - Method 2: create a `.inputrc` in image:
+
+        ```
+        RUN echo '"\e[A": history-search-backward' >> /home/${USER_NAME}/.inputrc && \
+            echo '"\e[B": history-search-forward' >> /home/${USER_NAME}/.inputrc && \
+        ```

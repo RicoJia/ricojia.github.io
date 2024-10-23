@@ -22,6 +22,7 @@ X has an x server (screen) and x clients (keyboard, mouse, etc.). They talk to e
 </p>
 
 ## Be Careful With Adding XClients
+
 If a child process does not have access to the X server, but is running as root (e.g., in a container), one **not super secure** solution is to allow any process running as root to have access to the X server.
 
 ```bash
@@ -36,11 +37,12 @@ On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome
 
 1. `sudo apt install gnome-tweaks`
 2. `Press the Super (Windows) key and type Tweaks, then press Enter.`
-3. Choose `focus on hover`, 
+3. Choose `focus on hover`,
     - If you don't want to see the other window that's out of focus already, choose "Raise Window When Focused"
 4. Press Alt + F2, type r, and press Enter. **This restarts the GNOME Shell without logging out.**
 
 ## What If I Can't See Images From Remote Machine?
+
 1. Log onto remote server
 
 2. `echo $DISPLAY` This should display your current X11 display, something like `localhost:10.0`
@@ -48,19 +50,26 @@ On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome
 3. `xauth list` If nothing prints on console, it means ssh did not automatically generate the X11 authorization cookies on the local display properly.
     1. If you don't see this, first `sudo vim /etc/ssh/sshd_config`
     2. Make sure these exists:
+
         ```python
         X11Forwarding yes
         X11UseLocalhost yes
         ```
+
     3. Restart the SSH console:
+
         ```python
         sudo systemctl restart ssh
         ```
+
     4. Remove `.Xauthority`
+
         ```python
         rm ~/.Xauthority
         ```
+
     5. Log out and reconnect to generate X11 authorization cookies
+
         ```python
         ssh -Y rico@rico-orin
         ```

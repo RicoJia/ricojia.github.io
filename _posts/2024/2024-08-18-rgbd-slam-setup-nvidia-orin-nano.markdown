@@ -15,14 +15,14 @@ comments: true
 
 - Jetson Orin Nano Developer Kit (8GB)
 - MicroSD Card (128GB)
-    - My microSD card's read and write speed can reach up to 140MB/s. An NVMe SSD could be 1500MB/s or more. So **try with an SSD if speed has become a bottle neck**
+  - My microSD card's read and write speed can reach up to 140MB/s. An NVMe SSD could be 1500MB/s or more. So **try with an SSD if speed has become a bottle neck**
 - **A data capable USB-C cable**
 - Complete datasheet (very lengthy, feel free to skip)
-    - [Jetpack SDK](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/index.html) Jetpack SDK includes accelerated software libraries, APIs, sample applications, developer tools and documentation.
+  - [Jetpack SDK](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/index.html) Jetpack SDK includes accelerated software libraries, APIs, sample applications, developer tools and documentation.
 
 ## Successful Attempt (SD Card)
 
-I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nrTI). 
+I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nrTI).
 
 1. Use SDK Manager: `https://developer.nvidia.com/sdk-manager`
 2. Put the board in recovery mode (by connecting pin `GND` to `FC_REC` using a female-female jumper wire to connect)
@@ -41,19 +41,24 @@ I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nr
 1. I have [crucial SSD](https://www.amazon.com/dp/B0B25LQQPC?ref=ppx_yo2ov_dt_b_fed_asin_title)
 2. Follow the [latest installation guide](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/IN/QuickStart.html#to-flash-the-jetson-developer-kit-operating-software)
 3. Choose the NVMe option
+
     ```bash
     sudo ./tools/kernel_flash/l4t_initrd_flash.sh --external-device nvme0n1p1 \
       -c tools/kernel_flash/flash_l4t_t234_nvme.xml -p "-c bootloader/generic/cfg/flash_t234_qspi.xml" \
       --showlogs --network usb0 jetson-orin-nano-devkit internal
     ```
+
 4. Common Issues
     - If you see this, reconnect the USB and power of the board.
+
         ```
         Error: Unrecognized module SKU
         Error: failed to generate images
         Cleaning up...
         ```
+
     - If you see `nfs timeout`,
+
         ```
         Waiting for device to expose ssh ......Waiting for device to expose ssh ...Run command: flash on fc00:1:1:0::2
         SSH ready
@@ -61,7 +66,9 @@ I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nr
         Flash failure
         Either the device cannot mount the NFS server on the host or a flash command has failed. Debug log saved to /tmp/tmp.HVseonQElu. You can access the target's terminal through "sshpass -p root ssh root@fc00:1:1:0::2" 
         ```
+
         - Then we need to install nfs and change the firewall Setting
+
             ```
             ## 安装nfs
             sudo apt update
@@ -72,7 +79,9 @@ I was primarily following [this video](https://www.youtube.com/watch?v=q4fGac-nr
             sudo ufw allow from fc00:1:1:0::2 to any port nfs
             sudo ufw allow from fc00:1:1::/48 to any port nfs
             ```
+
 5. If `nvcc` is not a recognized command, add below to `~/.bashrc`:
+
 ```bash
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
@@ -85,7 +94,6 @@ To fully unleash the power of an Nvidia Jetson Machine for machine learning, the
 Luckily, [dusty-nv and others have created a nice Github package to streamline this process](https://github.com/dusty-nv/jetson-containers). This package is a small Docker build system that creates the final desired Docker image through multi-stage builds (like a chain). E.g., one can build an image with `pytorch`, `ROS Noetic` and `Jupyterlab`.
 
 If you don't want much hassle like me, this could be a good starting point. But just in case you are curious, here is the place to [check for the Pytorch version](https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048)
-
 
 ## Failed Attempt For Nvidia Orin Nano Setup
 

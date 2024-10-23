@@ -23,7 +23,7 @@ When F(x) is linear, we can form an optimization problem when it has constraints
 
 ## How To Formulate SLAM Into An Optimization Problem
 
-A typical SLAM frontend uses odometry (e.g., IMU) which is incremental and has accumulative errors. There are three main schools of SLAM methods: 
+A typical SLAM frontend uses odometry (e.g., IMU) which is incremental and has accumulative errors. There are three main schools of SLAM methods:
 
 - Filtering Based SLAM (Kalman Filter, Particle Filter Based, etc.)
 - Graph Based SLAM
@@ -77,8 +77,8 @@ To be able to apply Gauss-Newton with increments on X, we need to linearize the 
 
 - For that, we first need to linearize error. We obtain Jacobian of error: $J = \frac{\partial e_{ij}}{\partial(X)}$
 
-    - This will expand to $J = [\frac{\partial F}{\partial(x_1)}, \frac{\partial F}{\partial(y_1)}, \frac{\partial F}{\partial(\theta_1)} ... \frac{\partial F}{\partial(\theta_n)}]$. For a specific pair of nodes $(i, j)$, only F is only determined by $e_{ij}$. So
-    
+  - This will expand to $J = [\frac{\partial F}{\partial(x_1)}, \frac{\partial F}{\partial(y_1)}, \frac{\partial F}{\partial(\theta_1)} ... \frac{\partial F}{\partial(\theta_n)}]$. For a specific pair of nodes $(i, j)$, only F is only determined by $e_{ij}$. So
+
     $$
     \begin{gather*}
     J_{ij} = \begin{bmatrix}
@@ -86,9 +86,8 @@ To be able to apply Gauss-Newton with increments on X, we need to linearize the 
     \end{bmatrix}
     \end{gather*}
     $$
-    
 
-Then, we given an initial set of estimate $X$, we want to apply a step size $\Delta X$ such that $F(X+\Delta X)$ is smaller. We can approximate the cost function locally with the first order taylor expansion, and get its local mimima 
+Then, we given an initial set of estimate $X$, we want to apply a step size $\Delta X$ such that $F(X+\Delta X)$ is smaller. We can approximate the cost function locally with the first order taylor expansion, and get its local mimima
 
 $$
 \begin{gather*}
@@ -124,7 +123,7 @@ $$
 
 Now you might be wondering, why SLAM didn't do this pre-21st century? That is because solving for $H^{-1}$ was a real pain in the butt. It may have tens of thousands of edges, vertices, if not more.
 
-The reason is that J and H are SPARSE, and we can use certain tricks to solve them more easily 
+The reason is that J and H are SPARSE, and we can use certain tricks to solve them more easily
 
 <div style="text-align: center;">
 <p align="center">
@@ -141,7 +140,6 @@ So, the final $J$ and $H$ are something like:
 
 ![Screenshot from 2024-07-29 20-18-31](https://github.com/user-attachments/assets/4efa33ff-5532-4de6-8c5f-4bc5384e63b1)
 
-
 In a Larger system with hundreds of landmarks and robot poses, H may look like:
 
 <div style="text-align: center;">
@@ -152,7 +150,6 @@ In a Larger system with hundreds of landmarks and robot poses, H may look like:
     </figure>
 </p>
 </div>
-
 
 If we divide divide up $H$ into 4 parts:
 
@@ -178,7 +175,7 @@ B & E \\
 E^T & C
 \end{bmatrix}
 \begin{bmatrix}
-\Delta X_r \\ 
+\Delta X_r \\
 \Delta X_l
 \end{bmatrix}
 =
@@ -191,7 +188,7 @@ $$
 
 **It's much easier to invert a diaonal matrix**, because we just need to invert it's diagonal terms (C and without proof, B)
 
-Then, by applying **Schur's compliment**: 
+Then, by applying **Schur's compliment**:
 
 $$
 \begin{gather*}
@@ -205,7 +202,7 @@ B & E \\
 E^T & C
 \end{bmatrix}
 \begin{bmatrix}
-\Delta X_r \\ 
+\Delta X_r \\
 \Delta X_l
 \end{bmatrix}
 =
@@ -231,11 +228,10 @@ E^T & C
 \end{bmatrix}
 
 \begin{bmatrix}
-\Delta X_r \\ 
+\Delta X_r \\
 \Delta X_l
 \end{bmatrix}
 =
-
 
 \begin{bmatrix}
 v -EC^{-1}w\\
@@ -252,7 +248,7 @@ $$
 \end{gather*}
 $$
 
-Note that $C$ is diagonal, so $C^{-1}$ is easy to get. $(B -EC^{-1}E^T)^{-1}$ is still something we need to brute-force invert, but its dimension is the same as the robot pose (which is much smaller than the original $H$). 
+Note that $C$ is diagonal, so $C^{-1}$ is easy to get. $(B -EC^{-1}E^T)^{-1}$ is still something we need to brute-force invert, but its dimension is the same as the robot pose (which is much smaller than the original $H$).
 
 A side note about $S$'s sparsity: without proof, the an off-diagonal non-zero item $S_{mn}$ means there's at least 1 landmark observation between camera pose `m` and `n`. In general, we want $S$ to be dense, such that there will be constraints between camera poses to improve our estimates. In non-sliding window methods, such as ORB-SLAM, we may have a background thread running as the backend, so we could disgard frames that do not share many landmarks together.
 
@@ -266,12 +262,14 @@ $$
 $$
 
 **$S$ is called "Schur's compliment"**. $S$ is still semi-positive-definite and symmetric. So, using Cholesky Decompistion, $S=LL^T$ where $L$ is a lower triangular matrix. So now,
+
 1. Solve for $y$ in $Ly = g'$ because a lower triangular matrix's inverse is easier to solve
 2. Solve for $\Delta x_{c}$ in $L^T \Delta x_{c} = y$
 
 The system $Ax=b$ is always called "linear", **so its solver is called a "linear solver".**
 
 ### Wrap Up
+
 After solving for $\Delta X_r$, one can use it to solve $\Delta X_p$. That gives the full step size $\Delta X$ for the optimizer.
 
 ONEEEEEE LAST THINGGGGGG: wait a second, poses are in $SE(3)$.  $F(X + \Delta X) \approx F(X) + J\Delta X$ does NOT hold, especially the rotation matrix part in $SO(3)$. What do we do?? Well, the Lie Algebra of $SE(3)$, $se(3)$, DOES support addition:
@@ -290,4 +288,3 @@ $$
 The transformation between $se(3)$ and $SE(3)$ is called "matrix exponentiation", which is analogous to the regular scalar exponentiation / log operation.
 
 If you want an interesting little nerdy story to share with your non-nerdy friends: $SE(3)$ is a manifold, and $se(3)$ is its tangent space. A manifold is a topological space that locally resembles Euclidean space and allows for calculus to be performed. (Here an $SE(3)$ can be transformed into a neary by $SE(3)$ smoothly through matrix multiplication)
-

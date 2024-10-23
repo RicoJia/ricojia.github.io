@@ -16,7 +16,6 @@ comments: true
 
 Motion blur could cause lower number of features and feature mismatching. These will further cause huge errors in PnP solving. Below is a scene of my room. Both images are blurred. See how many feature matches are missed and mismatched?
 
-
 <div style="text-align: center;">
 <p align="center">
     <figure>
@@ -34,4 +33,3 @@ Motion blur could cause lower number of features and feature mismatching. These 
 
 For my RGBD SLAM, I chose the multiscale RNN due to its effectiveness in offline applications. This method creates an image pyramid, applies deblurring at multiple resolutions, and avoids overfitting through weight sharing.
     -  Tao et al. found that CNN with independent params could overfit.
-

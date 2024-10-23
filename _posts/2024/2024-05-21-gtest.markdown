@@ -150,9 +150,9 @@ catkin test <PACKAGE>
 ```
 
 - The test executable is in `devel/lib/${PACKAGE_NAME}`
-- Upon failures, `catkin test` could throw a failure "double freeing"  **if we do not have a main() in our tests and uses gtest_main**. This wouldn't arise if we run the executable alone. 
-So, my best guess is this is a memory-freeing bug in `catkin test` with `gtest_main`. But if we add a main ourselves, and uses `catkin_add_gtest()`, we should be all good. 
-- `catkin test` **requires roscore to be running**. If it's not run, it will show as stuck in the building phase. 
+- Upon failures, `catkin test` could throw a failure "double freeing"  **if we do not have a main() in our tests and uses gtest_main**. This wouldn't arise if we run the executable alone.
+So, my best guess is this is a memory-freeing bug in `catkin test` with `gtest_main`. But if we add a main ourselves, and uses `catkin_add_gtest()`, we should be all good.
+- `catkin test` **requires roscore to be running**. If it's not run, it will show as stuck in the building phase.
 - The CMakeLists.txt is as below:
 
 ```cmake

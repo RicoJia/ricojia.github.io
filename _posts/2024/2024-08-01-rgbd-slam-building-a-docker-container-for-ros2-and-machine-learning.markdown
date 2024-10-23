@@ -13,7 +13,7 @@ comments: true
 
 ## Dockerfile
 
-- I installed jupyter notebook so I can experiment with it remotely. 
+- I installed jupyter notebook so I can experiment with it remotely.
 
 ```bash
 # -U is to upgrade to the latest version

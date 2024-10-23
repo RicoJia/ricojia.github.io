@@ -12,11 +12,11 @@ tags:
 
 ### Where ROS binaries are stored
 
-In ROS, many packages come in the C++ binary form. They are installed through `apt`, and are stored in `/opt/ros/noetic/lib`. 
+In ROS, many packages come in the C++ binary form. They are installed through `apt`, and are stored in `/opt/ros/noetic/lib`.
 
 ## ROS Actions
 
-The ROS Action really is a mechanism that keeps track of the exeuction state of a task.  ROS Actions are built on top of ROS topics. 
+The ROS Action really is a mechanism that keeps track of the exeuction state of a task.  ROS Actions are built on top of ROS topics.
 
 ### Lifetime of ROS Actions
 

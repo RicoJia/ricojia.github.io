@@ -31,23 +31,22 @@ u_2^8 u_1^8 & u_2^8 v_1^8 & u_2^8 & u_2^8 u_1^8 & u_2^8 v_1^8 & u_2^8 & v_2^8 u_
 \end{gather*}
 $$
 
-$U$ is $8 \times 9$ and normally should be of rank 8. This makes sure E is up to a scale and has 1 degree of freedom (so $E$ has 2dof). But when a homography exists all the feature points, 
-When homography exists between all feature matches, more constraints could be added to $U$. E.g., 
+$U$ is $8 \times 9$ and normally should be of rank 8. This makes sure E is up to a scale and has 1 degree of freedom (so $E$ has 2dof). But when a homography exists all the feature points,
+When homography exists between all feature matches, more constraints could be added to $U$. E.g.,
 
 $$
 \begin{gather*}
-p_2 = H p_1 
+p_2 = H p_1
 \\
 =>
 \\
-p_2^TEp_1 = p_1 H^T E p_1 = 0 
+p_2^TEp_1 = p_1 H^T E p_1 = 0
 \end{gather*}
 $$
 
 The proof was more involved than I thought (for those who are interested, see [2]). Basically, one could prove it from the perspective of $U$'s nullity. When the nullity is 3, that is there are 3 linearly independent solution to E, the above degeneration could happen.
 
 2. When the baseline distance between cameras approaches 0, intuitively, $E = txR$ would approach 0. But when we estimate, the $U$ matrix (see above) will also have a nullity of 3.
-
 
 So, one way to combat this is using DLT to calculate homography aside from applying 8-point algorithm, and choose the result with minimum reprojection error.
 
@@ -85,8 +84,8 @@ Plugging (1) into (2) and (3) gives 3 cubic equations in 3 variables , which hav
 
 ## References
 
-[1] Dong, Q., Shu, M., Cui, H., Xu, H., & Hu, Z. (2018). Learning stratified 3D reconstruction. *Science China Information Sciences*, 61(2), 023101. DOI: https://doi.org/10.1007/s11432-017-9234-7
+[1] Dong, Q., Shu, M., Cui, H., Xu, H., & Hu, Z. (2018). Learning stratified 3D reconstruction. *Science China Information Sciences*, 61(2), 023101. DOI: <https://doi.org/10.1007/s11432-017-9234-7>
 
-[2] P. H. S. Torr, A. Zisserman, and S. J. Maybank. "Robust Detection of Degenerate Configurations whilst Estimating the Fundamental Matrix." Robotics Research Group, Department of Engineering Science, Oxford University, Department of Computer Science, Reading University, UK. DOI: https://www.robots.ox.ac.uk/~vgg/publications/1998/Torr98c/torr98c.pdf
+[2] P. H. S. Torr, A. Zisserman, and S. J. Maybank. "Robust Detection of Degenerate Configurations whilst Estimating the Fundamental Matrix." Robotics Research Group, Department of Engineering Science, Oxford University, Department of Computer Science, Reading University, UK. DOI: <https://www.robots.ox.ac.uk/~vgg/publications/1998/Torr98c/torr98c.pdf>
 
-[3] Nistér, D. 2004. An Efficient Solution to the Five-Point Relative Pose Problem. In *Proceedings of the 2004 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'04)*, Vol. 2. IEEE, 195–202. DOI: https://www-users.cse.umn.edu/~hspark/CSci5980/nister.pdf
+[3] Nistér, D. 2004. An Efficient Solution to the Five-Point Relative Pose Problem. In *Proceedings of the 2004 IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR'04)*, Vol. 2. IEEE, 195–202. DOI: <https://www-users.cse.umn.edu/~hspark/CSci5980/nister.pdf>

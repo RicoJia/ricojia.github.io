@@ -44,8 +44,7 @@ We can form a graph with two types of nodes: 4 camera poses and 2 camera poses:
 Then, we have two types of edges that represent **an error**:
 
 - $x_1x_2$ is an adjacent edge with odometry observation $\hat{T_{x1,x2}}$ . It represents $T_{x1. x2} - \hat{T_{x1,x2}}$ in $se(3)$
-- $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$. 
-
+- $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$.
 
 ## How G2O Works
 
@@ -55,7 +54,8 @@ G2O is a "General Least Squares" Optimizer, meaning any LS problem that can be f
 - Apply Levenberg-Marquardt on parameters under optimization to find a local (hopefully global) minimum.
 
 In SLAM, a vertex needs to satisfy $se(3)$ requirements. In `g2o/types/sba/types_six_dof_expmap.h` these vertices can be defined:
-- `VertexSE3Expmap` represents robot poses in SE3 space, 
+
+- `VertexSE3Expmap` represents robot poses in SE3 space,
 - `VertexSBAPointXYZ` represents a 3D point
 - `EdgeProjectXYZ2UV` represents the projection of a 3D point onto the image plane
 
@@ -80,9 +80,9 @@ For example, Huber kernel switches to first order when error is higher than $\de
 $$
 \begin{gather*}
 e=
-\begin{cases} 
+\begin{cases}
 \frac{1}{2} x^2 & \text{for } |x| \le \delta \\
-\delta (|x| - \frac{1}{2} \delta) & \text{for } |x| > \delta 
+\delta (|x| - \frac{1}{2} \delta) & \text{for } |x| > \delta
 \end{cases}
 \end{gather*}
 $$
@@ -90,6 +90,7 @@ $$
 ### Implementation
 
 In general, a SLAM framework is:
+
 ```
 def add_to_graph(rgb_frame, depth_frame, previous_rgb_frame, previous_depth_frame)
     matches = feature_matching(rgb_frame, previous_rgb_frame)
@@ -119,7 +120,6 @@ def SLAM_pipeline(rgb_frame, depth_frame):
     optimize() 
     
 ```
-
 
 I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
 

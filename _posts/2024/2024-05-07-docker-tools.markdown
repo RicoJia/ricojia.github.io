@@ -8,7 +8,7 @@ tags:
     - Docker
 ---
 
-## Basic Operations 
+## Basic Operations
 
 ### Stopped Docker Containers
 
@@ -38,19 +38,17 @@ aws ecr describe-repositories --region <REGION>
 aws ecr describe-images --repository-name <REGISTRY_NAME> --region <REGION>
 ```
 
-## Docker Image Building 
+## Docker Image Building
+
 TODO
 
 ## Docker Image Removal
 
 The most vanilla version is `docker rmi <IMAGE_SHA_OR_IMAGE_WITH_TAG>`
 
-If you want to delete multiple images with the same name but with different tags `IMAGENAME:tag1, IMAGENAME:tag2,` then you can probably use `docker rmi $(docker images 'IMAGENAME' -q)`. 
+If you want to delete multiple images with the same name but with different tags `IMAGENAME:tag1, IMAGENAME:tag2,` then you can probably use `docker rmi $(docker images 'IMAGENAME' -q)`.
 
-However, if you want to delete a series of images that are built on top of each other (build stages), then they have a dependency chain. In that case, you can check for the dependencies using `docker image --tree` and do `docker rmi <TOP_IMAGE> ... <BOTTOM_IMAGE>`. 
-
-
-
+However, if you want to delete a series of images that are built on top of each other (build stages), then they have a dependency chain. In that case, you can check for the dependencies using `docker image --tree` and do `docker rmi <TOP_IMAGE> ... <BOTTOM_IMAGE>`.
 
 ### Environment Variables
 

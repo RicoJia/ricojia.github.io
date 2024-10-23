@@ -29,7 +29,7 @@ cv::Matx31d point(k.pt.x, k.pt.y, 1.0);
 
 - **Watch out**, if you pass another mat directly into `cv::Mat()` constructor, then the new mat will use the same pointer to the underlying data structure. To create a real copy, do `cv::Mat.clone()`
 
-To copy an image, in python: 
+To copy an image, in python:
 
 ```python
 output_img = cv2.cvtColor(input_img.copy(), cv2.COLOR_GRAY2RGB)
@@ -57,7 +57,7 @@ cv::minMaxIdx(mat, &min, &max);  // Find min and max depth values
 
 ### cv::Rect
 
-`cv::Rect{}` is a commonly used data structure for storing upper left and bottom right coords. In OpenCV, the bottom right corner is **not** included, the top left corner is included. It can be instantiated mostly in two ways: 
+`cv::Rect{}` is a commonly used data structure for storing upper left and bottom right coords. In OpenCV, the bottom right corner is **not** included, the top left corner is included. It can be instantiated mostly in two ways:
 
 ```cpp
 // Instantiating with top left corner and width, and height
@@ -109,17 +109,16 @@ cv::Mat rotated_pt = rotation_matrix * point;
 return {rotated_pt.at<int>(0), rotated_pt.at<int>(1)};
 ```
 
-
 ## OpenCV Math Tools
 
 - Basic Representation of points
-    - `cv::Point2f` is 32 bit single precision floating point
-    - `cv::Point2i` is 32-bit single precision integer.
-    - **Note**: `+` is NOT supported for `cv::Point` types
+  - `cv::Point2f` is 32 bit single precision floating point
+  - `cv::Point2i` is 32-bit single precision integer.
+  - **Note**: `+` is NOT supported for `cv::Point` types
 
 - matrix operations:
-    - dot product: `a * b`
-    - element-wise product: `cv::multiply(mat1, mat2, result);`
+  - dot product: `a * b`
+  - element-wise product: `cv::multiply(mat1, mat2, result);`
 - Rotation Vector and Matrix:
 
 ```cpp
@@ -140,12 +139,14 @@ else{
     result = mat2;
 }
 ```
+
     - **IMPORTANT: `cv::vconcat(src, nsrc, dst)` requires `src` to be not empty!!** 
 
 - Calculate `atan2`: `cv::fastAtan2(y, x)`. Its accuracy is about 0.3 deg
 
 ### Integral Image
-- [`cv::integral`](https://docs.opencv.org/3.4/d7/d1b/group__imgproc__misc.html#ga97b87bec26908237e8ba0f6e96d23e28), which sums up all pixels from the top left corner to the given pixel. The result integral image will have a size `[column+1, row+1]`, and the value at (y,x) represents the sum from [0,0] to [y-1, x-1]. Left and top borders of the integral image are padded with 0. 
+
+- [`cv::integral`](https://docs.opencv.org/3.4/d7/d1b/group__imgproc__misc.html#ga97b87bec26908237e8ba0f6e96d23e28), which sums up all pixels from the top left corner to the given pixel. The result integral image will have a size `[column+1, row+1]`, and the value at (y,x) represents the sum from [0,0] to [y-1, x-1]. Left and top borders of the integral image are padded with 0.
 
 $$
 sum(X,Y) = \sum_{x<X, y<Y} I(x,y)
@@ -153,13 +154,11 @@ $$
 
     - `cv::integral()` supports only `cv_8U`, `CV_32S` and `cv_32U`. So use `img.convertTo(img, cv_8U)` if necessary
 
-
 ## OpenCV Misc Tools
 
 - `waitkey(timeout)` - wait for key press. If `timeout=0`, this will be infinite
 
-    - This function needs an image widget active. Otherwise, it would just become a delay.
-
+  - This function needs an image widget active. Otherwise, it would just become a delay.
 
 ### OpenCV Errors
 

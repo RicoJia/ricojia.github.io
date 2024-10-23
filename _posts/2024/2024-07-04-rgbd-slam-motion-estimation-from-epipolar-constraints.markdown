@@ -22,9 +22,10 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 ### Relative Motion Is In Epipolar Constraints
 
 In the Epipolar Geometry show, our main characters are:
+
 - $O_1$,  $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
 - $p_1$, $p_2$ are the corresponding pixel points
-- $P$ is the 3D point 
+- $P$ is the 3D point
 - Additionally, $e_1$, $e_2$ are the epipoles of the two cameras. $l_1$ and $l_2$ are epipolar lines
 - $O_1 O_2$ is called the baseline
 
@@ -67,7 +68,7 @@ t \times P_{c2} = \alpha t \times RP_1
 P_{c2}^T \cdot t \times P_{c2} = 0
 \\
 =>
-\\ 
+\\
 P_{c2}^T \cdot t \times RP_{c1} = P_{c2}^T E P_{c1} = 0
 \\
 =>
@@ -148,8 +149,9 @@ Because the epipolar constraint is scale ambiguous, E multiplies any scalar woul
 ### How To Select Those 8 Points?
 
 In general, there could be multiple outliers in matched feature pairs. But also in the mean time, we most likely get more than 8 feature pairs . So, in general, we:
+
 1. Randomly select feature pairs that are within a specified distance from epipolar lines.
-2. Calculate E. Solve for R and t and use them to reproject the points on one image to another image. 
+2. Calculate E. Solve for R and t and use them to reproject the points on one image to another image.
 3. Repeat this process. TODO: when to stop?
 
 This propose-and-pick-best is called **"Random Sample Consensus", or RANSAC**. In general, RANSAC is better than least squares when there's a lot of error in the input data
@@ -170,7 +172,7 @@ $$
 \end{align*}
 $$
 
-Each combination of $t$ and $R$ could be a valid solution. They correspond to the below scenarios: 
+Each combination of $t$ and $R$ could be a valid solution. They correspond to the below scenarios:
 
 <p align="center">
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/27e5e2a9-fc12-431e-8778-77855504ee3e" height="300" width="width"/>
@@ -182,7 +184,7 @@ $$
 \begin{gather*}
 Z_1 P_{c1} = Z_2 R P_{c2} + t
 \\
-=> 
+=>
 \\
 Z_1 P_{c1} \times P_{c1} \\
 = Z_2 P_{c1} \times R P_{c2} + P_{c1} \times t = 0
@@ -266,7 +268,7 @@ When there is no linear translation $t$, $E$ would be zero matrix too (if you mu
 
 ### 🔎 How Do we Check Our Results?
 
-Reprojection. Project points on 1 image point onto the other. How? 
+Reprojection. Project points on 1 image point onto the other. How?
 
 First, we can see that the projection of one point can be mapped to multiple points, due to the scale ambiguity in translation (while rotation should be absolute). On **canonical planes**, The mapped points of $P_{c1}$ for example, are actually the line $l_2$ on the second image. Why?
 

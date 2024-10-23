@@ -23,7 +23,7 @@ Naively, when we have the 3D coordinates of points in the camera frame and the w
 
 $$
 \begin{gather*}
-K^{-T}z[u,v] = 
+K^{-T}z[u,v] =
 
 \begin{bmatrix}
 t_1 & t_2 & t_3 & t_4 \\
@@ -76,7 +76,7 @@ Since we need $SE(3)$ constraints on R, we need to use QR decomposition to solve
 
 ### P3P
 
-In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. In the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $OA$, $OB$. $OC$ [1]. 
+In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. In the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $OA$, $OB$. $OC$ [1].
 
 First we can solve for cosines:
 
@@ -88,7 +88,7 @@ $$
 \cos(\gamma) = \frac{pb^2 + pc^2 - bc^2}{2 \cdot pb \cdot pc}
 $$
 
-Then, using the law of cosines, we can 
+Then, using the law of cosines, we can
 
 $$
 \begin{gather*}
@@ -101,7 +101,6 @@ OB^2 + OC^2 - 2 \cdot OB \cdot OC \cdot \cos(\gamma) = BC^2
 $$
 
 Here comes the hard part: how do we solve for OA, OB, OC? In the original paper [1], Gao et al. proposed to use Wu-Ritt Decomposition to solve binary quadratic equations. Another method is to transform the above into one biquatric equation and [to solve with this method](https://mathworld.wolfram.com/QuarticEquation.html). Either case, there is a lot of derivation, so the linked resources above are probably the best places to look them up XD
-
 
 Then, we need 1 pair of feature match to find the solution that yields the positive z.
 
@@ -125,7 +124,7 @@ what():  OpenCV(4.2.0) ../modules/calib3d/src/solvepnp.cpp:753: error: (-215:Ass
 2. Rviz does not show `sensor_msgs/PointCloud2` point cloud, even though there are valid messages. In this case, please check:
 
 - Are you publishing on to a different frame? If so, is there a valid transform?
-- Are there any `nan` or `inf` in your message? 
+- Are there any `nan` or `inf` in your message?
 
 3. [How does OpenCV solves for extrinsics?](https://github.com/opencv/opencv/blob/f824db4803855ca30bf782f8bb37ca39051f319f/modules/calib3d/src/calibration.cpp#L923) `cvFindExtrinsicCameraParams2` is the function to look at. An excerpt of code include:
 
@@ -150,6 +149,6 @@ CV_IMPL void cvFindExtrinsicCameraParams2(...){
 
 [1] Complete Solution Classification for the Perspective-Three-Point Problem" by Xiao-Shan Gao, Xiao-Rong Hou, Jianliang Tang, and Hang-Fei Cheng. It was published in the IEEE Transactions on OAttern Analysis and Machine Intelligence, volume 25, issue 8, OAges 930-943, in 2003
 
-[2] https://blog.csdn.net/leonardohaig/article/details/120756834
+[2] <https://blog.csdn.net/leonardohaig/article/details/120756834>
 
-[3] Jesse Chen's Blog about EPnP https://blog.csdn.net/jessecw79/article/details/82945918
+[3] Jesse Chen's Blog about EPnP <https://blog.csdn.net/jessecw79/article/details/82945918>
