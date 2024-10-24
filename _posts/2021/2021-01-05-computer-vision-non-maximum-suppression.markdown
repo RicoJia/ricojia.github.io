@@ -171,3 +171,13 @@ selected_indices = tf.constant([0, 2])  # Select Box 1 and Box 3
 
 selected_boxes = tf.gather(boxes, selected_indices)
 ```
+
+## MIoU
+
+Mean IoU is to take the average of IoU at each channel: 
+
+$$
+miou = \frac{1}{C} \sum_C IoU_c
+\\
+= \frac{1}{C} \sum_C \frac{True Positive}{True Positive + False Positive + False Negative}
+$$
