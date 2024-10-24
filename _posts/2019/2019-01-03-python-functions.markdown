@@ -11,7 +11,7 @@ tags:
 
 ## Map, Reduce, Filter
 
-Map, Reduce, Filter are paradigms of functional programming. WIth them, we can write simpler and shorter programs. They are applied on iterables. 
+Map, Reduce, Filter are paradigms of functional programming. WIth them, we can write simpler and shorter programs. They are applied on iterables.
 
 ### Map
 
@@ -24,12 +24,13 @@ Example: Add 1 to each element in the list.
 x,y,z = map(lambda x: x+1, [1,2,3]) 
 ```
 
-### Reduce 
+### Reduce
 
 `reduce(callable, iterable)` can apply callable on `iterable`, **accumulatively**, meaning in the below example, the lambda is applied on each item and the current accumulated result.
 
 ```python
 from functools import reduce
+
 ls = [1,2,3,4,5]
 # see 18, the sum of ls
 print(reduce(lambda x, y: x+y, ls))
@@ -60,11 +61,13 @@ print b(1)
 
 ### partial
 
--  `functools.partial` returns a wrapper with some args bound to given values.
+- `functools.partial` returns a wrapper with some args bound to given values.
 
 ```python
 # 1 partial - we just need to bind the function with any keyworded args
 from functools import partial
+
+
 def func(a, b): 
     print("func: ", a, b)
 func_w = partial(func, b = 12)
@@ -95,12 +98,13 @@ rico_func_w(a=13)
 
 ### cached, lru_cache
 
-`lru_cache` caches the result of up to a maximum number of recent calls. Once there are more functions than the max, the least called functions are discarded. 
+`lru_cache` caches the result of up to a maximum number of recent calls. Once there are more functions than the max, the least called functions are discarded.
 
 - **It came with Python 3.2**
 
 ```python
 from functools import lru_cache
+
 
 @lru_cache(maxsize=128)
 def expensive_function(x):
@@ -123,4 +127,15 @@ def expensive_function(x):
 
 print(expensive_function(2))  # Computes and caches the result
 print(expensive_function(2))  # Returns cached result
+```
+
+## Run Function Only Once
+
+My favorite is
+
+```python
+def remove_results_dir():
+    if hasattr(remove_results_dir, "called") and os.path.exists(RESULTS_DIR):
+        ...
+        remove_results_dir.called = True
 ```

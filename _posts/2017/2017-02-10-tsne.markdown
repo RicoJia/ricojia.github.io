@@ -1,0 +1,143 @@
+---
+layout: post
+title: Math - t-SNE
+date: '2017-02-07 13:19'
+subtitle: (TODO: unfinished)
+comments: true
+tags:
+    - Math
+---
+
+## Introduction
+
+van der Maaten, Geoff Hinton and Yoshua Bengio came up with "t-SNE" (pronounced as "tee-snee") to reduce high dimensional data down to low dimensional data, so clusters between data is more easily seen. For example, if we have a 300-long vocabulary, we can plot them in 2D:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/09d5cfe7-f7b3-41f6-b1c5-e403bd169e36" height="300" alt=""/>
+        <figcaption><a href="https://www.coursera.org/learn/nlp-sequence-models">Source: Andrew Ng's RNN Class on Coursera </a></figcaption>
+    </figure>
+</p>
+</div>
+
+## Algorithm Intuition
+
+Below illustrations come from [StatQuest's Youtube Video](https://www.youtube.com/watch?v=NEaUSP4YerM)
+
+If we have some 2D data and want to reduce it to 1D, we can't just project them on x/y axis. We have to move these points in 1D such that their pairwise relative distances are retained
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/faf2295a-6d71-4438-b681-9dd357fa141f" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+1. Calculate pairwise similarities between points
+2. Initialize positions of these points randomly on an axis.
+3. Move one point at a time on the 1D axis. For the specific point A, calculate **its "net force" from all other points** where:
+    - if a point B is too "close" to A, A will be repelled to the other direction, by **a small step**. Otherwise, A will be attracted to B
+4. Repeat this process until no point moves.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/1cbd5843-ace9-4906-bf22-fa44e41ca155" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+### Step 1: Calculate pairwise similarities between points
+
+To calculate the similarity between point A and C,
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/106160be-a6a6-401f-b821-f09bed3454e4" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+1. Calculate the "unscaled similarity"
+
+    1. calculate their L2 Distance, `d_{AC}`
+    2. Then, plug `d` into a gaussian distribution with a known standard deviation $\sigma_A$? and get an "unscaled similarity"
+    $$
+    \begin{gather*}
+    exp(-d_{AC}^2/2\sigma_A^2)
+    \end{gather*}
+    $$
+
+2. Calculate the unscaled similarity between point A and all other points
+3. Scale the similarity by:
+
+$$
+\begin{gather*}
+P_{C|A} = \frac{exp(-d_{AC}^2/2\sigma_A^2)}{\sum_{K \neq A} exp(-d_{AK}^2/2\sigma_{i}^2)}
+\end{gather*}
+$$
+
+- So if point A and C are low distance away from each other, their similarity value is low
+- The scaled similarity is also the conditional probability "give point A, how similar is C"
+- We never have negative distance values. So technically, we are using half of the Gaussian distribution ?
+
+**Why put them in a Gaussian Distribution in the first place?**
+
+#### Why is scaling necessary?
+
+Because we want to have the same/similar similarity score if the same cluster becomes less dense at the same scale, as shown below.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/680cd8fd-13a6-4036-8a87-1b0c7d57d919" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+#### Would the similarities A -> C and C -> A the same?
+
+No. This is because the similarity score is finally scaled by A or C's total distance to other points. If A or C has a lot of points really close to them, the denominator $\sum_{K \neq A} exp(-d_{AK}^2/2\sigma_{i}^2)$ would be large so the similarity values would be scaled down by quite a bit.
+
+#### Eventually, we would end up with a similarity matrix
+
+In this similarity matrix, the diagonal terms become 0 because the similarity between the point and its self is NOT considered in the scaling at all, (especially in the denominator)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/bde5ec1c-a3c7-4548-b4bc-9be8ce993c47" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+How was standard deviations determined?
+
+## Step 3 Calculate Net Force
+
+We use a Student-t distribution for the `distance -> similarity` calculation in the 1D space. Similarly, we can come up with a similarity matrix
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/41b129df-9787-4f3b-8eb8-f9dcbafd1c18" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+So by moving one point along the 1D axis, we want the similarity matrix to ultimately look like the one from Step 1.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/2a22d693-f10f-4ea3-adfd-06e9bbd974a0" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+## References
+
+[1] [van der Maaten, L., & Hinton, G. (2008). Visualizing Data using t-SNE. Journal of Machine Learning Research, 9(Nov), 2579-2605.](https://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf)

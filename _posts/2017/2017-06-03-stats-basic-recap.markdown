@@ -1,12 +1,28 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Concepts Such As Covariance, Correlation, etc.
+subtitle: Distributions, Covariance & Correlation
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
     - Math
 ---
+
+## Distributions
+
+### Student's t-distribution
+
+Student's t-distribution is similar to a Gaussian distribution, but with heavier tails and shorter peaks.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/e1b05729-6a45-4f89-bb39-3ecf4b3cb047" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+TODO
 
 ## Covariance And Correlation
 
