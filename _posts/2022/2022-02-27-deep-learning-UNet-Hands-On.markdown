@@ -34,15 +34,7 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
 
 - `focal loss` seems useful, but it was a bit tricky to check. I checked with the one-hot version of output labels, and compare against itself. That was supposed to be the "perfect" example, and I expected to see a loss of 0. However, due to the softmax operation in focal loss, I got 0.78. This was resolved by doing `100 * one_hot_labels`. **Just using focal loss alone did NOT get around the imbalance issue for Pascal VOC 207**
 
-- However, UNet works on the Carvana dataset pretty well, with 97% accuracy (training set only) for a PoC. I haven't measured dev / test set yet.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/3e426cdc-5133-4049-afc0-76044af69b05" height="200" alt=""/>
-    </figure>
-</p>
-</div>
+- However, UNet works on the Carvana dataset pretty well, on the GTA5 dataset it works decently, but on the Pascal VOC 2007 and 2012 it is pretty bad - it just learned the background.
 
 ## Performance Profiling
 
@@ -86,6 +78,33 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
     - train: `90.55%`
     - dev: `90.63%`
     - test: `90.66%`
+    - example
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/6733d6b5-e888-4333-98d5-d80ecb62e673" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/a6420e99-dca8-41d0-bf3f-8f3d536676bf" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/337a0eed-4bc6-40ff-bb0b-8d361bade208" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+
 - Pascal VOC 2007
     - Mixed precision training (average 383s/batch)
         - train: `72.97%`
