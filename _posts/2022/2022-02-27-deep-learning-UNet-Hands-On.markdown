@@ -44,10 +44,21 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
 </p>
 </div>
 
-- For the GTA5 dataset, my `train/dev/test` dataset split is `70%, 15%, 15%`, and the accuracies I got were
-  - train:
+## Performance Profiling
+
+- For the GTA5 dataset, my `train/dev/test` dataset split is `70%, 15%, 15%`. My accuracies are
+  - train: `68.1%`
   - dev: `68.7%`
   - test: `67.88%`
+- Cavana dataset: my `train/dev/test` dataset split is `70%, 15%, 15%`. My accuracies are:
+    - Mixed precision training (average 383s/batch)
+        - train: `90.51%`
+        - dev: `90.46%`
+        - test: `90.61%`
+    - FP32 Full precision training (time)
+        - train: `90.51%`
+        - dev: `90.46%`
+        - test: `90.61%`
 
 ## References
 
