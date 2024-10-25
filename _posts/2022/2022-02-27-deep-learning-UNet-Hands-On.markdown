@@ -51,14 +51,19 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
   - dev: `68.7%`
   - test: `67.88%`
 - Cavana dataset: my `train/dev/test` dataset split is `70%, 15%, 15%`. My accuracies are:
-    - Mixed precision training (average 383s/batch)
-        - train: `90.51%`
-        - dev: `90.46%`
-        - test: `90.61%`
-    - FP32 Full precision training (time)
-        - train: `90.51%`
-        - dev: `90.46%`
-        - test: `90.61%`
+  - Mixed precision training (average 383s/batch)
+    - train: `90.51%`
+    - dev: `90.46%`
+    - test: `90.61%`
+  - FP32 Full precision training (time)
+    - train: `90.55%`
+    - dev: `90.63%`
+    - test: `90.66%`
+- Pascal VOC 2007
+  - Mixed precision training (average 383s/batch)
+    - train: `72.97%`
+    - dev: `73.61%`
+    - test: `74.27%`
 
 ## References
 

@@ -107,3 +107,5 @@ print(torch.unique(target))
 torch.set_printoptions(profile="full")  # Set print options to 'full'
 print(predicted_test)
 ```
+
+- `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.

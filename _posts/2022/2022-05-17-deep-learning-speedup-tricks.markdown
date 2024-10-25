@@ -11,6 +11,8 @@ tags:
 
 ## General Speed-Up Tricks
 
+- If you look to use albumentations for augmentation, sticking to the `[batch, H, W, Channels]` (channel last) could make data loading faster
+
 - `tensor.contiguous()` creates a new tensor that uses contiguous blocks of memory. You might need this after `permute()`, `view()`, `transpose()`, where the underlying memory is not contiguous.
 
 - `torch.cuda.empty_cache()` empties cached variables on GPU. So please do this **before sending anything to the GPU**
@@ -82,7 +84,9 @@ Caveat:
 
 ### Cache Clearing And Memory Management
 
-```
+- Empty cache
+
+```python
 # Tensors are immediately cleared in GPU memory. By default it's not
 torch.cuda.empty_cache()
 # This resets the internal memory counter that tracks the peak memory usage on the GPU.
@@ -91,6 +95,16 @@ torch.cuda.reset_max_memory_allocated()
 # ensures that all preceding GPU operations have been completed before moving to the next operation.
 torch.cuda.synchronize()
 ```
+
+- Be cautious with operations like `.item()`, `.numpy()`, `.cpu()` as they can cause synchronization.**So move data to the CPU last**
+
+    ```python
+    # Not doing item() here because that's an implicit synchronization call
+    # .cpu(), .numpy() have synchronization calls, too
+    local_correct = (predicted_test == labels_test).sum()
+    ```
+
+  - `.sum()` is **not** calling the GPU
 
 ## Mixed Precision Training
 
@@ -144,3 +158,23 @@ for epoch in range(0): # 0 epochs, this section is for illustration only
 ```
 
 - Note that `torch.autocast` expects the device type ('cuda' or 'cpu'), without the device index.
+
+- According to this [NVidia page](https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html):
+  - Each Tensor Core performs `D = A x B + C`, where A, B, C, and D are matrices
+  - In practice, higher performance is achieved when A and B dimensions are multiples of `8`
+  - **Half precision is about an order of magnitude** (10x) faster than double precision (FP64) and about four times faster than single precision (FP32).
+  - **Scaling is quite essential here**. Without scaling, loss would diverge.
+
+- DO NOT USE MIXED_PRECISION TRAINING FOR:
+  - Reduction is an operation that makes a tensor smaller along one or more dimensions, such as sum, mean, max, min.
+    - This is not sitting well with mixed-precision training, e.g., in a MSE loss function, the mean (a reduction) could have underflow issues.
+  - Division is not sitting well with mixed-precision training, either. That's because the denominator could have underflow issues.
+
+- Is it better to use `@torch.inference_mode()` or with `torch.no_grad()`?
+  - `torch.inference_mode()` is a newer context manager.
+    - It disables not only gradient computation but also the **version tracking** of tensors required by autograd
+    - Turning off version tracking can be significant for memory usage.
+
+### Results
+
+I observed at 50% speed up in inference when profiling my UNet model using fp16 for inferencing.
