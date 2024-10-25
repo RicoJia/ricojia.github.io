@@ -60,10 +60,36 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
     - dev: `90.63%`
     - test: `90.66%`
 - Pascal VOC 2007
-  - Mixed precision training (average 383s/batch)
-    - train: `72.97%`
-    - dev: `73.61%`
-    - test: `74.27%`
+    - Mixed precision training (average 383s/batch)
+        - train: `72.97%`
+        - dev: `73.61%`
+        - test: `74.27%`
+    - Examples:
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/c3353c3f-308c-4b81-9798-8873b2488b39" height="200" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/2f2538f8-0822-4da8-b8b3-b5460531b20d" height="200" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/00e629bb-d286-4d28-bea1-8e74c553eb36" height="200" alt=""/>
+            </figure>
+        </p>
+        </div>
 
 ## References
 
