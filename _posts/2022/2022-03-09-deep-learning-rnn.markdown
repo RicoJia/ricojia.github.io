@@ -62,6 +62,18 @@ a^{t} = g_0(W_{a}[a^{t-1}, x^{t}]^T + b_a)
 \end{gather*}
 $$
 
+### Notations
+- Superscript $(i)$ denotes an object associated with the $i^{th}$ example.
+- Superscript $[l]$ denotes an object associated with the $l^{th}$ layer.
+- Superscript $\langle t \rangle$ denotes an object at the $t^{th}$ time
+step.
+- Subscript $i$ denotes the $i^{th}$ entry of a vector.
+
+$$
+a_{i}^{(i)[l][t]} => a_5^{(2)[3]<4>}
+$$
+
+
 #### Architectures
 
 - Above is **many to many**, meaning you have multiple inputs and have multiple outputs.
