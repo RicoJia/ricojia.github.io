@@ -50,6 +50,33 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
   - train: `68.1%`
   - dev: `68.7%`
   - test: `67.88%`
+    - examples
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/5ddb1179-434a-4822-9d80-056df798f868" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/e7fa4efa-f5a7-4c9b-a8ed-2c769bdd30b3" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
+
+        <div style="text-align: center;">
+        <p align="center">
+            <figure>
+                <img src="https://github.com/user-attachments/assets/c86ab2a9-65f8-4463-b12f-27b6164e43d1" height="400" alt=""/>
+            </figure>
+        </p>
+        </div>
+
 - Cavana dataset: my `train/dev/test` dataset split is `70%, 15%, 15%`. My accuracies are:
   - Mixed precision training (average 383s/batch)
     - train: `90.51%`
