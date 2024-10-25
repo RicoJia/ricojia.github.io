@@ -78,28 +78,12 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
     - train: `90.55%`
     - dev: `90.63%`
     - test: `90.66%`
-    - example
-
-        <div style="text-align: center;">
-        <p align="center">
-            <figure>
-                <img src="https://github.com/user-attachments/assets/6733d6b5-e888-4333-98d5-d80ecb62e673" height="400" alt=""/>
-            </figure>
-        </p>
-        </div>
+    - Example
 
         <div style="text-align: center;">
         <p align="center">
             <figure>
                 <img src="https://github.com/user-attachments/assets/a6420e99-dca8-41d0-bf3f-8f3d536676bf" height="400" alt=""/>
-            </figure>
-        </p>
-        </div>
-
-        <div style="text-align: center;">
-        <p align="center">
-            <figure>
-                <img src="https://github.com/user-attachments/assets/337a0eed-4bc6-40ff-bb0b-8d361bade208" height="400" alt=""/>
             </figure>
         </p>
         </div>
