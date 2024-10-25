@@ -45,7 +45,6 @@ Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions
 
     - This effectively sets the pseudorandom number generators (PRNGs) in  Python seed, the NumPy seed, and the TensorFlow seed.
     - Without setting the seed, `tf.random.normal` would raise `RuntimeError`, but Python and Numpy won't
-        
 
 ## Torch Optimizer Tricks
 
@@ -81,18 +80,67 @@ Caveat:
 
 - Slight numerical differences
 
+### Cache Clearing And Memory Management
+
+```
+# Tensors are immediately cleared in GPU memory. By default it's not
+torch.cuda.empty_cache()
+# This resets the internal memory counter that tracks the peak memory usage on the GPU.
+# After resetting, you can accurately track peak memory
+torch.cuda.reset_max_memory_allocated()
+# ensures that all preceding GPU operations have been completed before moving to the next operation.
+torch.cuda.synchronize()
+```
+
 ## Mixed Precision Training
 
-Using `float 16` for training
+Matrix multiplcation, gradient calculation is faster if done in FP16, but results are stored in FP32 for numerical stability. So that's the need for mixed precision training.  Some ops, like linear layers and convolutions are faster in FP16. Other ops, like reductions, often require the dynamic range of float32?
 
-```python
-grad_scaler = torch.cuda.amp.GradScaler(enabled=amp)
+```
+use_amp = True
+
+net = make_model(in_size, out_size, num_layers)
+opt = torch.optim.SGD(net.parameters(), lr=0.001)
+# if False, then this is basically noop
+scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+
+for epoch in range(epochs):
+    for input, target in zip(data, targets):
+        with torch.autocast(device_type=device, dtype=torch.float16, enabled=use_amp):
+            # gradients are scaled here?
+            output = net(input) # this should be torch.float16
+            loss = loss_fn(output, target)  # loss is autocast to torch.float32
+        # exits autocast before backward()
+        # create scaled gradients
+        scaler.scale(loss).backward()
+        # First, gradients of optimizer params are unscaled here. Unless nan or inf shows up, optimizer.step() is called
+
+        scaler.step(opt)
+        scaler.update()
+        opt.zero_grad() # set_to_none=True here can modestly improve performance
 ```
 
-- TODO? Needs channel last format `NHWC`
+Or using FP16 througout without scaling
 
 ```python
-model = model.to(memory_format = torch.channels_last)
-input_tensor = input.to(memory_format=torch.channels_last)
-output = model(input_tensor)
+for epoch in range(0): # 0 epochs, this section is for illustration only
+    for input, target in zip(data, targets):
+        # Runs the forward pass under ``autocast``.
+        with torch.autocast(device_type=device, dtype=torch.float16):
+            output = net(input)
+            # output is float16 because linear layers ``autocast`` to float16.
+            assert output.dtype is torch.float16
+
+            loss = loss_fn(output, target)
+            # loss is float32 because ``mse_loss`` layers ``autocast`` to float32.
+            assert loss.dtype is torch.float32
+
+        # Exits ``autocast`` before backward().
+        # Backward passes under ``autocast`` are not recommended.
+        # Backward ops run in the same ``dtype`` ``autocast`` chose for corresponding forward ops.
+        loss.backward()
+        opt.step()
+        opt.zero_grad() # set_to_none=True here can modestly improve performance
 ```
+
+- Note that `torch.autocast` expects the device type ('cuda' or 'cpu'), without the device index.

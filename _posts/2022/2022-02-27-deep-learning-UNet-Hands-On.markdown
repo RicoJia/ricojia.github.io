@@ -44,6 +44,11 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
 </p>
 </div>
 
+- For the GTA5 dataset, my `train/dev/test` dataset split is `70%, 15%, 15%`, and the accuracies I got were
+  - train:
+  - dev: `68.7%`
+  - test: `67.88%`
+
 ## References
 
 [PyTorch-Unet](https://github.com/milesial/Pytorch-UNet)
