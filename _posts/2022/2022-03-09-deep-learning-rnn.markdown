@@ -46,7 +46,7 @@ a^{t} = g_0(W_{aa} a^{(t-1)} + W_{ax} x^{(t)} + b_a)
 \end{gather*}
 $$
 
-- $a^{0}$ is usually zero or randomly generated values.
+- $a^{0}$ is usually zero or randomly generated values. **a_0 should have the same length as x**.
 - $g_0$ could be tanh (more common) or relu, $g_1$ could be sigmoid.
   - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
 - $W_{ax}$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_{aa}$
@@ -128,15 +128,15 @@ This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ 
 
 1. I (one-hot vector is [0, , ... 1, ... 0]) -> $P(y_0 = Ben)$ = 0.4 (so take 'Ben' as output)
 2. love -> P(seviyor) = 0.00003, P(seviyorum) = 0.00001
-    1. P(seviyor | Ben) = 1e-10, $P(\text{seviyorum} | y_0 = \text{Ben}) = 0.4$
+    1. P(seviyor \| Ben) = 1e-10, $P(\text{seviyorum} \| y_0 = \text{Ben}) = 0.4$
     2. So take the most probable sequence 'Ben seviyorum' as output.
 3. `Turkish` -> $P(\text{Türkçe}) = 0.5$
-    1. $P(y_2 = \text{Türkçe} | y_0 = \text{Ben}, y_1 = \text{seviyorum}) = 8e^{-10}$, $P(y_1 = \text{Türkçe} | y_0 = \text{Ben}, y_2 = \text{seviyorum}) = 6e^{-7}$
+    1. $P(y_2 = \text{Türkçe} \| y_0 = \text{Ben}, y_1 = \text{seviyorum}) = 8e^{-10}$, $P(y_1 = \text{Türkçe} \| y_0 = \text{Ben}, y_2 = \text{seviyorum}) = 6e^{-7}$
     2. So take 'Ben Türkçe seviyorum' as output
 4. `Coffee` -> `P(Kahve) = 0.7, P(Kahvesi) = 0.2`:
-    1. $P(y_3 = \text{Kahve} | y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_2 = \text{seviyorum}) = 7e^{-15}$
+    1. $P(y_3 = \text{Kahve} \| y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_2 = \text{seviyorum}) = 7e^{-15}$
     1. ...
-    1. $P(y_2 = \text{Kahvesi} | y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_3 = \text{seviyorum}) = 9e^{-9}$
+    1. $P(y_2 = \text{Kahvesi} \| y_0 = \text{Ben}, y_1 = \text{Türkçe}, y_3 = \text{seviyorum}) = 9e^{-9}$
     1. The most probable sequence is `Ben türkçe kahvesi seviyorum` as the output
 
 - The sentence `Türkçe kahvesi seviyorum` has a probability of $9e^{-9}$ and is the highest among all sentences.
@@ -145,7 +145,7 @@ This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ 
 
 - Modern NMTs, expecially transformers, do not rely on Markov Assumptions and consider not just previous words, but the entire input sequence.
 
-- Probablities like $P(y_2 = \text{Türkçe} | y_0 = \text{Ben}, y_1 = \text{seviyorum})$ are computed by complex neural networks to  based on learned representations of both the source and target languages.
+- Probablities like $P(y_2 = \text{Türkçe} \| y_0 = \text{Ben}, y_1 = \text{seviyorum})$ are computed by complex neural networks to  based on learned representations of both the source and target languages.
 
 #### Training
 
@@ -164,7 +164,7 @@ Where $i$ is the dimension of one-hot vectors, and $t$ is time.
 
 ### Sampling Novel Sequences
 
-After training a model, the model should have learned the conditional probability distribution $P(y_t | y_1, ... y_{t-1})$. we can informally get a sense of what the model learned by sampling novel sequences. For example, our vocabulary is `['I', 'you', 'love', 'coffee', 'apple']`
+After training a model, the model should have learned the conditional probability distribution $P(y_t \| y_1, ... y_{t-1})$. we can informally get a sense of what the model learned by sampling novel sequences. For example, our vocabulary is `['I', 'you', 'love', 'coffee', 'apple']`
 
 1. At `t=0`
     1. Choose start tokens $a^{(0)} = 0, x^{(0)} = 0$ (Start-Of-Sequence `<SOS>` token),
