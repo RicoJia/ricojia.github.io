@@ -63,6 +63,7 @@ a^{t} = g_0(W_{a}[a^{t-1}, x^{t}]^T + b_a)
 $$
 
 ### Notations
+
 - Superscript $(i)$ denotes an object associated with the $i^{th}$ example.
 - Superscript $[l]$ denotes an object associated with the $l^{th}$ layer.
 - Superscript $\langle t \rangle$ denotes an object at the $t^{th}$ time
@@ -72,7 +73,6 @@ step.
 $$
 a_{i}^{(i)[l][t]} => a_5^{(2)[3]<4>}
 $$
-
 
 #### Architectures
 
@@ -122,7 +122,7 @@ Turkish output: Ben türkçe kahvesi seviyorum
 
 Input: Tokenize the sentence into one-hot vectors. Add an end-of-sentence token `<EOS>` to be explicit. If there's a word that's not in the vocabulary, use an unknown token to represent that `<UNK>`. Before outputing probablities, we need `softmax` to normalize.
 
-This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ is $p(y^{(t)} | y^{(0)}, y^{(1)} ... y^{(t-1)})$. The whole sentence's probability is $p(y^{(0)}, y^{(1)} ... y^{(t-1)}, y^{(t)})$
+This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ is $p(y^{(t)} \| y^{(0)}, y^{(1)} ... y^{(t-1)})$. The whole sentence's probability is $p(y^{(0)}, y^{(1)} ... y^{(t-1)}, y^{(t)})$
 
  Let's walk through an example with arbitrarily-assigned probabilities.
 
