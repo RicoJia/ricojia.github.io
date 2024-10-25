@@ -33,7 +33,7 @@ The word "recurrent" means "appearing repeatedly". In an RNN, we have **hidden s
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/424591b0-a5ba-499f-a26e-2bc8f62905ce" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/de82d933-9400-46ce-83cc-bc5ea26d51a8" height="300" alt=""/>
     </figure>
 </p>
 </div>
