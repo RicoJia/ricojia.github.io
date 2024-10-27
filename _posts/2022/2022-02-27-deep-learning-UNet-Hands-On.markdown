@@ -60,7 +60,6 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
         </p>
         </div>
 
-
         <div style="text-align: center;">
         <p align="center">
             <figure>
@@ -88,13 +87,12 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
         </p>
         </div>
 
-
 - Pascal VOC 2007
-    - Mixed precision training (average 383s/batch)
-        - train: `72.97%`
-        - dev: `73.61%`
-        - test: `74.27%`
-    - Examples:
+  - Mixed precision training (average 383s/batch)
+    - train: `72.97%`
+    - dev: `73.61%`
+    - test: `74.27%`
+  - Examples:
 
         <div style="text-align: center;">
         <p align="center">
@@ -112,7 +110,6 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
         </p>
         </div>
 
-
         <div style="text-align: center;">
         <p align="center">
             <figure>
@@ -120,6 +117,22 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
             </figure>
         </p>
         </div>
+
+- Pascal VOC 2012
+  - Mixed precision training (average 383s/batch)
+    - train: ``64.70%`
+    - dev: `64.27%`
+    - test: `64.69%`
+
+  - Example:
+    <div style="text-align: center;">
+    <p align="center">
+        <figure>
+            <img src="https://github.com/user-attachments/assets/82589d25-3316-4c53-a2c3-559f1a4afdaa" height="200" alt=""/>
+            <figcaption><a href="">Source: </a></figcaption>
+        </figure>
+    </p>
+    </div>
 
 ## References
 

@@ -29,7 +29,7 @@ $$
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/11073e5f-cd14-4a8e-b4d6-c2eceadc76a5" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/e7d9bd70-189b-4f43-a912-f6861e788228" height="300" alt=""/>
     </figure>
 </p>
 </div>
