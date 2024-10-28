@@ -22,7 +22,8 @@ $$
 \Gamma_f &= \sigma\left(W_f \left[a^{\langle t-1 \rangle}, x^{\langle t \rangle} \right] + b_f \right) \\
 \Gamma_o &= \sigma\left(W_o \left[a^{\langle t-1 \rangle}, x^{\langle t \rangle} \right] + b_o \right) \\
 c^{\langle t \rangle} &= \Gamma_u * \tilde{c}^{\langle t \rangle} + \Gamma_f * c^{\langle t-1 \rangle} \\
-a^{\langle t \rangle} &= \Gamma_o * \tanh\left(c^{\langle t \rangle}\right)
+a^{\langle t \rangle} &= \Gamma_o * \tanh\left(c^{\langle t \rangle}\right) \\
+y^{\langle t \rangle} &= \text{softmax}\left(W_{ya} * a^{\langle t \rangle} + b_y\right)
 \end{gather*}
 $$
 
@@ -45,6 +46,23 @@ $$
 $$
 
 LSTM is historically the most proven architecture. GRU is simpler, newer, and potentially better for growing big
+
+Detailed Explanations:
+
+- $x^{(t)}, a^{(t-1)}$ are stacked vertically
+- $\Gamma_f * C^{(t-1)}$ is like applying a mask.
+- All gates should be in the ranges of $[0,1]$. That is, if close to 0, values from the previous state, or calculated intermediate state won't be kept
+- So when a subject changes its state, like a singular noun changes to plural,  $\Gamma_f$'s certain values should change its value `0 -> 1`
+- $\tilde{C}$ uses `tanh` so its values are in $[-1, 1]$. Whether its values are passed onto the actual hidden state $C^{(t-1)}$is determined by gate $\Gamma_i$
+- $a = \Gamma_o * tanh(C^{t})$ to normalize its values to $[-1, 1]$
+
+So LSTM is like RNN, but it also has a cell state $C$ (long term memory), $a$ (short term memory)
+
+- A forget gate is added, so long term memory could be abandonded.
+  - So the long term memory is the direct contribution of LSTM to address RNNs' vanishing gradient problem
+- An update gate to make sure some current cell state candidate **might not** get into the short term memory
+- An output gate determines which elements from the cell state gets into the short term memory.
+  - Changes more rapidly (like a "scratch pad"), and goes directly into the next output.
 
 ## Bi-Directional RNN
 

@@ -9,7 +9,7 @@ tags:
     - Python
 ---
 
-## Numpy 
+## Numpy
 
 ### General Programming Rules In Numpy
 
@@ -38,8 +38,8 @@ np.min((1,2))
 
 - `np.mean(arr, axis=0)` might be slightly faster, and always returns the single mean value along the specified axis
 - `np.average(arr, axis=0, weights=None, returned=False)` calculates the weighted average along the specified axis
-    - If `weights` is None, `np.average` is pretty much the same as `np.mean`. Otherwise, one can specify the weights of each item along the specified axis
-    - `Returned=True` when we want to return a tuple `(avg, summed_weights)`
+  - If `weights` is None, `np.average` is pretty much the same as `np.mean`. Otherwise, one can specify the weights of each item along the specified axis
+  - `Returned=True` when we want to return a tuple `(avg, summed_weights)`
 
 ```python
 import numpy as np
@@ -60,7 +60,7 @@ print(f'Weighted average: {avg}, sumed_weights: {summed_weights}')
 #### Padding
 
 - `np.pad(array, pad_width, mode='constant', constant_values=(4, 6))` pads an array with:
-    - `pad_width` is `[before, after]`, the constants in (4,6) before and after the array in the given axis
+  - `pad_width` is `[before, after]`, the constants in (4,6) before and after the array in the given axis
 
 ```python
 import numpy as np
@@ -86,10 +86,10 @@ See how along axis = 0 (rows) we have 4 before the array's row and 6 after, then
 
 - `np.random.choice(a, size, replace=True, p=None)` randomly draws values from input `a`.
 
-    - `a` is a list of numbers to draw from
-    - `size` is the number of samples to draw
-    - `replace` is if the same number can be drawn multiple times
-    - `p` is the probability of each class. Uniform distribution is the default.
+  - `a` is a list of numbers to draw from
+  - `size` is the number of samples to draw
+  - `replace` is if the same number can be drawn multiple times
+  - `p` is the probability of each class. Uniform distribution is the default.
 
 ```python
 arr = [1, 2, 3, 4, 5]
@@ -169,6 +169,8 @@ arr.squeeze()   # still sees np.array([1,2,3]) as no axis is of length 1.
 
 - `np.array.reshape (new_row, new_cln)` is a common reshape function.
 
+- `concat = np.concatenate((a_prev, xt), axis=0 )` concatenate two arrays together
+
 #### `np.argmax(arr, axis)`
 
 - Finding the args of max of an array along an axis
@@ -197,7 +199,7 @@ np.in1d(["a", "z", "f"], ls)
 
 ## Pandas
 
-### Example Of Preparing Data For Training.
+### Example Of Preparing Data For Training
 
 ```python
 import os

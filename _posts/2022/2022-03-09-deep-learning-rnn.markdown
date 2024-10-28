@@ -46,7 +46,8 @@ a^{t} = g_0(W_{aa} a^{(t-1)} + W_{ax} x^{(t)} + b_a)
 \end{gather*}
 $$
 
-- $a^{0}$ is usually zero or randomly generated values. **a_0 should have the same length as x**.
+- $a^{0}$ is usually zero or randomly generated values. **a_0 do not need to be of the same length as x**.
+  - $a^{(t)}$ are stacked on top of $x$
 - $g_0$ could be tanh (more common) or relu, $g_1$ could be sigmoid.
   - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
 - $W_{ax}$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_{aa}$
@@ -62,6 +63,8 @@ a^{t} = g_0(W_{a}[a^{t-1}, x^{t}]^T + b_a)
 \end{gather*}
 $$
 
+**RNN works best with local context (recent words).**
+
 ### Notations
 
 - Superscript $(i)$ denotes an object associated with the $i^{th}$ example.
@@ -71,7 +74,7 @@ step.
 - Subscript $i$ denotes the $i^{th}$ entry of a vector.
 
 $$
-a_{i}^{(i)[l][t]} => a_5^{(2)[3]<4>}
+a_{i}^{[i](l)[t]} => a_5^{[2](3)<4>}
 $$
 
 #### Architectures
@@ -188,5 +191,11 @@ Above is "word-level" RNN. If inputs are charaters `[a-z, A-Z, 0-9, ...]`, you w
 ## BackPropagation Through Time (BPTT)
 
 TODO
+
+RNN implementation
+
+- $nx$ is used here to denote the number of units in a single time step of a single training example
+- $Tx$ will denote the number of timesteps in the longest sequence.
+- stack 20 **columns** of 𝑥(𝑖) examples
 
 `RNN` can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.
