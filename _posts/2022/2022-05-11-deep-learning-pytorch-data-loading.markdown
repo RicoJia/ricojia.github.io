@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - PyTorch Data Loading
-date: '2022-02-21 13:19'
+date: '2022-05-11 13:19'
 subtitle: RESNET-50 Data Loading, Data Transforms, Custom Data Loading
 comments: true
 header-img: "img/home-bg-art.jpg"
