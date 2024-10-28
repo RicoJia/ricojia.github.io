@@ -11,6 +11,8 @@ comments: true
 
 ## Components
 
+- IAM role: IAM (Identity Access Management) is a set of permissions that define what actions an entity (services, user, aplications) can do. A role uses temporary creds while a user uses more permanent creds.
+
 - Debugger (At least compatible with TensorFlow). [Video Explanations](https://youtu.be/MqPdTj0Znwg)
 
   - can add rules, e.g., vanishing gradient rule (your model is not updating anymore), overfit (can see in trial details about warnings)
