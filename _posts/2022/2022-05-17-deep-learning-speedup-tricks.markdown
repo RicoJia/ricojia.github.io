@@ -108,7 +108,84 @@ torch.cuda.synchronize()
 
 ## Mixed Precision Training
 
-Matrix multiplcation, gradient calculation is faster if done in FP16, but results are stored in FP32 for numerical stability. So that's the need for mixed precision training.  Some ops, like linear layers and convolutions are faster in FP16. Other ops, like reductions, often require the dynamic range of float32?
+Matrix multiplcation, gradient calculation is faster if done in FP16, but results are stored in FP32 for numerical stability. So that's the need for mixed precision training.  Some ops, like linear layers and convolutions are faster in FP16. Other ops, like reductions, often require the dynamic range of float32
+
+### Motivating Example - How FP16 Can Benefit Training
+
+This is an example of linear regression
+
+```python
+import numpy as np
+
+np.random.seed(42)
+X = np.random.randn(100, 1)  # 100 samples, 1 feature
+
+# Generate targets with some noise
+true_W = np.array([[2.0]])
+true_b = np.array([0.5])
+Y = X @ true_W + true_b + 0.1 * np.random.randn(100, 1)
+
+# Initialize weights and biases
+W = np.random.randn(1, 1)  # Shape (1, 1)
+b = np.random.randn(1)     # Shape (1,)
+
+# Forward pass to compute predictions
+def forward(X, W, b):
+    return X @ W + b
+def compute_loss(Y_pred, Y_true):
+    return np.mean((Y_pred - Y_true) ** 2)
+
+# Forward pass
+Y_pred = forward(X, W, b)
+loss = compute_loss(Y_pred, Y)
+
+# Backward pass (compute gradients)
+dLoss_dY_pred = 2 * (Y_pred - Y) / Y.size  # Shape (100, 1)
+
+# Gradients w.r.t. W and b
+dLoss_dW = X.T @ dLoss_dY_pred             # Shape (1, 1)
+dLoss_db = np.sum(dLoss_dY_pred, axis=0)   # Shape (1,)
+
+print("Gradients without scaling:")
+print("dLoss_dW:", dLoss_dW)
+print("dLoss_db:", dLoss_db)
+```
+
+- Without scaling, we see
+
+```python
+Gradients without scaling:
+dLoss_dW: [[-1.9263151]]
+dLoss_db: [-0.06291431]
+```
+
+- With scaling, **the main benefit is gradients are scaled up and avoid underflow using chain-rule**
+
+```python
+# forward pass, in loss
+scaling_factor = 1024.0
+scaled_loss = loss * scaling_factor
+dScaledLoss_dY_pred = scaling_factor * dLoss_dY_pred
+
+# backward()
+# Scaled gradients w.r.t. W and b. THIS IS WHERE THE SCALING BENEFITS ARE FROM
+dScaledLoss_dW = X.T @ dScaledLoss_dY_pred
+dScaledLoss_db = np.sum(dScaledLoss_dY_pred, axis=0)
+
+# scaler.step(optimizer), unscale the gradients, if there's no Nan or Inf
+unscaled_dW = dScaledLoss_dW / scaling_factor
+unscaled_db = dScaledLoss_db / scaling_factor
+
+# update()
+learning_rate = 0.1
+W -= learning_rate * unscaled_dW
+b -= learning_rate * unscaled_db
+```
+
+
+
+### Pytorch
+
 
 ```
 use_amp = True
