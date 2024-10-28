@@ -121,3 +121,7 @@ print(result)  # Output: [5, 2, 4, 6]
 ```
 
 - So the overarching difference from `filter()` is that `filter()`  returns all elements that makes `predicate` **`True`**, while `dropwhile()` discards elements until the first element that make `predicate` `False`.
+
+## List
+
+- `for i in reversed(range(T_x)):`: reverse a list / iterable

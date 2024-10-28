@@ -46,8 +46,11 @@ a^{t} = g_0(W_{aa} a^{(t-1)} + W_{ax} x^{(t)} + b_a)
 \end{gather*}
 $$
 
-- $a^{0}$ is usually zero or randomly generated values. **a_0 do not need to be of the same length as x**.
+- Dimensions
+  - Batch is usually dimension 1
+  - $a^{0}$ is usually zero or randomly generated values. **a_0 do not need to be of the same length as x**.
   - $a^{(t)}$ are stacked on top of $x$
+  - So $a$ could be $[5, 10]$, x could be $[3,10]$, with a batch size being `10`
 - $g_0$ could be tanh (more common) or relu, $g_1$ could be sigmoid.
   - `output = softmax(V * (W*output_{t-1} + U*x_{t}))`
 - $W_{ax}$ is a matrix that "generates a-like vectors, and takes in an x-like vector". Same notation for $W_{aa}$
@@ -74,7 +77,7 @@ step.
 - Subscript $i$ denotes the $i^{th}$ entry of a vector.
 
 $$
-a_{i}^{[i](l)[t]} => a_5^{[2](3)<4>}
+a_{i}^{[i][l](t)} => a_5^{[2](3)<4>}
 $$
 
 #### Architectures
@@ -150,6 +153,8 @@ This is equivalent to a Markov Decision Process. Each predition $\hat{y}^{(t)}$ 
 
 - Probablities like $P(y_2 = \text{Türkçe} \| y_0 = \text{Ben}, y_1 = \text{seviyorum})$ are computed by complex neural networks to  based on learned representations of both the source and target languages.
 
+`RNN` can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.
+
 #### Training
 
 The training set is a large corpus of English -> Turkish text.
@@ -190,12 +195,67 @@ Above is "word-level" RNN. If inputs are charaters `[a-z, A-Z, 0-9, ...]`, you w
 
 ## BackPropagation Through Time (BPTT)
 
-TODO
-
 RNN implementation
 
 - $nx$ is used here to denote the number of units in a single time step of a single training example
 - $Tx$ will denote the number of timesteps in the longest sequence.
 - stack 20 **columns** of 𝑥(𝑖) examples
 
-`RNN` can have exploding/diminising gradient as well. For explosion, do gradient clipping. for diminishing, can try 1. weight init, 2. use relu instead of sigmoid 3. other RNNs: LSTM, GRU.
+It's worth noting that:
+
+$$
+\begin{gather*}
+tanh'(x) = (1-tanh^2(x))
+\\
+\sigma'(x) = \sigma(x) (1 - \sigma(x))
+\end{gather*}
+$$
+
+So:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/cde79643-c3b4-487c-b572-24d7c86061d9" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+$$
+\begin{gather*}
+\begin{align}
+\displaystyle a^{\langle t \rangle} &= \tanh(W_{ax} x^{\langle t \rangle} + W_{aa} a^{\langle t-1 \rangle} + b_{a})\tag{-} \\[8pt]
+\displaystyle \frac{\partial \tanh(x)} {\partial x} &= 1 - \tanh^2(x) \tag{-} \\[8pt]
+\displaystyle {dtanh} &= da_{next} * ( 1 - \tanh^2(W_{ax}x^{\langle t \rangle}+W_{aa} a^{\langle t-1 \rangle} + b_{a})) \tag{0} \\[8pt]
+\displaystyle  {dW_{ax}} &= dtanh \cdot x^{\langle t \rangle T}\tag{1} \\[8pt]
+\displaystyle dW_{aa} &= dtanh \cdot a^{\langle t-1 \rangle T}\tag{2} \\[8pt]
+\displaystyle db_a& = \sum_{batch}dtanh\tag{3} \\[8pt]
+\displaystyle dx^{\langle t \rangle} &= { W_{ax}}^T \cdot dtanh\tag{4} \\[8pt]
+\displaystyle da_{prev} &= { W_{aa}}^T \cdot dtanh\tag{5}
+\end{align}
+\end{gather*}
+$$
+
+Note that we need to accumalate hidden input gradient by
+
+$$
+\begin{gather*}
+da = da_loss[t] + da_prev
+\end{gather*}
+$$
+
+- $da_loss[t]$ is the hidden state gradient from the immediate loss. So **a keypoint of BPTT** is consdering both the next time gradient and the immediate loss for hidden state gradient
+- loss only considers the current timestamp output, and can use binary cross entropy loss.
+
+```Python
+for t in reversed(range(T_x)):
+    # Compute the total gradient at time step t
+    da_next = da[:, :, t] + da_prevt
+    gradients = rnn_cell_backward(da_next, caches[t])
+    dxt = gradients["dxt"]
+    da_prevt = gradients["da_prev"]
+    dWax += gradients["dWax"]
+    dWaa += gradients["dWaa"]
+    dba += gradients["dba"]
+    dx[:, :, t] = dxt
+```
