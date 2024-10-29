@@ -80,17 +80,10 @@ $$
     - DisadvantagesL
         - Not differentiable at 0, which could be problematic, especially jacobians are near zero
 
-3. Cross Entropy Loss (Log Loss): $-\frac{1}{n} \sum (y_ilog(\hat{y}_i) + (1-y^i)log(1-\hat{y}_i))$
-    - Advantages:
-        - Good for classification problems.
-        - Suitable for probablistic Interpretation, and penalizes wrong confident predictions heavily
-    - Disadvantages:
-        - when $y^i$ is (0,1). And the closer it is to the bounds, the loss would be larger
-
-4. Hinge Loss: $\frac{1}{n} \sum max(0, 1-y_i\hat{y}_i)$
+3. Hinge Loss: $\frac{1}{n} \sum max(0, 1-y_i\hat{y}_i)$
     - Mostly used in SVM training, not working well with probablistic estimations
 
-5. Huber Loss
+4. Huber Loss
     $$
     \frac{1}{2} (y_i - \hat{y}_i)^2, \text{for} |y_i - \hat{y}_i| < \delta
     \\
@@ -101,7 +94,7 @@ $$
         - Combines MAE and MSE.
     - Requires tuning $\delta$
 
-6. Sparse Entropy Loss: designed for image segmentation, where one-hot encoding is used in model output (after softmax) but training data only has labels. The loss per pixel is $l = -log(p_{true})$
+5. Sparse Entropy Loss: designed for image segmentation, where one-hot encoding is used in model output (after softmax) but training data only has labels. The loss per pixel is $l = -log(p_{true})$
 
 For example:
 
@@ -126,6 +119,62 @@ $$
 $$
 
 You can add up the losses and get the sum of it
+
+========================================================================
+## Classification Losses
+========================================================================
+
+### Cross Entropy Loss (Log Loss)
+
+$$
+-\frac{1}{n} \sum (y_ilog(\hat{y}_i) + (1-y^i)log(1-\hat{y}_i))
+$$
+
+- Advantages:
+    - Good for classification problems.
+    - Suitable for probablistic Interpretation, and penalizes wrong confident predictions heavily
+- Disadvantages:
+    - when $y^i$ is (0,1). And the closer it is to the bounds, the loss would be larger
+
+### Negative Log-Likelihood Loss (NLL)
+
+Given a number of true classes (like acceptable output words in a sentence generator), NLL measures how likely we get any true class based on our prediction, a log-probability distribution across all outputs.
+
+- Input Requirements: The model's output should be log-probabilities when using NLL Loss.
+- Target Format: The targets should be provided as class indices, not one-hot vectors.
+
+$$
+\begin{gather*}
+NLL = \sum_I -log(\text{true class}_i | {prediction})
+\end{gather*}
+$$
+
+
+- For M samples,
+
+$$
+\begin{gather*}
+\text{NLL} = \frac{1}{m} \sum_M(\text{NLL}_m).
+\end{gather*}
+$$
+
+NLL is always used with log-softmax activations to ensure numerical stability. 
+
+#### NLL Example
+
+1. We are given a single example, with logits `logits=[1.0​2.0​0.5​]`
+2. Apply log-softmax $log(\frac{exp(x_i)}{\sum_i exp(x_i)})$ and get `[−1.46303, ​−0.46303​, −1.96303​]`
+3. Given a single true class `I=[1]`, NLL becomes
+
+$$
+\begin{gather*}
+\text{NLL} = \sum_I -log(\text{true class}_i | \text{prediction}) = -log(y_1 | \text{prediction}) = 0.46303
+\end{gather*}
+$$
+
+========================================================================
+## Image Segmentation Losses
+========================================================================
 
 ### IoU and Dice Loss
 
