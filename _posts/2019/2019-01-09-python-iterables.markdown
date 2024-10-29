@@ -125,3 +125,4 @@ print(result)  # Output: [5, 2, 4, 6]
 ## List
 
 - `for i in reversed(range(T_x)):`: reverse a list / iterable
+- `ls = list(str)` Decompose a string into a list of letters

@@ -82,6 +82,21 @@ array([[4, 4, 4, 4, 4, 4, 6, 6],
 
 See how along axis = 0 (rows) we have 4 before the array's row and 6 after, then along axis=1 (columns) we have 4 before the existing columns and 6 after?
 
+#### Clipping
+
+```Python
+# gradients -- a dictionary containing the np.arrays
+gradients = copy.deepcopy(gradients)
+
+dWaa, dWax, dWya, db, dby = gradients['dWaa'], gradients['dWax'], gradients['dWya'], gradients['db'], gradients['dby']
+
+for gradient in [dWaa, dWax, dWya, db, dby]:
+    np.clip(gradient, -maxValue, maxValue, out=gradient)
+```
+
+- Each `gradient` is an `np.array` object, so we are actually modifying gradient in place!
+- If `gradient` is not an array, modifying in place won't make sense
+
 ### Random Number Generation
 
 - `np.random.choice(a, size, replace=True, p=None)` randomly draws values from input `a`.
@@ -118,6 +133,20 @@ indices = np.where(array > 5)
 array = np.array([10, 5, 8, 3, 12])
 # See array([10,  0,  8,  0, 12])
 res = np.where(array > 5, array, 0)
+```
+
+#### `numpy.ravel()`
+
+- Takes in a multi-dimensional array and returns its content inside 1D array
+
+```python
+arr = np.array([[1,2],[3,4]])
+print("arr")
+print(arr)
+print("arr.ravel()")
+print(arr.ravel())
+
+# see [1, 2, 3, 4]
 ```
 
 #### ```np.unravel_index(indices, shape)```
