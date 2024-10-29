@@ -2,14 +2,14 @@
 layout: post
 title: Deep Learning - Optimizations Part 2
 date: '2022-01-20 13:19'
-subtitle: Batch Normalization (BN)
+subtitle: Batch Normalization (BN), Gradient Clipping
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
 
-## Introduction
+## Batch Normalization
 
 We have seen that we normalize the input data based on their average and mean. We can apply the same with the output of each layer.
 
@@ -82,7 +82,7 @@ So in total, a batch normalization layer for one channel has **2 trainable param
 
 Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
 
-## Why Batch Normalization Works?
+### Why Batch Normalization Works?
 
 **Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
 
@@ -101,6 +101,28 @@ Batch normalization overcomes the covariate shift in **hidden layers**.
 
 However batch normalization doesn't reduce the model complexity so the regularization is very mild.
 
-## Practical Use Notes
+### Practical Use Notes
 
 - It's quite common to see the pattern `conv -> BN -> ReLu`
+
+## gradient clipping
+
+One simple method is: if gradint surpasses a simple threshold, we clip the gradient to the threshold.
+
+- `np.clip(a, a_min, a_max, out=None)`: `out` is an output array
+
+```
+# np.clip(a, a_min, a_max, out=None)
+np.clip(a, 1, 8)
+array([1, 1, 2, 3, 4, 5, 6, 7, 8, 8])`
+```
+
+The effect of gradient clipping is
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/cba1cc6f-8033-4dad-aa50-5122fb9fc320" height="300" alt=""/>
+    </figure>
+</p>
+</div>
