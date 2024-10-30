@@ -40,7 +40,7 @@ $$
 
 $f_x$, $f_y$ already includes the scaling ratio from image plane to pixel coordinates, and focal length along $x$ and $y$ axes. $[c_x, c_y]$ are the pixel coordinate of the principal point.
 
-Then this can be written as: 
+Then this can be written as:
 
 $$
 K = \begin{bmatrix}
@@ -49,10 +49,10 @@ f_x & 0 & c_x \\
 0 & 0 & 1
 \end{bmatrix}
 \\
-=> 
+=>
 s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} = \begin{bmatrix} f_x & 0 & c_x \\ 0 & f_y & c_y \\ 0 & 0 & 1 \end{bmatrix} \begin{bmatrix} X \\ Y \\ s \end{bmatrix}
 \\
-=> 
+=>
 s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} =  K \begin{bmatrix} X \\ Y \\ s \end{bmatrix}
 \\
 $$
@@ -65,7 +65,7 @@ $$
 \end{gather*}
 $$
 
-If the 3D coordinates is not in the camera frame, we need to apply an external homongenous transformation (extrinsics) to the point: 
+If the 3D coordinates is not in the camera frame, we need to apply an external homongenous transformation (extrinsics) to the point:
 
 $$
 \begin{gather*}
@@ -74,6 +74,7 @@ s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} =  K T \begin{bmatrix} X \\ Y \\ s \
 $$
 
 Where:
+
 - $T=[R | t]$
 - $R$ is the $SO(3)$ rotation matrix
 - $t$ is the Cartesian translation vector.
@@ -88,11 +89,16 @@ K: [898.3310546875, 0.0, 630.9402465820312, 0.0, 898.3310546875, 345.53207397460
 R: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 P: [898.3310546875, 0.0, 630.9402465820312, 0.0, 0.0, 898.3310546875, 345.5320739746094, 0.0, 0.0, 0.0, 1.0, 0.0]
 ```
+
 - D is the distorsion matrix (same as above)
 - K is the camera intrinsics
-- R is the rectification matrix. It's used to align multiple cameras so their epipolar lines could align. In this case, it's identity, so no rectification is applied. 
+- R is the rectification matrix. It's used to align multiple cameras so their epipolar lines could align. In this case, it's identity, so no rectification is applied.
 - P: Projection matrix. It's used for 3D points -> 2D transformation. Usually (and in this case) it's identical to K, so no other transformation is necessary here.
 
-## References
-https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
+In ROS,
 
+- The data is usually `uint16_t` because 65536 is large enough for a camera that measures up to 65m, with 1mm resolution
+- `roslaunch realsense2_camera rs_camera.launch align_depth:=true`
+
+## References
+<https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html>
