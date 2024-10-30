@@ -64,36 +64,7 @@ So LSTM is like RNN, but it also has a cell state $C$ (long term memory), $a$ (s
 - An output gate determines which elements from the cell state gets into the short term memory.
   - Changes more rapidly (like a "scratch pad"), and goes directly into the next output.
 
-## Bi-Directional RNN
-
-Bi-Directional RNN can learn not only the correspondence from the past, but also from the "future". This is an acyclic graph.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/8927337c-3909-4dbf-8c0f-b3bb99225609" height="300" alt=""/>
-    </figure>
-</p>
-</div>
-
-This is actually a good thing to try at the beginning
-
-## Deep RNN
-
-With RNN, GRU, LSTM blocks one can build deep RNNs.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/211e113a-f1c6-43e5-b329-996d46d86435" height="300" alt=""/>
-    </figure>
-</p>
-</div>
-
-3 layers is already pretty deep for RNN, especially if we look at the impact of inputs from the first few time stamps.
-It's not uncommon to connect the output `y` to fully connected layers, so temporally, the deeper network is not connected.
-
-## Back Propagation of LSTM
+### Back Propagation of LSTM
 
 $$
 \begin{gather*}
@@ -113,16 +84,14 @@ $$
 
 $$
 \begin{gather*}
-\begin{align}
 d\gamma_o^{\langle t \rangle} &= da_{next}*\tanh(c_{next}) * \Gamma_o^{\langle t \rangle}*\left(1-\Gamma_o^{\langle t \rangle}\right)\tag{7} \\[8pt]
 dp\widetilde{c}^{\langle t \rangle} &= \left(dc_{next}*\Gamma_u^{\langle t \rangle}+ \Gamma_o^{\langle t \rangle}* (1-\tanh^2(c_{next})) * \Gamma_u^{\langle t \rangle} * da_{next} \right) * \left(1-\left(\widetilde c^{\langle t \rangle}\right)^2\right) \tag{8} \\[8pt]
 d\gamma_u^{\langle t \rangle} &= \left(dc_{next}*\widetilde{c}^{\langle t \rangle} + \Gamma_o^{\langle t \rangle}* (1-\tanh^2(c_{next})) * \widetilde{c}^{\langle t \rangle} * da_{next}\right)*\Gamma_u^{\langle t \rangle}*\left(1-\Gamma_u^{\langle t \rangle}\right)\tag{9} \\[8pt]
 d\gamma_f^{\langle t \rangle} &= \left(dc_{next}* c_{prev} + \Gamma_o^{\langle t \rangle} * (1-\tanh^2(c_{next})) * c_{prev} * da_{next}\right)*\Gamma_f^{\langle t \rangle}*\left(1-\Gamma_f^{\langle t \rangle}\right)\tag{10}
-\end{align}
 \end{gather*}
 $$
 
-### Parameter Derivatives =
+#### Parameter Derivatives
 
 $$
 \begin{gather*}
@@ -170,3 +139,32 @@ dx^{\langle t \rangle} = W_f^T d\gamma_f^{\langle t \rangle} + W_u^T  d\gamma_u^
 $$
 
 where the weights for equation 21 are from n_a to the end, (i.e. $W_f = W_f[:,n_a:]$ etc...)
+
+## Bi-Directional RNN
+
+Bi-Directional RNN can learn not only the correspondence from the past, but also from the "future". This is an acyclic graph.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/8927337c-3909-4dbf-8c0f-b3bb99225609" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+This is actually a good thing to try at the beginning
+
+## Deep RNN
+
+With RNN, GRU, LSTM blocks one can build deep RNNs.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/211e113a-f1c6-43e5-b329-996d46d86435" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+3 layers is already pretty deep for RNN, especially if we look at the impact of inputs from the first few time stamps.
+It's not uncommon to connect the output `y` to fully connected layers, so temporally, the deeper network is not connected.
