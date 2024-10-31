@@ -240,7 +240,7 @@ Note that we need to accumalate hidden input gradient by
 
 $$
 \begin{gather*}
-da = da_loss[t] + da_prev
+da = da_{loss[t]} + d{a_prev}
 \end{gather*}
 $$
 
