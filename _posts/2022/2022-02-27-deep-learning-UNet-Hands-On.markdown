@@ -11,6 +11,8 @@ tags:
 
 [This article is inspired by this referece](https://poutyne.org/examples/semantic_segmentation.html)
 
+[The source code of this project can be found here](https://github.com/RicoJia/Machine_Learning/tree/master/RicoModels_pkg/ricomodels/unet)
+
 ## Data Loading
 
 When making a dataset, do NOT use `jpeg` and stick to png instead. `Jpeg` will compress the data and will corrupt the labels.
@@ -129,7 +131,6 @@ THE BIGGEST PROBLEM I ENCOUNTERED was the output labels were mostly zero. This i
     <p align="center">
         <figure>
             <img src="https://github.com/user-attachments/assets/82589d25-3316-4c53-a2c3-559f1a4afdaa" height="200" alt=""/>
-            <figcaption><a href="">Source: </a></figcaption>
         </figure>
     </p>
     </div>
