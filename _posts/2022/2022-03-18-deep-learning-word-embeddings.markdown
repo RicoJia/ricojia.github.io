@@ -296,6 +296,16 @@ def train_glove(cooccurrence_matrix, word_to_id, vector_size=50, iterations=100,
     return W + W_tilde  # Combine word and context word vectors
 ```
 
+## Addressing Bias In Word Embeddings
+
+Bias in word embeddings mean something like "boy to girl is like breadwinner vs homemaker". It's not the bias in a technical sense, but in a human equality sense. To address that:
+
+1. Identify the bias direction in embeddings. E.g., take the average of vectors `v = 1/m[e_he - e_she, e_boy - e_girl]`
+2. Neutralize: find an orthogonal vector `e` to `v`, then project non-definitional words onto `e`.
+    - Non-definitional means words that are not defined to be genderized, like doctor, occupations, etc.
+    - There are many non-definitional words out there. So you can train a classifier for identifying which words are definitional
+3. Equalize. After neutralization, definitional words are all on `e`. Now you might want to make definition words equi-distance to `e`. This is so that when measuring distance from a definitional word (like babysitter) to non-def words like grandma and grandpa are the same, so babysitter won't always follow "grandma".
+
 ## Refereces
 
 [1] [Mikolov, T., Yih, W., & Zweig, G. (2013). Linguistic Regularities in Continuous Space Word Representations. In Proceedings of the 2013 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), pages 746-751, Atlanta, Georgia. Association for Computational Linguistics.](https://aclanthology.org/N13-1090.pdf)
