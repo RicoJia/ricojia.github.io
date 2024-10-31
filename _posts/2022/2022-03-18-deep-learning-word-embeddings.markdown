@@ -306,6 +306,23 @@ Bias in word embeddings mean something like "boy to girl is like breadwinner vs 
     - There are many non-definitional words out there. So you can train a classifier for identifying which words are definitional
 3. Equalize. After neutralization, definitional words are all on `e`. Now you might want to make definition words equi-distance to `e`. This is so that when measuring distance from a definitional word (like babysitter) to non-def words like grandma and grandpa are the same, so babysitter won't always follow "grandma".
 
+## Common Misconceptions
+
+- If C is an embedding matrix, and o1021 is a one-hot vector corresponding to word 1021, the most computationally efficient formula for Python to get the embedding of word 1021 is $C^{T} * o_{1021}$
+  - False because element-wise multiplication is very inefficient.
+
+- Suppose you have a 10000 word vocabulary, and are learning 100-dimensional word embeddings. Do we exepect the same word's embeddings from two embedding sets to be similar? $θ_t^T e_c \approx 0$
+  - False because the embedding sets could be quite different.
+
+- When learning word embeddings, we pick a given word and try to predict its surrounding words or vice versa.
+  - False. Instead, we generate probability distribution as its loss.
+
+- In the word2vec algorithm, you estimate P(t∣c), where `t` is the target word and `c` is a context word. How are `t` and `c` chosen from the training set? Pick the best answer.
+
+- In GloVe,  θi and ej should be initialized to 0 at the beginning of training.?
+  - They should be initialized randomly at the beginning of training. Why?
+    - What if they are intialized to 0? Word pairs are identical, and get the same gradients in one training step. So, you will end up with the same value. So in practice, they should be initialized to small random values.
+
 ## Refereces
 
 [1] [Mikolov, T., Yih, W., & Zweig, G. (2013). Linguistic Regularities in Continuous Space Word Representations. In Proceedings of the 2013 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), pages 746-751, Atlanta, Georgia. Association for Computational Linguistics.](https://aclanthology.org/N13-1090.pdf)

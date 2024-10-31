@@ -2,7 +2,7 @@
 layout: post
 title: Computer Vision - Image Downsampling
 date: '2021-01-24 13:19'
-subtitle: Bi-Cubic, Bi-Linear, Nearest Neighbor Interpolation, Ringing Effect
+subtitle: Bicubic, Bilinear, Nearest Neighbor Interpolation, Ringing Effect
 comments: true
 tags:
     - Computer Vision
@@ -10,15 +10,21 @@ tags:
 
 ## Introduction
 
-**What is image downsampling?**: Image Downsampling is to reduce spatial resolution and make an image smaller. 
+**What is image downsampling?**: Image Downsampling is to reduce spatial resolution and make an image smaller.
 
 **Why performing interpolation during downsampling?**: image downsampling essentially is to map larger areas of pixels onto smaller areas. Therefore, one pixel in the smaller image is determined by multiple pixels on the original image. Interpolation helps us find one value out of multiple pixels.
+
+Image binning: Pixel binning is to combine adjacenet pixels into a super pixel. This can be done on the hardware level on CMOS (Complementary-Metal-Oxide-Semiconductor)or CCD (charge-coupled-devices) image sensors, or on the software level. For example, in 2x2 binning, an array of 4 pixels becomes a single larger pixel, reducing the number of pixels 1/4. So it's a special form of downsampling.
+
+- Applications
+  - Deep-Sky Imaging: Enhances the detection of faint celestial objects by improving SNR.
+  - Wide-Field Surveys: Balances resolution and sensitivity for large area coverage.
 
 ## Methods and Their Pros & Cons
 
 - `cv::INTER_NEAREST`: nearest neighbor interpolation. This assigns the value of the nearest pixel to the pixel in the resized image. However, in high frequency areas (e.g., lots of edges), we might introduce aliasing due to not meeting the Nyquist Condition.
 - `cv::INTER_AREA`: Calculate the **average** of nxn pixel blocks
-- `cv::INTER_LINEAR`: Bilinear Interpolation: doing linear interpolation along X and Y directions, hence "bilinear" interpoliation. To explain the process, consider the example where we want to find the pixel value of `(2.2, 3.4)` on the original image. 
+- `cv::INTER_LINEAR`: Bilinear Interpolation: doing linear interpolation along X and Y directions, hence "bilinear" interpoliation. To explain the process, consider the example where we want to find the pixel value of `(2.2, 3.4)` on the original image.
     1. Choose image patch `I(2,3)=11`, `I(2,4)=12`, `I=(3,3)=13`, `I(3,4)=14`. `I()` means pixel value at each point
     2. Linear interpolation along X axos at `y=3`: `x = 11 + (2.2-2) / (3-2) * (13 - 11) = 11.4`
     3. Linear interpolation along X axos at `y=4`: `x = 12 + (2.2-2) / (3-2) * (14 - 12) = 12.4`
@@ -66,10 +72,9 @@ $$
 | Bicubic | Better quality | A bit slower than bilinear, might have ringing effect |
 | Lanczos | Best quality, sharpness, minimal aliasing, used in FFmpeg| Slowest, potential ringing |
 
-
 ## Ring Effect
 
-Lanczos filter might introduce ringing artifacts. 
+Lanczos filter might introduce ringing artifacts.
 
 Without ringing
 ![Ringing_artifact_example_-_original](https://github.com/user-attachments/assets/0ea4ebc9-fac5-40db-9651-6d5b0bdedd54)
@@ -79,6 +84,6 @@ With ringing:
 
 ## Reference
 
-[1] R. Keys, "Cubic convolution interpolation for digital image processing," in IEEE Transactions on Acoustics, Speech, and Signal Processing, vol. 29, no. 6, pp. 1153-1160, December 1981. URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1163711&isnumber=26156
+[1] R. Keys, "Cubic convolution interpolation for digital image processing," in IEEE Transactions on Acoustics, Speech, and Signal Processing, vol. 29, no. 6, pp. 1153-1160, December 1981. URL: <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1163711&isnumber=26156>
 
-[2]  Lanczos, Cornelius (1988). Applied analysis. New York: Dover Publications. pp. 219–221. ISBN 0-486-65656-X. OCLC 17650089. 
+[2]  Lanczos, Cornelius (1988). Applied analysis. New York: Dover Publications. pp. 219–221. ISBN 0-486-65656-X. OCLC 17650089.
