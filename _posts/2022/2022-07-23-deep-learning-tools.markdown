@@ -66,4 +66,18 @@ Epoch 1/10:  |███████████-------| 600/1000 [00:30<00:15, 2
 ```
 
 - Binary bytes
-  - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB
+  - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB,
+  - `GiB` = 1024 MiB`PiB`, `TiB`: 1024 GiB, Pebibyte = 1024 TiB
+
+## FiftyOne
+
+- Running inferencing on GCP, $0.05/image,
+  - Grouding dino (object detection & language prompts) 2im/s
+  - Segment-Anything, 1 im/s
+  - Post-processing non-maxima, non-singular suppresion
+- Fiftyone supports vector db:
+
+- Data augmentation with night, snow, and rain
+  - How?
+- Data is far superior than models. Faster-RCNN (2015), a toy model, trained on 100M images
+  - no temporal tracking
