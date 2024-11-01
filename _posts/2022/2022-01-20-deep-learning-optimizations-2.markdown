@@ -11,34 +11,27 @@ tags:
 
 ## Batch Normalization
 
-We have seen that we normalize the input data based on their average and mean. We can apply the same with the output of each layer.
-
-```bash
-x -> z (normalize here) -> a
-```
+We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results.
 
 So similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
 
 $$
-z_{norm} = \frac{z-\mu_z}{\sqrt{\beta^2 + \epsilon}}
+\mu = \frac{\sum x}{m} \\
+\sigma = \frac{\sum (x - \mu)^2}{m}\\
+z_{norm} = \frac{x-\mu_z}{\sqrt{\beta^2 + \epsilon}}
 $$
 
-But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $\tilde{z}$ to a different learnable distribution. With $\gamma$ and $\beta$ being **learnable**:
+But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $\tilde{z}$ to a different learnable distribution. With learnable parameters $\gamma$ and $\beta$:
 
 $$
-\tilde{z} = \gamma z_{norm} + \beta = \gamma \frac{z-\mu_z}{\beta} + \beta
+\tilde{z} = \gamma z_{norm} + \beta
 $$
 
 After this transformation, $\tilde{z}$ is fed into the next layer. **Actually in the deep learning community, there is some debate on whether to do BN before or after activation function. But doing BN before the activation function is a lot more common.**
 
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/22626f58-cc6d-4999-a36f-ed9638103b8d" height="300" alt=""/>
-        <figcaption>Flow Chart Of Batch Normalization With Epsilon Omitted </figcaption>
-    </figure>
-</p>
-</div>
+```
+x -> Batch Normalization -> Activation (ReLu, etc.)
+```
 
 As a result, the distribution of Z of each dimension across the batch is more normalized. So visually,
 
