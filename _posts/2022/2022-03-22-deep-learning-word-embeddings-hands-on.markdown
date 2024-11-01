@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Deep Learning - Hands-On Embedding Similarity and Word Emojifier
+title: Deep Learning - Hands-On Embedding Similarity 
 date: '2022-03-22 13:19'
-subtitle: Similarity, Debiasing, Emojifier
+subtitle: Similarity and Debiasing
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -10,7 +10,7 @@ tags:
     - Hands-on
 ---
 
-TODO: To organize
+This blog post is a summary of the Coursera Course on Sequence Models
 
 ## Embedding Similarity and Debiasing
 
@@ -80,51 +80,3 @@ $$e_{w2B}^{corrected} = \sqrt{{1 - ||\mu_{\perp} ||^2_2}} * \frac{e_{\text{w2B}}
 $$e_1 = e_{w1B}^{corrected} + \mu_{\perp} \tag{11}$$
 $$e_2 = e_{w2B}^{corrected} + \mu_{\perp} \tag{12}$$
 ```
-
-## Word Emojifier
-
-When using word vectors, you'll see that even if your training set explicitly relates only a few words to a particular emoji, your algorithm will be able to generalize and associate additional words in the test set to the same emoji?
-
-This works even if those additional words don't even appear in the training set.
-This allows you to build an accurate classifier mapping from sentences to emojis, even using a small training set.
-
-1. In this exercise, you'll start with a baseline model (Emojifier-V1) using word embeddings.
-2. Then you will build a more sophisticated model (Emojifier-V2) that further incorporates an LSTM.
-
-- Create an embedding layer in Keras with pre-trained word vectors
-- Explain the advantages and disadvantages of the GloVe algorithm
-- Build a sentiment classifier using word embeddings
-- Build and train a more sophisticated classifier using an LSTM
-
-You have a tiny dataset (X, Y) where:
-
-- X contains 127 sentences (strings).
-- Y contains an integer label between 0 and 4 corresponding to an emoji for each sentence.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/8e426be3-594a-4351-a632-814f50e3d8a4" height="300" alt=""/>
-        <figcaption>Training Data Overview</figcaption>
-    </figure>
-</p>
-</div>
-
-### Emojifier-V1
-
-The model is a single linear layer + softmax.
-
-$$ z^{(i)} = Wavg^{(i)} + b$$
-
-$$ a^{(i)} = softmax(z^{(i)})$$
-
-$$ \mathcal{L}^{(i)} = - \sum_{k = 0}^{n_y - 1} Y_{oh,k}^{(i)} * log(a^{(i)}_k)$$
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/51c7341e-67c2-42d4-b0e7-4882a73d3e7b" height="300" alt=""/>
-        <figcaption>Model Structure</figcaption>
-    </figure>
-</p>
-</div>

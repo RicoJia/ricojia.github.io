@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Overfitting
 date: '2022-01-16 13:19'
-subtitle: Bias, Variance, Overfitting, Regularization
+subtitle: Bias, Variance, Overfitting, Regularization, Dropout
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -75,7 +75,7 @@ Effectively, some neurons' weight will be reduced, so hopefully, it will result 
 
 ### Technique 2: Dropout
 
-Drop out is to force a fraction of neurons to zero during each iteration. This effectively reduces the complexity of the model, which is like regularization.
+Dropout is to force a fraction of neurons to zero during each iteration. This effectively reduces the complexity of the model, which is like regularization.
 
 - At each epoch, **randomly select** neurons to turn on. Say you want 80% of the neurons to be kept. This means we will not rely on certain features. Instead, we shuffle that focus, which spreads the weights
 - **VERY IMPORTANT**: **computer vision uses this a lot. Because you have a lot of pixels, relying on every single pixel could be overfitting.**
@@ -92,13 +92,13 @@ Drop out is to force a fraction of neurons to zero during each iteration. This e
 
 #### Notes For Dropout
 
-- In computer vision, due to the nature of the data, it's default practice to apply drop out. **However in general, do not apply drop out if there's no overfitting.**
+- In computer vision, due to the nature of the data, it's default practice to apply dropout. **However in general, do not apply dropout if there's no overfitting.**
 
-- One detail is that when calculating drop out, we need to scale the output of each layer by `1/keep_prob` so the final expected cost is the same. Accordingly, due to chain rule, the gradients of weights should be multiplied by `1/keep_prob` as well.
+- One detail is that when calculating dropout, we need to scale the output of each layer by `1/keep_prob` so the final expected cost is the same. Accordingly, due to chain rule, the gradients of weights should be multiplied by `1/keep_prob` as well.
 
-- To implement drop out, we can simply apply a "drop-out" mask in foreprop (multiplied by `1/keep_prob` ). When calculating the weight gradients, apply the same mask again.
+- To implement dropout, we can simply apply a "drop-out" mask in foreprop (multiplied by `1/keep_prob` ). When calculating the weight gradients, apply the same mask again.
 
-**During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with drop out, but it's not efficient, and the result will be similar to that without drop-out.
+**During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with dropout, but it's not efficient, and the result will be similar to that without drop-out.
 
 But be careful with visualization of $J$, it becomes wonky because of the added randomness.
 
