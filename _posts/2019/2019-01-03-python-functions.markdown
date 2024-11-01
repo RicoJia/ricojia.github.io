@@ -26,7 +26,7 @@ x,y,z = map(lambda x: x+1, [1,2,3])
 
 ### Reduce
 
-`reduce(callable, iterable)` can apply callable on `iterable`, **accumulatively**, meaning in the below example, the lambda is applied on each item and the current accumulated result.
+- `reduce(callable, iterable)` can apply callable on `iterable`, **accumulatively**, meaning in the below example, the lambda is applied on each item and the current accumulated result.
 
 ```python
 from functools import reduce
@@ -34,6 +34,14 @@ from functools import reduce
 ls = [1,2,3,4,5]
 # see 18, the sum of ls
 print(reduce(lambda x, y: x+y, ls))
+```
+
+- `max`, `min`, `sorted` takes in a function returns a "key" for sorting
+
+```python
+ls = ["str1", "str222", "str3333"]
+max(ls, key=lambda x: len(x))
+# see "str3333"
 ```
 
 ### Filter

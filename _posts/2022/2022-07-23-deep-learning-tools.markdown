@@ -65,6 +65,15 @@ You should be able to see a progress bar:
 Epoch 1/10:  |███████████-------| 600/1000 [00:30<00:15, 25.00img/s, loss (batch)=0.542]
 ```
 
+Or, we can use `tqdm(iterable) -> iterable` and do not need to manually update it.
+
+```python
+word_to_vec_map_unit_vectors = {
+    word: embedding / np.linalg.norm(embedding)
+    for word, embedding in tqdm(word_to_vec_map.items())
+}
+```
+
 - Binary bytes
   - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB,
   - `GiB` = 1024 MiB`PiB`, `TiB`: 1024 GiB, Pebibyte = 1024 TiB
