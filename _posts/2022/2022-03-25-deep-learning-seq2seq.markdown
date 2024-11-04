@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Sequence to Sequence Models
 date: '2022-03-25 13:19'
-subtitle: seq2seq
+subtitle: seq2seq, encoder-decoder architecture, beam model, Bleu Score
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -220,6 +220,131 @@ In this case, the encoder is a pretrained AlexNet, where the last softmax layer 
     </p>
 </div>
 
+## Picking The Most Likely Sentence
+
+Since the decoder directly outputs the probablity of `p(Output Lagunage Sentence| Input Language Sentence)`, we want to choose the sentence that maximizes this probability.
+
+Naively, one can choose the word that maximizes its current probability. That is, pick the best first word, pick the second best word, etc. However, the greedy approach doesn't alwasy work. E.g., between "Jane is visiting Africa" vs "Jane is going to Africa", the first sentence is less verbose and better. However, "Jane is going" has a higher local probability than "Jane is visiting" since "going" is a more common word.
+
+So one way is to search in the sentence space with the same length for the sentence that maximizes this probability. That however, needs some approximation.
+
+### Beam Search
+
+One approach is "beam search". The idea is, at each step, we are given the K probable candidates sequences. Each candidate will be fed into the model, and get k probable current words (with probability being the raw output). Then, we get the total probability of all the new sequences, and choose the top K sequences. E.g., 
+
+1. At time 1, the encoder gives us an embedding `e`. We feed `e` into the decoder, and get a raw probability across all words, `y1`
+
+- Based on `y1`, we choose 3 most likely candidate: `["Jane", "In", and "September"]`. 
+
+2. At time 2, we feed `["Jane", "In", and "September"]` into the model. 
+
+- We have the possible sequences 
+    ```
+    [
+        "Jane is", "Jane goes, "Jane does",
+        "In September", "In space", "In car",
+        "September is", "September goes, "September comes"
+    ] 
+    ```
+- In the mean time, we can calculate each new word `i`'s probability `y2_i`. The total probability of the sequence of `i` is `y2_i * y1`. This is equivalent to $p(y2_i\| y1) p(y1) = p(y2_i, y1)$
+- We decided that the top **3** most probable sequence is:
+
+    ```
+    [
+        "Jane is", "Jane goes, "In September", 
+    ] 
+    ```
+
+3. At time 3, we feed `["Jane is", "Jane goes, "In September"]` into the model and get 9 most probable sequences again. We rate their total probability `p(y3_j, y2_i, y1)` and keep the top 3 sequences.
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/297c5656-0861-40fe-aceb-50cbdbf19468" height="300" alt=""/>
+            <figcaption><a href="https://commons.wikimedia.org/wiki/File:Beam_search.gif">Source: Wikimedia Commons </a></figcaption>
+       </figure>
+    </p>
+</div>
+
+Side Notes:
+
+- The name "beam search" comes from the analogy to "illuminating the top k nodes". From the above illustration, one can see that the search is actually a tree
+- One trick is to add up the log probability at time `t` to avoid underflow. This value is always negative. 
+$$
+\begin{gather*}
+\sum_{T} log(y^{(t)}) = \sum_{T} log(P(y^{(t)} \| y^{(t-1)} ... y^{(0)}))
+\end{gather*}
+$$
+
+- This model unnaturally has a tendency to prefer shorter sentences, because the more words, the lower total probability. So in practice, people use:
+
+$$
+\begin{gather*}
+\frac{1}{m}\sum_{T} log(y^{(t)})
+\end{gather*}
+$$
+
+- Beam width B is usually 10 for production. 100 already is quite large. 1000 is mostly for reseach.
+
+## Error Analysis Of Beam Search vs RNN
+
+When we have trained a model and look at the trained output of some sample sequences, we will compare the output of the model `y_pred` against the human-provided translation: `y*`.
+It's always tempting to collect more training data, try a different model, or go back to the RNN implementation and see if anything was implemented wrong. But it's also possible that our Beam-search implementation might not produce the best result. In the later case, we might want to try different Beam Widths, or even try a different sampling approach.
+
+A quick way to determine whether the beam search is to evaluate if `prob(y_pred) < prob(y*)`. For example, if prediction is `"Jane is going to Africa"`, and the human groudtruth is `Jane went to Africa`. So,
+
+1. Feed "Jane" into the decoder network get `y_1p`, `y_1*`
+2. Feed "is" and "went" into the decoder `y_2p`, `y_2*`
+3. Feed "goint" and "went" into the decoder `y_3p`, `y_3*`
+...
+4. Calculate for timestep `T`,  $P_p = \Pi_T y_p^{(t)}$, $P_* = \Pi_T y_*^{(t)}$.
+    - If $P_p > P_*$, then the RNN is at fault
+    - If $P_p < P_*$ then increasing beam width might help
+
+## Bleu Score
+
+In 2002, Papineni et al. proposed "Bleu score", a single number that decently well characterizes the performance of systems with multiple references groundtruth like image captioning. `Bleu` is a **precision**
+
+E.g., if we have two references,
+
+```
+- Reference 1: The cat is on the table
+- Reference 2: There is a cat on the table
+- MT Output: The cat the cat is on the table
+```
+ 
+We can look at how many single words (uni-gram) or word pairs (bi-gram) in the MT output sentence actually appeared in the sentence. 
+
+For bi-gram, we count the number of each word pair's appearances in the MT output (in the `Count` column), and the total number of appearances in the two references combined (in the `Count<sub>clip</sub>` column)
+
+| Phrase   | Count | Count<sub>clip</sub> |
+|----------|-------|----------------------|
+| the cat  | 2     | 1                    |
+| cat the  | 1     | 1                    |
+| cat on   | 1     | 0                    |
+| on the   | 1     | 1                    |
+| the mat  | 1     | 1                    |
+
+`Bleu2 = count_clip / count = 4/6`
+
+Similarly, we count the number of single words that appear in the MT output and in the two references combined.
+
+`Bleu1 = count_clip_1_gram / count_1_gram` 
+
+We can combine the result of the `Bleu` score on multiple n_grams. 
+
+$$
+\begin{gather*}
+score = BP \cdot exp(0.25 \sum_N P_n)
+\\
+BP = 1 \text{if MT_output_length > reference_output_length}
+\\ or
+\\
+BP = exp(1- reference_output_length/MT_output_length )
+\end{gather*}
+$$
+
+YOU CAN FIND SOME GOOD OPEN SOURCE IMPLEMENTATIONS ON THIS!
 
 ## References
 
@@ -232,3 +357,5 @@ In this case, the encoder is a pretrained AlexNet, where the last softmax layer 
 [4] Vinyals, O., Toshev, A., Bengio, S., & Erhan, D. (2014). Show and tell: Neural image caption generator. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 3156-3164.
 
 [5] Karpathy, A., & Fei-Fei, L. (2015). Deep visual-semantic alignments for generating image descriptions. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 3128-3137.
+
+[6] Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002. BLEU: A Method for Automatic Evaluation of Machine Translation. In Proceedings of the 40th Annual Meeting on Association for Computational Linguistics (ACL ’02), pages 311–318. Association for Computational Linguistics. https://doi.org/10.3115/1073083.1073135
