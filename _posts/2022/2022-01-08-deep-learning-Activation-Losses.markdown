@@ -162,8 +162,8 @@ NLL is always used with log-softmax activations to ensure numerical stability.
 
 #### NLL Example
 
-1. We are given a single example, with logits `logits=[1.0​2.0​0.5​]`
-2. Apply log-softmax $log(\frac{exp(x_i)}{\sum_i exp(x_i)})$ and get `[−1.46303, ​−0.46303​, −1.96303​]`
+1. We are given a single example, with logits `logits=[1.0, 2.0, 0.5, ]`
+2. Apply log-softmax $log(\frac{exp(x_i)}{\sum_i exp(x_i)})$ and get `[−1.46303, −0.46303, −1.96303, ]`
 3. Given a single true class `I=[1]`, NLL becomes
 
 $$
