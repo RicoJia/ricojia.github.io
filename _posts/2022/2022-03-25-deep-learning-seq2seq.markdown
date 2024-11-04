@@ -19,7 +19,7 @@ Early sequence models use two RNN/LSTM cells to create an encoder-decoder archit
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/ab056842-81cf-4e79-a4cc-ddff7b0f79b0" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/ab056842-81cf-4e79-a4cc-ddff7b0f79b0" height="200" alt=""/>
     </figure>
 </p>
 </div>
@@ -42,8 +42,7 @@ Ilya Sutskever et al in 2014 propsed the (sequence to sequence) seq2seq model. B
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/61e3680c-4c5f-4178-a620-bc7b8d314db0" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
+        <img src="https://github.com/user-attachments/assets/61e3680c-4c5f-4178-a620-bc7b8d314db0" height="200" alt=""/>
     </figure>
 </p>
 </div>
@@ -61,12 +60,10 @@ Note that I'm using LSTM but a GRU can also be used. For every input, the RNN ou
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/9ae13184-fd96-445c-9f61-dba8fe972529" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/9ae13184-fd96-445c-9f61-dba8fe972529" height="200" alt=""/>
     </figure>
 </p>
 </div>
-
-![encoder-network](https://github.com/user-attachments/assets/9ae13184-fd96-445c-9f61-dba8fe972529)
 
 
 ```python
@@ -96,7 +93,14 @@ class Encoder(nn.Module):
 
 A decoder is another RNN that takes in the context vector and outputs a word sequence to create the translation. At every step, the decoder is given an input token. The initial token is `<SOS>`, and the input token is the output from the last step
 
-![decoder-network](https://github.com/user-attachments/assets/ecd8d962-bc6b-433e-8f89-ff19cc195d15)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/ecd8d962-bc6b-433e-8f89-ff19cc195d15" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
 
 ```python
 class Decoder(nn.Module):
@@ -198,11 +202,23 @@ The exact matches are quite rare. I haven't count, but most sentences might have
 
 This can be similarly used in **image captioning**, where the input is an RGB image, the output is a **short sentence describing the image,** like "A cat sits in a chair". 
 
-![Screenshot from 2024-11-03 10-22-18](https://github.com/user-attachments/assets/52e0731f-04fb-43de-8ff3-16eb04b84085)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/52e0731f-04fb-43de-8ff3-16eb04b84085" height="200" alt=""/>
+       </figure>
+    </p>
+</div>
 
 In this case, the encoder is a pretrained AlexNet, where the last softmax layer is removed, so we can get a 4096 feature vector. Then, this feature vector is fed into one (TODO: many?) RNN cells and finally output a sentence.
 
-![Screenshot from 2024-11-03 10-47-37](https://github.com/user-attachments/assets/78e8f6ee-5849-4b75-9224-9f13a5a99516)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/78e8f6ee-5849-4b75-9224-9f13a5a99516" height="200" alt=""/>
+       </figure>
+    </p>
+</div>
 
 
 ## References
