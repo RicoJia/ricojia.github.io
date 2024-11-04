@@ -66,6 +66,9 @@ Note that I'm using LSTM but a GRU can also be used. For every input, the RNN ou
 </p>
 </div>
 
+![encoder-network](https://github.com/user-attachments/assets/9ae13184-fd96-445c-9f61-dba8fe972529)
+
+
 ```python
 class Encoder(nn.Module):
     def __init__(self, input_dim, embed_dim, num_layers=1):
@@ -74,16 +77,19 @@ class Encoder(nn.Module):
         self.embedding = nn.Embedding(input_dim, embed_dim)
         # The output an embedding of the sentence
         hidden_dim = embed_dim
-        self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers, batch_first = True)
+        # self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers, batch_first = True)
+        self.gru = nn.GRU(hidden_dim, hidden_dim, batch_first=True)
         self.dropout = nn.Dropout(p = 0.1)
 
     def forward(self, input_batch):
         # [batch_size, max_length, hidden_size]
         embedded = self.dropout(self.embedding(input_batch))
         # run the entire sequence
-        # hidden and cell: [num_layers, batch_size, hidden_dim]
-        outputs, (hidden, cell) = self.lstm(embedded)
-        return outputs, (hidden, cell)
+        # outputs is PackedSequence, hidden and cell: [num_layers, batch_size, hidden_dim]
+        # outputs, (hidden, cell) = self.lstm(embedded)
+        outputs, hidden = self.gru(embedded)
+        # return outputs, (hidden, cell)
+        return outputs, hidden
 ```
 
 #### Decoder
@@ -97,9 +103,12 @@ class Decoder(nn.Module):
     def __init__(self, hidden_size, output_size):
         super().__init__()
         self.embedding = nn.Embedding(output_size, hidden_size)
-        self.lstm = nn.LSTM(hidden_size, hidden_size, batch_first=True)
+        # self.lstm = nn.LSTM(hidden_size, hidden_size, batch_first=True)
+        self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
         self.out = nn.Linear(hidden_size, output_size)
         self.device = torch.device('cuda' if cuda.is_available() else 'cpu')
+        self.dropout = nn.Dropout(p = 0.1)
+
 
     def forward(self, encoder_outputs, encoder_hidden, target_tensor = None):
         batch_size = encoder_outputs.shape[0]
@@ -134,13 +143,15 @@ class Decoder(nn.Module):
         # Then, what does going through the embedding mean? It means learning the embedding of the destination language. 
         # encoder hidden: torch.Size([1, 17, 128]), cell: torch.Size([1, 17, 128])
         out = self.embedding(input)
+        # out = self.dropout(out)
         # out: torch.Size([17, 1, 128])
 
         # Why do we need a relu here? In many seq2seq implementations, this can be omitted.
-        # out = F.relu(out)
+        out = F.relu(out)
         # What's the function of the LSTM here? It captures dependencies and generate hidden states that encode information of the sequence.
         # hidden here is (a, C)
-        out, hidden = self.lstm(out, hidden)
+        # out, hidden = self.lstm(out, hidden)
+        out, hidden = self.gru(out, hidden)
         out = self.out(out)
         # output is: [batch_size, 1, output_dim]. 1 is for each time
         return out, hidden
@@ -155,7 +166,17 @@ Review Points:
 
 ### Evaluation Outcome
 
-Honestly, it's definitely not good enough to be in production. Some examples from the `spa-eng` dataset:
+With `LSTM`, the model almost doesn't work. This is after trying all combinations of 
+
+- turning on / off `ReLu` in the decoder
+- turning on / off `dropout` in the decoder
+
+With `GRU`, the model is a lot better. I saw around 30% exact / close matches. `ReLu` and `dropout` do not create a significant difference in accuracy.
+
+
+Honestly, it's definitely not good enough to be in production. 
+
+Some examples from the `spa-eng` dataset:
 
 ```
 > estoy muy emocionada
