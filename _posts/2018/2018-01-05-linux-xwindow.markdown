@@ -1,12 +1,22 @@
 ---
 layout: post
-title: Linux - X Window System
+title: Linux - SSH and X Window System
 date: '2018-01-05 13:19'
-subtitle: X Window System, Window Focus
+subtitle: X Window System, SSH 
 comments: true
 tags:
     - Linux
 ---
+
+## SSH
+
+- Generate an SSH Key: `ssh-keygen -t rsa -b 4096`.
+    - This will create `~/.ssh/id_rsa` and optionally sets a passphrase
+- Copy ssh onto a remote machine: `ssh-copy-id username@remote_host`
+    - You will be prompted for the password of the remote machine. All your public keys will then land in `~/.ssh/authorized_keys`.
+
+- `sudo nmap -sn 192.168.1.0/24`: uses ICMP echo requests (ping), TCP (SYN) packets on OSI layer 3 (the network layer). This is more robust than `sudo arp-scan -l` because the latter uses ARP (Address Resolution Protocol) protocol on layer 2 (the local subnet). Some devices may not respond due to its firewall settings. Also, ARP is an IPv4 protocol. IPv6 devices may also avoid using it.
+
 
 ## What is X?
 
@@ -31,15 +41,6 @@ xhost +local:root
 
 - Note that this command cannot be run in a script because running a script opens up a new shell. It can be sourced, though (source executes the command in the current shell).
 
-## Window Focus (Which seems to be an )
-
-On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome / Firefox, I noticed that the download dialog box is not focused in the first place. After searching for auto-focusing, I came up with a sub-optimal solution: **auto-shift to window that the mouse currently hovers on.**
-
-1. `sudo apt install gnome-tweaks`
-2. `Press the Super (Windows) key and type Tweaks, then press Enter.`
-3. Choose `focus on hover`,
-    - If you don't want to see the other window that's out of focus already, choose "Raise Window When Focused"
-4. Press Alt + F2, type r, and press Enter. **This restarts the GNOME Shell without logging out.**
 
 ## What If I Can't See Images From Remote Machine?
 
