@@ -142,7 +142,7 @@ where the weights for equation 21 are from n_a to the end, (i.e. $W_f = W_f[:,n_
 
 ## Bi-Directional RNN
 
-Bi-Directional RNN can learn not only the correspondence from the past, but also from the "future". This is an acyclic graph.
+Bi-Directional RNN can learn not only the correspondence from the past, but also from the "future". This is an acyclic graph and  actually a good thing to try at the beginning.
 
 <div style="text-align: center;">
 <p align="center">
@@ -152,7 +152,39 @@ Bi-Directional RNN can learn not only the correspondence from the past, but also
 </p>
 </div>
 
-This is actually a good thing to try at the beginning
+The RNN cell now has one set of weights $W_h^{forward}$, $W_x^{forward}$, $b^{forward}$ and backwards $W_h^{backward}$, $W_x^{backward}$, $b^{backward}$
+
+E.g., "She saw a dog". Let's denote:
+
+- x1​: "She"
+- x2​: "saw"
+- x3​: "a"
+- x4​: "dog"
+
+Then,
+
+1. Initialize forward and backward hidden states $h_t^{forward}$ and $h_t^{backward}$ to zeros
+
+2. Forward pass: from `t=1` through `t=4`,
+
+$$
+\begin{gather*}
+h_t^{forward} = Activation(W_h^{forward} h_{t-1}^{forward} + W_x^{forward} x_{t}^{forward} + b^{forward})
+\end{gather*}
+$$
+
+3. Backward Pass: from `t=4` through `t=1`:
+
+$$
+\begin{gather*}
+h_t^{backward} = Activation(W_h^{backward} h_{t-1}^{backward} + W_x^{backward} x_{t}^{backward} + b^{backward})
+\end{gather*}
+$$
+
+4. Combine the hidden states `h_t = [h_backward, h_forward]`
+5. Output: `y_t = softmax(w_o h_t + b_o)`
+
+The biggest advantage is that the RNN can adjust its weights to produce hidden states not only to reflect forward dependencies like "she" and "saw", but also "a dog" and "saw". This is helpful to learn "saw" as a verb, and associate "saw" and "a dog". This is also called "more nuanced patterns", or "richer features".
 
 ## Deep RNN
 

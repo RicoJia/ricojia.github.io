@@ -62,6 +62,15 @@ probs.gather(1, targets.unsqueeze(1))
 
 ## Common Operations
 
+### Math Operations
+
+- `torch.bmm(input, mat2)`: Batch-Matrix-Multiplication
+  - If input is a (b×n×m) tensor, mat2 is a (b×m×p) tensor, out will be a (b×n×p) tensor.
+
+        ```
+        outi​=inputi​@mat2i
+        ```
+
 ### Convertions Between An Numpy Array And Its Torch Tensor
 
 ```python
