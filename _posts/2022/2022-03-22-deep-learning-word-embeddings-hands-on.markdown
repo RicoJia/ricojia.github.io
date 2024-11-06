@@ -20,7 +20,7 @@ embeddings are very computationally expensive to train, most ML practitioners wi
 - Cosine similarity:
 
 $$
-Cosine sim = uv/|u||v| = cos(theta)
+Cosine sim = uv/|u||v| = cos(theta) \tag{1}
 $$
 
 Explain how word embeddings capture relationships between words
@@ -40,10 +40,9 @@ for w in name_list:
 
 - This is useful for debiasing. instead of finding a vector that's orthogonal to the gender axis, we simply subtract the projection component from the vector.
 
-$$
-e^{\text{bias\_component}} = \frac{e*g}{g * g} * g
-e^{\text{debiased}} = e - e^{\text{bias\_component}}
-$$
+$$e^{\text{bias\_component}} = \frac{e*g}{g * g} * g \tag{2}$$
+
+$$e^{\text{debiased}} = e - e^{\text{bias\_component}} \tag{3}$$
 
 - Equalization is applied to pairs of words that you might want to have differ only through the gender property. As a concrete example, suppose that we have neutralized "babysit". "Actress" is closer to "babysit" than "actor." By applying neutralization to "babysit," you can reduce the gender stereotype associated with babysitting. But this still does not guarantee that "actor" and "actress" are equidistant from "babysit." The equalization algorithm takes care of this.
 
