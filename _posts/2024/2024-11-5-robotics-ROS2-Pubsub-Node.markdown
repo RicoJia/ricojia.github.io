@@ -55,8 +55,6 @@ ros2 run demo_nodes_cpp listener
 ├── dummy_test
 │   ├── demo.py
 │   ├── __init__.py
-├── launch
-│   └── empty_world.launch.py
 ├── package.xml
 ├── resource
 │   └── dummy_test
@@ -148,32 +146,4 @@ ros2 run dummy_test demo
 
     - `--symlink-install` allows in-place modifications in `colcon build --packages-select dummy_test --symlink-install`
 
-### Add launchfile
 
-- `mkdir launch`
-- `setup.py` Make sure to have:
-
-    ```python
-    data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
-        # Include all files in the launch directory
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-    ],
-    ```
-
-- `empty_world.launch.py`
-
-```python
-from launch import LaunchDescription
-from launch.actions import ExecuteProcess
-
-def generate_launch_description():
-    return LaunchDescription([
-        ExecuteProcess(
-            cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so'],
-            output='screen'
-        )
-    ])
-```
