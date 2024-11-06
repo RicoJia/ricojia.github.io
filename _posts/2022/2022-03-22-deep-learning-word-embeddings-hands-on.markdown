@@ -60,21 +60,18 @@ In Bolukbasi's work in 2016, we
 
 $$ \mu = \frac{e_{w1} + e_{w2}}{2}\tag{4}$$ 
 
-$$ \mu_{B} = \frac {\mu \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
-\tag{5}$$ 
+$$ \mu_{B} = \frac {\mu \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis} \tag{5}$$ 
 
 $$\mu_{\perp} = \mu - \mu_{B} \tag{6}$$
 
-$$ e_{w1B} = \frac {e_{w1} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
-\tag{7}$$ 
-$$ e_{w2B} = \frac {e_{w2} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
-\tag{8}$$
+$$ e_{w1B} = \frac {e_{w1} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis} \tag{7}$$ 
 
+$$ e_{w2B} = \frac {e_{w2} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis} \tag{8}$$
 
-$$e_{w1B}^{corrected} = \sqrt{{1 - ||\mu_{\perp} ||^2_2}} * \frac{e_{\text{w1B}} - \mu_B} {||e_{w1B} - \mu_B||_2} \tag{9}$$
+$$e_{w1B}^{corrected} = \sqrt{1 - ||\mu_{\perp} ||^2_2} * \frac{e_{\text{w1B}} - \mu_B} {||e_{w1B} - \mu_B||_2} \tag{9}$$
 
-
-$$e_{w2B}^{corrected} = \sqrt{{1 - ||\mu_{\perp} ||^2_2}} * \frac{e_{\text{w2B}} - \mu_B} {||e_{w2B} - \mu_B||_2} \tag{10}$$
+$$e_{w2B}^{corrected} = \sqrt{1 - ||\mu_{\perp} ||^2_2} * \frac{e_{\text{w2B}} - \mu_B} {||e_{w2B} - \mu_B||_2} \tag{10}$$
 
 $$e_1 = e_{w1B}^{corrected} + \mu_{\perp} \tag{11}$$
+
 $$e_2 = e_{w2B}^{corrected} + \mu_{\perp} \tag{12}$$
