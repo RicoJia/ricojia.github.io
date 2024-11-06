@@ -2,7 +2,7 @@
 layout: post
 title: Math - t-SNE
 date: '2017-02-07 13:19'
-subtitle: (TODO: unfinished)
+subtitle: 
 comments: true
 tags:
     - Math
