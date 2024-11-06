@@ -36,7 +36,12 @@ Key differences between machine translation and languange models:
 
 Multiple groups came up with this architecture and alike in 2014 and 2015 [3], [4], [5].
 
+Sentence normalization is to convert uncommon words into common ones, such as lowercasing, removing punctuation, etc. Without sentence normalization, machine translations tend to output very short sequences. Why?
+
+- The inconsistent vocabulary disrupts the model to learn sequences.
+
 ### Seq2Seq
+
 Ilya Sutskever et al in 2014 propsed the (sequence to sequence) seq2seq model. Below is a summary of [the Pytorch page](https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html).  Imagine that we are trying to create a machine translator for `French -> English`
 
 <div style="text-align: center;">
@@ -52,10 +57,9 @@ Ilya Sutskever et al in 2014 propsed the (sequence to sequence) seq2seq model. B
 The encoder:
 
 1. First learns the embedding of French word
-2. Then outputs **the context vector**, or the embedding of the whole sentence in the `N-dim` space. 
+2. Then outputs **the context vector**, or the embedding of the whole sentence in the `N-dim` space.
 
-Note that I'm using LSTM but a GRU can also be used. For every input, the RNN outputs a vector, and a hidden state. We pass down the outputs, the hidden state, and the cell state to the decoder. 
-
+Note that I'm using LSTM but a GRU can also be used. For every input, the RNN outputs a vector, and a hidden state. We pass down the outputs, the hidden state, and the cell state to the decoder.
 
 <div style="text-align: center;">
 <p align="center">
@@ -64,7 +68,6 @@ Note that I'm using LSTM but a GRU can also be used. For every input, the RNN ou
     </figure>
 </p>
 </div>
-
 
 ```python
 class Encoder(nn.Module):
@@ -100,7 +103,6 @@ A decoder is another RNN that takes in the context vector and outputs a word seq
        </figure>
     </p>
 </div>
-
 
 ```python
 class Decoder(nn.Module):
@@ -164,21 +166,20 @@ class Decoder(nn.Module):
 Review Points:
 
 - Teacher enforcing is the technique that feeds the ground truth word as the next timestep input.
-- Here we are only feeding the `(hidden state, cell state) `of the encoder into the decoder.
+- Here we are only feeding the `(hidden state, cell state)`of the encoder into the decoder.
 - `torch.topk(input, k, dim=None, largest=True, sorted=True, *, out=None)` chooses the k largest elements of the given input, along `dim`. If no `dim` is specified, the last dim is chosen.
 - `relu` did not yield any significant change in my experiments.
 
 ### Evaluation Outcome
 
-With `LSTM`, the model almost doesn't work. This is after trying all combinations of 
+With `LSTM`, the model almost doesn't work. This is after trying all combinations of
 
 - turning on / off `ReLu` in the decoder
 - turning on / off `dropout` in the decoder
 
 With `GRU`, the model is a lot better. I saw around 30% exact / close matches. `ReLu` and `dropout` do not create a significant difference in accuracy.
 
-
-Honestly, it's definitely not good enough to be in production. 
+Honestly, it's definitely not good enough to be in production.
 
 Some examples from the `spa-eng` dataset:
 
@@ -196,11 +197,11 @@ Some examples from the `spa-eng` dataset:
 < a donut <EOS>
 ```
 
-The exact matches are quite rare. I haven't count, but most sentences might have some keywords but do not make full sense. The final training loss is fairly small - it was only `0.001`. I'm suspecting this is due to overfitting. 
+The exact matches are quite rare. I haven't count, but most sentences might have some keywords but do not make full sense. The final training loss is fairly small - it was only `0.001`. I'm suspecting this is due to overfitting.
 
 ### Image Captioning
 
-This can be similarly used in **image captioning**, where the input is an RGB image, the output is a **short sentence describing the image,** like "A cat sits in a chair". 
+This can be similarly used in **image captioning**, where the input is an RGB image, the output is a **short sentence describing the image,** like "A cat sits in a chair".
 
 <div style="text-align: center;">
     <p align="center">
@@ -230,15 +231,16 @@ So one way is to search in the sentence space with the same length for the sente
 
 ### Beam Search
 
-One approach is "beam search". The idea is, at each step, we are given the K probable candidates sequences. Each candidate will be fed into the model, and get k probable current words (with probability being the raw output). Then, we get the total probability of all the new sequences, and choose the top K sequences. E.g., 
+One approach is "beam search". The idea is, at each step, we are given the K probable candidates sequences. Each candidate will be fed into the model, and get k probable current words (with probability being the raw output). Then, we get the total probability of all the new sequences, and choose the top K sequences. E.g.,
 
 1. At time 1, the encoder gives us an embedding `e`. We feed `e` into the decoder, and get a raw probability across all words, `y1`
 
-- Based on `y1`, we choose 3 most likely candidate: `["Jane", "In", and "September"]`. 
+- Based on `y1`, we choose 3 most likely candidate: `["Jane", "In", and "September"]`.
 
-2. At time 2, we feed `["Jane", "In", and "September"]` into the model. 
+2. At time 2, we feed `["Jane", "In", and "September"]` into the model.
 
-- We have the possible sequences 
+- We have the possible sequences
+
     ```
     [
         "Jane is", "Jane goes, "Jane does",
@@ -246,6 +248,7 @@ One approach is "beam search". The idea is, at each step, we are given the K pro
         "September is", "September goes, "September comes"
     ] 
     ```
+
 - In the mean time, we can calculate each new word `i`'s probability `y2_i`. The total probability of the sequence of `i` is `y2_i * y1`. This is equivalent to $p(y2_i\| y1) p(y1) = p(y2_i, y1)$
 - We decided that the top **3** most probable sequence is:
 
@@ -269,7 +272,8 @@ One approach is "beam search". The idea is, at each step, we are given the K pro
 Side Notes:
 
 - The name "beam search" comes from the analogy to "illuminating the top k nodes". From the above illustration, one can see that the search is actually a tree
-- One trick is to add up the log probability at time `t` to avoid underflow. This value is always negative. 
+- One trick is to add up the log probability at time `t` to avoid underflow. This value is always negative.
+
 $$
 \begin{gather*}
 \sum_{T} log(y^{(t)}) = \sum_{T} log(P(y^{(t)} \| y^{(t-1)} ... y^{(0)}))
@@ -312,8 +316,8 @@ E.g., if we have two references,
 - Reference 2: There is a cat on the table
 - MT Output: The cat the cat is on the table
 ```
- 
-We can look at how many single words (uni-gram) or word pairs (bi-gram) in the MT output sentence actually appeared in the sentence. 
+
+We can look at how many single words (uni-gram) or word pairs (bi-gram) in the MT output sentence actually appeared in the sentence.
 
 For bi-gram, we count the number of each word pair's appearances in the MT output (in the `Count` column), and the total number of appearances in the two references combined (in the `Count<sub>clip</sub>` column)
 
@@ -329,9 +333,9 @@ For bi-gram, we count the number of each word pair's appearances in the MT outpu
 
 Similarly, we count the number of single words that appear in the MT output and in the two references combined.
 
-`Bleu1 = count_clip_1_gram / count_1_gram` 
+`Bleu1 = count_clip_1_gram / count_1_gram`
 
-We can combine the result of the `Bleu` score on multiple n_grams. 
+We can combine the result of the `Bleu` score on multiple n_grams.
 
 $$
 \begin{gather*}
@@ -358,4 +362,4 @@ YOU CAN FIND SOME GOOD OPEN SOURCE IMPLEMENTATIONS ON THIS!
 
 [5] Karpathy, A., & Fei-Fei, L. (2015). Deep visual-semantic alignments for generating image descriptions. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 3128-3137.
 
-[6] Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002. BLEU: A Method for Automatic Evaluation of Machine Translation. In Proceedings of the 40th Annual Meeting on Association for Computational Linguistics (ACL ’02), pages 311–318. Association for Computational Linguistics. https://doi.org/10.3115/1073083.1073135
+[6] Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002. BLEU: A Method for Automatic Evaluation of Machine Translation. In Proceedings of the 40th Annual Meeting on Association for Computational Linguistics (ACL ’02), pages 311–318. Association for Computational Linguistics. <https://doi.org/10.3115/1073083.1073135>

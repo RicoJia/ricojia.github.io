@@ -28,7 +28,7 @@ A fully connected network / CNN doesn't work well for sequence data: 1. The sequ
 
 ## RNN Architecture & Forward Propagation
 
-The word "recurrent" means "appearing repeatedly". In an RNN, we have **hidden states** $a^{(t)}$, sequential inputs $x^{(t)}$, output $\hat{y}^{(t)}$. Each superscript $i$ represents timestamp, e.g., $a^1$ means a at time $1$
+The word "recurrent" means "appearing repeatedly". In an RNN, we have **hidden states** $a^{(t)}$, sequential inputs $x^{(t)}$, output $\hat{y}^{(t)}$. Each superscript $i$ represents timestamp, e.g., $a^1$ means a at time $1$. A feedforward network is one that does not have a loop, i.e., output from one layer will never be fed back. RNN is not a feedforward network because its output always gets fed back into the network.
 
 <div style="text-align: center;">
 <p align="center">
