@@ -41,8 +41,8 @@ for w in name_list:
 - This is useful for debiasing. instead of finding a vector that's orthogonal to the gender axis, we simply subtract the projection component from the vector.
 
 $$
-e^{\text{bias_component}} = \frac{e*g}{g * g} * g
-e^{\text{debiased}} = e - e^{\text{bias_component}}
+e^{\text{bias\_component}} = \frac{e*g}{g * g} * g
+e^{\text{debiased}} = e - e^{\text{bias\_component}}
 $$
 
 - Equalization is applied to pairs of words that you might want to have differ only through the gender property. As a concrete example, suppose that we have neutralized "babysit". "Actress" is closer to "babysit" than "actor." By applying neutralization to "babysit," you can reduce the gender stereotype associated with babysitting. But this still does not guarantee that "actor" and "actress" are equidistant from "babysit." The equalization algorithm takes care of this.
@@ -58,17 +58,16 @@ In Bolukbasi's work in 2016, we
 3. Find the projection portions of the two points of interest
 4. Add `normalized_projection * unit_direction` to the midpoint to get the corrected positions of the two points
 
-```
 $$ \mu = \frac{e_{w1} + e_{w2}}{2}\tag{4}$$ 
 
-$$ \mu_{B} = \frac {\mu \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+$$ \mu_{B} = \frac {\mu \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
 \tag{5}$$ 
 
 $$\mu_{\perp} = \mu - \mu_{B} \tag{6}$$
 
-$$ e_{w1B} = \frac {e_{w1} \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+$$ e_{w1B} = \frac {e_{w1} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
 \tag{7}$$ 
-$$ e_{w2B} = \frac {e_{w2} \cdot \text{bias_axis}}{||\text{bias_axis}||_2^2} *\text{bias_axis}
+$$ e_{w2B} = \frac {e_{w2} \cdot \text{bias\_axis}}{||\text{bias\_axis}||_2^2} *\text{bias\_axis}
 \tag{8}$$
 
 
@@ -79,4 +78,3 @@ $$e_{w2B}^{corrected} = \sqrt{{1 - ||\mu_{\perp} ||^2_2}} * \frac{e_{\text{w2B}}
 
 $$e_1 = e_{w1B}^{corrected} + \mu_{\perp} \tag{11}$$
 $$e_2 = e_{w2B}^{corrected} + \mu_{\perp} \tag{12}$$
-```
