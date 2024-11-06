@@ -52,6 +52,8 @@ C^{(t)} = \Gamma_u * \tilde{C}^{(t)} + (1 - \Gamma_u) * \tilde{C}^{(t-1)}
 \end{gather*}
 $$
 
+So the update gate $\Gamma_u$ controls how much the current cell state gets into the overall cell state. Ideally, the model can learn to keep the hidden cell state for things like pluralism, and reject the cell state updates in between.
+
 <div style="text-align: center;">
 <p align="center">
     <figure>

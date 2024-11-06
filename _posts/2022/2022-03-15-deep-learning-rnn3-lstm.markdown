@@ -56,7 +56,7 @@ Detailed Explanations:
 - $\tilde{C}$ uses `tanh` so its values are in $[-1, 1]$. Whether its values are passed onto the actual hidden state $C^{(t-1)}$is determined by gate $\Gamma_i$
 - $a = \Gamma_o * tanh(C^{t})$ to normalize its values to $[-1, 1]$
 
-So LSTM is like RNN, but it also has a cell state $C$ (long term memory), $a$ (short term memory)
+**Why LSTM is useful:** LSTM is like GRU, but it also has a cell state $C$ (long term memory), $a$ (short term memory). Its gates control how much the current cell state gets into the overall cell state. Ideally, the model can learn to keep the hidden cell state for things like pluralism, and reject the cell state updates in between.
 
 - A forget gate is added, so long term memory could be abandonded.
   - So the long term memory is the direct contribution of LSTM to address RNNs' vanishing gradient problem
