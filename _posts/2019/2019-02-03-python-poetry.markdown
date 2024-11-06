@@ -4,7 +4,7 @@ title: Python - Poetry Packaging System and Pip
 date: '2019-02-03 13:19'
 subtitle: Poetry, Pip
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---

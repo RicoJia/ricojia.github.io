@@ -4,7 +4,7 @@ title: Python - Jupyter Notebook Common Magic Commands
 date: '2019-01-05 13:19'
 subtitle: Jupyter Notebook Common Magic Commands
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---

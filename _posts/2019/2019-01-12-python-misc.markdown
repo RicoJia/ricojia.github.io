@@ -4,7 +4,7 @@ title: Python - Python Misc, os, shutil
 date: '2019-01-03 13:19'
 subtitle: Print
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---

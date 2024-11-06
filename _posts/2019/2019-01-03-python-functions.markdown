@@ -4,7 +4,7 @@ title: Python - Functions
 date: '2019-01-03 13:19'
 subtitle: Map-Reduce-Filter, Lambda (Under Active Updates)
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---

@@ -4,7 +4,7 @@ title: Python - Numpy and Pandas Operations
 date: '2019-03-03 13:19'
 subtitle: A Mumbo Jumbo Of Numpy and Pandas Operations and Examples
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---

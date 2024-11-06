@@ -4,7 +4,7 @@ title: Python - Python Packaging System
 date: '2019-02-06 13:19'
 subtitle: Packaging
 comments: true
-header-img: "img/home-bg-2015.jpg"
+header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---
