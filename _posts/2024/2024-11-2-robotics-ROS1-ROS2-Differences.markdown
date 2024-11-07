@@ -3,7 +3,7 @@ layout: post
 title: Robotics - ROS1 ROS2 Differences and Similarities
 date: '2024-11-2 13:19'
 subtitle: What's New In ROS2
-header-img: "img/post-bg-unix"
+header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - ROS2

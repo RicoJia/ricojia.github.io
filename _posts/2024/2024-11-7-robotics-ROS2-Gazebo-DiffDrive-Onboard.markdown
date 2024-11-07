@@ -3,7 +3,7 @@ layout: post
 title: Robotics - ROS2 Gazebo Differential Drive Onboard
 date: '2024-11-5 13:19'
 subtitle: ROS2, Gazebo
-header-img: "img/post-bg-unix"
+header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - ROS2
