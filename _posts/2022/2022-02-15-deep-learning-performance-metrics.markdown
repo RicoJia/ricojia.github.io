@@ -40,7 +40,7 @@ So,
 
 ### Confusion Matrix
 
-This measures how "confused" a binary classifier is in predictions
+A confusion matrix shows how often an example whose label is one class ("actual" class) is mislabeled by the algorithm with a different class ("predicted" class). This measures how "confused" a binary classifier is in predictions
 
 | | Predicted Positive | Predicted Negative |
 | -------- | -------- | -------- |
