@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - ROS1 ROS2 Differences and Similarities
+title: Robotics - Differences and Similarities Between ROS1 & ROS2
 date: '2024-11-2 13:19'
 subtitle: What's New In ROS2
 header-img: "img/post-bg-os-metro.jpg"
