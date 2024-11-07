@@ -33,3 +33,14 @@ print(f"{test_acc:.2f}%")
 ```python
 shutil.rmtree(DIR)
 ```
+
+## For-Else Loop
+
+```python
+k = 10
+for i in range(k):
+    print(k)
+    break
+else:
+    print("hello")
+```

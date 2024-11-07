@@ -122,6 +122,17 @@ print(result)  # Output: [5, 2, 4, 6]
 
 - So the overarching difference from `filter()` is that `filter()`  returns all elements that makes `predicate` **`True`**, while `dropwhile()` discards elements until the first element that make `predicate` `False`.
 
+### Permutations
+
+- Saw now we'd like to generate all permutations of 3 words among a list of words
+
+```python
+import itertools
+words = ['apple', 'banana', 'cherry', 'date']
+permutations = list(itertools.permutations(indices, 3))
+itertools.permutations(words, 3)
+```
+
 ## List
 
 - `for i in reversed(range(T_x)):`: reverse a list / iterable
