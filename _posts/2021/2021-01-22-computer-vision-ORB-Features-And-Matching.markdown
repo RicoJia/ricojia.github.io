@@ -25,6 +25,32 @@ FAST keypoint is very fast to calculate, but it does not have a descriptor. ORB 
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/90f44985-6c87-4a1d-8663-462b74e4b651" height="300" width="width"/>
 </p>
 
+### Downsampling And Image Coordinates (FAST)
+
+Fast is "Features From Accelerated Segmented Test". It has 3 modes with naming `cv::FastFeatureDetector::TYPE_N_M`, where: check in a circle around a keypoint of `M` pixels for `N` contiguous brighter than specified threshold.
+
+- `TYPE_9_16`
+- `TYPE_7_12`
+- `TYPE_5_8`
+
+Fast also requires a "threshold" input argument. That's the intensity difference `center - circular_keypoint` for filtering.
+
+`KeyPointsFilter::runByImageBorder`: remove keypoints within a threshold from border
+
+```cpp
+// Size is cv::Size, which has rows, columns. 
+void KeyPointsFilter::runByImageBorder( 
+    vector<KeyPoint>& keypoints, Size imageSize, int borderSize )
+{
+    keypoints.erase( remove_if(keypoints.begin(), keypoints.end(),
+                   RoiPredicate(Rect(Point(borderSize, borderSize),
+                         Point(imageSize.width - borderSize, imageSize.height - borderSize)))),
+                         keypoints.end() );
+}
+```
+
+Fast generates LOTS OF FEATURES even with the threshold and non maximum suppresion (NMS). So filtering by `KeyPoint.response` is absolutely necessary.
+
 ## ORB Feature Detection Workflow
 
 1. Generate an image pyramid of n level
@@ -39,25 +65,27 @@ FAST keypoint is very fast to calculate, but it does not have a descriptor. ORB 
 
 3. Orientation Identification (Not in FAST)
     - Select a patch that centers the corner.
-    - Compute the image moments of the patch, then compute the intensity centroid. Use the center of the patch as the origin $O$
+    - Compute the image moments of the patch, then compute the intensity centroid. That is done on a circular image patch (according to the OpenCV page ). The patch's radius is the same "half patch size" used in fast feature detection. Use the center of the patch as the origin $O$
         $$
         m_{pq} = \sum_{x,y} x^{p} y^{q} I(x,y)
         \\
         C = [\frac{m_{10}}{m_{00}}, \frac{m_{01}}{m_{00}}]
         $$
         - So, $x, y \in [-3, 3]$ for the entire image patch. $p, q \in [0,1]$ for the zeroth and first order image moments.
+    - This can be rapidly calculated by `cv::integral`.
     - Calculate orientation of $\vec{OC}$ using **the quadrant-aware** atan2
         $$
         \theta = atan2 (m_{01}, m_{10})
         $$
+    - One thing to note is the "chirality" of cordinate sysmtes. Image coordinates in computer vision is usually Y pointing up, X pointing right. This however, is not coherent with regular mathematical coordinates. So in any orientation-critical applications, it's worth the effort to operate on the regular coordinate system we use.
 
 4. Represent the descriptor in steered BRIEF
     - Pre-select 256 pairs of pixels in the patch.
-        - In Rublee et al's paper, a large number of images were used to compare the image intensitiy of these selected pixels of keypoints. 
+        - In Rublee et al's paper, a large number of images were used to compare the image intensitiy of these selected pixels of keypoints.
         They mapped out the mean of all these image pairs, and the correlation within each pair.
     - Steer the descriptor. From the "normalized image" to the rotated one (the patch we have):
         $$
-        S = R(\theta)[x_1,y_1; ... x_n, y_n]
+        S = R[\theta](x_1,y_1; ... x_n, y_n)
         $$
     - Compare their intensities. If $I(p1) > I(p2)$ then you get a 1, else 0. Put it in a 256-bit array
 
@@ -70,12 +98,12 @@ There are two potentially parallel ways to find an approximate nearest neighbor,
 
 1. Randomized KD Tree.
     - Find D number of dimensions with the highest variances.
-    - Each randomized KD tree has a randomly selected number of dimensions among these D dimensions, or split points. 
-    - One can instantiate multiple randomized KD tree so each tree has a suboptimal tree. You can search them in parallel, too. 
+    - Each randomized KD tree has a randomly selected number of dimensions among these D dimensions, or split points.
+    - One can instantiate multiple randomized KD tree so each tree has a suboptimal tree. You can search them in parallel, too.
     - Termination condition: if a pre-determined number of nodes are visited. (Precision?)
 
 2. K means trees:
-    - There are multiple levels. Each level has K clusters. 
+    - There are multiple levels. Each level has K clusters.
     - Search: have a priority queue. Everytime you go to a level, add other branches to this priority queue.
     - If a pre-determined number of nodes are visited
 
@@ -92,4 +120,4 @@ In step 3 orientation computation, OpenCV uses
 
 ## References
 
-[1] Rublee, E., Rabaud, V., Konolige, K., and Bradski, G. 2011. ORB: an efficient alternative to SIFT or SURF. In Proceedings of the 2011 International Conference on Computer Vision (ICCV '11). IEEE Computer Society, Washington, DC, USA, 2564-2571. DOI:https://doi.org/10.1109/ICCV.2011.6126544
+[1] Rublee, E., Rabaud, V., Konolige, K., and Bradski, G. 2011. ORB: an efficient alternative to SIFT or SURF. In Proceedings of the 2011 International Conference on Computer Vision (ICCV '11). IEEE Computer Society, Washington, DC, USA, 2564-2571. DOI:<https://doi.org/10.1109/ICCV.2011.6126544>
