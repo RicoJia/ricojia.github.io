@@ -33,6 +33,8 @@ sudo apt update
 # install comprehensive ROS2, like rviz, rqt, and demos
 sudo apt install -y ros-iron-desktop
 sudo apt install -y python3-colcon-common-extensions
+sudo apt install ros-iron-joint-state-publisher
+sudo apt install ros-iron-xacro
 
 echo "source /opt/ros/iron/setup.bash" >> ~/.bashrc
 source ~/.bashrc

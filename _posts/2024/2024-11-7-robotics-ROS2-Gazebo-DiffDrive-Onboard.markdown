@@ -51,3 +51,20 @@ def generate_launch_description():
         )
     ])
 ```
+- 
+
+### Add An Arg In Launch File
+
+```python
+def generate_launch_description():
+    # Declare launch arguments
+    no_rviz_arg = DeclareLaunchArgument(
+        'no_rviz',
+        default_value='false',
+        description='Flag to disable RViz'
+    )
+    no_rviz = LaunchConfiguration('no_rviz')
+    # register the arg and the node
+    ld.add_action(no_rviz_arg)
+    ld.add_action(rviz_node)
+```
