@@ -175,7 +175,10 @@ Another highlight in He et al.'s work is "bottleneck building block" architectur
 </p>
 </div>
 
-The bottleneck building block is to reduce the number of parameters while increasing the number of layers. The 1x1 conv layers reduce / increase channel dimensions, so the actual 3x3 conv layer has smaller dimensions to work with.
+The bottleneck building block is to
+1. reduce the number of layers (dimensionality)
+2. conduct regular convolution
+3. increase the number of layers back. The 1x1 conv layers reduce / increase channel dimensions, so the actual 3x3 conv layer has smaller dimensions to work with.
 
 There are two types of blocks in ResNet:
 
@@ -364,7 +367,7 @@ Mobilenet v1: MobileNets: Efficient Convolutional Neural Networks for Mobile Vis
 
 ### Depthwise Separable Convolution
 
-If you have an input of size a×b×3 and a regular convolution filter of size 3×3×5, you would have 3×3×3 filters for each of the 5 output channels. The output would be a×b×5, after summing across input channels.
+If you have an input of size a×b×3 and a regular convolution filter of size 3×3×3x5, you would have 3×3×3 filters for each of the 5 output channels. The output would be a×b×5, after summing across input channels.
 
 In a **depthwise convolution**, you would have 3 filters of size 3×3 (one for each input channel). Each input channel is **independently** convolved with its filter, so the output would remain a×b×3a×b×3 (same number of channels as the input).
 
@@ -411,7 +414,7 @@ In MobileNet V1, the architecture is quite simple: it's first a conv layer, then
 </p>
 </div>
 
-In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "bottleneck block". The bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. MobileNet V2 has 155 layers.
+In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "inverted bottleneck block". The interverted bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. MobileNet V2 has 155 layers.
 
 <div style="text-align: center;">
 <p align="center">
@@ -421,7 +424,10 @@ In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introducti
 </p>
 </div>
 
-In a bottleneck block, dimensions are jacked up so the network can learn a richer function. But they are projected down before moving the next bottleneck block so memory usage won't be too big.
+In a bottleneck block,
+1. dimensions are jacked up so the network can learn a richer function. 
+2. perform depthwise convolutions
+3. they are projected down before moving the next bottleneck block so memory usage won't be too big, and model size can be smaller
 
 <div style="text-align: center;">
 <p align="center">
@@ -441,6 +447,10 @@ Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residu
     </figure>
 </p>
 </div>
+
+#### Training Notes From MobileNet V2
+
+- `ReLu6` is more robust in low-precision training?
 
 ## General Advice
 

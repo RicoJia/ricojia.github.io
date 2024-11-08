@@ -113,12 +113,14 @@ Given an image:
 4  0  1  5
 ```
 
-If the window size is 2x2, with stride = 2, we get
+If the window size is 2x2, with stride = 2, with max pooling, we get
 
 ```
 6, 8,
 9, 5
 ```
+
+with avg pool, we get a 2x2 matrix with the avg of each sub region (2x2)
 
 ## Convolutional Layer
 

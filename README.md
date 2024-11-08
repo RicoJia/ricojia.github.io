@@ -9,6 +9,13 @@
 [User Manual 👉](_doc/Manual.md)
 --------------------------------------------------
 
+### Paper Review Writing Guidelines
+- RESEARCH GROUP of the authors;
+- Competitions:
+- Dataset that it was trained on. Classification - Detection, size - partition of data.
+- Authors, RESEARCH GROUP; Competitions: ILSVRC 2014
+- Dataset that it was trained on. Classification - Detection, size - partition of data.
+
 ### Getting Started
 
 1. You will need [Ruby](https://www.ruby-lang.org/en/) and [Bundler](https://bundler.io/) to use [Jekyll](https://jekyllrb.com/). Following [Using Jekyll with Bundler](https://jekyllrb.com/tutorials/using-jekyll-with-bundler/) to fullfill the enviromental requirement.
