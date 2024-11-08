@@ -29,7 +29,7 @@ On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome
 - `diff` shows which files are different and which files show in both places
 
 ```bash
-rico@rico-Latitude-5420:~/file_exchange_port $ diff -qr filter_projects/ Fun_Projects/filter_projects/
+diff -qr filter_projects/ Fun_Projects/filter_projects/
 Only in filter_projects/: build_project.sh
 Files filter_projects/face_tracker/face_tracker.cpp and Fun_Projects/filter_projects/face_tracker/face_tracker.cpp differ
 Files filter_projects/face_tracker/face_tracker.hpp and Fun_Projects/filter_projects/face_tracker/face_tracker.hpp differ
@@ -38,7 +38,7 @@ Files filter_projects/face_tracker/face_tracker.hpp and Fun_Projects/filter_proj
 - If in a git repo, see when the directory was last modified:
 
 ```bash
-rico@rico-Latitude-5420:~/file_exchange_port/Fun_Projects (master)$ git log -1 --format="%ci" -- filter_projects/
+git log -1 --format="%ci" -- filter_projects/
 2022-03-31 12:07:13 -0500
 ```
 - `-1`: Limits the output to the most recent commit.
