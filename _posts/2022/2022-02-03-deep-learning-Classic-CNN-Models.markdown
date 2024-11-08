@@ -164,6 +164,8 @@ This residual block basically "boosts" the original signal. In reality, deep pla
 </p>
 </div>
 
+**In order to have skip connections, we need to make sure the input and outputs of the two blocks have the same dimension, with th e same number of channels.** `in_channels == out_channels` and `stride == 1`
+
 Another highlight in He et al.'s work is "bottleneck building block" architecture (ResNet-50):
 
 <div style="text-align: center;">
