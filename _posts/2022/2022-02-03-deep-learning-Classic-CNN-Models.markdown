@@ -451,6 +451,13 @@ Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residu
 #### Training Notes From MobileNet V2
 
 - `ReLu6` is more robust in low-precision training?
+- It's generally a good idea to use `in_place=True` to avoid `out of memory` error.
+- [MobileNet V2 uses dilated convolution to increase receptive fields](https://github.com/VainF/DeepLabV3Plus-Pytorch/blob/4e1087de98bc49d55b9239ae92810ef7368660db/network/backbone/mobilenetv2.py#L68)
+- `torch.nn.Conv2d(groups)`:
+    - At groups=1, all inputs are convolved to all outputs.
+    - At groups=2, the operation becomes equivalent to having two conv layers side by side, each seeing half the input channels and producing half the output channels, and both subsequently concatenated.
+    - At groups= in_channels, each input channel is convolved with its own set of filters.
+
 
 ## General Advice
 
