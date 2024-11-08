@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots
+subtitle: Window Focus, Screenshots, File Differences
 comments: true
 tags:
     - Linux
@@ -24,3 +24,22 @@ On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome
     - If you don't want to see the other window that's out of focus already, choose "Raise Window When Focused"
 4. Press Alt + F2, type r, and press Enter. **This restarts the GNOME Shell without logging out.**
 
+## File Differences
+
+- `diff` shows which files are different and which files show in both places
+
+```bash
+rico@rico-Latitude-5420:~/file_exchange_port $ diff -qr filter_projects/ Fun_Projects/filter_projects/
+Only in filter_projects/: build_project.sh
+Files filter_projects/face_tracker/face_tracker.cpp and Fun_Projects/filter_projects/face_tracker/face_tracker.cpp differ
+Files filter_projects/face_tracker/face_tracker.hpp and Fun_Projects/filter_projects/face_tracker/face_tracker.hpp differ
+```
+
+- If in a git repo, see when the directory was last modified:
+
+```bash
+rico@rico-Latitude-5420:~/file_exchange_port/Fun_Projects (master)$ git log -1 --format="%ci" -- filter_projects/
+2022-03-31 12:07:13 -0500
+```
+- `-1`: Limits the output to the most recent commit.
+- `--format="%ci"`: Formats the output to display the commit date in ISO format.
