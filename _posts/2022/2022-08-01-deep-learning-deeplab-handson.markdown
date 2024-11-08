@@ -13,6 +13,7 @@ tags:
 
 UNet has **restricted receptive fields**. It is sufficient for identifying local areas such as tumors (in medical images). When we learn larger image patches, UNet was not sufficient.
 
+<<<<<<< Updated upstream
 DeepLab V1 & V2 (2016) [1]: they were reviewed together as they both use Atrous convolution, or "dilated convolution" (空洞卷积), and **Fully Connected Conditional Random Field**. V1 was only using VGG16, while V2 was using VGG16 and ResNet.
 DeepLab V3 (2017) [2]
 DeepLab v3+ (2018) - Achieved SOTA on Pascal-VOC 2012.
@@ -60,3 +61,9 @@ TODO
 [3] [Chen, L. C., Papandreou, G., Schroff, F., & Adam, H. (2017). Rethinking Atrous Convolution for Semantic Image Segmentation. arXiv preprint arXiv:1706.05587.](https://arxiv.org/pdf/1706.05587) 
 
 [3] [Chen, L. C., Zhu, Y., Papandreou, G., Schroff, F., & Adam, H. (2018). Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation. Proceedings of the European Conference on Computer Vision (ECCV), 801–818.](https://arxiv.org/pdf/1802.02611)
+=======
+DeepLab V1 - V3 enlarges its receptive fields by introducing "dilated convolution" (空洞卷积)
+
+
+- Fun fact: after 2014, `3x3` seems to become the most popular kernel size
+>>>>>>> Stashed changes
