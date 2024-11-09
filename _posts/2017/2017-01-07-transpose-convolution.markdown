@@ -1,12 +1,14 @@
 ---
 layout: post
-title: Math - Transpose Convolution
+title: Math - Different Types Of Convolutions
 date: '2017-01-07 13:19'
-subtitle: Foundation For U-Net
+subtitle: Transpose Convolution (U-Net), Dilated Convolution (DeepLab)
 comments: true
 tags:
     - Math
 ---
+
+# Transpose Convolution
 
 ## Definition
 
@@ -190,3 +192,47 @@ Transpose(Input)
 
 - What does "same" padding mean in TensorFlow's transpose_convolution? Answer: 'same' would yield `output_size = stride * input_size`. Please [see here](https://community.deeplearning.ai/t/week4-question-to-the-padding-of-conv2dtranspose/25331/3?u=ricoruotongjia).
     - A common mistake in using TensorFlow Convolution or transpose_convolution is: **accidentally putting channels at the wrong dimension.** E.g., Why would I get (1,2,4,1) if my input is (1,1,2,2) for transpose_convolution? Because by default, `data_format = "channels_last"`. If your input is (1,1,2,2) with 1 output filter channel, you will get (1,2,4,1).
+
+# Dilated Convolution
+
+The word "à trous" in French means "hole". The A Trous algorithm was conventionally used in wavelet transform, but now it's in convolutions for deep learning.
+
+Each element in the dilated conv kernel now takes a value in a subregion. This can effectively increase the area the kernel sees, since in most pictures, a small subregion's pixels are likely similar
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/e14d5e18-6eb2-4cff-9d03-97ad9240988e" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Along 1D, dilated convolution is:
+
+$$
+\begin{gather*}
+y[i] = \sum_K x[i + rk] w[k]
+\end{gather*}
+$$
+
+Where **the rate** `r=1` is the regular convolution case. We can have padding like the usual convolution as well.
+
+**Why is Dilated (Atrous) Convolution useful?** Because it can increase the receptive field of a layer in the input. DeepLab V1 & V2 uses ResNet-101 / VGG-16. The original networks' last pooling layer (pool5) or convolution 5_1 is to 1 to avoid too much signal loss. But DeepLab V1 and V2 uses atrous convolution in all subsequent layers using a `rate=2`
+
+
+Intro TODO
+
+## Padding Calculation
+
+Effectively, we have a larger kernel and a larger stride. With input image size `n`, kernel size `k`, stride `s`, padding (conventionally one side only)`p`, dilated rate `r`, **output size o** is:
+
+- The effective kernel size `g` is: $g = r x (k - 1) + 1$,
+- The effective stride is still `s`
+- So $o = \frac{n + 2*p - g}{s} + 1$. To keep `input_dim = output_dim`, i.e., `n=o` (same padding):
+
+$$
+\begin{gather*}
+p = \frac{s(o-1) + g - o}{2}
+\end{gather*}
+$$
+

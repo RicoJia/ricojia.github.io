@@ -404,6 +404,28 @@ $$
 
 where $m$ is the number of output channels, $f$ is the filter size. In some applications, $m$ is much larger, so the ratio is slightly larger than $\frac{1}{f^2}$
 
+#### Implementation - Using Grouped Convolution (分组卷积)
+
+Grouped Convolution is to separate input channels, conduct convolution, then concatenate them together
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/eb406a9b-a0d4-4a92-9e7c-fdaacdd0500c" height="300" alt=""/>
+        <figcaption><a href="https://liuxiao.org/kb/%E5%88%86%E7%BB%84%E5%8D%B7%E7%A7%AF-group-convolution/#pll_switcher">Source: 技术刘
+</a></figcaption>
+    </figure>
+</p>
+</div>
+
+- In PyTorch, `groups` basically have `groups` conv layers side by side. Make sure `input channels % group = 0`, `output channels % group = 0`, Then, the group in the output has `output_channels / groups` feature maps.
+            
+```python
+nn.Conv2d( ... groups=dimension)
+```
+
+To implement depthwise convolution, we just make sure `output_channels = groups = input_channels`.
+
 ### MobileNet Architectures
 
 In MobileNet V1, the architecture is quite simple: it's first a conv layer, then followed by 13 sets of depthwise-separable layers. Finally, it has an avg pool, FC, and a softmax layer. In total there are 1000 classes.
