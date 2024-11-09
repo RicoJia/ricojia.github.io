@@ -236,3 +236,23 @@ p = \frac{s(o-1) + g - o}{2}
 \end{gather*}
 $$
 
+- So in the special case where stride is 1: 
+
+$$
+\begin{gather*}
+p = \frac{g - 1}{2}
+\end{gather*}
+$$
+
+However, we commonly use `3x3` kernels, whose effective kernel size is an odd number. So, we have to do:
+
+```python
+def fixed_padding(kernel_size, dilation):
+    # From mobilenet v2
+    kernel_size_effective = kernel_size + (kernel_size - 1) * (dilation - 1)
+    pad_total = kernel_size_effective - 1
+    pad_beg = pad_total // 2
+    pad_end = pad_total - pad_beg
+    return (pad_beg, pad_end, pad_beg, pad_end)
+```
+
