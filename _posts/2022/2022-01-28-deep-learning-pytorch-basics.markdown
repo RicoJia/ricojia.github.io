@@ -12,6 +12,15 @@ tags:
 
 ## Neural Network Model Components
 
+- Make a conv-batch-relu module that optionally have components
+
+```python
+layers = [nn.Conv2d(), nn.Conv2d() ...]
+layers.append(component)    # if necessary
+nn.Sequential(*layers)
+```
+
+
 - Softmax layer:
 
 ```python
