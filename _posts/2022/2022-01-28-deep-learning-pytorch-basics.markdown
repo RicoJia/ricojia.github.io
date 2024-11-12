@@ -20,6 +20,7 @@ layers.append(component)    # if necessary
 nn.Sequential(*layers)
 ```
 
+    - `nn.Sequential()` is a sequential container that takes in modules. It has a `forward()` function, and it will pass it on to the first module, then the chain starts.
 
 - Softmax layer:
 

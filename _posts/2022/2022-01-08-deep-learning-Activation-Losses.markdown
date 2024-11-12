@@ -30,9 +30,7 @@ However, now with more tricks like batch normalization,
         - Dead neurons: neurons may not be activated if their weights make the output negative values.
         - Unbounded outputs
 
-- Leaky ReLU
-
-Regular ReLU would lead to dead neurons when $x=0$. That could cause learning to be stuck. Leaky ReLU can unstuck this situation by having a small negative slope and allowing backprop flow correspondingly.
+- Leaky ReLU: regular ReLU would lead to dead neurons when $x=0$. That could cause learning to be stuck. Leaky ReLU can unstuck this situation by having a small negative slope and allowing backprop flow correspondingly.
 
 $$
 \begin{gather*}
@@ -41,6 +39,26 @@ y = x (x >0 )
 y = \alpha x (x <=0)
 \end{gather*}
 $$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/0fc12aeb-8daf-4140-b09a-19d6e9b1fd5a" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+- `ReLu6`
+  - `ReLu 6 = min(max(x, 0), 6)`. So if there is an overflow, or underflow, outputs could be naturally large, and would be capped just as they would without overflow/underflow.
+  - Activation values now occupy a smaller and fixed range, so in terms of quantization noise, so the representation is with fewer bits.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/fd7ff666-de91-411b-82dd-b037b991370c" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
 - Typically $\alpha=0.01$
 
@@ -121,7 +139,9 @@ $$
 You can add up the losses and get the sum of it
 
 ========================================================================
+
 ## Classification Losses
+
 ========================================================================
 
 ### Cross Entropy Loss (Log Loss)
@@ -131,10 +151,10 @@ $$
 $$
 
 - Advantages:
-    - Good for classification problems.
-    - Suitable for probablistic Interpretation, and penalizes wrong confident predictions heavily
+  - Good for classification problems.
+  - Suitable for probablistic Interpretation, and penalizes wrong confident predictions heavily
 - Disadvantages:
-    - when $y^i$ is (0,1). And the closer it is to the bounds, the loss would be larger
+  - when $y^i$ is (0,1). And the closer it is to the bounds, the loss would be larger
 
 ### Negative Log-Likelihood Loss (NLL)
 
@@ -149,7 +169,6 @@ NLL = \sum_I -log(\text{true class}_i | {prediction})
 \end{gather*}
 $$
 
-
 - For M samples,
 
 $$
@@ -158,7 +177,7 @@ $$
 \end{gather*}
 $$
 
-NLL is always used with log-softmax activations to ensure numerical stability. 
+NLL is always used with log-softmax activations to ensure numerical stability.
 
 #### NLL Example
 
@@ -173,7 +192,9 @@ $$
 $$
 
 ========================================================================
+
 ## Image Segmentation Losses
+
 ========================================================================
 
 ### IoU and Dice Loss
