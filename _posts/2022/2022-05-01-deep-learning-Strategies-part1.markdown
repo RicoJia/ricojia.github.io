@@ -32,6 +32,10 @@ But if you don't have a clear idea yet, define one and get stared. Later, refine
 
 Then, worry **separately** about how to perform well on this metric.
 
+### Choice of Metrics
+
+- For tasks with a lot of backgrounds, accuracy is not the best metric. F1 Score, precision & recall could be better scores. For example, [speech recognition](./2022-04-02-deep-learning-speech-recognition-hands-on.markdown)
+
 ## Data Preparation
 
 There are optionally two/three sets:

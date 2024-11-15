@@ -44,6 +44,7 @@ As a result, the distribution of Z of each dimension across the batch is more no
 </p>
 </div>
 
+**Normally, `Dropout` after BN is more preferred.**
 This was introduced by Sergei Ioffe and Christian Szegedy in 2015.
 
 ### During Training
