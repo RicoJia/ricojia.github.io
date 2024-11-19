@@ -150,6 +150,66 @@ multi_head_attn = MultiheadedAttention(hidden_size=num_hiddens, output_size=outp
 output = multi_head_attn(queries, keys, values)
 ```
 
+## Self Attention
+
+when key, value, and query come from the same set of inputs, they are called "self-attention" [1]. We **also want to make sure the output has the same dimension as the inputs**. Since value and queries are the same, this is equivalent to having `num_queries` input words, and having `num_queries` output words
+
+Now let's illustrate with some code
+
+```python
+num_hiddens, num_heads = 100, 5
+attention = MultiheadedAttention(hidden_size=num_hiddens, output_size=num_hiddens, num_heads=num_heads)
+attention.eval()
+batch_size, num_queries, valid_lens = 2, 4, torch.tensor([3, 2])
+X = torch.ones((batch_size, num_queries, num_hiddens))
+output = attention(X, X, X) #(batch_size, num_queries, num_hiddens)
+print(attention)
+```
+
+The model is:
+
+```
+num_hiddens, num_heads = 100, 5
+attention = MultiheadedAttention(hidden_size=num_hiddens, output_size=num_hiddens, num_heads=num_heads)
+attention.eval()
+batch_size, num_queries, valid_lens = 2, 4, torch.tensor([3, 2])
+X = torch.ones((batch_size, num_queries, num_hiddens))
+attention(X, X, X).shape
+print(attention)
+```
+
+### Comparing CNN, RNN, and Self-Attention
+
+Saywe are given an `n` input tokens. They are a `nxd` vector. We are outputting a sequence of `dxn` as well. We compare:
+
+- Time complexity
+- Sequential Operations: number of actions which takes place in sequence. They are bottlenecks of parallel computations
+- Maximum Path Lengths: the length (or number of layers) needed to allow for any input element to be considered in any output sequence.
+  - For example, with 1 layer CNN, the first input element is considered within the first output element, but not the subsequent ones as the kernel moves forward. We need to have more layers so that the first element is considered.
+  - A shorter path between any combination of sequence positions makes learning long-range dependencies easier
+
+For CNN:
+
+- Input and output channels are `d`; kernel size is `k`
+- Time complexity: $O(nd^2k)$ because we need to go over all elements in the input and output filters
+- Sequential operations: we need to calculate layer by layer, but we know that beforehand, so $O(1)$
+- Maximum Path length: (receptive field size?) is $O(n/k)$, For example, x1, x5 are within the receptive fields of CNN
+
+For RNN:
+
+- Say we have 1 layer, since we are outputting with the same dimension, the hidden state dimension is `d` as well.
+- Time Complexity: weight matrices are `dxd`. In total, $O(nd^2)$
+- Sequential Complexity: $O(n)$
+- Maximum path length: $O(n)$ as we need to finish the entire $n$ timesteps so the last output sequence can technically see the first input element.
+
+For Self Attention:
+
+- Time Complexity: weight matrices are `nxd`. In total, $O(n^2d)$
+- Sequential Complexity: $O(1)$: we need to do linear transform, concatenate, and dense layer.
+- Maximum path length: $O(1)$ as the single operation is able to consider all input elements.
+
+**So, both CNN and self attention has a low number of sequential operations and are highly parallelizable. However, self attention will suffer from higher complexity when input sequence is long.**
+
 ## References
 
 [1] [Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., … Polosukhin, I. (2017). Attention is all you need. Advances in neural information processing systems (pp. 5998–6008).](https://arxiv.org/pdf/1706.03762)

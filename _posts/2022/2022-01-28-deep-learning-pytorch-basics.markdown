@@ -171,3 +171,12 @@ print(predicted_test)
 predicted_test = torch.where(outputs_test > 0.4, 1, 0).bool() 
 local_correct = (predicted_test & labels_test).sum().item()
 ```
+
+- Model summary: there are two methods
+  - `model = print(model)  # Your model definition`
+  - `pip install torchsummary`
+
+        ```python
+        from torchsummary import summary
+        summary(model, input_size=(channels, height, width))
+        ```
