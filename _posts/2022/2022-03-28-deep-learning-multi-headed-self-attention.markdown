@@ -73,10 +73,11 @@ class DotProductAttention(torch.nn.Module):
         head_dim = queries.shape[-1]
         # we assume each row in queries is indenpendent from each column in keys.transpose()
         # So its raw production has a standard deviation of torch.sqrt(head_dim). This is normalization
-        scores = torch.bmm(queries, keys.transpose(1, 2)) / math.sqrt(head_dim)
+        scores = torch.bmm(queries, keys.transpose(1, 2)) / math.sqrt(head_dim) #(num_heads, num_queries,num_kv)
         # TODO: should apply masked output
-        self.attention_weights = torch.nn.functional.softmax(scores,  dim=-1) 
-        return torch.bmm(self.dropout(self.attention_weights), values)
+        self.attention_weights = torch.nn.functional.softmax(scores,  dim=-1) #(num_heads, num_queries,num_kv)
+        output = torch.bmm(self.dropout(self.attention_weights), values)    #(num_heads, num_queries,head_dim)
+        return output
         
 def transpose_qkv(X, num_heads):
     """Shape transform: 
@@ -99,13 +100,13 @@ def transpose_output(X, num_heads):
 
 
 class MultiheadedAttention(torch.nn.Module):
-    def __init__(self, hidden_size, num_heads):
+    def __init__(self, hidden_size, output_size, num_heads):
         super().__init__()
         # Code up an attention, then instantiate them multiple times?
         self.Wq = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
         self.Wk = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
         self.Wv = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
-        self.Wo = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
+        self.Wo = torch.nn.LazyLinear(out_features=output_size, bias=False)
         self.attention = DotProductAttention()
         self.num_heads = num_heads
     def forward(self, queries, keys, values):
@@ -122,9 +123,10 @@ class MultiheadedAttention(torch.nn.Module):
         keys = transpose_qkv(k_prime, self.num_heads)   #(batch_size * num_heads, num_kv, hidden_size//num_heads)
         values = transpose_qkv(v_prime, self.num_heads) #(batch_size * num_heads, num_kv, hidden_size//num_heads) 
         
-        output_heads = self.attention(queries, keys, values)
-        output_concat = transpose_output(output_heads, self.num_heads)
-        return self.Wo(output_concat)
+        output_heads = self.attention(queries, keys, values) #(batch_size * num_heads, num_queries, hidden_size//num_heads)
+        output_concat = transpose_output(output_heads, self.num_heads)  #(batch_size, num_queries, hidden_size)
+        output = self.Wo(output_concat) #(batch_size, num_queries, output_size)
+        return output
 
 batch_size = 1
 num_kv = 5
@@ -133,6 +135,7 @@ input_dim = 4
 num_hiddens = 32
 num_heads = 2
 head_dim = num_hiddens // num_heads  # 8
+output_size = 8
 dropout = 0.1
 
 # Set random seed for reproducibility
@@ -143,7 +146,7 @@ queries = torch.randn(batch_size, num_queries, input_dim)
 keys = torch.randn(batch_size, num_kv, input_dim)
 values = torch.randn(batch_size, num_kv, input_dim)
 # Instantiate MultiHeadAttention
-multi_head_attn = MultiheadedAttention(hidden_size=num_hiddens, num_heads=num_heads)
+multi_head_attn = MultiheadedAttention(hidden_size=num_hiddens, output_size=output_size, num_heads=num_heads)
 output = multi_head_attn(queries, keys, values)
 ```
 
