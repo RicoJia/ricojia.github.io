@@ -78,6 +78,7 @@ When keys and the query have different lengths, we can use the **additive attent
 $$
 \begin{gather*}
 a = W_v^T tanh(W_k k + W_q q)
+\\
 \alpha = softmax(a)
 \end{gather*}
 $$
