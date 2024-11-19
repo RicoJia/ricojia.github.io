@@ -118,6 +118,41 @@ reshaped_tensor = tensor_b.reshape(tensor_a.shape)
 print(torch.unique(target))
 ```
 
+### Broadcasting
+
+- dimensions with `1` can be expanded implicitly through broadcasting. E.g., for matrix addition `(3, 1, 4) + (1, 2, 4) = (3, 2, 4)`. Here is how it works:
+
+```
+[
+  [[a, b, c, d]],
+  [[e, f, g, h]],
+  [[i, j, k, l]]
+]
++
+[
+  [
+    [m, n, o, p],
+    [q, r, s, t]
+  ]
+]
+= 
+[
+  [
+    [a, b, c, d] + [m, n, o, p],
+    [a, b, c, d] + [q, r, s, t]
+  ],
+  [
+    [e, f, g, h] + [m, n, o, p],
+    [e, f, g, h] + [q, r, s, t]
+  ],
+  [
+    [i, j, k, l] + [m, n, o, p],
+    [i, j, k, l] + [q, r, s, t]
+  ],
+  []
+]
+```
+
 ### Misc
 
 - Printing full tensors
@@ -128,3 +163,4 @@ print(predicted_test)
 ```
 
 - `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.
+- `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
