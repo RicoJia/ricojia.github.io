@@ -9,6 +9,11 @@ tags:
     - Python
 ---
 
+## Numbers
+
+- Not a number `float('nan')`. This is often seen in `0/0`
+  - In numpy, this is `np.nan`. To check, it's `numpy.isnan()`
+
 ## Print Options
 
 - Multiline Printing

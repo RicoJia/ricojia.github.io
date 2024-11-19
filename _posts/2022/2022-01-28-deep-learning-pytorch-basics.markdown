@@ -164,3 +164,10 @@ print(predicted_test)
 
 - `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.
 - `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
+
+- Datatypes: if we need to convert a matrix into `int` when seeing errors like `"bitwise_and_cuda" not implemented for 'Float'`, we can do `matrix.bool()`
+
+```python
+predicted_test = torch.where(outputs_test > 0.4, 1, 0).bool() 
+local_correct = (predicted_test & labels_test).sum().item()
+```

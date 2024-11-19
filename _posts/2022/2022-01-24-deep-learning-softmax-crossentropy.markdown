@@ -158,7 +158,7 @@ The purpose of using the Log-Sum-Exp Trick (LSE) Numerical Stability: it helps p
 
 ### Binary-Cross-Entropy Loss
 
-For binary classifiers, the output layer is usually 1 single unit. To normalize the output to `[0, 1]`, it's common to use a sigmoid function:
+For binary classifiers, the output layer is usually 1 single unit. To normalize the output to `[0, 1]`, it's common to use the **sigmoid function** (NOT softmax):
 
 $$
 \begin{gather*}

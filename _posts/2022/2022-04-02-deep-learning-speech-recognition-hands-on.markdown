@@ -12,6 +12,14 @@ tags:
 
 An end-to-end deep learning approach could be used to build an effective trigger word detection system.
 
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/251c666d-411c-4717-9086-6cc88283b509" height="600" alt=""/>
+       </figure>
+    </p>
+</div>
+
 ### Model
 
 - As stated above, the input is the spectogram, a `(Tx = 5511, F=101)` 2D vector.

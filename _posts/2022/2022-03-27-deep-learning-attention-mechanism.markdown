@@ -70,7 +70,7 @@ When keys and the query have different lengths, we can use the **additive attent
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/8996f300-1bf2-42b6-9fcd-32c6243ef491" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/0c9fcee6-c08b-4b8a-9132-5560575529a9" height="300" alt=""/>
     </figure>
 </p>
 </div>
@@ -152,7 +152,7 @@ When keys and queries do have the same length, dot-multiplying them together **i
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/da3990d2-7a53-43dc-ba19-29d57d250fb7" height="300" alt=""/>
+        <img src="https://github.com/user-attachments/assets/6b3c7689-a533-4d79-aa81-841bb08b011d" height="300" alt=""/>
     </figure>
 </p>
 </div>
@@ -239,24 +239,22 @@ To interpret:
 
 ## Bahdanau Encoder-Decoder Structure
 
-In 2014, Bahdanau et al. proposed an encoder-decoder structure **on top of the additive attention**. To illustrate, we have a neural machine translation example (NMT): **translate French input "Jane visite l'Afrique en septembre" to English**.
+In 2014, Bahdanau et al. proposed an encoder-decoder structure **on top of the additive attention**. To illustrate, we have a neural machine translation example (NMT): **translate French input "Jane visite l'Afrique en septembre" to English**. For attention pooling, we talked about scaled dot-product attention pooling and additive attention pooling in the previous sections.
 
 - Encoder: we are using a [bi-directional RNN encoder](../2022/2022-03-15-deep-learning-rnn3-lstm.markdown) to generate embeddings of french sentences. Now, our input "Jane visite l'Afrique en septembre" will complete its forward and backward passes.
+  - At each time `t`, the bidirectional RNN encoder outputs **a hidden state** $a^{(t)}$ (which is the key and value at the same time.)
+  - $\alpha^{(t, t')}$: amount of attention output at time `t`, $y^{(t)}$ should put to hidden state at time `t'`, $a^{(t)}$
 - Decoder we have **another single-drectional RNN decoder** to generate the word probabilities in the vocab space.
-  - Here, we denote the hidden states as $s^{(t)}$.
-  - Just
-    Before outputting `<EOS>`, we assign a weight to several temporal neighbors in the input sequence at each time step (TODO is this each time?)
+  - Here, we denote the hidden states as $s^{(t)}$. That's the **query**
+  - Before outputting `<EOS>`, we assign a weight to several temporal neighbors in the input sequence at each time step.
 
-TODO: image for illustration
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="" height="300" alt=""/>
+            <img src="https://github.com/user-attachments/assets/9bc9e775-cba6-413f-8787-bb87e3d027a0" height="300" alt=""/>
        </figure>
     </p>
 </div>
-
-TODO: homework: what if we use scaled-dot product attention instead of the additive attention?
 
 In this case, we look at 3 neighbors and assign weights to them: $\alpha_1$, $\alpha_2$, $\alpha_3$. So, before outputting "Jane", we look at "Jane", "visite", "l'Afrique" at the same time. Note that this weighted sum of neighbors will enter the RNN cell as the **cell state**.
 
@@ -270,25 +268,11 @@ When we read **long** sentences, we have attention for short word segments befor
     </p>
 </div>
 
-## Attention Construct
+**The process to learn the attention weight $\alpha^{(t, i)}$ is called "alignment"**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to **be "soft" so it allows back-propagation** and can be trained with the whole translation model
 
-Ok, now let's formalize the attention construct. I'm going to formalize the notations first:
+### Implementation
 
-- At each time `t`, the bidirectional RNN encoder outputs **a hidden state** $a^{(t)}$
-- $\alpha^{(t, t')}$: amount of attention output at time `t`, $y^{(t)}$ should put to hidden state at time `t'`, $a^{(t)}$
-- $e^{(t, i)}$: scalar **attention score** for each hidden state `i`
-
-To learn $\alpha^{(t, t')}$, we need to look at all hidden states from all encoder hiden states $a^{(t)}$. Assuming the encoder timesteps are $[0, T]$, we calculate a scalar **attention score**, $e^{(t, i)}$ for each hidden state `i` that considers the last decoder hidden state $s^{(t-1)}$ and the encoder hidden state $h^{(i)}$
-
-To calculate the scalar **attention score**, $e^{(t, i)}$, we have an **alignment model**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to be "soft" so it allows back-propagation and can be trained with the whole translation model [1]. Here, let's look at the **Bahdanau attention (additive attention), the OG attention in 2015**.
-
-<div style="text-align: center;">
-    <p align="center">
-       <figure>
-            <img src="https://github.com/user-attachments/assets/dc402b1e-770a-420a-be6c-66d75d566a0e" height="100" alt=""/>
-       </figure>
-    </p>
-</div>
+TODO: homework: what if we use scaled-dot product attention instead of the additive attention?
 
 ## References
 
