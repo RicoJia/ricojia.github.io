@@ -109,7 +109,7 @@ Now one might ask: does the order of mini batches affect the learned mean and va
 - In a cat classifier, training data are black cats, but test data are orange cats
 - In an image deblurring system, images are brighter than test data.
 
-Batch normalization overcomes the covariate shift in **hidden layers**.
+Batch normalization overcomes the covariate shift in **hidden layers**. **[In this post, Brandon Rohrer cites that BN helps smooth the rugged loss landscape. This allows optimizing with relatively large learning rate](https://e2eml.school/batch_normalization)**
 
 **BN has a slight regularization effect**: Similar to regularization,
 
