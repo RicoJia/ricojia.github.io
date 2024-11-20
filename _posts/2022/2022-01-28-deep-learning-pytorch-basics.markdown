@@ -172,6 +172,9 @@ predicted_test = torch.where(outputs_test > 0.4, 1, 0).bool()
 local_correct = (predicted_test & labels_test).sum().item()
 ```
 
+- In places like `torch.autocast(device_type=device_type, dtype=torch.float16)`, we need to pass a string in.
+  - Solution: `device_type = str(device)`
+
 - Model summary: there are two methods
   - `model = print(model)  # Your model definition`
   - `pip install torchsummary`

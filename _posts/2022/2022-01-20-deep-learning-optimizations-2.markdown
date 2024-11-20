@@ -16,8 +16,10 @@ We have seen that we normalize the input data based on their average and mean. G
 So similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
 
 $$
-\mu = \frac{\sum x}{m} \\
-\sigma = \frac{\sum (x - \mu)^2}{m}\\
+\mu = \frac{\sum x}{m}
+\\
+\sigma = \frac{\sum (x - \mu)^2}{m}
+\\
 z_{norm} = \frac{x-\mu_z}{\sqrt{\beta^2 + \epsilon}}
 $$
 

@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Classic CNN Models
 date: '2022-02-03 13:19'
-subtitle: LeNet-5, AlexNet, VGG-16, ResNet-50, One-by-One Convolution, Inception Network, MobileNet
+subtitle: LeNet-5, AlexNet, VGG-16, ResNet-50, One-by-One Convolution, Inception Network
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -178,6 +178,7 @@ Another highlight in He et al.'s work is "bottleneck building block" architectur
 </div>
 
 The bottleneck building block is to
+
 1. reduce the number of layers (dimensionality)
 2. conduct regular convolution
 3. increase the number of layers back. The 1x1 conv layers reduce / increase channel dimensions, so the actual 3x3 conv layer has smaller dimensions to work with.
@@ -419,69 +420,12 @@ Grouped Convolution is to separate input channels, conduct convolution, then con
 </div>
 
 - In PyTorch, `groups` basically have `groups` conv layers side by side. Make sure `input channels % group = 0`, `output channels % group = 0`, Then, the group in the output has `output_channels / groups` feature maps.
-            
+
 ```python
 nn.Conv2d( ... groups=dimension)
 ```
 
 To implement depthwise convolution, we just make sure `output_channels = groups = input_channels`.
-
-### MobileNet Architectures
-
-In MobileNet V1, the architecture is quite simple: it's first a conv layer, then followed by 13 sets of depthwise-separable layers. Finally, it has an avg pool, FC, and a softmax layer. In total there are 1000 classes.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/4dc56f26-3abe-42e8-a29e-2a636407e40a" height="300" alt=""/>
-    </figure>
-</p>
-</div>
-
-In MobileNet V2 (Sandler et al., 2018), the biggest difference is the introduction of the "inverted bottleneck block". The interverted bottleneck block adds a skip connection at the beginning of the next bottleneck block. Additionally, an expansion and projection are added in the bottleneck block. MobileNet V2 has 155 layers.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/8eff937b-241e-4a69-b877-a1ed564efa7f" height="200" alt=""/>
-    </figure>
-</p>
-</div>
-
-In a bottleneck block,
-1. dimensions are jacked up so the network can learn a richer function. 
-2. perform depthwise convolutions
-3. they are projected down before moving the next bottleneck block so memory usage won't be too big, and model size can be smaller
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/32afa29b-3146-4dd8-9dee-de772b633f70" height="200" alt=""/>
-    </figure>
-</p>
-</div>
-
-Overall, MobileNet V2 has 155 layers (3.5M params). There are 16 inverted residual (bottlenck) blocks. Some blocks have skip connections to the block after the next one. Usually, in each bottleneck block, after an expansion and a depthwise convolution, there is a batch normalization and ReLu. After a downsizing projection, there is a batch normalization.
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/e9e5502a-8c50-4b71-8791-a8a1c35e88b2" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
-    </figure>
-</p>
-</div>
-
-#### Training Notes From MobileNet V2
-
-- `ReLu6` is more robust in low-precision training?
-- It's generally a good idea to use `in_place=True` to avoid `out of memory` error.
-- [MobileNet V2 uses dilated convolution to increase receptive fields](https://github.com/VainF/DeepLabV3Plus-Pytorch/blob/4e1087de98bc49d55b9239ae92810ef7368660db/network/backbone/mobilenetv2.py#L68)
-- `torch.nn.Conv2d(groups)`:
-    - At groups=1, all inputs are convolved to all outputs.
-    - At groups=2, the operation becomes equivalent to having two conv layers side by side, each seeing half the input channels and producing half the output channels, and both subsequently concatenated.
-    - At groups= in_channels, each input channel is convolved with its own set of filters.
-
 
 ## General Advice
 

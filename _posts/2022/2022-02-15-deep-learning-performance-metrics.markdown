@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Performance Metrics
 date: '2022-02-15 13:19'
-subtitle: mean Average Precision (mAP), ROC Curve
+subtitle: mean Average Precision (mAP), ROC Curve, F1 Score
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:

@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Activation and Loss Functions
 date: '2022-01-08 13:19'
-subtitle: Sigmoid, ReLU, Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss
+subtitle: Sigmoid, ReLU, Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss, Focal Loss
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -63,16 +63,21 @@ $$
 - Typically $\alpha=0.01$
 
 - tanh: $\frac{2}{1+e^{-2x}}-1$
-        <p align="center">
-        <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/22e4e9f7-8a9e-4e3c-9601-4f778281975c" height="300" width="width"/>
-        <figcaption align="center">tanh</figcaption>
-        </p>
-  - Advantages:
-    - tanh starts from -1 to 1, so if we want negative values in output, go for tanh
-    - compared to sigmoid, its derivative in `[-1, 1]` has a larger range, which could help with the learning process.
-  - Disadvantages:
-    - For large and small values, gradients are zero (vanishing gradient problem)
-    - Could be moderately expensive to train (with exponentials)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/22e4e9f7-8a9e-4e3c-9601-4f778281975c" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+- Advantages:
+  - tanh starts from -1 to 1, so if we want negative values in output, go for tanh
+  - compared to sigmoid, its derivative in `[-1, 1]` has a larger range, which could help with the learning process.
+- Disadvantages:
+  - For large and small values, gradients are zero (vanishing gradient problem)
+  - Could be moderately expensive to train (with exponentials)
 
 - Sigmoid (or "Logistic Function")
     <p align="center">
@@ -193,9 +198,11 @@ $$
 
 ========================================================================
 
-## Image Segmentation Losses
+## Multicalss Classification & Image Segmentation Losses
 
 ========================================================================
+
+Multiclass classification and image segmentation tasks both suffer the **data imbalance problem**. E.g., the background in image segmentation, or negative classes in multi-class classification make up around 80%. Do we want to count the accuracies in those areas? Yes. But do we want to treat them equally as the positive object classes? No. Because the positive object classes are fewer, which makes our model more sensitive them.
 
 ### IoU and Dice Loss
 
@@ -210,7 +217,7 @@ $$
     </p>
     </div>
 
-- Dice Loss is $1 - frac{2overlap}{total_area}$
+- Dice Loss is $1 - \frac{2overlap}{\text{total\_area}}$
 
 <div style="text-align: center;">
 <p align="center">

@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Positional Encoding
 date: '2022-04-05 13:19'
-subtitle: 
+subtitle: Transformer Accessory
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -84,4 +84,3 @@ P = pos_encoding.P[:, :X.shape[1], :]
 d2l.plot(torch.arange(num_steps), P[0, :, 6:10].T, xlabel='Row (position)',
          figsize=(6, 2.5), legend=["Col %d" % d for d in torch.arange(6, 10)])
 ```
-
