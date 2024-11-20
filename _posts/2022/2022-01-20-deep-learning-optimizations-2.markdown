@@ -11,31 +11,45 @@ tags:
 
 ## Batch Normalization
 
-We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results.
+Normalization with mean and variance looks like:
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/a3e885cd-b6d4-4014-bf8c-8cd6f7890a3b" height="300" alt=""/>
+        <figcaption><a href="https://e2eml.school/batch_normalization">Source: Brandon Rohrer  </a></figcaption>
+       </figure>
+    </p>
+</div>
 
-So similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
+The main idea is: If normalization is effective with input data to improve over learning, why can't we do that during the training? We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results. The steps are:
+
+1. Similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
 
 $$
+\begin{gather*}
 \mu = \frac{\sum x}{m}
 \\
 \sigma = \frac{\sum (x - \mu)^2}{m}
 \\
 z_{norm} = \frac{x-\mu_z}{\sqrt{\beta^2 + \epsilon}}
+\end{gather*}
 $$
 
-But there might be cases where we might want them to have different distributions, actually. Sowe might want to transform $\tilde{z}$ to a different learnable distribution. With learnable parameters $\gamma$ and $\beta$:
+2. But there are cases where we might want them to have different distributions, actually. Some might want to transform $\tilde{z}$ to a different learnable distribution. Scale(gamma) and shift (beta) are added. This is called an **affine transform**. It's used in TensorFlow and PyTorch by default.
 
 $$
-\tilde{z} = \gamma z_{norm} + \beta
+\begin{gather*}
+\tilde{z} = \frac{x_i - \mu}{\sigma} \gamma + \beta
+\end{gather*}
 $$
 
-After this transformation, $\tilde{z}$ is fed into the next layer. **Actually in the deep learning community, there is some debate on whether to do BN before or after activation function. But doing BN before the activation function is a lot more common.**
+3. After this transformation, $\tilde{z}$ is fed into the next layer. **Actually in the deep learning community, there is some debate on whether to do BN before or after activation function. But doing BN before the activation function is a lot more common.** Additionally, `Dropout` after BN is more preferred. This was introduced by Sergei Ioffe and Christian Szegedy in 2015.
 
 ```
 x -> Batch Normalization -> Activation (ReLu, etc.)
 ```
 
-As a result, the distribution of Z of each dimension across the batch is more normalized. So visually,
+4. As a result, the distribution of Z of each dimension across the batch is more normalized. So visually,
 
 <div style="text-align: center;">
 <p align="center">
@@ -46,8 +60,16 @@ As a result, the distribution of Z of each dimension across the batch is more no
 </p>
 </div>
 
-**Normally, `Dropout` after BN is more preferred.**
-This was introduced by Sergei Ioffe and Christian Szegedy in 2015.
+5. Here is the effect on gradient magnitude distribution with batch normalization. One can see that with BN, gradient magnitudes span across a larger range quite evenly
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/e71315a7-0a47-4fa9-9553-6dadebc839a0" height="200" alt=""/>
+            <figcaption><a href="https://viso.ai/deep-learning/batch-normalization/">Source</a></figcaption>
+       </figure>
+    </p>
+</div>
 
 ### During Training
 
@@ -72,6 +94,8 @@ $$
 \end{gather*}
 $$
 
+**During inference, since mean and variance are fixed, they can be implemented using a linear layer.**
+
 - $\beta_\mu$, $\beta_v$ are momentum constants.
 
 So in total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
@@ -80,7 +104,7 @@ Now one might ask: does the order of mini batches affect the learned mean and va
 
 ### Why Batch Normalization Works?
 
-**Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
+**Internal Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
 
 - In a cat classifier, training data are black cats, but test data are orange cats
 - In an image deblurring system, images are brighter than test data.
