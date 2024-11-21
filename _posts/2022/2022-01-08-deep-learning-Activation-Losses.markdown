@@ -257,6 +257,47 @@ $$
 </p>
 </div>
 
+For multi-class classification problems, one can use `FocalLoss` as well. [This post is very well written](https://www.kaggle.com/code/thedrcat/focal-multilabel-loss-in-pytorch-explained)
+
+```python
+import torch
+torch.set_printoptions(precision=4, sci_mode=False, linewidth=150)
+
+num_label = 8
+logits = torch.tensor([[-5., -5, 0.1, 0.1, 5, 5, 100, 100]])
+targets = torch.tensor([[0, 1, 0, 1, 0, 1, 0, 1]])
+logits.shape, targets.shape
+
+# will all one be better?
+def focal_binary_cross_entropy(logits, targets, gamma=1):
+    """
+    The logic of the below is: 
+        - For False Positive: adjusted_p = 1-p (~0), 1-adjusted_p ~1 -> logp = -log(adjusted_p) (far larger than 0) 
+            -> loss = logp * (1-adjusted_p)**gamma = large number ✅
+        - For False Negative: adjusted_p = p (~0), 1-adjusted_p ~1 -> logp = -log(adjusted_p) (far larger than 0) 
+            -> loss = logp * (1-adjusted_p)**gamma = large number ✅
+        - For True Negative: adjusted_p = 1-p (~1), 1-adjusted_p ~0 -> logp = -log(adjusted_p) (~0 ) 
+            -> loss = logp * (1-adjusted_p)**gamma = ~0 ✅
+        - For True Positive: adjusted_p = p (~1), 1-adjusted_p ~0 -> logp = -log(adjusted_p) (~0 ) 
+            -> loss = logp * (1-adjusted_p)**gamma = ~0 ✅
+    - torch.clamp() is in place to avoid overflow or under flow
+    """
+    l = logits.reshape(-1)
+    t = targets.reshape(-1)
+    p = torch.sigmoid(l)
+    p = torch.where(t >= 0.5, p, 1-p)
+    print(f"adjusted probability: {p}")
+    print(f"1-adjusted_p: {1-p}")
+    logp = - torch.log(torch.clamp(p, 1e-4, 1-1e-4))
+    print(f"logp: {logp}")
+    loss = logp*((1-p)**gamma)  #[class_num]
+    print(f'If the starting index = 1, indices 2, 3, 5, 7 should have a large loss: {loss}')
+    loss = num_label*loss.mean()
+    return loss
+
+focal_binary_cross_entropy(logits, targets)
+```
+
 ## References
 
 [1] Sudre, C. H., Li, W., Vercauteren, T., Ourselin, S., & Cardoso, M. J. Generalised Dice overlap as a deep learning loss function for highly unbalanced segmentations. Deep Learning in Medical Image Analysis and Multimodal Learning for Clinical Decision Support: 3rd International Workshop, DLMIA 2017, and 7th International Workshop, ML-CDS 2017 Held in Conjunction with MICCAI 2017, Quebec City, QC, Canada, September 14, 2017, Proceedings, pp. 240–248. Springer, 2017.

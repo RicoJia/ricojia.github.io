@@ -12,6 +12,7 @@ tags:
 ## Batch Normalization
 
 Normalization with mean and variance looks like:
+
 <div style="text-align: center;">
     <p align="center">
        <figure>
@@ -21,7 +22,12 @@ Normalization with mean and variance looks like:
     </p>
 </div>
 
-The main idea is: If normalization is effective with input data to improve over learning, why can't we do that during the training? We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results. The steps are:
+The main idea is: If normalization is effective with input data to improve over learning, why can't we do that during the training? We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results. For example, if we have `N` pictures with `HxW` RGB channels, the Batch norm will be:
+
+1. Add up all pixel values across all `N` pictures on the R channel. Then, divide by the sum by `NxHxW`. This will give us one number
+1. Repeat the above for G and B channels.
+
+More formally, the steps are:
 
 1. Similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Note the addition of $\epsilon$.
 
@@ -49,7 +55,9 @@ $$
 x -> Batch Normalization -> Activation (ReLu, etc.)
 ```
 
-4. As a result, the distribution of Z of each dimension across the batch is more normalized. So visually,
+### Efficacy of Batch Normalization
+
+As a result, the distribution of Z of each dimension across the batch is more normalized. So visually,
 
 <div style="text-align: center;">
 <p align="center">
@@ -60,7 +68,7 @@ x -> Batch Normalization -> Activation (ReLu, etc.)
 </p>
 </div>
 
-5. Here is the effect on gradient magnitude distribution with batch normalization. One can see that with BN, gradient magnitudes span across a larger range quite evenly
+Here is the effect on gradient magnitude distribution with batch normalization. One can see that with BN, gradient magnitudes span across a larger range quite evenly
 
 <div style="text-align: center;">
     <p align="center">
@@ -75,7 +83,7 @@ x -> Batch Normalization -> Activation (ReLu, etc.)
 
 Batch normalization is usually implemented as its own layer. The layer parameters $\gamma$ and $\beta$ can be learned through gradient descent (we can add our own flavors too, like Adam/Momentum/RMSProp). The mean and variance however, comes from the input mini-batch.
 
-One trick is in forprop, when calculating the connected layer before batch normalization, we **don't need to add b** to z. That's because we will be taking the mean of z at all z's dimensions over the batch, and that eliminates b. So, below suffices:
+One trick is in foreward prop, when calculating the connected layer before batch normalization, we **don't need to add b** to z. That's because we will be taking the mean of z at all z's dimensions over the batch, and that eliminates b. So, below suffices:
 
 $$
 \begin{gather*}
@@ -101,6 +109,29 @@ $$
 So in total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
 
 Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
+
+## Implementation
+
+Now, let's enjoy some code
+
+```python
+class BatchNormCustom(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        # self.register_buffer('running_mean', ?)
+    def forward(self, X):
+        # average across each channel, so the output shape is (num_channel, num_rows, num_clns)
+        mean = X.mean(dim = (0, 2, 3), keepdim=True)
+        print(f'{mean.shape}')
+
+batch_size, num_channel, num_rows, num_clns = 2, 3, 4, 5
+X = torch.ones((batch_size, num_channel, num_rows, num_clns))
+bn = BatchNormCustom()
+bn(X)
+
+m = torch.nn.BatchNorm2d(num_features=num_channel)
+m(X).shape
+```
 
 ### Why Batch Normalization Works?
 
