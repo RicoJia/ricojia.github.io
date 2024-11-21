@@ -102,6 +102,8 @@ reshaped_tensor = tensor_b.reshape(tensor_a.shape)
 print(torch.unique(target))
 ```
 
+- There's no difference between `tensor.size()` and `tensor.shape`
+
 ### Broadcasting
 
 - dimensions with `1` can be expanded implicitly through broadcasting. E.g., for matrix addition `(3, 1, 4) + (1, 2, 4) = (3, 2, 4)`. Here is how it works:
@@ -190,7 +192,7 @@ print(predicted_test)
 
 ## Advanced Topics
 
-- In a custom module, write code for training mode and eval mode:
+### In a custom module, write code for training mode and eval mode
 
 ```python
 class MyDummy(torch.nn.Module):
@@ -218,3 +220,13 @@ torch.nn.Parameter is to represent a learnable param in a neural network.
 
 - `torch.nn.Parameter` autoregisters a parameter in the module's parameter list. It will then be used for computational graph building for
 gradient descent.
+
+### Register Buffers
+
+A buffer:
+    - is NOT a parameter in a module, so it cannot be learned, and no gradient is computed for them. 
+    - A buffer's value can be loaded with the module's dictionary. So a buffer can persist between runs.
+
+```python
+self.register_buffer('running_mean', torch.zeros(num_features))
+```
