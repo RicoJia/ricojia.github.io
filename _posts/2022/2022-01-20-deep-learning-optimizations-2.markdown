@@ -183,7 +183,8 @@ Here is the effect on gradient magnitude distribution with batch normalization. 
 Batch normalization has two main constraints:
 
 - When batch size become smaller, it performs bad? Nowadays, we tend to have higher data resolution, especially in large NLP training.
-- Need to maintain running means. Batch normalization cannot be used on time sequence data.
+- Need to maintain running means. Batch normalization cannot be used on time sequence data
+  - Because it operates on the 2nd dimension (channels). In sequence data, that is the time dimension. Since we have variable time length, normalizing across time dimension is feasible, but suffers the variability of number of elements.
 - In distributed training, BN needs to combine average and var from multiple devices
 
 Layer normalization mitigates such issues (**hence it's always used in NLP tasks in place of batch normalization**). Also, layer normalization does **NOT require storing running mean and variances** The way it works is to take the mean and variance cross a batches (not cross channels)
@@ -255,7 +256,7 @@ print(f'Torch x norm: {X_torch_norm}')
 
 ### Misc Notes Of Layer Normalization
 
-- Can layer norm used on RNN? From the above, yes. All time steps across a specific batch will be normalized. 
+- Can layer norm used on RNN? From the above, yes. All time steps across a specific batch will be normalized.
 
 - Layer normalization was proposed by [Ba et al. 2016](https://arxiv.org/abs/1607.06450) and was incorporated into the Transformer in [Vaswani et al.'s famous paper Attention Is All You Need](https://arxiv.org/abs/1706.03762). GPT-2 took this architecture, but moved the layer normalization to the front of every block. This way, the residual connection of the Transformer is kept clean.
 
@@ -263,7 +264,6 @@ print(f'Torch x norm: {X_torch_norm}')
 
 - [Andrej Karpathy wrote a very good tutorial on this](https://github.com/karpathy/llm.c/blob/master/doc/layernorm/layernorm.md)
 TODO: Try doing backward prop. See Karpathy's tutorial.
-
 
 ## Gradient Clipping
 

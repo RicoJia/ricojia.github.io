@@ -28,6 +28,14 @@ The encoder has one multi-head self-attention pooling and one positionwise feed-
 - The positionwise feedforward networks **transforms embeddings at all timesteps using the same multi-layer perceptrons (MLP)**. So, they do not perform any time-wise operations.
   - Positionwise FFN **COULD** have a different hidden layer dimension within itself, as shown below. It just needs to output the same dimension.
 
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/195ef3b9-35fe-4c4d-a582-bcc9088c0f92" height="500" alt=""/>
+    </figure>
+</p>
+</div>
+
 Now, let's enjoy some code.
 
 #### Positionwise FFN
