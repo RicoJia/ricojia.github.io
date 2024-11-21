@@ -70,21 +70,6 @@ probs.gather(1, targets.unsqueeze(1))
     - `softmax` creates a softmax across these two channels.
     - `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
 
-- In a custom module, write code for training mode and eval mode:
-
-```python
-class MyDummy(torch.nn.Module):
-    def forward(self):
-        if self.training:
-            ...
-```
-
-- To make variables learnable parameters:
-
-```python
-my_var = torch.nn.Parameter(torch.ones(num_features))
-```
-
 ## Common Operations
 
 ### Math Operations
@@ -202,3 +187,34 @@ print(predicted_test)
         from torchsummary import summary
         summary(model, input_size=(channels, height, width))
         ```
+
+## Advanced Topics
+
+- In a custom module, write code for training mode and eval mode:
+
+```python
+class MyDummy(torch.nn.Module):
+    def forward(self):
+        if self.training:
+            ...
+```
+
+### To make variables learnable parameters
+
+```python
+class MyModule(torch.nn.Module):
+    def __init__(self, ) -> None:
+        super().__init__()
+        self.my_param = torch.nn.Parameter(torch.Tensor([1,2,3]))
+    def forward(self, x):
+        return x*self.my_param
+
+m = MyModule()
+print(m.my_param, m.my_param.requires_grad, m.my_param.data)
+m(torch.Tensor([1,2,3]))
+```
+
+torch.nn.Parameter is to represent a learnable param in a neural network.
+
+- `torch.nn.Parameter` autoregisters a parameter in the module's parameter list. It will then be used for computational graph building for
+gradient descent.

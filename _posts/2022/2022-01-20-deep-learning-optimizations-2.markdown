@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Optimizations Part 2
 date: '2022-01-20 13:19'
-subtitle: Batch Normalization (BN), Gradient Clipping
+subtitle: Batch Normalization (BN), Gradient Clipping, Layer Normalization
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -11,6 +11,7 @@ tags:
 
 ## Batch Normalization
 
+Among many pitfalls of ML, statistical stability is always high on the list. Model training is random: the initialization, even the common optimizers (SGD, Adam, etc.) are stochastic. Because of this, ML models might run into sharp minima in the loss landscape. That would cause high gradients. The most common way to fix it is **batch-normalization**.
 Normalization with mean and variance looks like:
 
 <div style="text-align: center;">
@@ -176,6 +177,33 @@ Here is the effect on gradient magnitude distribution with batch normalization. 
        </figure>
     </p>
 </div>
+
+## Layer Normalization
+
+Batch normalization has two main constraints:
+
+- When batch size become smaller, it performs bad? Nowadays, we tend to have higher data resolution, especially in large NLP training.
+- Need to maintain running means. Batch normalization cannot be used on time sequence data.
+- In distributed training, BN needs to combine average and var from multiple devices
+
+Layer normalization mitigates such issues (**hence it's always used in NLP tasks in place of batch normalization**). Also, layer normalization does **NOT require storing running mean and variances** The way it works is to take the mean and variance cross a batches (not cross channels)
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/49b335b5-35bb-477b-8b20-8ab59d638c13" height="200" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Layer normalization was proposed by [Ba et al. 2016](https://arxiv.org/abs/1607.06450) and was incorporated into the Transformer in [Vaswani et al.'s famous paper Attention Is All You Need](https://arxiv.org/abs/1706.03762). GPT-2 took this architecture, but moved the layer normalization to the front of every block. This way, the residual connection of the Transformer is kept clean.
+
+[PyTorch LayerNorm](https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html) does not give all the necessary implementation details. Its implementation is buried under 30 layers of auto-generated CUDA code, behind an instructable dynamical dispatcher. This is because PyTorch really really cares about efficiency, fair enough.
+
+[Andrej Karpathy wrote a very good tutorial on this](https://github.com/karpathy/llm.c/blob/master/doc/layernorm/layernorm.md)
+TODO: Try doing backward prop. See Karpathy's tutorial.
+
+TODO: can layer norm used on RNN?
 
 ## gradient clipping
 
