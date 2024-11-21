@@ -67,8 +67,17 @@ print(probs)
 probs.gather(1, targets.unsqueeze(1))
 ```
 
-- `softmax` creates a softmax across these two channels.
-- `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
+    - `softmax` creates a softmax across these two channels.
+    - `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
+
+- In a custom module, write code for training mode and eval mode:
+
+```python
+class MyDummy(torch.nn.Module):
+    def forward(self):
+        if self.training:
+            ...
+```
 
 ## Common Operations
 
@@ -80,26 +89,8 @@ probs.gather(1, targets.unsqueeze(1))
         ```
         outi​=inputi​@mat2i
         ```
-
-### Convertions Between An Numpy Array And Its Torch Tensor
-
-```python
-torch_tensor = torch.from_numpy(np_array)
-# convert from float64 to float32
-torch_tensor_float32 = torch_tensor.float()
-
-# Create the tensor on CUDA
-torch_tensor_gpu = torch_tensor.to('cuda')
-# This is production-friendly
-torch_tensor = torch_tensor.to('cuda' if torch.cuda.is_available() else 'cpu')
-# Explicitly creating a cpu based tensor
-tensor = tensor.cpu()
-
-# back to numpy array:
-np_array = tensor.detach().numpy() 
-```
-
-- If an `np_array` is of `float64`, then to convert it to other datatypes using `torch_tensor.float()`
+- `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.
+- `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
 
 ### Reshaping
 
@@ -153,18 +144,29 @@ print(torch.unique(target))
 ]
 ```
 
-### Misc
+## Data Type Conversions
 
-- Printing full tensors
+### Convertions Between An Numpy Array And Its Torch Tensor
 
 ```python
-torch.set_printoptions(profile="full")  # Set print options to 'full'
-print(predicted_test)
+torch_tensor = torch.from_numpy(np_array)
+# convert from float64 to float32
+torch_tensor_float32 = torch_tensor.float()
+
+# Create the tensor on CUDA
+torch_tensor_gpu = torch_tensor.to('cuda')
+# This is production-friendly
+torch_tensor = torch_tensor.to('cuda' if torch.cuda.is_available() else 'cpu')
+# Explicitly creating a cpu based tensor
+tensor = tensor.cpu()
+
+# back to numpy array:
+np_array = tensor.detach().numpy() 
 ```
 
-- `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.
-- `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
+### Float to Bool, Device to String
 
+- If an `np_array` is of `float64`, then to convert it to other datatypes using `torch_tensor.float()`
 - Datatypes: if we need to convert a matrix into `int` when seeing errors like `"bitwise_and_cuda" not implemented for 'Float'`, we can do `matrix.bool()`
 
 ```python
@@ -174,6 +176,15 @@ local_correct = (predicted_test & labels_test).sum().item()
 
 - In places like `torch.autocast(device_type=device_type, dtype=torch.float16)`, we need to pass a string in.
   - Solution: `device_type = str(device)`
+
+## Misc
+
+- Printing full tensors
+
+```python
+torch.set_printoptions(profile="full")  # Set print options to 'full'
+print(predicted_test)
+```
 
 - Model summary: there are two methods
   - `model = print(model)  # Your model definition`

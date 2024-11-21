@@ -119,8 +119,15 @@ When considering accuracy on both positives and negatives, accuracies are: `trai
 - Actions
   - Check for better loss options
     - F1 score [Not suitable because it's not differentiable](./2022-01-08-deep-learning-Activation-Losses.markdown)
-        - [Could try F1 Metric Variant](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/comments)
+      - [Could try F1 Metric Variant](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/comments)
     - Focal loss (✅)
   - Check for training images. **Some images are dark** after normalization with ImageNet's mean and std_dev.
   - Fine tuning:
     - freeze early layers. early layers capture local features. Freezing the late layers might be beneficial
+
+### [2] Training Model From [1] With Focal Loss
+
+- Observations: there is clear overfitting on the training set.
+  - F1 Score: `0.737 on training set, 0.593 on validation set`
+- Actions:
+  - Retrain the model from scratch using F1 metric?

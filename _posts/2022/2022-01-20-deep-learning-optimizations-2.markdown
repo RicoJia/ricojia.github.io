@@ -35,7 +35,7 @@ $$
 \begin{gather*}
 \mu = \frac{\sum x}{m}
 \\
-\sigma = \frac{\sum (x - \mu)^2}{m}
+\sigma^2 = \frac{\sum (x - \mu)^2}{m}
 \\
 z_{norm} = \frac{x-\mu_z}{\sqrt{\beta^2 + \epsilon}}
 \end{gather*}
@@ -106,7 +106,7 @@ $$
 
 ### During Inference
 
-The batch Normalization layer already has its $\gamma$ and $\beta$ learned. In training, we simply use the learned $\mu$ and $\sigma$ from training. [In this coursera video](https://www.youtube.com/watch?v=5qefnAek8OA), Andrew Ng stated that this is fairly robust. 
+The batch Normalization layer already has its $\gamma$ and $\beta$ learned. In training, we simply use the learned $\mu$ and $\sigma$ from training. [In this coursera video](https://www.youtube.com/watch?v=5qefnAek8OA), Andrew Ng stated that this is fairly robust.
 
 **During inference, since mean and variance are fixed, they can be implemented using a linear layer.**
 
