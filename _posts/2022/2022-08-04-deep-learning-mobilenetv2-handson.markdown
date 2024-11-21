@@ -118,14 +118,9 @@ When considering accuracy on both positives and negatives, accuracies are: `trai
 - Observations: I don't see overfitting or underfitting.
 - Actions
   - Check for better loss options
-    - f1 score (Not suitable because it's not differentiable) TODO: embed link here
-      - When calculating f1 score, we need to count true positives anf1 score itself is not differentiable, unless we track
-    - Hamming loss (Not suitable because it's not differentiable) TODO: embed link here
-    - Focal loss: embed link here
-    - Soft F1 Loss: embed link here
-    - [F1 Metric Variant](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/comments)
-  - Check for training images. **Some images are dark** after normalization with ImageNet's mean and std_dev
-    - TODO
+    - F1 score [Not suitable because it's not differentiable](./2022-01-08-deep-learning-Activation-Losses.markdown)
+        - [Could try F1 Metric Variant](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric/comments)
+    - Focal loss (✅)
+  - Check for training images. **Some images are dark** after normalization with ImageNet's mean and std_dev.
   - Fine tuning:
     - freeze early layers. early layers capture local features. Freezing the late layers might be beneficial
-  - Check for class imbalances

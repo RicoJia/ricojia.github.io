@@ -257,7 +257,7 @@ $$
 </p>
 </div>
 
-For multi-class classification problems, one can use `FocalLoss` as well. [This post is very well written](https://www.kaggle.com/code/thedrcat/focal-multilabel-loss-in-pytorch-explained)
+The above is for image segmentation, where every pixel has **only one true label**. For multi-class classification problems, one can use `FocalLoss` as well, but with some adaptations. [This post is very well written](https://www.kaggle.com/code/thedrcat/focal-multilabel-loss-in-pytorch-explained)
 
 ```python
 import torch

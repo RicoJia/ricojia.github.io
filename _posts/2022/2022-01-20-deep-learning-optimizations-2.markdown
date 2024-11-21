@@ -22,7 +22,7 @@ Normalization with mean and variance looks like:
     </p>
 </div>
 
-The main idea is: If normalization is effective with input data to improve over learning, why can't we do that during the training? We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results. For example, if we have `N` pictures with `HxW` RGB channels, the Batch norm will be:
+**The main idea is**: If normalization is effective with input data to improve over learning, why can't we do that during the training? We have seen that we normalize the input data based on their average and mean. Given an input `(N, C, H, W)`, we can normalize across the `C` channel to achieve uniform results. For example, if we have `N` pictures with `HxW` RGB channels, the Batch norm will be:
 
 1. Add up all pixel values across all `N` pictures on the R channel. Then, divide by the sum by `NxHxW`. This will give us one number
 1. Repeat the above for G and B channels.
@@ -81,9 +81,22 @@ Here is the effect on gradient magnitude distribution with batch normalization. 
 
 ### During Training
 
-Batch normalization is usually implemented as its own layer. The layer parameters $\gamma$ and $\beta$ can be learned through gradient descent (we can add our own flavors too, like Adam/Momentum/RMSProp). The mean and variance however, comes from the input mini-batch.
+Batch normalization is usually implemented as its own layer. The layer parameters $\gamma$ and $\beta$ can be learned through gradient descent (we can add our own flavors too, like Adam/Momentum/RMSProp). The mean and variance however, comes from the input mini-batch. The mean and variance are exponentially decayed average learned from training:
 
-One trick is in foreward prop, when calculating the connected layer before batch normalization, we **don't need to add b** to z. That's because we will be taking the mean of z at all z's dimensions over the batch, and that eliminates b. So, below suffices:
+$$
+\begin{gather*}
+\mu_z = \beta_\mu \mu_z + (1-\beta_\mu) \bar{z} \\
+\sigma_z = \beta_v \sigma_z + (1-\beta_v) var(z)
+\end{gather*}
+$$
+
+- $\beta_\mu$, $\beta_v$ are momentum constants.
+
+So in total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
+
+Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
+
+One note is in foreward prop, when calculating the connected layer before batch normalization, we **don't need to add b** to z. That's because we will be taking the mean of z at all z's dimensions over the batch, and that eliminates b. So, below suffices:
 
 $$
 \begin{gather*}
@@ -93,26 +106,13 @@ $$
 
 ### During Inference
 
-The batch Normalization layer already has its $\gamma$ and $\beta$ learned. The mean and variance are exponentially decayed average learned from training:
-
-$$
-\begin{gather*}
-\mu_z = \beta_\mu \mu_z + (1-\beta_\mu) \bar{z} \\
-\sigma_z = \beta_v \sigma_z + (1-\beta_v) var(z)
-\end{gather*}
-$$
+The batch Normalization layer already has its $\gamma$ and $\beta$ learned. In training, we simply use the learned $\mu$ and $\sigma$ from training. [In this coursera video](https://www.youtube.com/watch?v=5qefnAek8OA), Andrew Ng stated that this is fairly robust. 
 
 **During inference, since mean and variance are fixed, they can be implemented using a linear layer.**
 
-- $\beta_\mu$, $\beta_v$ are momentum constants.
-
-So in total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
-
-Now one might ask: does the order of mini batches affect the learned mean and variance? The answer is yes, but its effect should be averaged out if the mini batches are randomly shuffled.
-
 ## Implementation
 
-Now, let's enjoy some code
+Now, let's enjoy some code. This is inspired by [ptrblck's implementation](https://github.com/ptrblck/pytorch_misc/blob/master/batch_norm_manual.py)
 
 ```python
 class BatchNormCustom(torch.nn.Module):

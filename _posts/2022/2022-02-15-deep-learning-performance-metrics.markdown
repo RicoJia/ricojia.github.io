@@ -231,6 +231,29 @@ F1 = \frac{2}{\frac{1}{precision} + \frac{1}{recall}}
 \end{gather*}
 $$
 
+F1 score unfortunately is NOT a loss, because it's NOT differentiable. This is because precion and recall are not differentiable either: **each false prediction will contribute either 0 or 1 to the loss, so the loss is calculated discretely, not continuously**. To make it continuous, one can use make it a [soft F1 Score loss](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric):
+
+$$
+\begin{gather*}
+TP = \sum (y_{\text{true}} \cdot y_{\text{pred}})
+\\
+TN = \sum \left((1 - y_{\text{true}}) \cdot (1 - y_{\text{pred}})\right)
+\\
+FP = \sum \left((1 - y_{\text{true}}) \cdot y_{\text{pred}}\right)
+\end{gather*}
+\\
+FN = \sum \left(y_{\text{true}} \cdot (1 - y_{\text{pred}})\right)
+
+\\ =>
+\\
+P = \frac{TP}{TP + FP + \epsilon}
+\\
+R = \frac{TP}{TP + FN + \epsilon}
+\\
+F1 = \frac{2 \cdot P \cdot R}{P + R + \epsilon}
+
+$$
+
 ### Satisficing Metric
 
 Satisficing here means "satisfying a certain metric suffices". It's a kind of metric that we set a minumum requirement for, but do not care so much afterwards. For example, in a classifier, as long as recall is over 90%, we don't care about it as much; or in a recommendation system, we set a minimum for speed, but after that we care a lot more on the accuracy.
