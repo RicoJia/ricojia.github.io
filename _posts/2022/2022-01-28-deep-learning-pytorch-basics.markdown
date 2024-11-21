@@ -79,6 +79,12 @@ class MyDummy(torch.nn.Module):
             ...
 ```
 
+- To make variables learnable parameters:
+
+```python
+my_var = torch.nn.Parameter(torch.ones(num_features))
+```
+
 ## Common Operations
 
 ### Math Operations
@@ -91,6 +97,8 @@ class MyDummy(torch.nn.Module):
         ```
 - `tensor.numel()` calculates the total number of elements. Returns `batch_size * height * width`.
 - `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
+- `torch.var(unbiased=False)` this is to calculate [biased variance](../2017/2017-06-03-stats-basic-recap.markdown). It's useful in batch norm calculation.
+- `torch.Tensor()`'s singleton dimensions are the dimensions with only 1 element.
 
 ### Reshaping
 

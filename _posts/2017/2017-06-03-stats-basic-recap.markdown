@@ -1,12 +1,50 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Distributions, Covariance & Correlation
+subtitle: Basic Statistics Concepts, Distributions, Covariance & Correlation
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
     - Math
 ---
+
+## Basic Statistics Concepts
+
+### Standard Deviation and Variance
+
+Variance of a distribution can be "biased" and "unbiased". A biased variance is to always underestimate the real bias.
+$$
+\begin{gather*}
+\text{unbiased variance} = \frac{\sum (x - \bar{x})}{n-1}
+\\
+\text{biased variance} = \frac{\sum (x - \bar{x})}{n}
+
+\end{gather*}
+$$
+
+The above unbiasing operation is caleld "Bessel correction"
+
+#### Reasoning For Bessel Correction
+
+- Population variance (or the true variance of the entire population) is calculated as:
+
+$$
+\begin{gather*}
+\sigma^2 = \frac{1}{N} \sum_N (x - \mu)^2
+\end{gather*}
+$$
+    - Where `N` is the whole popilation's size, $\mu$ is the population mean
+
+- Sample variance:
+
+$$
+\begin{gather*}
+s^2 = \frac{1}{n} \sum_n (x - \bar{x})^2
+\end{gather*}
+$$
+    - Where `n` is the batch size, $\bar{x}$ is the batch mean
+
+The sample variance has a slight bias because $\bar{x}$ is a random variable dependent on the sample. The population mean is slightly larger, so we divide by $N-1$ instead of $N$.
 
 ## Distributions
 
