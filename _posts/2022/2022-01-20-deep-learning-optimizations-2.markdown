@@ -253,14 +253,17 @@ X_torch_norm = m(X)
 print(f'Torch x norm: {X_torch_norm}')
 ```
 
-Layer normalization was proposed by [Ba et al. 2016](https://arxiv.org/abs/1607.06450) and was incorporated into the Transformer in [Vaswani et al.'s famous paper Attention Is All You Need](https://arxiv.org/abs/1706.03762). GPT-2 took this architecture, but moved the layer normalization to the front of every block. This way, the residual connection of the Transformer is kept clean.
+### Misc Notes Of Layer Normalization
 
-[PyTorch LayerNorm](https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html) does not give all the necessary implementation details. Its implementation is buried under 30 layers of auto-generated CUDA code, behind an instructable dynamical dispatcher. This is because PyTorch really really cares about efficiency, fair enough.
+- Can layer norm used on RNN? From the above, yes. All time steps across a specific batch will be normalized. 
 
-[Andrej Karpathy wrote a very good tutorial on this](https://github.com/karpathy/llm.c/blob/master/doc/layernorm/layernorm.md)
+- Layer normalization was proposed by [Ba et al. 2016](https://arxiv.org/abs/1607.06450) and was incorporated into the Transformer in [Vaswani et al.'s famous paper Attention Is All You Need](https://arxiv.org/abs/1706.03762). GPT-2 took this architecture, but moved the layer normalization to the front of every block. This way, the residual connection of the Transformer is kept clean.
+
+- [PyTorch LayerNorm](https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html) does not give all the necessary implementation details. Its implementation is buried under 30 layers of auto-generated CUDA code, behind an instructable dynamical dispatcher. This is because PyTorch really really cares about efficiency, fair enough.
+
+- [Andrej Karpathy wrote a very good tutorial on this](https://github.com/karpathy/llm.c/blob/master/doc/layernorm/layernorm.md)
 TODO: Try doing backward prop. See Karpathy's tutorial.
 
-TODO: can layer norm used on RNN?
 
 ## Gradient Clipping
 
