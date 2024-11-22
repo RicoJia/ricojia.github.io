@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Optimizations Part 1
 date: '2022-01-18 13:19'
-subtitle: Momentum, RMSProp, Adam, Learning Rate Decay, Local Minima
+subtitle: Momentum, RMSProp, Adam, Learning Rate Decay, Local Minima, Gradient Clipping
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -267,6 +267,28 @@ But If we add **learning rate decay** on top of SGD and SGD with momentum, those
     <figure>
         <img src="https://github.com/user-attachments/assets/6c3acf35-cc0c-43cd-9307-4db21bd337b0" height="300" alt=""/>
         <figcaption>SGD with Momentum and Learning Rate Decay</figcaption>
+    </figure>
+</p>
+</div>
+
+## Gradient Clipping
+
+One simple method is: if gradint surpasses a simple threshold, we clip the gradient to the threshold.
+
+- `np.clip(a, a_min, a_max, out=None)`: `out` is an output array
+
+```
+# np.clip(a, a_min, a_max, out=None)
+np.clip(a, 1, 8)
+array([1, 1, 2, 3, 4, 5, 6, 7, 8, 8])`
+```
+
+The effect of gradient clipping is
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/cba1cc6f-8033-4dad-aa50-5122fb9fc320" height="300" alt=""/>
     </figure>
 </p>
 </div>
