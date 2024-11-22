@@ -84,3 +84,15 @@ P = pos_encoding.P[:, :X.shape[1], :]
 d2l.plot(torch.arange(num_steps), P[0, :, 6:10].T, xlabel='Row (position)',
          figsize=(6, 2.5), legend=["Col %d" % d for d in torch.arange(6, 10)])
 ```
+
+In below's chart, 50 128-dimension positional encodings are shown. Each row is the index of the encoding, each column is a number in a 128-dimension vector.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/9e5826c7-fa69-4cbe-8934-4716e4fc6dae" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+For example, for the `50th` input embedding, the 0th dim corresponds to the value `sin(50/10000^{(2*0/128)}})`. The 127th dim corresponds to `cos(50/10000^(126/128))`. As we can see, the frequency of encoding "bit" changing decreases, as the dimension number goes higher.
