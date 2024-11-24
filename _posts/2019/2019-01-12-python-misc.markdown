@@ -31,7 +31,17 @@ line2
 print(f"{test_acc:.2f}%")
 ```
 
-## shutil
+## Path Related
+
+### `os` Library
+
+- Absolute Path
+
+```python
+script_path = os.path.abspath(__file__)
+```
+
+### `shutil`
 
 - remove non-empty directory:
 
