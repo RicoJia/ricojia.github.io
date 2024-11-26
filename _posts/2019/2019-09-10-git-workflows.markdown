@@ -192,12 +192,4 @@ A---B---C (master)
 A---B---D---E---C (master) (rebased commits)
 ```
 
-- `git config pull.ff only` appends the remote to the local. But this would fail if there are ()
-
-```
-A---B---C (master)
-     \
-      D---E (origin/master)
-=>
-A---B---C---D---E (master)
-```
+I like a linear history. So I do `git rebase origin/master`.
