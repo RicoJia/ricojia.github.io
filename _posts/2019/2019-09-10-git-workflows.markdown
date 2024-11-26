@@ -2,12 +2,22 @@
 layout: post
 title: Git - Workflows
 date: '2019-09-10 13:19'
-subtitle: Git Test Runners
+subtitle: Git Test Runners, CI/CD, PyPi
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
     - Git
 ---
+
+## Local Git Repo Setup
+
+- Copy ssh key to Github
+- Set up email and username:
+
+```python
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+```
 
 ## Set Up Github Test Workflow
 
@@ -117,3 +127,77 @@ This will trigger the publish workflow and automatically push the package to PyP
 - Trigger when a new tag starting with v (e.g., v1.0.0) is pushed to the master branch.
 - Build the package using build and twine.
 - Publish the package to PyPI.
+
+## Combine A Diverge Between Remote And Local Repos
+
+When there is a diverge between the remote and the local repos, `git pull` won't work. Instead it will show:
+
+```bash
+You have diverging branches and need to specify how to reconcile them. Before performing the next pull operation, you can suppress this message by running one of the following commands:
+git config pull.rebase false  # Merge (default strategy)
+git config pull.rebase true   # Rebase
+git config pull.ff only       # Fast-forward only
+```
+
+To confirm that there's a diverge, we can:
+
+1. `git log master..origin/master --oneline` to see the different commits on **remote** since the last common commit. I see
+
+```bash
+463955d (origin/master, origin/HEAD) more
+f746488 more
+ed0b487 more
+```
+
+2. `git log origin/master..master --oneline` to see different commits on **local** since the last common commit. I see
+
+```bash
+02af0d4 (HEAD -> master) more
+ba2bb33 more
+```
+
+- Locally, this can be confirmed by `git log`. We can even have a more visual representation: `git log --graph --oneline --decorate master origin/master`
+
+```bash
+* 02af0d4 (HEAD -> master) more
+* ba2bb33 more
+| * 463955d (origin/master, origin/HEAD) more
+| * f746488 more
+| * ed0b487 more
+|/  
+* 89696f2 more
+```
+
+3. To fix, there are 3 options:
+
+- `git config pull.rebase false` merge the remote branch into the local branch in a new commit.
+
+```
+A---B---C (master)
+     \
+      D---E (origin/master)
+=>
+A---B---C---F (master) (merge commit)
+     \     /
+      D---E (origin/master)
+```
+
+- `git config pull.rebase true` appends the local branch to the remote branch (a.k.a "rebase").
+
+```
+A---B---C (master)
+     \
+      D---E (origin/master)
+=>
+A---B---D---E---C (master) (rebased commits)
+```
+
+- `git config pull.ff only` appends the remote to the local. But this would fail if there are ()
+
+```
+A---B---C (master)
+     \
+      D---E (origin/master)
+=>
+A---B---C---D---E (master)
+```

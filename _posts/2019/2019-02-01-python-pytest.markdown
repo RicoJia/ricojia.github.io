@@ -38,3 +38,5 @@ np.testing.assert_allclose(array1, array2)
 1. `ctrl+shift+p` choose `debug tests in the current file` or `debug all tests` (if you want to debug all tests under a configured directory)
 2. In my debugger, I found that I have to manually set a breakpoint before the failure point in Pytest. (I might miss an easier route to get around this)
 3. At the failed test, right click, and choose debug test
+
+4. `pytest -s <my_test.py>` seems to be executing all test modules in the current directory: this will be enforced in a `pyproject.toml` environment.

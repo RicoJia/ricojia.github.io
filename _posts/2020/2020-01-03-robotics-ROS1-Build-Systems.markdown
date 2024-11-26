@@ -7,6 +7,7 @@ header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - ROS1
+    - Build Systems
 comments: true
 ---
 
@@ -18,6 +19,14 @@ Catkin make is basically a wrapper of the `CMake` and `make`. It's part of the o
 - Supports parallelism as well, but less fine-grained control over that.
   - `catkin_make -j4` launches 4 sub-processes. Relies entirely on `cmake` parallelism
 - Might handle "hidden" dependencies implicitly, whereas `catkin build` requires more explicit dependency declarations.
+
+### Useful Commands
+
+- `catkin_make clean`: does NOT remove `build`  and `devel`?
+
+### `CMakeLists.txt` commands
+
+- ros packages should go into `find_package(  catkin REQUIRED components MY_PACKAGE)`
 
 ## `catkin build`
 
@@ -47,7 +56,17 @@ Catkin make is basically a wrapper of the `CMake` and `make`. It's part of the o
   - A good idea in this case is to install it.
     - If you are using docker without root priviledges, you can't install it in global space
     - You can install it in a custom space instead.
+  - The non-catkin package's `CMakeLists.txt` looks like
 
-```cmake
+    ```cmake
+    install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+    )
 
-```
+    install(DIRECTORY include/ DESTINATION include)
+    ```
+
+  - And it's invoked by `cmake -DCMAKE_INSTALL_PREFIX=${CUSTOM_INSTALL_PATH}`
+  - See [this post on Docker basics for how to set CUSTOM_INSTALL_PATH throught docker](../2018/2018-06-01-docker-basics.markdown/#docker-run-args)

@@ -14,7 +14,7 @@ tags:
 - Open `keyboard shortcuts -> add custom shortcuts`
 - I use `ctrl-alt-4` to enable `gnome-screenshot -a`
 
-## Window Focus (Which seems to be an )
+## Window Focus
 
 On my Ubuntu 22.04 system, when trying to download webpages / images from Chrome / Firefox, I noticed that the download dialog box is not focused in the first place. After searching for auto-focusing, I came up with a sub-optimal solution: **auto-shift to window that the mouse currently hovers on.**
 
@@ -41,5 +41,10 @@ Files filter_projects/face_tracker/face_tracker.hpp and Fun_Projects/filter_proj
 git log -1 --format="%ci" -- filter_projects/
 2022-03-31 12:07:13 -0500
 ```
+
 - `-1`: Limits the output to the most recent commit.
 - `--format="%ci"`: Formats the output to display the commit date in ISO format.
+
+## System Commands
+
+- `hostname`: host machine name in "USERNAME@HOSTNAME"

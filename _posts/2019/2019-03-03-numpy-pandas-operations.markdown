@@ -226,6 +226,18 @@ ls=["a", "b", "c"]
 np.in1d(["a", "z", "f"], ls)
 ```
 
+## Misc Function
+
+- Input images
+
+```python
+if encoding == 'rgb8':
+    image = np.frombuffer(data, np.uint8).reshape((height, width, 3))
+```
+
+- Before `[:, :, ::-1]`, the image channels are `[R, G, B]`
+- After `[:, :, ::-1]`, the iamge channels become `[B, G, R]`
+
 ## Pandas
 
 ### Example Of Preparing Data For Training

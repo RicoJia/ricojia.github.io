@@ -2,10 +2,10 @@
 layout: post
 title: Docker - Docker Basics
 date: '2018-06-01 13:19'
-subtitle: Motication Behind Docker And Docker's Construct
+subtitle: What is Docker, Basic Docker Operations, Docker Run
 comments: true
 tags:
-    - Linux
+    - Docker
 ---
 
 ## What Is Docker?
@@ -16,55 +16,47 @@ A bit of history: although containerization has been around since **2010**, Dock
 
 How Docker Works in a Nutshell: Docker works by **emulating the CPU, RAM, and other resources of the host operating system, creating a controlled environment known as a "sandbox."** This sandbox allows software to be installed and run in isolation, ensuring consistent behavior across different environments.
 
-## Construct Of An Docker Image And Its Building Process
+## Basic Operations
 
-A Docker image is like a box of Oreo. Its final image is like multiple Oreos (layer) stacked on top of each other. A layer could be built from multiple building stages (like our favorite chocolate topping), and each stage consists of smaller layers.
-
-Now Let's walk through an example
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/dd3fa345-6311-4975-b33f-349e122373fb" height="300" alt=""/>
-        <figcaption><a href="https://betterprogramming.pub/container-images-are-like-cakes-ba9040cf18e9">Source: Sunny Beatteay</a></figcaption>
-    </figure>
-</p>
-</div>
-
-```dockerfile
-# Stage 0: Build Stage
-FROM node:18-alpine AS build
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
-RUN npm run build
-
-# Stage 1: Final Stage
-FROM node:18-alpine
-
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-CMD ["node", "dist/main.js"]
-```
-
-**Layers:** Docker images are built in layers.
+### Stopped Docker Containers
 
 ```bash
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
+docker ps -a checks all containers, including the stopped ones
+docker container prune removes all stopped containers
+docker container rm <container-id>
+
+# or
+docker rm $(docker ps -a -f status=exited -q)   # -f followed by status
 ```
 
-- Each layer is an instruction such as `RUN`, `COPY`, `ADD`, etc. Each layer is stacked on top of each other. The above is a three-layer model.
+## Docker Compose
 
-**Stages:** The above is a two layer build. Each stage starts from a `FROM` command, which launches a base image.
+Amazon Elastic Container Registry (ECR) is a popular place to store Docker containers. First, make sure you have installed AWS CLI. Then, to pull your image:
 
-- Stage 0 creates artifacts / build of the custom app (e.g., `RUN npx run build`). It consists of several layers
-- Stage 1 is created by launching a new base image `node:18-alpine` and copying the build artifacts from Stage 0. The final image **only contains layers from the last stage and files copied from previous stages**. So Stage 0 is effectively discarded.
+```bash
+aws configure
+aws ecr get-login-password --region <REAGION> | docker login --username AWS --password-stdin <ECR_IMAGE_PATH>
+```
 
-- To use a custom Dockerfile, use the `-f` arg: `docker build -f Dockerfile_test_container . -t ros-noetic-simple-robotics-tests`
+To Check what's in the ECR registry:
+
+```bash
+# get the registry's name
+aws ecr describe-repositories --region <REGION>
+aws ecr describe-images --repository-name <REGISTRY_NAME> --region <REGION>
+```
+
+## Docker Image Removal
+
+The most vanilla version is `docker rmi <IMAGE_SHA_OR_IMAGE_WITH_TAG>`
+
+If you want to delete multiple images with the same name but with different tags `IMAGENAME:tag1, IMAGENAME:tag2,` then you can probably use `docker rmi $(docker images 'IMAGENAME' -q)`.
+
+However, if you want to delete a series of images that are built on top of each other (build stages), then they have a dependency chain. In that case, you can check for the dependencies using `docker image --tree` and do `docker rmi <TOP_IMAGE> ... <BOTTOM_IMAGE>`.
+
+### Environment Variables
+
+- `DEBIAN_FRONTEND`: this is an environment variable for Debian-based Systems (like Ubuntu) to control prompts in apt-get. `ENV DEBIAN_FRONTEND=noninteractive` will assume default answers to all prompts
 
 ## Docker Commands
 
@@ -73,9 +65,14 @@ RUN npm install --production
   - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
   - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
 
-- `docker run`: this is how to start a docker container. Args that I use quite often are:
-  - `-w ${WORKDIR}`: set `WORKDIR` such that when logging in, one will be in `WORKDIR`. If there's `/WORKDIR /home/${USER_NAME}` it'd work, too.
-  - `/bin/bash -c {COMMAND}`: use bash to execute a command upon starting a container.
+### Docker Run Args
+
+`docker run`: this is how to start a docker container. Args that I use quite often are:
+
+- `-w ${WORKDIR}`: set `WORKDIR` such that when logging in, one will be in `WORKDIR`. If there's `/WORKDIR /home/${USER_NAME}` it'd work, too.
+- `/bin/bash -c {COMMAND}`: use bash to execute a command upon starting a container.
+- `--user $(id -u):$(id -g)` : running the container with hosts' UID and GID. So the container user does **not** have sudo priviledges
+  - So you can't write to system directories like `/usr/local/lib`. The `/usr, /opt, /var` directories need sudo priviledges to modify
 
 ## Common Scenarios and Use Cases
 

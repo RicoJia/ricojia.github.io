@@ -60,18 +60,23 @@ Before publishing to the official PyPI, it's advisable to test your package on [
 
 - Create an Account: Similar to PyPI, create an account on TestPyPI.
 - Configure local machine
+
     ```bash
     poetry config repositories.testpypi https://test.pypi.org/legacy/ 
     poetry config pypi-token.testpypi your_testpypi_token_here
     ```
+
 - Build and push to TestPypi `poetry publish --build testpypi`
-- Go to https://test.pypi.org/ and check if your project is there. You can optionally install the package as well
+- Go to <https://test.pypi.org/> and check if your project is there. You can optionally install the package as well
+
     ```bash
     pip install -i https://test.pypi.org/simple/ simple-robotics-python-utils
     ```
-    - `-i` means `--index-url`. By default, pypi fetches packages from the official Pypi repo. However, we might need this when we have a private Pypi repo or TestPypi
 
-Build and push to Pypi: 
+  - `-i` means `--index-url`. By default, pypi fetches packages from the official Pypi repo. However, we might need this when we have a private Pypi repo or TestPypi
+
+Build and push to Pypi:
+
 - Create an Account in Pypi and verify Your Email.
 - Follow the Above steps for TestPypi and configure your API token
 
@@ -81,13 +86,14 @@ poetry config pypi-token.pypi your_pypi_token_here
 
 - `poetry publish --build`
 
-    - `poetry build` to build a package, which includes `dist` with `simple_robotics_python_utils-1.0.0-py3-none-any.whl` and `simple_robotics_python_utils-1.0.0.tar.gz`
+  - `poetry build` to build a package, which includes `dist` with `simple_robotics_python_utils-1.0.0-py3-none-any.whl` and `simple_robotics_python_utils-1.0.0.tar.gz`
+  - If you see `There are 2 files ready for publishing. Build anyway? (yes/no) [no] yes`, just do `rm -rf dist`
 
 ## Pip
 
 ### Installation
 
-- `--user`  installs the package in a local directory where the current user has permissions. 
+- `--user`  installs the package in a local directory where the current user has permissions.
 
 ```bash
 pip install --user <PKG>

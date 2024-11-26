@@ -2,12 +2,23 @@
 layout: post
 title: Python - Python Misc, os, shutil
 date: '2019-01-03 13:19'
-subtitle: Print
+subtitle: Sys, Print, Argparse Path-Related Utils
 comments: true
 header-img: "img/post-bg-2015.jpg"
 tags:
     - Python
 ---
+
+## `sys`
+
+- Check current python version
+
+```python
+if sys.version_info.major == 3 and sys.version_info.minor == 10:
+    print("Python version is 3.10")
+else:
+    print(f"Python version is not 3.10, it's {sys.version_info.major}.{sys.version_info.minor}")
+```
 
 ## Numbers
 
@@ -31,6 +42,14 @@ line2
 print(f"{test_acc:.2f}%")
 ```
 
+## Argparse
+
+- Adding a required arg:
+
+```python
+parser.add_argument("--name", "-n", type=str, required=True, help="Name of a bag in rgbd_slam_rico/data")
+```
+
 ## Path Related
 
 ### `os` Library
@@ -39,6 +58,13 @@ print(f"{test_acc:.2f}%")
 
 ```python
 script_path = os.path.abspath(__file__)
+```
+
+- Remove a file if it exists:
+
+```python
+if os.path.exists(output_path):
+    os.remove(output_path)
 ```
 
 ### `shutil`

@@ -137,3 +137,4 @@ itertools.permutations(words, 3)
 
 - `for i in reversed(range(T_x)):`: reverse a list / iterable
 - `ls = list(str)` Decompose a string into a list of letters
+- `index = ls.index(element)`: find the index of an element

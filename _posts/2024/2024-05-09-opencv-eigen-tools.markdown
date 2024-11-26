@@ -35,7 +35,7 @@ To copy an image, in python:
 output_img = cv2.cvtColor(input_img.copy(), cv2.COLOR_GRAY2RGB)
 ```
 
-#### Check Image Size
+#### Check Image Size and Indexing
 
 ```cpp
 cv::Mat mat;
@@ -46,6 +46,8 @@ std::cout<<"image size: "<<img.size<<std::endl;
 rows = s.height;
 cols = s.width;
 ```
+
+- Opencv indexing has `row` coming before `col`: `image.at<cv::Vec3b>(row, col)`
 
 #### Find min and max values
 
