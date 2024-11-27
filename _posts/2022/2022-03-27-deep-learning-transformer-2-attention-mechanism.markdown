@@ -166,11 +166,19 @@ a = \frac{QK^T}{\sqrt{d_k}}
 \end{gather*}
 $$
 
+**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future 
+
+The "attention is all you need" paper worded this point only with the basic intent, which I found confusing at the first time 😭
+
+```
+"We need to prevent leftward information flow in the decoder to preserve the auto-regressive property. We implement this inside of scaled dot-product attention by masking out (setting to −∞) all values in the input of the softmax which correspond to illegal connections"
+```
+
 Then the attention weight is:
 
 $$
 \begin{gather*}
-\alpha = softmax(\frac{QK^T}{\sqrt{d_k}})V
+\alpha = softmax(\frac{QK^T}{\sqrt{d_k}} + M)V
 \end{gather*}
 $$
 

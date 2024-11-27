@@ -161,14 +161,11 @@ Given a full sequence, we want to prevent the model from "cheating" by looking a
 ```python
 def create_look_ahead_mask(sequence_length):
     """
-    Return a lower triangle
-    tensor([[ True, False, False],
-            [ True,  True, False],
-            [ True,  True,  True]])
+    Return an upper triangle
+    tensor([[False,  True,  True],
+            [False, False,  True],
+            [False, False, False]])
     """
     # diagonal = 0 is to include the diagonal items
-    return torch.tril(torch.ones(sequence_length, sequence_length), diagonal=0).bool()
-look_ahead_mask = create_look_ahead_mask(sequence_length=3)
-
-print(f'{look_ahead_mask}')
+    return (1- torch.tril(torch.ones(sequence_length, sequence_length), diagonal=0)).bool()
 ```
