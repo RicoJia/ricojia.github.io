@@ -168,18 +168,6 @@ output = attention(X, X, X) #(batch_size, num_queries, num_hiddens)
 print(attention)
 ```
 
-The model is:
-
-```
-num_hiddens, num_heads = 100, 5
-attention = MultiheadedAttention(hidden_size=num_hiddens, output_size=num_hiddens, num_heads=num_heads)
-attention.eval()
-batch_size, num_queries, valid_lens = 2, 4, torch.tensor([3, 2])
-X = torch.ones((batch_size, num_queries, num_hiddens))
-attention(X, X, X).shape
-print(attention)
-```
-
 ### Comparing CNN, RNN, and Self-Attention
 
 Saywe are given an `n` input tokens. They are a `nxd` vector. We are outputting a sequence of `dxn` as well. We compare:

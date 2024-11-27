@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Deep Learning - Attention Mechanism
+title: Deep Learning - Transformer Series 2 Vanilla Attention Mechanism
 date: '2022-03-27 13:19'
-subtitle: Bahdanau Attention, Query-Key-Value
+subtitle: Attention Intuition, Query-Key-Value, Bahdanau Attention, Scaled-Dot Attention
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -166,7 +166,7 @@ a = \frac{QK^T}{\sqrt{d_k}}
 \end{gather*}
 $$
 
-**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future 
+**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future
 
 The "attention is all you need" paper worded this point only with the basic intent, which I found confusing at the first time 😭
 
@@ -248,6 +248,9 @@ To interpret:
 
 ## Bahdanau Encoder-Decoder Structure
 
+<details>
+<summary><b>Click to expand</b></summary>
+
 In 2014, Bahdanau et al. proposed an encoder-decoder structure **on top of the additive attention**. To illustrate, we have a neural machine translation example (NMT): **translate French input "Jane visite l'Afrique en septembre" to English**. For attention pooling, we talked about scaled dot-product attention pooling and additive attention pooling in the previous sections.
 
 - Encoder: we are using a [bi-directional RNN encoder](../2022/2022-03-15-deep-learning-rnn3-lstm.markdown) to generate embeddings of french sentences. Now, our input "Jane visite l'Afrique en septembre" will complete its forward and backward passes.
@@ -278,6 +281,7 @@ When we read **long** sentences, we have attention for short word segments befor
 </div>
 
 **The process to learn the attention weight $\alpha^{(t, i)}$ is called "alignment"**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to **be "soft" so it allows back-propagation** and can be trained with the whole translation model
+</details>
 
 ### Implementation
 

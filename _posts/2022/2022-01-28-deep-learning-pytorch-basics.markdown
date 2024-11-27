@@ -16,6 +16,9 @@ tags:
 - `torch.arange(start, stop, step)` can take either float or int values
   - `torch.range(start, stop, step)` is deprecated because its signature is different from that of python's `range()`
 
+- `torch.tensor(int, dtype=torch.float32)`. We can't pass an int right into `torch.sqrt()`. We must transform it into a tensor.
+  - Note, we are using the function `torch.tensor()`, not the class `torch.Tensor()`
+
 ### Convertions Between An Numpy Array And Its Torch Tensor
 
 ```python
@@ -125,6 +128,7 @@ probs.gather(1, targets.unsqueeze(1))
 - `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
 - `torch.var(unbiased=False)` this is to calculate [biased variance](../2017/2017-06-03-stats-basic-recap.markdown). It's useful in batch norm calculation.
 - `torch.Tensor()`'s singleton dimensions are the dimensions with only 1 element.
+- `tensor.transpose(-2, -1)`: can transpose a matrix.
 
 ### Reshaping
 

@@ -9,6 +9,11 @@ tags:
     - Python
 ---
 
+## Run Pytest
+
+- Run a specific test file `pytest path/to/test_file.py`
+- Run a test in it: `pytest path/to/test_file.py::test_function_name`
+
 ## Assert
 
 - For integer assertions:
@@ -40,3 +45,19 @@ np.testing.assert_allclose(array1, array2)
 3. At the failed test, right click, and choose debug test
 
 4. `pytest -s <my_test.py>` seems to be executing all test modules in the current directory: this will be enforced in a `pyproject.toml` environment.
+
+## Test Fixture
+
+The boiler plate is:
+
+```python
+import pytest
+@pytest.fixture
+def basic_config():
+    return {
+        "batch_size": 2,
+    }
+def test_og_positional_encoder(basic_config):
+    batch_size = basic_config["batch_size"]
+    ...
+```

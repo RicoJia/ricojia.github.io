@@ -11,6 +11,12 @@ tags:
 
 ## What is Positional Encoding
 
+In natural languange processing, it's common to have
+
+```
+sentence ("I love ice cream") -> token ("I", "love", "ice", "cream") -> embedding(100, 104, 203, 301) -> + positional encoding = (101, 105, 201, 299)
+```
+
 In [self attention](./2022-03-28-deep-learning-multi-headed-self-attention.markdown), we calculate weights for all embeddings in queries, keys and values. However, word order is also important. E.g., "I ride bike" is not the same as "bike ride I".
 
 Given an input sequence `X0, X1 ... Xn`, we want to find a time encoding such that:
@@ -19,6 +25,11 @@ Given an input sequence `X0, X1 ... Xn`, we want to find a time encoding such th
 - the time encoding value is **smaller than the embedding space**. Otherwise, the encoding could distort the semantic embeddings. `sine` and `cosine` are great since they are only within `[-1, 1]`.
 - each input has a unique encoding
 - time encoding dimension should be the same as the input dimension
+
+Additionally,
+
+- When reduced embedding to 2 dimensions, semantically closer words are closer on the chart.
+- In transformer, positional encoding is added to the word embedding
 
 We arrange the input sequence into an `nxd` vector
 
@@ -156,7 +167,7 @@ print(torch.nn.functional.softmax(input_seq + (1 - padding_mask) * -1e9))
 
 ### Look-ahead Mask
 
-Given a full sequence, we want to prevent the model from "cheating" by looking at future tokens during training. In autoregressive models, like language models, when predicting a word, the mdoel should only consider the current and previous tokens, not future ones. 
+Given a full sequence, we want to prevent the model from "cheating" by looking at future tokens during training. In autoregressive models, like language models, when predicting a word, the mdoel should only consider the current and previous tokens, not future ones.
 
 ```python
 def create_look_ahead_mask(sequence_length):
