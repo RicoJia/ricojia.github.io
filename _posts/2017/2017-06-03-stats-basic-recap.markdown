@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Statistics Concepts, Distributions, Covariance & Correlation
+subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -103,3 +103,13 @@ corr(AB) = \frac{cov(AB)}{\sigma_A \sigma_B}
 \end{gather*}
 $$
     - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $[-1, 1]$. If $A=kB$ after mean normalization, then correlation will be a perfect 1
+
+## Regression
+
+Regression in statistics means "estimating the relationship model between dependent variables and independent variables." For example, linear regression models the relationship of `Y` and its independent variables, `x1, x2 ...`.
+
+```
+Y=β0​+β1​x1​+β2​x2​+⋯+βn​xn​+ϵ
+```
+
+Transformer is "autoregressive". It's regressive because it tries to model the relationship between output and input sequences. It's "auto" because the output sequence depends on the previous output.

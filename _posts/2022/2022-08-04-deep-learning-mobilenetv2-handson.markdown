@@ -128,6 +128,14 @@ When considering accuracy on both positives and negatives, accuracies are: `trai
 ### [2] Training Model From [1] With Focal Loss
 
 - Observations: there is clear overfitting on the training set.
-  - F1 Score: `0.737 on training set, 0.593 on validation set`
-- Actions:
-  - Retrain the model from scratch using F1 metric?
+  - `training set`: F1 score: 60.7843137254902, precision: 91.17647058823529, recall: 45.588235294117645
+  - `validation set`: F1 score: 59.830667920978364, precision: 86.81747269890796, recall: 45.642813204839044
+
+### [3] Retrain From Scratch with F1 Metric
+
+- F1 score: 55.68627450980392, precision: 89.30817610062893, recall: 40.45584045584046
+- F1 score: 52.83037094281298, precision: 90.05433887699654, recall: 37.37953660036908
+
+- Actions:  
+  - Retrain without Normalization
+  - Or continue training but with a different loss function that focuses on recall?

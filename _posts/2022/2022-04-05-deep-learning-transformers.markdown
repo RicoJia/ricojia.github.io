@@ -87,7 +87,10 @@ The decoder also has residual connections, normalizations, two attention pooling
   - can generalize to longer sentences
   - A common encoding for each timestep (words position in a sentence)
 
-##
+## Tasks and Data
+
+- Machine Translation (using World-Machine-Translation datasets)
+- Named Entity Recognition (like extracting "phone number" from resumes)
 
 ## References
 
