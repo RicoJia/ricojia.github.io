@@ -9,6 +9,47 @@ tags:
     - Deep Learning
 ---
 
+## Data Type Conversions
+
+### Common Data Types
+
+- `torch.arange(start, stop, step)` can take either float or int values
+  - `torch.range(start, stop, step)` is deprecated because its signature is different from that of python's `range()`
+
+### Convertions Between An Numpy Array And Its Torch Tensor
+
+```python
+torch_tensor = torch.from_numpy(np_array)
+# convert from float64 to float32
+torch_tensor_float32 = torch_tensor.float()
+
+# Create the tensor on CUDA
+torch_tensor_gpu = torch_tensor.to('cuda')
+# This is production-friendly
+torch_tensor = torch_tensor.to('cuda' if torch.cuda.is_available() else 'cpu')
+# Explicitly creating a cpu based tensor
+tensor = tensor.cpu()
+
+# back to numpy array:
+np_array = tensor.detach().numpy() 
+```
+
+### Float to Bool
+
+- If an `np_array` is of `float64`, then to convert it to other datatypes using `torch_tensor.float()`
+- Datatypes: if we need to convert a matrix into `int` when seeing errors like `"bitwise_and_cuda" not implemented for 'Float'`, we can do `matrix.bool()`
+
+```python
+predicted_test = torch.where(outputs_test > 0.4, 1, 0).bool() 
+local_correct = (predicted_test & labels_test).sum().item()
+```
+
+### Device Related
+
+- It's crucial to add `.to(X.device)` to a custom model
+
+- In places like `torch.autocast(device_type=device_type, dtype=torch.float16)`, we need to pass a string in.
+  - Solution: `device_type = str(device)`
 
 ## Neural Network Model Components
 
@@ -139,39 +180,6 @@ print(torch.unique(target))
 ]
 ```
 
-## Data Type Conversions
-
-### Convertions Between An Numpy Array And Its Torch Tensor
-
-```python
-torch_tensor = torch.from_numpy(np_array)
-# convert from float64 to float32
-torch_tensor_float32 = torch_tensor.float()
-
-# Create the tensor on CUDA
-torch_tensor_gpu = torch_tensor.to('cuda')
-# This is production-friendly
-torch_tensor = torch_tensor.to('cuda' if torch.cuda.is_available() else 'cpu')
-# Explicitly creating a cpu based tensor
-tensor = tensor.cpu()
-
-# back to numpy array:
-np_array = tensor.detach().numpy() 
-```
-
-### Float to Bool, Device to String
-
-- If an `np_array` is of `float64`, then to convert it to other datatypes using `torch_tensor.float()`
-- Datatypes: if we need to convert a matrix into `int` when seeing errors like `"bitwise_and_cuda" not implemented for 'Float'`, we can do `matrix.bool()`
-
-```python
-predicted_test = torch.where(outputs_test > 0.4, 1, 0).bool() 
-local_correct = (predicted_test & labels_test).sum().item()
-```
-
-- In places like `torch.autocast(device_type=device_type, dtype=torch.float16)`, we need to pass a string in.
-  - Solution: `device_type = str(device)`
-
 ## Misc
 
 - Printing full tensors
@@ -224,7 +232,7 @@ gradient descent.
 ### Register Buffers
 
 A buffer:
-    - is NOT a parameter in a module, so it cannot be learned, and no gradient is computed for them. 
+    - is NOT a parameter in a module, so it cannot be learned, and no gradient is computed for them.
     - A buffer's value can be loaded with the module's dictionary. So a buffer can persist between runs.
 
 ```python

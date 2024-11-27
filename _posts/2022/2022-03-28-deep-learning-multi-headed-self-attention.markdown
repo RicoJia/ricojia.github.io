@@ -18,14 +18,16 @@ The Process is:
 1. Linearly transform `q`, `k`, `v` into `q'`, `k'`, `v'` **so that they all have the same hidden dimension `hidden_size`**
     - In the meantime, it adds learnability for the non-linear decision landscape.
 1. Split `q'`, `k'`, `v'` into heads: `h1_q`, `h1_k`, `h1_v`, `h2_q`, `h2_k`, `h2_v`. A head is a part of the overall `q'`, `k'`, `v'`.
-1. The attention module is [additive or scaled-product attention pooling](./2022-03-27-deep-learning-attention-mechanism.markdown). The attention module does not have any learnable parameters. **They run on each head in parallel**
+1. The attention module is [additive or scaled-product attention pooling](./2022-03-27-deep-learning-attention-mechanism.markdown). The attention module does not have any learnable parameters. **They run on each head in parallel**.
+    - For each head $i$, attention is calculated based on its unique $W_i^Q Q$, $W_i^K K$ , $W_i^V V$
+    - In the "Attention is All You Need" paper, 8 heads were used.
 1. All `h` are concatenated
 3. The concatenated head is transformed into a shorter embedding through a dense layer, `Wo`
 
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/d3daf4eb-b5b8-47e1-9fe2-d86459ec6708" height="600" alt=""/>
+            <img src="https://github.com/user-attachments/assets/152c1a01-8123-449c-8f50-09b1cc6c967a" height="600" alt=""/>
        </figure>
     </p>
 </div>

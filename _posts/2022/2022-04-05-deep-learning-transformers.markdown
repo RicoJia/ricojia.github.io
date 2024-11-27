@@ -65,12 +65,14 @@ print(ffn(torch.ones((2, 3, 4))).shape)
 
 The decoder also has residual connections, normalizations, two attention pooling modules, and one positionwise FFN module. Some highlights are:
 
-- The forst attention module is a self-attention module.
-  - Its queries, keys and values are all from the encoder.
+- The first attention module is a self-attention module.
+  - Its queries, keys and values are all from the decoder.
   - This masked attention preserves the autoregressive property, ensuring that the prediction only depends on those output tokens that have been generated. TODO: what does this mean? What is autoagressive?
 - The attention module between the first self-attention module and the positionwise FFN module is called **"encoder-decoder attention".**
   - Queries are from the decoder's self-attention layer
   - Keys and values are from the encoder.
+
+- decoder output -> linear layer -> softmax layer to predict the next word one word at a time
 
 ## TODO
 

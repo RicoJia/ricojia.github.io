@@ -148,7 +148,7 @@ attention(queries, keys, values)
 
 ### Scaled Dot-Product (Luong) Attention
 
-When keys and queries do have the same length, dot-multiplying them together **is faster to give a "relavance" score**. Assume Queries is `num_queries x hidden_length (d)`, keys `key_pair_num x hidden_length`, values `key_pair_num x value_length`,
+When keys and queries do have the same length, dot-multiplying them together **is faster to give a "relavance" score**. Assume Queries is `num_queries x hidden_length (d)`, keys `key_pair_num x hidden_length`, values `key_pair_num x value_length`. Below, we denote the length of keys `hidden_length` as $d_k$
 
 <div style="text-align: center;">
 <p align="center">
@@ -162,7 +162,7 @@ Note that if every pair of elements in keys and queries are independent with `[m
 
 $$
 \begin{gather*}
-a = \frac{QK^T}{\sqrt{d}}
+a = \frac{QK^T}{\sqrt{d_k}}
 \end{gather*}
 $$
 
@@ -170,7 +170,7 @@ Then the attention weight is:
 
 $$
 \begin{gather*}
-\alpha = softmax(\frac{QK^T}{\sqrt{d}})V
+\alpha = softmax(\frac{QK^T}{\sqrt{d_k}})V
 \end{gather*}
 $$
 

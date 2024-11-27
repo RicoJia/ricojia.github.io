@@ -18,6 +18,20 @@ tags:
     - +,-, * /
     - `np.sqrt()`, `np.sin()`, `np.cos()`
     - Broadcast.
+3. Indexing: `arr[start:stop:step]`
+    - `arr[0:i]` is equivalent to `arr[:i]`
+
+```python
+arr = np.random.randint(4,size=(3,4))
+# [[1 0 3 0]
+#  [1 2 0 1]
+#  [3 2 2 3]]
+print(f'array: {arr}')
+# [[1 3]
+#  [1 0]
+#  [3 2]]
+print(arr[:, 0::2])
+```
 
 ### Mathematical Matrix Operations
 
@@ -192,6 +206,15 @@ res = np.mgrid[0:5, 0:3]
 arr = np.array([[1,2,3]])
 arr.squeeze() # np.array([1,2,3])
 arr.squeeze()   # still sees np.array([1,2,3]) as no axis is of length 1.
+```
+
+- unsqueeze at a certain dimension: `np.newaxis`:
+
+```python
+arr = np.array([1,2,3])
+unsqueezed_arr = arr[np.newaxis, ...]
+# See (1, 3)
+print(f'unsqueezed_arr: {unsqueezed_arr.shape}')
 ```
 
 #### `np.array.reshape (new_row, new_cln)`
