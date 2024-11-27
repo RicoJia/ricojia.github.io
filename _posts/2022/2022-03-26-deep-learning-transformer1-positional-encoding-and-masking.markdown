@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Transformer Series 1 - Embedding Pre-Processing
-date: '2022-04-05 13:19'
+date: '2022-03-26 13:19'
 subtitle: Positional Encoding, Padding Mask, Look-ahead Mask
 comments: true
 header-img: "img/home-bg-art.jpg"
