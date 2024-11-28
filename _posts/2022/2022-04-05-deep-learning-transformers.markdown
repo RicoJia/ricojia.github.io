@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Transformers
+title: Deep Learning - Transformer
 date: '2022-04-05 13:19'
 subtitle: TODO
 comments: true
@@ -18,6 +18,8 @@ Transformer was proposed for sequence-to-sequence learning on text data, but it'
 The Transformer has an encoder-decoder architecture.
 
 - Different from Bahdanau Attention, input is added with positional encoding before being fed into the encoder and the decoder
+
+[A good custom implementation is here](https://github.com/datawhalechina/learn-nlp-with-transformers/blob/main/docs/%E7%AF%87%E7%AB%A02-Transformer%E7%9B%B8%E5%85%B3%E5%8E%9F%E7%90%86/2.2-%E5%9B%BE%E8%A7%A3transformer.md)
 
 ### Encoder
 

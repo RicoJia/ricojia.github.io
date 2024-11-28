@@ -182,17 +182,48 @@ $$
 \end{gather*}
 $$
 
-```python
-class DotProductAttention(nn.Module):
-    def __init__(self, dropout, **kwargs):
-        super(DotProductAttention, self).__init__(**kwargs)
-        self.dropout = nn.Dropout(dropout)
+[This implementation has been tested against the PyTorch MultiHeadAttention Module, given that DotProductAttention is MultiHeadAttention with head=1](https://github.com/RicoJia/Machine_Learning/blob/ffda794938c913b54a5316d1dca6d553393f0328/RicoModels_pkg/ricomodels/tests/test_og_transformer.py#L105)
 
-    def forward(self, queries, keys, values, valid_lens=None):
-        d = queries.shape[-1]
-        scores = torch.bmm(queries, keys.transpose(1,2)) / math.sqrt(d)
-        self.attention_weights = masked_softmax(scores, valid_lens)
-        return torch.bmm(self.dropout(self.attention_weights), values)
+```python
+class DotProductAttention(torch.nn.Module):
+    def forward(
+        self,
+        q: torch.Tensor,
+        k: torch.Tensor,
+        v: torch.Tensor,
+        attn_mask: torch.Tensor = None,
+        key_padding_mask: torch.Tensor = None,
+    ):
+        """
+        Args:
+            q (torch.Tensor): [batch_size, query_num, qk_dim] or [batch_size, head_num, query_num, qk_dim]
+            k (torch.Tensor): [batch_size, kv_num, qk_dim] or [batch_size, head_num, query_num, qk_dim]
+            v (torch.Tensor): [batch_size, kv_num, v_dim] or [batch_size, head_num, query_num, qk_dim]
+            attn_mask (torch.Tensor): or look-ahead mask, [query_num, kv_num]. 1 means "mask out"
+                Later, they are multiplied by large negative values -1e9. so values can be ignored in softmax.
+            key_padding_mask (torch.Tensor): [batch_size, kv_num]. 1 means "mask out"
+        Returns:
+            attention: [batch_size, query_num, v_dim] or [batch_size, head_num, query_num, qk_dim]
+        """
+        q_kT_scaled = (q @ k.transpose(-2, -1)) / torch.sqrt(
+            torch.tensor(k.shape[-1], dtype=torch.float32)
+        )
+        if attn_mask is not None:
+            q_kT_scaled.masked_fill_(attn_mask.bool(), float("-inf"))
+        if key_padding_mask is not None:
+            key_padding_mask = key_padding_mask.unsqueeze(1)
+            if q_kT_scaled.ndim == 4:
+                key_padding_mask = key_padding_mask.unsqueeze(2)
+            # [batch_size, query_num, kv_num]
+            q_kT_scaled = q_kT_scaled.masked_fill(
+                key_padding_mask,
+                float("-inf"),
+            )
+        attention_weight = torch.nn.functional.softmax(q_kT_scaled, dim=-1)
+        attention = attention_weight @ v
+        # TODO In this implementation, there's a drop out
+        # https://ricojia.github.io/2022/03/27/deep-learning-attention-mechanism/#scaled-dot-product-luong-attention
+        return attention
 ```
 
 ### Masked Softmax Operation
@@ -282,10 +313,6 @@ When we read **long** sentences, we have attention for short word segments befor
 
 **The process to learn the attention weight $\alpha^{(t, i)}$ is called "alignment"**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to **be "soft" so it allows back-propagation** and can be trained with the whole translation model
 </details>
-
-### Implementation
-
-TODO: homework: what if we use scaled-dot product attention instead of the additive attention?
 
 ## References
 

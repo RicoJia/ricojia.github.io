@@ -19,6 +19,8 @@ tags:
 - `torch.tensor(int, dtype=torch.float32)`. We can't pass an int right into `torch.sqrt()`. We must transform it into a tensor.
   - Note, we are using the function `torch.tensor()`, not the class `torch.Tensor()`
 
+- to invert a bool mask: `~key_padding_mask`
+
 ### Convertions Between An Numpy Array And Its Torch Tensor
 
 ```python
@@ -129,6 +131,23 @@ probs.gather(1, targets.unsqueeze(1))
 - `torch.var(unbiased=False)` this is to calculate [biased variance](../2017/2017-06-03-stats-basic-recap.markdown). It's useful in batch norm calculation.
 - `torch.Tensor()`'s singleton dimensions are the dimensions with only 1 element.
 - `tensor.transpose(-2, -1)`: can transpose a matrix.
+- Masking
+
+```python
+a = torch.ones((4))
+mask = torch.tensor([1,0,0,1]).bool()
+a = a.masked_fill(mask, float("-inf"))
+a   # see tensor([-inf, 1., 1., -inf])
+```
+
+- `NaN` comparison: `torch.allclose()` does not handle nan. This is to replace `NaN` with sentinel
+
+```
+def allclose_replace_nan(tensor1, tensor2, rtol=1e-05, atol=1e-08, sentinel=0.0):
+    tensor1_replaced = torch.where(torch.isnan(tensor1), torch.full_like(tensor1, sentinel), tensor1)
+    tensor2_replaced = torch.where(torch.isnan(tensor2), torch.full_like(tensor2, sentinel), tensor2)
+    return tensor1_replaced, tensor2_replaced
+```
 
 ### Reshaping
 

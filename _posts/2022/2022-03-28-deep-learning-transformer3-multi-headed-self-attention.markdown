@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep Learning - Multi-Head and Self Attention
+title: Deep Learning - Transformer Series 3 - Multi-Head and Self Attention
 date: '2022-03-27 13:19'
 subtitle: Multi-Head Attention, Self Attention, Comparison of Self Attention Against CNN, RNN
 comments: true
@@ -15,8 +15,8 @@ To learn a richer set of behaviors, we can instantiate multiple attentions joint
 
 The Process is:
 
-1. Linearly transform `q`, `k`, `v` into `q'`, `k'`, `v'` **so that they all have the same hidden dimension `hidden_size`**
-    - In the meantime, it adds learnability for the non-linear decision landscape.
+1. Linearly transform `q`, `k`, `v` into `q'`, `k'`, `v'`. We have made sure they all have the same hidden dimension `hidden_size`**
+    - This adds learnability for the non-linear decision landscape.
 1. Split `q'`, `k'`, `v'` into heads: `h1_q`, `h1_k`, `h1_v`, `h2_q`, `h2_k`, `h2_v`. A head is a part of the overall `q'`, `k'`, `v'`.
 1. The attention module is [additive or scaled-product attention pooling](./2022-03-27-deep-learning-attention-mechanism.markdown). The attention module does not have any learnable parameters. **They run on each head in parallel**.
     - For each head $i$, attention is calculated based on its unique $W_i^Q Q$, $W_i^K K$ , $W_i^V V$
@@ -46,7 +46,9 @@ W_o [h_1, ... h_n]
 \end{gather*}
 $$
 
-Now, let's enjoy the code
+Now, let's enjoy the code. [The PyTorch Implementation is here, in case it's useful](https://github.com/pytorch/pytorch/blob/11f1014c05b902d3eef0fe01a7c432f818c2bdfe/torch/nn/functional.py#L3854) **[Below implementation has been tested against the PyTorch Implementation](https://github.com/RicoJia/Machine_Learning/blob/ffda794938c913b54a5316d1dca6d553393f0328/RicoModels_pkg/ricomodels/tests/test_og_transformer.py)**
+
+DotProductAttention is implemented [in this article](./2022-03-27-deep-learning-transformer-2-attention-mechanism.markdown)
 
 ```python
 """
@@ -54,102 +56,62 @@ Notes:
 - Lazy*: borrow the nice input channel inference feature from TensorFlow
     e.g., torch.nn.LazyLinear(out_features=hidden_size, bias=False)
 """
-import torch
-import math
-
-class DotProductAttention(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.dropout = torch.nn.Dropout(0.2)
-        
-    def forward(self,queries, keys, values):
-        """ softmax(q k^T/sqrt(d_q)) * v
-
-        Args:
-            queries: (batch_size * num_heads, num_queries, head_dim)
-            keys: (batch_size * num_heads, num_kv, head_dim)
-            values: (batch_size * num_heads, num_kv, head_dim)
-        Returns: 
-            Output attention (batch_size * num_heads, num_queries, head_dim)      
+class MultiHeadAttention(torch.nn.Module):
+    def __init__(self, embed_dim, num_heads):
         """
-        head_dim = queries.shape[-1]
-        # we assume each row in queries is indenpendent from each column in keys.transpose()
-        # So its raw production has a standard deviation of torch.sqrt(head_dim). This is normalization
-        scores = torch.bmm(queries, keys.transpose(1, 2)) / math.sqrt(head_dim) #(num_heads, num_queries,num_kv)
-        # TODO: should apply masked output
-        self.attention_weights = torch.nn.functional.softmax(scores,  dim=-1) #(num_heads, num_queries,num_kv)
-        output = torch.bmm(self.dropout(self.attention_weights), values)    #(num_heads, num_queries,head_dim)
-        return output
-        
-def transpose_qkv(X, num_heads):
-    """Shape transform: 
-    (batch_size, num_kv/num_queries, hidden_size) -> 
-    (batch_size, num_kv/num_queries, num_heads, hidden_size//num_heads) ->
-    (batch_size, num_heads, num_kv/num_queries, hidden_size//num_heads) ->
-    (batch_size * num_heads, num_kv/num_queries, hidden_size//num_heads) ->
-    
-    This is to make heads part of the batch for parallel computation
-    """
-    X = X.reshape(X.shape[0], X.shape[1], num_heads, -1)
-    X = X.permute(0, 2, 1, 3)
-    return X.reshape(-1, X.shape[2], X.shape[3])
-
-def transpose_output(X, num_heads):
-    """Reverse the operation of transpose_qkv."""
-    X = X.reshape(-1, num_heads, X.shape[1], X.shape[2])
-    X = X.permute(0, 2, 1, 3)
-    return X.reshape(X.shape[0], X.shape[1], -1)
-
-
-class MultiheadedAttention(torch.nn.Module):
-    def __init__(self, hidden_size, output_size, num_heads):
+        1. Linearly transform q, k, v so that they all have the same hidden dimension hidden_size
+        2. Split q', k', v' into heads
+        3. Each group of q, k, v go into DotProductAttention
+        4. The concatenated head is transformed into a shorter embedding through a dense layer, Wo
+        """
+        # embed_dim is also qk_dim,
         super().__init__()
-        # Code up an attention, then instantiate them multiple times?
-        self.Wq = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
-        self.Wk = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
-        self.Wv = torch.nn.LazyLinear(out_features=hidden_size, bias=False)
-        self.Wo = torch.nn.LazyLinear(out_features=output_size, bias=False)
+        assert (
+            embed_dim % num_heads == 0
+        ), f"Embed_dim: {embed_dim} must be divisible by num_heads: {num_heads}"
+        # Doing Wq, Wk, Wv. By default, v is also assumed to be of length embed_dim
+        self.Wq = torch.nn.Linear(embed_dim, embed_dim, bias=False)
+        self.Wk = torch.nn.Linear(embed_dim, embed_dim, bias=False)
+        self.Wv = torch.nn.Linear(embed_dim, embed_dim, bias=False)
+        # self.Wo
+        self.out_proj = torch.nn.Linear(
+            embed_dim, embed_dim, bias=False
+        )  # TODO: by default, o is also of embed_dim?
         self.attention = DotProductAttention()
         self.num_heads = num_heads
-    def forward(self, queries, keys, values):
+        self.head_dim = embed_dim // self.num_heads
+        self.embedding_dim = embed_dim
+
+    def forward(self, q, k, v, key_padding_mask=None, attn_mask=None):
         """
-        queries: (batch_size, query_num, query_size)
-        keys: (batch_size，total_num_key_value_pairs， key_size)
-        values: (batch_size，total_num_key_value_pairs， value_size)
+        Args: ACHTUNG: THIS IS WEIRD because num_queries is at the front
+        q (torch.Tensor): [num_queries, batch_size, qk_dim]
+        k (torch.Tensor): [num_keys, batch_size, qk_dim]
+        v (torch.Tensor): [num_keys, batch_size, v_dim]
         """
-        q_prime = self.Wq(queries) #(batch_size, num_queries, hidden_size)
-        k_prime = self.Wk(keys) #(batch_size, num_kv, hidden_size)
-        v_prime = self.Wv(values) #(batch_size, num_kv, hidden_size)
-        
-        queries = transpose_qkv(q_prime, self.num_heads)  #(batch_size * num_heads, num_queries, hidden_size//num_heads)
-        keys = transpose_qkv(k_prime, self.num_heads)   #(batch_size * num_heads, num_kv, hidden_size//num_heads)
-        values = transpose_qkv(v_prime, self.num_heads) #(batch_size * num_heads, num_kv, hidden_size//num_heads) 
-        
-        output_heads = self.attention(queries, keys, values) #(batch_size * num_heads, num_queries, hidden_size//num_heads)
-        output_concat = transpose_output(output_heads, self.num_heads)  #(batch_size, num_queries, hidden_size)
-        output = self.Wo(output_concat) #(batch_size, num_queries, output_size)
-        return output
+        num_queries, batch_size, _ = q.size()
+        num_keys = k.size(0)
+        q_proj = self.Wq(q)  # [num_queries, batch_size, embed_dim]
+        k_proj = self.Wk(k)  # [num_keys, batch_size, embed_dim]
+        v_proj = self.Wv(v)  # [num_keys, batch_size, embed_dim]
+        # now, split them into num_heads. How to calculate heads in parallel?
+        q = q_proj.view(num_queries, batch_size, self.num_heads, self.head_dim)
+        k = k_proj.view(num_keys, batch_size, self.num_heads, self.head_dim)
+        v = v_proj.view(num_keys, batch_size, self.num_heads, self.head_dim)
 
-batch_size = 1
-num_kv = 5
-num_queries = 3
-input_dim = 4
-num_hiddens = 32
-num_heads = 2
-head_dim = num_hiddens // num_heads  # 8
-output_size = 8
-dropout = 0.1
-
-# Set random seed for reproducibility
-torch.manual_seed(0)
-
-# Generate random queries, keys, and values
-queries = torch.randn(batch_size, num_queries, input_dim)
-keys = torch.randn(batch_size, num_kv, input_dim)
-values = torch.randn(batch_size, num_kv, input_dim)
-# Instantiate MultiHeadAttention
-multi_head_attn = MultiheadedAttention(hidden_size=num_hiddens, output_size=output_size, num_heads=num_heads)
-output = multi_head_attn(queries, keys, values)
+        # [batch, head_num, num_keys/num_queries, embed_dim]
+        q = q.permute(1, 2, 0, 3)
+        k = k.permute(1, 2, 0, 3)
+        v = v.permute(1, 2, 0, 3)
+        # [batch_size, head_num, query_num, head_embed_dim]
+        attention = self.attention(
+            q=q, k=k, v=v, attn_mask=attn_mask, key_padding_mask=key_padding_mask
+        )
+        # [query_num, batch_size, head_num, head_embed_dim]
+        attention = attention.permute(2, 0, 1, 3).contiguous()  # TODO? .contiguous()
+        attention = attention.view(num_queries, batch_size, self.embedding_dim)
+        attention_output = self.out_proj(attention)
+        return attention_output
 ```
 
 ## Self Attention
