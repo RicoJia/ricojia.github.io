@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Deep Learning - Transformer
+title: Deep Learning - Transformer All Together
 date: '2022-04-05 13:19'
-subtitle: TODO
+subtitle: Encoder, Decoder
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -33,7 +33,7 @@ The encoder has one multi-head self-attention pooling and one positionwise feed-
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/195ef3b9-35fe-4c4d-a582-bcc9088c0f92" height="500" alt=""/>
+        <img src="https://github.com/user-attachments/assets/2b522fc2-d5b0-43fd-8cff-2940840a924f" height="500" alt=""/>
     </figure>
 </p>
 </div>

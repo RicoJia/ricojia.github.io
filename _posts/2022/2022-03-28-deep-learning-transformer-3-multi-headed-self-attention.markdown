@@ -34,7 +34,10 @@ The Process is:
 
 - I'm omitting the lenght masking part in the illustration. In reality we add it to focus on the generally relavant segment of the input sentence.
 
-The reason why multi-headed attention works so well is: **each input word will evolve into embeddings (i.e., key and value). Then the embeddings are divided into heads, where each head could represent a different meaning of the word. So, attention weights are given to different meanings of each individual word, based on the sub-vectors of other words.** Finally, the overall weighed-attention sub-vectors are calculated, concatenated together, transformed into an overall embedding.
+The reason why multi-headed attention works so well is:
+
+- **Each input word will evolve into embeddings (i.e., key and value). Then the embeddings are divided into heads, where each head could represent a different meaning of the word. So, attention weights are given to different meanings of each individual word, based on the sub-vectors of other words.**
+- Finally, the overall weighed-attention sub-vectors are calculated, concatenated together, transformed into an overall embedding.
 
 One might notice that the linear transformations and the final attention pooling action (just the dot-product part) share the same weights across heads. This keeps the model small, yet still appears to be effective in real life.
 
@@ -46,9 +49,9 @@ W_o [h_1, ... h_n]
 \end{gather*}
 $$
 
-Now, let's enjoy the code. [The PyTorch Implementation is here, in case it's useful](https://github.com/pytorch/pytorch/blob/11f1014c05b902d3eef0fe01a7c432f818c2bdfe/torch/nn/functional.py#L3854) **[Below implementation has been tested against the PyTorch Implementation](https://github.com/RicoJia/Machine_Learning/blob/ffda794938c913b54a5316d1dca6d553393f0328/RicoModels_pkg/ricomodels/tests/test_og_transformer.py)**
+Now, let's enjoy the code. [The PyTorch Implementation is here, in case it's useful](https://github.com/pytorch/pytorch/blob/11f1014c05b902d3eef0fe01a7c432f818c2bdfe/torch/nn/functional.py#L3854).
 
-DotProductAttention is implemented [in this article](./2022-03-27-deep-learning-transformer-2-attention-mechanism.markdown)
+**[The below implementation has been tested against the PyTorch Implementation](https://github.com/RicoJia/Machine_Learning/blob/ffda794938c913b54a5316d1dca6d553393f0328/RicoModels_pkg/ricomodels/tests/test_og_transformer.py)**
 
 ```python
 """
@@ -114,6 +117,15 @@ class MultiHeadAttention(torch.nn.Module):
         return attention_output
 ```
 
+#### VERY IMPORTANT NOTE ABOUT `key_padding_mask` and `attn_mask` (or lookahead_mask)
+
+[In the PyTorch implementation, attention_weight is set to `-inf` at `1` in `key_padding_mask`](https://github.com/pytorch/pytorch/blob/11f1014c05b902d3eef0fe01a7c432f818c2bdfe/torch/nn/functional.py#L4119C31-L4119C50). This is right before `softmax()`, so the intetion is to have zero after `softmax` at these locations. However, in reality, we get could get `NaN`. The real reason is that `attn_mask` could mask out the rest of the `attention_weight`
+
+- [An issue was opened in 2019 about this.](https://github.com/pytorch/pytorch/issues/24816). When a full vector is `-inf`, there are definitely `NaN`
+- So a good strategy is to:
+  - Expand `key_padding_mask = [1, 1, query_num, kv_num]`, and `attn_mask = [batch_size, 1, 1, num_keys]`
+  - Do a logical or and check for the all masking-out situation
+
 ## Self Attention
 
 when key, value, and query come from the same set of inputs, they are called "self-attention" [1]. We **also want to make sure the output has the same dimension as the inputs**. Since value and queries are the same, this is equivalent to having `num_queries` input words, and having `num_queries` output words
@@ -140,21 +152,21 @@ Saywe are given an `n` input tokens. They are a `nxd` vector. We are outputting 
   - For example, with 1 layer CNN, the first input element is considered within the first output element, but not the subsequent ones as the kernel moves forward. We need to have more layers so that the first element is considered.
   - A shorter path between any combination of sequence positions makes learning long-range dependencies easier
 
-For CNN:
+#### For CNN
 
 - Input and output channels are `d`; kernel size is `k`
 - Time complexity: $O(nd^2k)$ because we need to go over all elements in the input and output filters
 - Sequential operations: we need to calculate layer by layer, but we know that beforehand, so $O(1)$
 - Maximum Path length: (receptive field size?) is $O(n/k)$, For example, x1, x5 are within the receptive fields of CNN
 
-For RNN:
+#### For RNN
 
 - Say we have 1 layer, since we are outputting with the same dimension, the hidden state dimension is `d` as well.
 - Time Complexity: weight matrices are `dxd`. In total, $O(nd^2)$
 - Sequential Complexity: $O(n)$
 - Maximum path length: $O(n)$ as we need to finish the entire $n$ timesteps so the last output sequence can technically see the first input element.
 
-For Self Attention:
+#### For Self Attention
 
 - Time Complexity: weight matrices are `nxd`. In total, $O(n^2d)$
 - Sequential Complexity: $O(1)$: we need to do linear transform, concatenate, and dense layer.
