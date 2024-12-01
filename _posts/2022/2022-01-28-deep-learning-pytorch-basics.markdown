@@ -130,7 +130,27 @@ probs.gather(1, targets.unsqueeze(1))
 - `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
 - `torch.var(unbiased=False)` this is to calculate [biased variance](../2017/2017-06-03-stats-basic-recap.markdown). It's useful in batch norm calculation.
 - `torch.Tensor()`'s singleton dimensions are the dimensions with only 1 element.
-- `tensor.transpose(-2, -1)`: can transpose a matrix.
+- Transpose
+  - `tensor.transpose(dim1, dim2)`: can transpose a matrix between any dimensions
+
+        ```python
+        a.transpose(1, 3)
+        ```
+
+  - `tensor.t()` can only transpose a 2D matrix.
+
+        ```python
+        a = torch.rand(2, 3)
+        print(a.shape)
+        print(a.t().shape)
+        ```
+
+  - Note that after `transpose()`, the data did not change but the `strides` and `shape` changed. `Tensor.view()` requires contiguous data, so before `view()` one needs to call `contiguous()`.
+
+        ```python
+        a1 = a.transpose(1, 3).contiguous().view(4, 3 * 32 * 32)
+        ```
+
 - Masking
 
 ```python

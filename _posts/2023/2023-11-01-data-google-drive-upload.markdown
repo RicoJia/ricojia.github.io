@@ -1,12 +1,12 @@
 ---
 layout: post
-title: CMake - Storing Data on Google Drive 
+title: Web Devel - Storing Data on Google Drive 
 date: '2023-11-01 13:19'
 subtitle: Google Drive
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
-    - Data Management
+    - Web Devel
 ---
 
 For personal projects, all AWS services will start charging once one service starts. Google drive on the other hand, gives everybody 5GB of storage for free. So for infrequent data read / write, Google drive could be a good option.
@@ -39,6 +39,7 @@ For personal projects, all AWS services will start charging once one service sta
 ## Programmatic Interface Setup
 
 Install dependencies
+
 ```bash
 pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 ```
