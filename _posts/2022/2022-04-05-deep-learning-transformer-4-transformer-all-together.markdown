@@ -324,6 +324,8 @@ class Decoder(torch.nn.Module):
 
 ## All Together
 
+Phew, what a journey! Good job in making it this far. Let's now put all these pieces together. **[All code snippets in this post have been tested against their PyTorch counterparts](https://github.com/RicoJia/Machine_Learning/blob/d4008bb35fc1da89bf3b2273314aff712ad65dab/RicoModels_pkg/ricomodels/tests/test_og_transformer.py)**
+
 ```python
 class Transformer(torch.nn.Module):
     def __init__(
