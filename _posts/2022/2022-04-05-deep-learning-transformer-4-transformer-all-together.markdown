@@ -31,11 +31,11 @@ The encoder has one multi-head self-attention pooling and one positionwise feed-
   - Positionwise FFN **COULD** have a different hidden layer dimension within itself, as shown below. It just needs to output the same dimension.
 
 <div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/2b522fc2-d5b0-43fd-8cff-2940840a924f" height="500" alt=""/>
-    </figure>
-</p>
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/7430abaf-428e-4e58-acde-77ce5e8b65ab" height="500" alt=""/>
+       </figure>
+    </p>
 </div>
 
 Now, let's enjoy some code.
@@ -61,35 +61,77 @@ ffn.eval()
 print(ffn(torch.ones((2, 3, 4))).shape)
 ```
 
-- previous encoder output? TODO
+### The full encoder output
+
+- Scaling: the embeddings are scaled by $\sqrt{\text{embedding\_dimension}}$" before adding positional encodings so their magnitudes match. There's a [StackExchange thread on why exactly this is needed](https://datascience.stackexchange.com/questions/87906/transformer-model-why-are-word-embeddings-scaled-before-adding-positional-encod). However, some were also wondering about its necessity
 
 ### Decoder
 
 The decoder also has residual connections, normalizations, two attention pooling modules, and one positionwise FFN module. Some highlights are:
 
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/4f1b271f-8e3a-432d-97a2-6ce6ec89db35" height="500" alt=""/>
+       </figure>
+    </p>
+</div>
+
 - The first attention module is a self-attention module.
   - Its queries, keys and values are all from the decoder.
-  - This masked attention preserves the autoregressive property, ensuring that the prediction only depends on those output tokens that have been generated. TODO: what does this mean? What is autoagressive?
+  - It uses an **lookahead mask, or attention mask**, which preserves the autoregressive property, ensuring that the prediction only depends on those output tokens that have been generated.
 - The attention module between the first self-attention module and the positionwise FFN module is called **"encoder-decoder attention".**
+  - This layer uses a padding mask.
   - Queries are from the decoder's self-attention layer
   - Keys and values are from the encoder.
 
-- decoder output -> linear layer -> softmax layer to predict the next word one word at a time
+## All Together
 
-## TODO
+```python
+def forward(self, input_sentence, output_sentence, enc_padding_mask, attn_mask, dec_padding_mask):
+    # input_sentence: [Batch_Size, input_sentence_length]
+    # [batch_size, input_seq_len, qk_dim]
+    enc_output = self.encoder(X=input_sentence, enc_padding_mask=enc_padding_mask) 
+    # [batch_size, output_seq_len, qk_dim]
+    dec_output = self.decoder(X = output_sentence, enc_output=enc_output,
+                                attn_mask = attn_mask, key_padding_mask = dec_padding_mask)
+    # This is basically the raw logits
+    # THIS IS ASSUMING THAT WE ARE USING CROSS_ENTROPY LOSS
+    # [batch_size, output_seq_len,target_vocab_dim]
+    logits = self.final_dense_layer(dec_output)
+    return logits
+```
+
+- At the end, we want the probabilities across target language words, so softmax is needed for training. However, ReLu is not advised here, because it could distort the relative differences between logits by setting the negative ones to 0. The standard practice is: **No ReLu between Linear and Softmax.**
+- Also, THIS IS ASSUMING THAT WE ARE USING CROSS_ENTROPY LOSS. So here we are not adding a softmax layer here.
 
 ![Screenshot from 2024-11-17 15-52-10](https://github.com/user-attachments/assets/c293b115-a8f8-42a0-9589-fe6a1b200beb)
 
-- A Transformer Network processes sentences from left to right, one word at a time.
+### Advantages and Disadvantages of Transformer
 
-- What does the output of the encoder block contain?
-- Why is positional encoding important in the translation process? (Check all that apply)
-- Which of these is not a good criterion for a good positional encoding algorithm?
-  - must be deterministic
-  - can generalize to longer sentences
-  - A common encoding for each timestep (words position in a sentence)
+Advantages:
+
+- Parallel computing. Transformer abandoned the CNN and RNN architectures that were used for decades.
+  - The input is `[batch_size, input_seq_len, input_vocab_dim]`, the output is `[batch_size, output_seq_len,target_vocab_dim]`. So unlike RNN architecutres which parse a sequence step by step, attention pooling with multiple heads (or partitions of attention) in parallel.
+
+Disadvantages:
+
+- Local feature extraction (like in CNN) is lacking.
+-
 
 ## Tasks and Data
+
+It's common practice to pad input sequences to `MAX_SENTENCE_LENGTH`. Therefore,
+
+- the input is always [batch_size, max_sentence_length]
+- `NUM_KEYS = NUM_QUERIES = max_sentence_length` since neither the encoder nor the decoder changes the `max_sentence_length` dimension
+
+In practice, one can apply below methods to reduce padding:
+
+- Bucketing - bucketing is to group sentences of similar lengths to reduce sentence lengths.
+- Packed Sequences: PyTorch's `pack_padded_sequence` and `pad_packed_sequence` utilities (more common in RNNs) to handle variable-length sequences.
+
+Applications
 
 - Machine Translation (using World-Machine-Translation datasets)
 - Named Entity Recognition (like extracting "phone number" from resumes)

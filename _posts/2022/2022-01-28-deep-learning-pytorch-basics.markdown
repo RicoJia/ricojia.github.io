@@ -21,6 +21,8 @@ tags:
 
 - to invert a bool mask: `~key_padding_mask`
 
+- datatype check: `tensor.dtype`, not `type(tensor)`
+
 ### Convertions Between An Numpy Array And Its Torch Tensor
 
 ```python
@@ -115,6 +117,7 @@ probs.gather(1, targets.unsqueeze(1))
 
     - `softmax` creates a softmax across these two channels.
     - `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
+    - `LazyLinear`  dims are initialized during first pass
 
 ## Common Operations
 
@@ -133,23 +136,23 @@ probs.gather(1, targets.unsqueeze(1))
 - Transpose
   - `tensor.transpose(dim1, dim2)`: can transpose a matrix between any dimensions
 
-        ```python
-        a.transpose(1, 3)
-        ```
+    ```python
+    a.transpose(1, 3)
+    ```
 
   - `tensor.t()` can only transpose a 2D matrix.
 
-        ```python
-        a = torch.rand(2, 3)
-        print(a.shape)
-        print(a.t().shape)
-        ```
+    ```python
+    a = torch.rand(2, 3)
+    print(a.shape)
+    print(a.t().shape)
+    ```
 
   - Note that after `transpose()`, the data did not change but the `strides` and `shape` changed. `Tensor.view()` requires contiguous data, so before `view()` one needs to call `contiguous()`.
 
-        ```python
-        a1 = a.transpose(1, 3).contiguous().view(4, 3 * 32 * 32)
-        ```
+    ```python
+    a1 = a.transpose(1, 3).contiguous().view(4, 3 * 32 * 32)
+    ```
 
 - Masking
 

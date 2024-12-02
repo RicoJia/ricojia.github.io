@@ -29,6 +29,8 @@ However, now with more tricks like batch normalization,
         - Exploding gradients: gradient can become large (because TODO?)
         - Dead neurons: neurons may not be activated if their weights make the output negative values.
         - Unbounded outputs
+    - Rule Of Thumbs of Applications:
+        - ReLu should **NOT** be applied immediately before softmax, because it could distort the relative differences between logits by setting the negative ones to 0.
 
 - Leaky ReLU: regular ReLU would lead to dead neurons when $x=0$. That could cause learning to be stuck. Leaky ReLU can unstuck this situation by having a small negative slope and allowing backprop flow correspondingly.
 

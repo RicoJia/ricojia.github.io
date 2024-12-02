@@ -12,3 +12,17 @@ tags:
 ## Underflow
 
 - `torch.softmax(X)` X is zero due to underflow.
+
+## Weight Manipulation
+
+### Weight Copying Without `torch.no_grad()`
+
+This is because we are directly updating the parameters. We don't want gradient tracking.
+
+```python
+with torch.no_grad():
+    in_proj_weight = torch.cat(
+        [my_mha.Wq.weight, my_mha.Wk.weight, my_mha.Wv.weight], dim=0
+    )
+    torch_mha.in_proj_weight.copy_(in_proj_weight)
+```
