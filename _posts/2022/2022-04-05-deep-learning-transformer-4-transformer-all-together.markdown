@@ -61,13 +61,188 @@ ffn.eval()
 print(ffn(torch.ones((2, 3, 4))).shape)
 ```
 
+#### Encoder Layer
+
+The encoder layer has 1 multi-head attention (self attention). There are two `Add&Norm` layers. Either takes in a skip connection.
+In this layer, we stick to the `embedding_dim`.
+
+```python
+class EncoderLayer(torch.nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        num_heads,
+        dropout_rate=0.1,
+    ) -> None:
+        super().__init__()
+        # need dropout. The torch implementation already has it
+        self.mha = MultiHeadAttention(
+            embed_dim=embedding_dim,
+            num_heads=num_heads,
+        )
+        self.dropout1 = torch.nn.Dropout(p=dropout_rate)
+        self.ffn = PositionwiseFFN(hidden_dim=embedding_dim, output_dim=embedding_dim)
+        self.layernorm1 = torch.nn.LayerNorm(normalized_shape=embedding_dim)
+        self.layernorm2 = torch.nn.LayerNorm(normalized_shape=embedding_dim)
+        self.dropout2 = torch.nn.Dropout(p=dropout_rate)
+
+    def forward(self, X, attn_mask, key_padding_mask):
+        # Self attention (input_seq_len, batch_size, embedding_dim)
+        self_attn_output, self_attn_weight = self.mha(
+            X, X, X, attn_mask=attn_mask, key_padding_mask=key_padding_mask
+        )
+        # apply dropout layer to the self-attention output (~1 line)
+        self_attn_output = self.dropout1(
+            self_attn_output,
+        )
+        # Applying Skip Connection
+        mult_attn_out = self.layernorm1(
+            X + self_attn_output
+        )  # (input_seq_len, batch_size, embedding_dim)
+        ffn_output = self.ffn(
+            mult_attn_out
+        )  # (input_seq_len, batch_size, embedding_dim)
+        ffn_output = self.dropout2(ffn_output)
+        # Applying Skip Connection
+        encoder_layer_out = self.layernorm2(
+            ffn_output + mult_attn_out
+        )  # (input_seq_len, batch_size, embedding_dim)
+        return encoder_layer_out
+```
+
 ### The full encoder output
+
+```python
+class Encoder(torch.nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        input_vocab_dim,
+        encoder_layer_num,
+        num_heads,
+        max_sentence_length,
+        dropout_rate=0.1,
+    ) -> None:
+        super().__init__()
+        self.embedding_dim = embedding_dim
+        self.positional_encoder = OGPositionalEncoder(
+            max_sentence_length=max_sentence_length, embedding_size=self.embedding_dim
+        )
+        self.embedding_converter = torch.nn.Embedding(
+            num_embeddings=input_vocab_dim, embedding_dim=self.embedding_dim
+        )
+        self.dropout_pre_encoder = torch.nn.Dropout(p=dropout_rate)
+        self.encoder_layers = torch.nn.ModuleList(
+            [
+                EncoderLayer(
+                    embedding_dim=self.embedding_dim,
+                    num_heads=num_heads,
+                    dropout_rate=dropout_rate,
+                )
+                for _ in range(encoder_layer_num)
+            ]
+        )
+
+    def forward(self, X, enc_padding_mask):
+        # X: [Batch_Size, Sentence_length]
+        X = self.embedding_converter(
+            X
+        )  # X: [Batch_Size, Sentence_length, embedding_size]
+        X *= math.sqrt(float(self.embedding_dim))
+        # [Batch_Size, Sentence_length, embedding_dim]
+        X = self.positional_encoder(X)  # applies positional encoding in addition
+        X = self.dropout_pre_encoder(X)
+
+        X = X.permute(1, 0, 2)  # [input_seq_len, batch_size, qk_dim]
+        for encoder_layer in self.encoder_layers:
+            X = encoder_layer(X, attn_mask=None, key_padding_mask=enc_padding_mask)
+        X = X.permute(1, 0, 2)  # [batch_size, input_seq_len, qk_dim]
+        return X
+```
 
 - Scaling: the embeddings are scaled by $\sqrt{\text{embedding\_dimension}}$" before adding positional encodings so their magnitudes match. There's a [StackExchange thread on why exactly this is needed](https://datascience.stackexchange.com/questions/87906/transformer-model-why-are-word-embeddings-scaled-before-adding-positional-encod). However, some were also wondering about its necessity
 
+### Decoder Layer
+
+A decoder layer has 1 multi-head self attention, and 1 encoder-decoder attention. In this layer, we do not change the embedding dimension, either.
+
+```python
+class DecoderLayer(torch.nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        num_heads,
+        dropout_rate=0.1,
+    ) -> None:
+        super().__init__()
+        # need dropout. The torch implementation already has it
+        self.mha1 = MultiHeadAttention(
+            embed_dim=embedding_dim,
+            num_heads=num_heads,
+        )
+        self.mha2 = MultiHeadAttention(
+            embed_dim=embedding_dim,
+            num_heads=num_heads,
+        )
+        self.dropout1 = torch.nn.Dropout(p=dropout_rate)
+        self.dropout2 = torch.nn.Dropout(p=dropout_rate)
+        self.dropout3 = torch.nn.Dropout(p=dropout_rate)
+        self.ffn = PositionwiseFFN(hidden_dim=embedding_dim, output_dim=embedding_dim)
+        self.layernorm1 = torch.nn.LayerNorm(normalized_shape=embedding_dim)
+        self.layernorm2 = torch.nn.LayerNorm(normalized_shape=embedding_dim)
+        self.layernorm3 = torch.nn.LayerNorm(normalized_shape=embedding_dim)
+
+    def forward(self, X, enc_output, attn_mask, key_padding_mask):
+        """
+        Args:
+            X : embedding from output sequence [output_seq_len, batch_size, qk_dim]
+            enc_output : embedding from encoder
+            attn_mask : Boolean mask for the target_input to ensure autoregression
+            key_padding_mask : Boolean mask for the second multihead attention layer
+
+        Returns:
+            decoder output:
+        """
+        self_attn_output, decoder_self_attn_weight = self.mha1(
+            X, X, X, attn_mask=attn_mask, key_padding_mask=None
+        )
+        # apply dropout layer to the self-attention output (~1 line)
+        self_attn_output = self.dropout1(
+            self_attn_output,
+        )
+        # Applying Skip Connection
+        out1 = self.layernorm1(
+            X + self_attn_output
+        )  # (output_seq_len, batch_size, embedding_dim)
+
+        self_attn_output, decoder_encoder_attn_weight = self.mha2(
+            out1,
+            enc_output,
+            enc_output,
+            attn_mask=None,
+            key_padding_mask=key_padding_mask,
+        )
+        # apply dropout layer to the self-attention output (~1 line)
+        self_attn_output = self.dropout2(
+            self_attn_output,
+        )
+        # Applying Skip Connection
+        out2 = self.layernorm2(
+            out1 + self_attn_output
+        )  # (output_seq_len, batch_size, embedding_dim)
+
+        ffn_output = self.ffn(out2)  # (output_seq_len, batch_size, embedding_dim)
+        ffn_output = self.dropout3(ffn_output)
+        # Applying Skip Connection
+        out3 = self.layernorm2(
+            ffn_output + out2
+        )  # (output_seq_len, batch_size, embedding_dim)
+        return out3, decoder_self_attn_weight, decoder_encoder_attn_weight
+```
+
 ### Decoder
 
-The decoder also has residual connections, normalizations, two attention pooling modules, and one positionwise FFN module. Some highlights are:
+The decoder also has residual connections, normalizations, two attention pooling modules, and one positionwise FFN module.
 
 <div style="text-align: center;">
     <p align="center">
@@ -76,6 +251,68 @@ The decoder also has residual connections, normalizations, two attention pooling
        </figure>
     </p>
 </div>
+
+```python
+class Decoder(torch.nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        num_heads,
+        target_vocab_dim,
+        decoder_layer_num,
+        max_sentence_length,
+        dropout_rate=0.1,
+    ) -> None:
+        super().__init__()
+        self.embedding_dim = embedding_dim
+        self.positional_encoder = OGPositionalEncoder(
+            max_sentence_length=max_sentence_length, embedding_size=self.embedding_dim
+        )
+        self.embedding_converter = torch.nn.Embedding(
+            num_embeddings=target_vocab_dim, embedding_dim=self.embedding_dim
+        )
+        self.dropout_pre_decoder = torch.nn.Dropout(p=dropout_rate)
+        self.dec_layers = torch.nn.ModuleList(
+            [
+                DecoderLayer(
+                    embedding_dim=self.embedding_dim,
+                    num_heads=num_heads,
+                    dropout_rate=dropout_rate,
+                )
+                for _ in range(decoder_layer_num)
+            ]
+        )
+
+    def forward(self, X, enc_output, lookahead_mask, key_padding_mask):
+        """
+        Args:
+            X : [batch_size, output_sentences_length]
+            enc_output : [batch_size, input_seq_len, qk_dim].
+                TODO: This might be a small discrepancy from the torch implementation, which is [input_seq_len, batch_size, qk_dim]
+            lookahead_mask : [num_queries, num_keys]
+            key_padding_mask : [batch_size, num_keys]
+        """
+        #  [batch_size, output_sentences_length]
+        X = self.embedding_converter(X)
+        X *= math.sqrt(float(self.embedding_dim))
+        X = self.positional_encoder(X)  # applies positional encoding in addition
+        X = self.dropout_pre_decoder(X)
+        X = X.permute(1, 0, 2)  # [output_seq_len, batch_size, qk_dim]
+        enc_output = enc_output.permute(1, 0, 2)
+        # [num_keys, batch_size, qk_dim]
+        decoder_self_attns, decoder_encoder_attns = [], []
+        for decoder_layer in self.dec_layers:
+            X, decoder_self_attn, decoder_encoder_attn = decoder_layer(
+                X,
+                enc_output,
+                attn_mask=lookahead_mask,
+                key_padding_mask=key_padding_mask,
+            )
+            decoder_self_attns.append(decoder_self_attn)
+            decoder_encoder_attns.append(decoder_encoder_attn)
+        X = X.permute(1, 0, 2)  # [batch_size, output_seq_len, qk_dim]
+        return X, decoder_self_attns, decoder_encoder_attns
+```
 
 - The first attention module is a self-attention module.
   - Its queries, keys and values are all from the decoder.
@@ -88,18 +325,68 @@ The decoder also has residual connections, normalizations, two attention pooling
 ## All Together
 
 ```python
-def forward(self, input_sentence, output_sentence, enc_padding_mask, attn_mask, dec_padding_mask):
-    # input_sentence: [Batch_Size, input_sentence_length]
-    # [batch_size, input_seq_len, qk_dim]
-    enc_output = self.encoder(X=input_sentence, enc_padding_mask=enc_padding_mask) 
-    # [batch_size, output_seq_len, qk_dim]
-    dec_output = self.decoder(X = output_sentence, enc_output=enc_output,
-                                attn_mask = attn_mask, key_padding_mask = dec_padding_mask)
-    # This is basically the raw logits
-    # THIS IS ASSUMING THAT WE ARE USING CROSS_ENTROPY LOSS
-    # [batch_size, output_seq_len,target_vocab_dim]
-    logits = self.final_dense_layer(dec_output)
-    return logits
+class Transformer(torch.nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        input_vocab_dim,
+        target_vocab_dim,
+        layer_num,
+        num_heads,
+        max_sentence_length,
+        dropout_rate=0.1,
+    ) -> None:
+        super().__init__()
+
+        self.encoder = Encoder(
+            embedding_dim=embedding_dim,
+            input_vocab_dim=input_vocab_dim,
+            encoder_layer_num=layer_num,
+            num_heads=num_heads,
+            max_sentence_length=max_sentence_length,
+            dropout_rate=dropout_rate,
+        )
+
+        self.decoder = Decoder(
+            embedding_dim=embedding_dim,
+            num_heads=num_heads,
+            target_vocab_dim=target_vocab_dim,
+            decoder_layer_num=layer_num,
+            max_sentence_length=max_sentence_length,
+            dropout_rate=dropout_rate,
+        )
+
+        self.final_dense_layer = torch.nn.Linear(
+            in_features=embedding_dim,
+            out_features=target_vocab_dim,
+            bias=False,
+        )
+        self.final_relu = torch.nn.ReLU()
+        self.final_softmax = torch.nn.Softmax(dim=-1)
+
+    def forward(
+        self,
+        input_sentences,
+        output_sentences,
+        enc_padding_mask,
+        attn_mask,
+        dec_padding_mask,
+    ):
+        # input_sentences: [Batch_Size, input_sentences_length]
+        # [batch_size, input_seq_len, qk_dim]
+        enc_output = self.encoder(X=input_sentences, enc_padding_mask=enc_padding_mask)
+        # [batch_size, output_seq_len, qk_dim]
+        dec_output, decoder_self_attns, decoder_encoder_attns = self.decoder(
+            X=output_sentences,
+            enc_output=enc_output,
+            lookahead_mask=attn_mask,
+            key_padding_mask=dec_padding_mask,
+        )
+        # This is basically the raw logits.
+        # THIS IS ASSUMING THAT WE ARE USING CROSS_ENTROPY LOSS
+        # [batch_size, output_seq_len,target_vocab_dim]
+        logits = self.final_dense_layer(dec_output)
+        return logits, decoder_self_attns, decoder_encoder_attns
 ```
 
 - At the end, we want the probabilities across target language words, so softmax is needed for training. However, ReLu is not advised here, because it could distort the relative differences between logits by setting the negative ones to 0. The standard practice is: **No ReLu between Linear and Softmax.**
@@ -117,7 +404,6 @@ Advantages:
 Disadvantages:
 
 - Local feature extraction (like in CNN) is lacking.
--
 
 ## Tasks and Data
 
