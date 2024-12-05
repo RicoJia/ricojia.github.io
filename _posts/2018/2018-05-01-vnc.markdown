@@ -1,0 +1,121 @@
+---
+layout: post
+title: Virtual Network Computing (VNC)
+date: '2024-05-01 13:19'
+subtitle: Graphical Desktop Environment
+comments: true
+tags:
+    - Linux
+    - Docker
+---
+
+## What is `vncviewer`
+
+`vncviewer` (virtual network computing) client allows one to interact with a remote computer's graphical desktop environment. It's run inside the docker.
+
+## `vncviewer` Setup
+
+File Directory
+
+```
+├── docker
+│   ├── startup.sh
+│   └── xstartup
+├── docker-compose.yaml
+├── Dockerfile
+├── LICENSE
+├── README.md
+└── workspace
+```
+
+- In docker file:
+
+```dockerfile
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository universe && \
+    apt-get update && \
+    apt-get install -y tigervnc-standalone-server x11vnc && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get install tigervnc-standalone-server x11vnc -y
+WORKDIR /root/.vnc
+COPY ./docker/xstartup ./
+RUN chmod u+x ~/.vnc/xstartup
+
+# set up noVNC
+WORKDIR /usr/lib
+RUN git clone https://github.com/novnc/noVNC.git -o noVNC
+WORKDIR /usr/lib/noVNC/utils
+RUN git clone https://github.com/novnc/websockify.git -o websockify
+
+WORKDIR /
+COPY ./docker/startup.sh ./
+RUN chmod u+x startup.sh
+ENTRYPOINT ["./startup.sh"]
+```
+
+- In `docker/startup.sh`, we set vnc server, start it, and start noVNC, a VNC client.
+
+```bash
+#!/bin/sh
+# set vnc passworld
+x11vnc -storepasswd $VNC_PW ~/.vnc/passwd
+# start vncserver
+vncserver :1 -localhost no -geometry=$VNC_GEOMETRY -depth=$VNC_DEPTH
+# start noVNC
+./usr/lib/noVNC/utils/novnc_proxy --vnc localhost:5901
+tail -f /dev/null
+```
+
+- In `docker/xstartup`
+
+```bash
+#!/bin/sh
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+/* export LANG=zh_CN.UTF-8 */
+/* fcitx -r */
+
+# disable screen blanking
+xset s off
+xset s noblank
+
+startxfce4
+```
+
+- In `docker-compose.yaml`:
+
+```yaml
+version: '3.4'
+services:
+  sad-workspace:  # single docker service
+    environment:
+      - VNC_PW=abc123
+      - VNC_GEOMETRY=1920x1080
+      - VNC_DEPTH=24
+    build:
+      context: .
+    image: deep-blue-slam-rico
+    volumes:
+      - ./workspace:/root/workspace 
+    ports:
+      - 46080:6080
+      - 45901:5901
+```
+
+Then, do `docker compose up -d`, the docker service `sad-workspace` is run in the background. To see the desktop,
+
+- go to `localhost:46080`, click `vnc.html`
+- put in the password `abc123`, hit connect
+- then, voila
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/35332a91-c1c1-48de-bf50-6f10bcbc1e28" height="300" alt=""/>
+       </figure>
+    </p>
+</div>

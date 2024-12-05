@@ -16,7 +16,20 @@ A bit of history: although containerization has been around since **2010**, Dock
 
 How Docker Works in a Nutshell: Docker works by **emulating the CPU, RAM, and other resources of the host operating system, creating a controlled environment known as a "sandbox."** This sandbox allows software to be installed and run in isolation, ensuring consistent behavior across different environments.
 
+Docker is actually a client-server model.
+
+- Docker client is the command line tool `docker...`
+- `Docker Daemon`, or `dockerd` is the  background server that manages docker container, images, networks, and storage volumes
+
 ## Basic Operations
+
+### Set up
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+- Adding $USER to the group `docker`. `-a` means add, `-G` means group. By default, running `docker` requires sudo priviledges. The `docker` group controls which users can interact with docker,
 
 ### Stopped Docker Containers
 

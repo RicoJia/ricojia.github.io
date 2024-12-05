@@ -60,7 +60,13 @@ local_correct = (predicted_test & labels_test).sum().item()
 
 ## Neural Network Model Components
 
-- Make a conv-batch-relu module that optionally have components
+### Data Loading
+
+```python
+train_sampler = RandomSampler(train_data)
+```
+
+### Make a conv-batch-relu module that optionally have components
 
 ```python
 layers = [nn.Conv2d(), nn.Conv2d() ...]
@@ -118,6 +124,7 @@ probs.gather(1, targets.unsqueeze(1))
     - `softmax` creates a softmax across these two channels.
     - `tensor.gather(dim, indices)` here will select the softmax values at the locations indicated in targets. `targets` cleverly stores indices of one-hot vecotr as class labels.
     - `LazyLinear`  dims are initialized during first pass
+    - `optimizer.zero_grad()` should always come before the backward pass
 
 ## Common Operations
 
@@ -181,7 +188,13 @@ tensor_b = torch.randn(6, 4)     # Another tensor with a different shape
 
 # Reshape tensor_b to match the shape of tensor_a
 reshaped_tensor = tensor_b.reshape(tensor_a.shape)
+# reshape using -1, which means "inferring size"
+tensor_a = torch.randn(2, 3, 4) 
+tensor_a.reshape(3, -1).shape   # 3, 8
+tensor_b.reshape(-1).shape  # see 24.
 ```
+
+- `-1` means "inferring size".
 
 - Checking for unique values:
 

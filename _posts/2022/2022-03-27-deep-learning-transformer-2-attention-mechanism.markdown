@@ -166,7 +166,7 @@ a = \frac{QK^T}{\sqrt{d_k}}
 \end{gather*}
 $$
 
-**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future
+**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future words are not considered in the current step.
 
 The "attention is all you need" paper worded this point only with the basic intent, which I found confusing at the first time 😭
 
@@ -224,36 +224,6 @@ class DotProductAttention(torch.nn.Module):
         # TODO In this implementation, there's a drop out
         # https://ricojia.github.io/2022/03/27/deep-learning-attention-mechanism/#scaled-dot-product-luong-attention
         return attention
-```
-
-### Masked Softmax Operation
-
-In real life applications, we might have a lot of input items, like words in an input sentence. Some of them are not very meaningful. Therefore, we can mask out the region with a pre-designated length to calcualate attention (softmax-value) on. To show the **effect**, below we mask out effective regions in each row.  
-
-```python
-
-def masked_softmax(X, valid_lens):
-    if valid_lens is None:
-        return nn.functional.softmax(X, dim=-1)
-    else:
-        shape = X.shape
-        if valid_lens.dim() == 1:
-            valid_lens = torch.repeat_interleave(valid_lens, shape[1])
-        else:
-            valid_lens = valid_lens.reshape(-1)
-        # Set the masked out values (logits) to a large negative value so its softmax is close to zero 
-        X = d2l.sequence_mask(X.reshape(-1, shape[-1]), valid_lens,
-                              value=-1e6)
-        return nn.functional.softmax(X.reshape(shape), dim=-1)
-
-masked_softmax(torch.rand(2, 2, 4), torch.tensor([[1, 3], [2, 4]]))
-
-# see
-tensor([[[1.0000, 0.0000, 0.0000, 0.0000],
-         [0.4125, 0.3273, 0.2602, 0.0000]],
-
-        [[0.5254, 0.4746, 0.0000, 0.0000],
-         [0.3117, 0.2130, 0.1801, 0.2952]]])
 ```
 
 ## Visualization of Attention
