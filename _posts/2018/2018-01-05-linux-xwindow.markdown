@@ -11,19 +11,20 @@ tags:
 ## SSH
 
 - Generate an SSH Key: `ssh-keygen -t rsa -b 4096`.
-    - This will create `~/.ssh/id_rsa` and optionally sets a passphrase
+  - This will create `~/.ssh/id_rsa` and optionally sets a passphrase
 - Copy ssh onto a remote machine: `ssh-copy-id username@remote_host`
-    - You will be prompted for the password of the remote machine. All your public keys will then land in `~/.ssh/authorized_keys`.
+  - You will be prompted for the password of the remote machine. All your public keys will then land in `~/.ssh/authorized_keys`.
 
 - `sudo nmap -sn 192.168.1.0/24`: uses ICMP echo requests (ping), TCP (SYN) packets on OSI layer 3 (the network layer). This is more robust than `sudo arp-scan -l` because the latter uses ARP (Address Resolution Protocol) protocol on layer 2 (the local subnet). Some devices may not respond due to its firewall settings. Also, ARP is an IPv4 protocol. IPv6 devices may also avoid using it.
 
 ### SSH vs SSHD
+
 - SSH (Secure Shell Client): Initiates machine as an SSH Client to connect to a remote server
-    - `ssh username@remote_host 'ls -la /var/www'` : run commands on a remote server
-    - `scp local_file username@remote_machine:PATH`
-    - All data transmission here is encrypted. 
-- SSHD (Secure Shell Daemon): 
-    - Listens on a specified port (default port 22) for incoming SSH requests.
+  - `ssh username@remote_host 'ls -la /var/www'` : run commands on a remote server
+  - `scp local_file username@remote_machine:PATH`
+  - All data transmission here is encrypted.
+- SSHD (Secure Shell Daemon):
+  - Listens on a specified port (default port 22) for incoming SSH requests.
 
 ## What is X?
 
@@ -48,6 +49,13 @@ xhost +local:root
 
 - Note that this command cannot be run in a script because running a script opens up a new shell. It can be sourced, though (source executes the command in the current shell).
 
+Alternatively,
+
+```bash
+xhost +local:
+```
+
+This allows a local user to access Xterminal
 
 ## What If I Can't See Images From Remote Machine?
 
