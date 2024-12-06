@@ -36,8 +36,8 @@ As of 2024, most EVs in China have L2 auto-driving.
 
 There are two main differences between L2 and L4:
 
-- L2 allows the human driver to take over, L4 does not
-- In most cases, L2 does not guarantee driving autonomy, but L4 does.
+- L2 allows the human driver to take over, L4 does not.
+- In most cases, L2 generally requires clear vision of lanes, and does not guarantee driving autonomy. L4 however, does.
 
 ## Current Market Situation (Circa 2021)
 
