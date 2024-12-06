@@ -31,6 +31,16 @@ $$.
 
 However, this could cause a lot of issues. instead, we can assume $q(x) = \epsilon = 10^{-3}$ in this case to avoid numerical errors
 
+#### Special Case: `nn.CrossEntropy()`
+
+When the target distribution $p(x)$ is an one-hot vector, the above formulation becomes [cross-entropy](../2022/2022-01-24-deep-learning-softmax-crossentropy.markdown):
+
+$$
+\begin{gather*}
+D_{KL}(p(x) || q(x)) = - \sum_i y_i log(\hat{y_i})
+\end{gather*}
+$$
+
 ### Chi-Squared Similarity
 
 Chi-Squared Similarity is often used to measure probability distributions of categoritcal data, such as histograms, counts, text data represented by term frequencies.

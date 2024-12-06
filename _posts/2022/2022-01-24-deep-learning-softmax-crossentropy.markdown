@@ -127,12 +127,12 @@ In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.sof
 
 ### Categorical Cross Entropy
 
-Categorical Cross Entropy loss is designed for multi-class problems. There are two kinds:
+Categorical Cross Entropy loss is designed for multi-class problems. There are two forms of the same function:
 
-- Categorical Cross-Entropy: Use when labels are **one-hot encoded**.
-- Sparse Categorical Cross-Entropy: Use **when labels are integers**. It is memory-efficient since it doesn't require one-hot encoding.
+- Categorical Cross-Entropy: expects input labels to be **one-hot vectors**.
+- Sparse Categorical Cross-Entropy: expects input labels to be **integers**. It is memory-efficient since it doesn't require one-hot encoding.
 
-The purpose of using the Log-Sum-Exp Trick (LSE) Numerical Stability: it helps prevent Overflow/Underflow where logits (raw inputs into softmax) can be very large or very small.
+The purpose of using the Log-Sum-Exp Trick (LSE) is numerical stability. It helps prevent Overflow/Underflow where logits (raw inputs into softmax) can be very large or very small.
 
 #### TensorFlow Implementations
 
