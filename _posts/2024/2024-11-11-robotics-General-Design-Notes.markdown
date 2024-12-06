@@ -13,7 +13,12 @@ comments: true
 ## Software Structuring
 
 - Build a simulation / dataset for debugging software is key. otherwise, you will have a lot of overhead of on-robot hardware testing.
-- Have three general feature flags / launch flags of your robot software: 
-    - production
-    - simulation: no redundant visualization, so you can run simulation with small amount of compute
-    - debug: bring up necessary visualization, log messages. the real-time performance could be sub-par, or certain parts could crash due to compute constrants.
+- Have three general feature flags / launch flags of your robot software:
+  - production
+  - simulation: no redundant visualization, so you can run simulation with small amount of compute
+  - debug: bring up necessary visualization, log messages. the real-time performance could be sub-par, or certain parts could crash due to compute constrants.
+
+- Use consistent, simple notations
+- Use modern C++ (>C++17)
+- Use unit test and module tests
+- 2D and 3D visualization for results.

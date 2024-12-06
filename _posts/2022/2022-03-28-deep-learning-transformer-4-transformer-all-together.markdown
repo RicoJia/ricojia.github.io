@@ -424,6 +424,18 @@ Applications
 - Machine Translation (using World-Machine-Translation datasets)
 - Named Entity Recognition (like extracting "phone number" from resumes)
 
+## Hands-On Experience
+
+- My model started outputting 'NaN' after a few batches. My data should be good and I disabled the use of `attn_mask`. This is the same problem as this [StackOverflow Post](https://stackoverflow.com/questions/66542007/transformer-model-output-nan-values-in-pytorch). Possible causes:
+
+  - The model architecture is most likely well-defined considering the first few batches are good
+  - `torch.autograd.set_detect_anomaly(True)` is a good idea
+  - **I saw the positional embedding layer output a vector full of zeros**
+    - It's quite common in Transformer variants (GPT, BERT) to use the same embedding layer for input and output tokens. This is called "weight tying". This way, the model can learn a better memory efficient model.
+  - I also saw that with all non-zero inputs, transformer still output `NaN`. I verified that some parameters were inf, but there were no `NaN`, or `inf`, `NaN` gradients.
+    - use `-1e9` for attn mask instead of `-inf`
+  - Architecture is too small. Try with a larger architecture, like 8 encoder layers, 8 heads
+
 ## References
 
 [1] [Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., … Polosukhin, I. (2017). Attention is all you need. Advances in neural information processing systems (pp. 5998–6008).](https://arxiv.org/pdf/1706.03762)
