@@ -197,7 +197,6 @@ $$
 - `torch.optim.lr_scheduler.StepLR`: reduces learning rate on fixed schedule
 - `torch.optim.lr_scheduler.ExponentialL` or `torch.optim.lr_scheduler.CosineAnnealingLR` reduces learning rate in a smooth exp or cosine manner.
 
-
 ## Local Optima
 
 When people think about `gradient=0` in optimizations, local minima immediately becomes a concern, like the ones below.
@@ -292,3 +291,52 @@ The effect of gradient clipping is
     </figure>
 </p>
 </div>
+
+### Gradient Clipping Code
+
+When training a transformer for translation, there could be gradient explosion. To veritfy it, one can use
+
+```python
+for name, param in (model.named_parameters()):
+    # grad is a matrix
+    if torch.isnan(param.grad).any():
+        print("inf: ", name)
+    elif torch.isinf(param.grad).any():
+        print("nan: ", name)
+# print param sum
+print(sum(param.sum() for param in model.parameters() if param.requires_grad))
+```
+
+[To prevent gradient norm from going to infinite, gradient clipping can be applied. This is for mixed-precision training](https://pytorch.org/docs/stable/notes/amp_examples.html#gradient-clipping)
+
+```python
+scaler = GradScaler()
+for epoch in epochs:
+    for input, target in data:
+        optimizer.zero_grad()
+        with autocast(device_type='cuda', dtype=torch.float16):
+            output = model(input)
+            loss = loss_fn(output, target)
+        scaler.scale(loss).backward()
+        # Unscales the gradients of optimizer's assigned params in-place
+        scaler.unscale_(optimizer)
+        # Since the gradients of optimizer's assigned params are unscaled, clips as usual:
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
+        # Without unscale_(), unscaling from float16 to float32 happens here
+        scaler.step(optimizer)
+        # Adjusts the scaling factor for the next iteration. If gradients are too low, increase the scaling factor.
+        scaler.update()
+```
+
+This is gradient for `float32` training
+
+```python
+for epoch in epochs:
+    for input, target in data:
+        optimizer.zero_grad()
+        output = model(input)
+        loss = loss_fn(output, target)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
+        optimizer.step()
+```
