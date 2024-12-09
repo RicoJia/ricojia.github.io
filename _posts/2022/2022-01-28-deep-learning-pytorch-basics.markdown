@@ -18,6 +18,7 @@ tags:
 
 - `torch.tensor(int, dtype=torch.float32)`. We can't pass an int right into `torch.sqrt()`. We must transform it into a tensor.
   - Note, we are using the function `torch.tensor()`, not the class `torch.Tensor()`
+  - Or alternatively, use `math.sqrt()`
 
 - to invert a bool mask: `~key_padding_mask`
 
@@ -75,6 +76,18 @@ nn.Sequential(*layers)
 ```
 
     - `nn.Sequential()` is a sequential container that takes in modules. It has a `forward()` function, and it will pass it on to the first module, then the chain starts.
+
+- `nn.Sequential()` does not support input args in `seq_layers(X, other_args)`. In that case, use `nn.ModuleList()` and manually iterate through the layers
+
+```python
+encoder_layers = torch.nn.ModuleList([
+    EncoderLayer(embedding_dim=self.embedding_dim, num_heads=num_heads, dropout_rate=dropout_rate) 
+    for _ in range(encoder_layer_num)
+])
+
+for encoder_layer in self.encoder_layers:
+    X = encoder_layer(X, attn_mask=attn_mask, key_padding_mask=key_padding_mask)
+```
 
 - Softmax layer:
 

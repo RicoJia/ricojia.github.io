@@ -75,7 +75,7 @@ Effectively, some neurons' weight will be reduced, so hopefully, it will result 
 
 ### Technique 2: Dropout
 
-Dropout is to force a fraction of neurons to zero during each iteration. This effectively reduces the complexity of the model, which is like regularization.
+Dropout is to force a fraction of neurons to zero during each iteration. This effectively **reduces the complexity of the model, which is like regularization.** In the meantime, dropout effectively simulates different network architectures, making the network more robust to different inputs
 
 - At each epoch, **randomly select** neurons to turn on. Say you want 80% of the neurons to be kept. This means we will not rely on certain features. Instead, we shuffle that focus, which spreads the weights
 - **VERY IMPORTANT**: **computer vision uses this a lot. Because you have a lot of pixels, relying on every single pixel could be overfitting.**
@@ -89,6 +89,13 @@ Dropout is to force a fraction of neurons to zero during each iteration. This ef
     </figure>
 </p>
 </div>
+
+#### Where Dropout Is Applied
+
+The general rule of thumb is to apply dropout after layers with a high number of parameters. They are more likely to overfit to specific inputs
+
+- In CNN: `CONV -> RELU -> DROPOUT`
+- In Transformer, [see here](./2022-04-05-deep-learning-transformer-4-transformer-all-together.markdown)
 
 #### Notes For Dropout
 
