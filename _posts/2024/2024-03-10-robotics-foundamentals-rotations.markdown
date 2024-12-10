@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Rotations
 date: '2024-03-10 13:19'
-subtitle: Getting back to the fundamentals? Let's roll with rotations
+subtitle: BCH Formula
 comments: true
 tags:
     - Robotics
@@ -152,3 +152,94 @@ Quaternion
 ### Implementations
 
 - OpenCV: OpenCV provides rotation vector -> single rotation matrix. [See here](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga61585db663d9da06b68e70cfbf6a1eac)
+
+------------------------------------------------------------------------------------------------
+## Rodrigues Formula
+
+TODO
+
+## Left and Right Perturbations
+
+Rotations around $t$
+
+Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
+
+In general, for the combination of two rotations? 
+
+$$
+\begin{gather*}
+exp^{(C)} = ln(exp(\theta^{\land}) exp^(\phi^{\land})) = 
+\begin{cases}
+J_l^{-1}(\phi)\theta + \phi \text{when perturbation is} \theta \\
+J_r^{-1}(\theta)\phi + \theta \text{when perturbation is} \phi \\
+\end{cases}
+\end{gather*}
+$$
+
+TODO: Left perturbation is a "external perturbation" applied on R. For small skew matrix A of rotation axis a, with rotation angle $\theta$ and unit vector `n`
+
+$$
+\begin{gather*}
+J_l = \frac{(\partial{exp^{(A)}} R)}{A}
+\\
+TODO??
+\\
+J_l = \frac{sin(\theta)}{\theta}I + (1-\frac{sin(\theta)}{\theta})nn^T + \frac{1-cos(\theta)}{\theta}A
+\\ J_r = J_l(-\theta)
+\\TODO
+\end{gather*}
+$$
+
+TODO: right perturbation is an "internal perturbation" that's applied on the points / vector R has been applied to. 
+
+## Useful Formulas
+
+Here, assume we have rotation $\phi$, and its corresponding rotation, $R$,
+
+$$
+\begin{gather*}
+exp(\phi) = R   \\
+log(R) = \phi
+\end{gather*}
+$$
+
+### BCH (Baker-Cambell-Hausdorff) Formula
+
+BCH formula states that for two Lie Algebras $e^{A}$ and $e^{B}$ with skew matrices `A` and `B` that composes `C`: $C = log(e^{A} e^{B})$, Then to determine C
+
+$$
+\begin{gather*}
+C = A + B + \frac{1}{2}[A, B] + \frac{1}{12}([A, [A, B] + [B, [B, A]]])
+\end{gather*}
+$$
+
+Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-BA) - (AB-BA)A$
+
+#### Applications of BCH
+
+- For small $A$, $B$, one have $C \approx A + B + \frac{1}{2}[A, B]$. Example: for two rotations `A` and `B`
+
+$$
+\begin{gather*}
+A = \begin{bmatrix}
+0 & -a  \\
+a & 0
+\end{bmatrix}
+\\
+B = \begin{bmatrix}
+0 & -b  \\
+b & 0
+\end{bmatrix}
+
+\\
+[A, B] = AB - BA = 0
+\\
+C = A + B + \frac{1}{2}[A, B] = \begin{bmatrix}
+0 & -(a+b)  \\
+a+b & 0
+\end{bmatrix}
+
+\end{gather*}
+$$
+
+
