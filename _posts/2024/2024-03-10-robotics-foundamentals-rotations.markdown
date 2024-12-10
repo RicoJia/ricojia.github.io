@@ -187,15 +187,15 @@ $$
 \begin{gather*}
 RR^T = I => (RR^T)' = R'R^T + RR'^T = 0
 \\
-R'R^T = -(RR'^T) = -(R'R^T)^T = -\phi(t)^{\land}
+R'R^T = -(RR'^T) = -(R'R^T)^T = \phi(t)^{\land}
 \end{gather*}
 $$
 
-Where $-\phi(t)^{\land}$ the skew matrix of vector $-\phi(t) = [\phi_1, \phi_2, \phi_1,]$
+Where $\phi(t)^{\land}$ the skew matrix of vector $\phi(t) = [\phi_1, \phi_2, \phi_1,]$
 
 $$
 \begin{gather*}
--\phi(t)^{\land} = \begin{bmatrix}
+\phi(t)^{\land} = \begin{bmatrix}
 0 & -\phi_3 & \phi_2 \\
 \phi_3 & 0 & -\phi_1 \\
 -\phi_2 & \phi_1 & 0
@@ -206,7 +206,23 @@ $$
 Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $-\phi(t)^{\land}$ with it.**
 $$
 \begin{gather*}
-R'R^TR = R' = -\phi(t)^{\land} R
+R'R^TR = R' = \phi(t)^{\land} R
+\end{gather*}
+$$
+
+The above is also known as the Poisson Formula. If we define
+
+$$
+\begin{gather*}
+w^{\land} = R^{T}R'
+\end{gather*}
+$$
+
+We have another form of the Poisson Formula:
+
+$$
+\begin{gather*}
+R' = Rw^{\land}
 \end{gather*}
 $$
 
@@ -255,6 +271,8 @@ exp(\phi^{\land}) = exp(\theta a^{\land}) = \frac{1}{n!}(\theta a^{\land})^n
 \\
 = cos(\theta) + (I-cos(\theta)) aa^T + sin(\theta)a^{\land}
 
+\\
+Or = I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
 \end{gather*}
 $$
 
@@ -264,62 +282,29 @@ $$
 
 ## Left and Right Perturbations
 
-Rotations around $t$
-
-Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
-
-In general, for the combination of two rotations?
+One question is can skew matrices `so(3)` be added?
 
 $$
 \begin{gather*}
-exp^{(C)} = ln(exp(\theta^{\land}) exp^(\phi^{\land})) =
-\begin{cases}
-J_l^{-1}(\phi)\theta + \phi \text{when perturbation is} \theta \\
-J_r^{-1}(\theta)\phi + \theta \text{when perturbation is} \phi \\
-\end{cases}
+R = exp(\phi_1^{\land}) exp(\phi_2^{\land}) = exp(\phi_1^{\land} + \phi_2^{\land})?
 \end{gather*}
 $$
 
-TODO: Left perturbation is a "external perturbation" applied on R. For small skew matrix A of rotation axis a, with rotation angle $\theta$ and unit vector `n`
-
-$$
-\begin{gather*}
-J_l = \frac{(\partial{exp^{(A)}} R)}{A}
-\\
-TODO??
-\\
-J_l = \frac{sin(\theta)}{\theta}I + (1-\frac{sin(\theta)}{\theta})nn^T + \frac{1-cos(\theta)}{\theta}A
-\\ J_r = J_l(-\theta)
-\\TODO
-\end{gather*}
-$$
-
-TODO: right perturbation is an "internal perturbation" that's applied on the points / vector R has been applied to.
-
-## Useful Formulas
-
-Here, assume we have rotation $\phi$, and its corresponding rotation, $R$,
-
-$$
-\begin{gather*}
-exp(\phi) = R   \\
-log(R) = \phi
-\end{gather*}
-$$
+However, the BCH formula tells us that it's not the case. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
 
 ### BCH (Baker-Cambell-Hausdorff) Formula
 
-BCH formula states that for two Lie Algebras $e^{A}$ and $e^{B}$ with skew matrices `A` and `B` that composes `C`: $C = log(e^{A} e^{B})$, Then to determine C
+BCH formula states that for two Lie Algebras $e^{A}$ and $e^{B}$ with skew matrices `A` and `B` that composes `C`: $R = e^{C} = e^{A^{\land}} e^{B^{\land}}$, Then to determine C
 
 $$
 \begin{gather*}
-C = A + B + \frac{1}{2}[A, B] + \frac{1}{12}([A, [A, B] + [B, [B, A]]])
+C = A + B + \frac{1}{2}[A, B] + \frac{1}{12}([A, [A, B] - [B, [B, A]]]) ...
 \end{gather*}
 $$
 
-Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-BA) - (AB-BA)A$
+Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-BA) - (AB-BA)A$. If we take the taylor expansion with perturbations as shown, we get:
 
-#### Applications of BCH
+#### Small Example of BCH
 
 - For small $A$, $B$, one have $C \approx A + B + \frac{1}{2}[A, B]$. Example: for two rotations `A` and `B`
 
@@ -343,5 +328,96 @@ C = A + B + \frac{1}{2}[A, B] = \begin{bmatrix}
 a+b & 0
 \end{bmatrix}
 
+\end{gather*}
+$$
+
+#### How BCH Approximates The Left Perturbation
+
+$$
+\begin{gather*}
+exp^{(C)} = ln(exp(A^{\land}) exp^(B^{\land})) =
+\begin{cases}
+J_l^{-1}(B)A + B \text{when perturbation (small value) is} A \\
+J_r^{-1}(A)B + A \text{when perturbation (small value) is} B \\
+\end{cases}
+\end{gather*}
+$$
+
+This approximation linearizes manipulation to skew matrices addition. To see how this is derived:
+
+- Rodrigues Formula can also be written as: (**A is a rotation vector**)
+
+$$
+\begin{gather*}
+\\
+A = \theta a
+\\
+R = exp(A^{\land})
+\\
+= I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
+\\
+= I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}  
+\end{gather*}
+$$
+
+Left Jacobian is defined as the "derivative" that measures the infinitesimally small change in R w.r.t to $A^{\land}$. So it's
+
+$$
+\begin{gather*}
+J_{l}(A) =  \frac{\partial{exp(A^{\land})}}{\partial{A}}
+\end{gather*}
+$$
+
+So note that in $exp(A^{\land}) = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}$, $\frac{\partial A^{\land}}{A}$ is not hard because TODO?
+
+$\frac{\theta}{A}$ is a bit tricky. But we have $\theta = \sqrt{A_1^2 + A_2^2 + A_3^2}$. So
+
+$$
+\begin{gather*}
+\frac{\partial{\theta}}{\partial{A}} = \frac{A}{\theta} = a
+\end{gather*}
+$$
+
+Eventually, we get
+
+$$
+\begin{gather*}
+J_{l}(A) = \frac{\partial{e^{A^{\land}}}}{\partial{A}} = \frac{sin \theta}{\theta} I + (1 - \frac{sin \theta}{\theta}) aa^T + \frac{1 - cos\theta}{\theta} a^{\land}
+
+\end{gather*}
+$$
+
+#### Right Perturbation
+
+$$
+\begin{gather*}
+=> J_{l}(\theta)^{-1} = \frac{\theta}{2}cot \frac{\theta}{2} I + (1 - \frac{\theta}{2}cot \frac{\theta}{2}) aa^T - \frac{\theta}{2} a^{\land}
+\end{gather*}
+$$
+
+And the right Jacobian is:
+$$
+\begin{gather*}
+exp^{(C)} = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
+\\
+= J_r^{-1}(A) \Delta A + A
+\\
+J_l(\theta) = J_r(-theta)   // TODO?
+\end{gather*}
+$$
+
+#### Perturbations All Together
+
+$$
+\begin{gather*}
+exp(C) = exp(\Delta B^{\land}) exp(B^{\land}) = exp((B + J_l^{-1}(\Delta B) B)^{\land})
+\end{gather*}
+$$
+
+So when we want to add a small value vector together:
+
+$$
+\begin{gather*}
+exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
 \end{gather*}
 $$
