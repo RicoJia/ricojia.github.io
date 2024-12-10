@@ -9,9 +9,13 @@ tags:
     - Deep Learning
 ---
 
-## Underflow
+### Underflow
 
 - `torch.softmax(X)` X is zero due to underflow.
+
+### Sizing
+
+- Be careful with **the last batch** if you want to initialize any tensor that's specific to each batch's sizes, because it could be smaller than the commonly defined `BATCH_SIZE` since the batch could be truncated.
 
 ## Weight Manipulation
 

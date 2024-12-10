@@ -139,6 +139,7 @@ probs.gather(1, targets.unsqueeze(1))
     - `LazyLinear`  dims are initialized during first pass
     - `optimizer.zero_grad()` should always come before the backward pass
     - ` with torch.autograd.set_detect_anomaly(True):` can be used to print a stack trace
+    - indexing: "arr_2d[:, 0] = arr_1d"
 
 ## Common Operations
 

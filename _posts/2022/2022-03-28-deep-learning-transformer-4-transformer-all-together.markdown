@@ -424,7 +424,10 @@ Applications
 - Machine Translation (using World-Machine-Translation datasets)
 - Named Entity Recognition (like extracting "phone number" from resumes)
 
-## Hands-On Experience
+## Lessons Learned From Hands-On Training and Validating
+
+- The most stark difference I encountered in [tutorials like this one](https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch) and my hands-on training experience is the use of **teacher forcing**. Teacher forcing is to feed the entire ground truth into the transformer, specifically, the decoder, so the model learns the parameters to output target values, when **it sees the entire ground truth**. This is great for speeding up learning, and as a quick way to validate that the model, the data, the general training framework works. However, in validation, we feed the decoder outputs back into the transformer one at a time (a.k.a autoregression). The performance there is **VERY BAD**: the model outputs a bunch of `<EOS>, <SOS>, <PAD>` as if it had not learned anything.
+  - So, mixing in decoder data is very important, though the target value could be noisier.
 
 - My model started outputting 'NaN' after a few batches. My data should be good and I disabled the use of `attn_mask`. This is the same problem as this [StackOverflow Post](https://stackoverflow.com/questions/66542007/transformer-model-output-nan-values-in-pytorch). Possible causes:
 
@@ -436,6 +439,10 @@ Applications
     - use `-1e9` for attn mask instead of `-inf`
   - Architecture is too small. Try with a larger architecture, like 8 encoder layers, 8 heads
 
+- When the model is not learning:
+  - Try overfitting a small batch and see if it works.
+
 ## References
 
 [1] [Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., … Polosukhin, I. (2017). Attention is all you need. Advances in neural information processing systems (pp. 5998–6008).](https://arxiv.org/pdf/1706.03762)
+[2] [Mislav Jurić Blogpost](https://www.mislavjuric.com/transformer-from-scratch-in-pytorch/)
