@@ -79,7 +79,16 @@ $$
 $$
 \begin{gather*}
 \bar{q} = q_0 - q_1i - q_2 j - q_3 k
+\\
 q\bar{q} = 1
+\end{gather*}
+$$
+
+One important Attribute is:
+
+$$
+\begin{gather*}
+\bar{ab} = \bar{b} \bar{a}
 \end{gather*}
 $$
 
@@ -112,3 +121,17 @@ $$
 n = [q_1, q_2, q_3]/sin(\frac{\theta}{2})
 \end{gather*}
 $$
+
+## Kinematics Using Quaternions
+
+Since we have $qq* = 1$, we can get the derivative of:
+
+$$
+\begin{gather*}
+q'q* + qq*' = 0
+\\ =>
+\\ q'q* = -qq*' = -(q'q*)*
+\end{gather*}
+$$
+
+So we can see that `q'q*` must be a pure imaginary number $q'q* = \bar{w} = [0, w_1, w_2, w_3]

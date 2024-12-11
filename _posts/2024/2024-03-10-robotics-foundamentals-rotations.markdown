@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Rotations
 date: '2024-03-10 13:19'
-subtitle: Introduction To Rotation Matrices, Lie Group and Lie Algebras, BCH Formula
+subtitle: Introduction To Rotation Matrices, Lie Group and Lie Algebras, BCH Formula, Instantaneous Rotation
 comments: true
 tags:
     - Robotics
@@ -402,7 +402,7 @@ exp^{(C)} = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
 \\
 = J_r^{-1}(A) \Delta A + A
 \\
-J_l(\theta) = J_r(-theta)   // TODO?
+J_r(-\theta) = J_l(\theta)   // TODO?
 \end{gather*}
 $$
 
@@ -419,5 +419,15 @@ So when we want to add a small value vector together:
 $$
 \begin{gather*}
 exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
+\end{gather*}
+$$
+
+## Instantaneous Rotation
+
+According to the Poisson Formula, $R' = Rw^{\land}$, for a small time period $\Delta t$, the ODE can be solved:
+
+$$
+\begin{gather*}
+R(t) = R(t_0)exp(w^{\land}(t - t_0)) = R(t_0) exp(w^{\land} \Delta t)
 \end{gather*}
 $$
