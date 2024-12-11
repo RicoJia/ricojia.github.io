@@ -480,9 +480,8 @@ The most stark difference I encountered in [tutorials like this one](https://www
     Prediction: ['SOS', 'big', 'EOS', 'you', 're', 'SOS', 'big', 'big', 'you', 'big', 'PAD']
     ```
 
-- However, this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well.
+- However, this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well. TODO
 
-  - Translate the same
 
 ## References
 

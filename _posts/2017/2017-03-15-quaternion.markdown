@@ -2,7 +2,7 @@
 layout: post
 title: Math - Quaternion
 date: '2017-03-15 13:19'
-subtitle: 
+subtitle: Definition of Quaternion, Quaternion Use Cases
 comments: true
 tags:
     - Math
@@ -44,7 +44,9 @@ q = cos(\frac{\theta}{2}) + sin(\frac{\theta}{2}) (n \cdot \sigma)
 \end{gather*}
 $$
 
-So one can see that `q` is still a unit vector, and:
+A general quaternion does NOT have to be a unit vector, however, a rotation quaternion **must be a unit vector**.
+
+So one can see that `q` is still a unit vector from the rotation axis:
 
 $$
 \begin{gather*}
