@@ -34,14 +34,42 @@ My boiler plate is:
 
 ```python
 import wandb
-experiment = wandb.init(project='Rico-U-Net', resume='allow', anonymous='must')
-experiment.config.update(
-    dict(epochs=NUM_EPOCHS, batch_size=BATCH_SIZE * ACCUMULATION_STEPS, learning_rate=LEARNING_RATE,
-            training_size = len(train_dataset),
-            validation_size = len(val_dataset),
-            save_checkpoint=SAVE_CHECKPOINT, amp=AMP)
+wandb_logger = wandb.init(
+    project="Rico-mobilenetv2", resume="allow", anonymous="must"
 )
-# [optional] finish the wandb run, necessary in notebooks                                                                      
+wandb_logger.config.update(
+    dict(
+        epochs=NUM_EPOCHS,
+        batch_size=BATCH_SIZE * ACCUMULATION_STEPS,
+        learning_rate=LEARNING_RATE,
+        weight_decay=WEIGHT_DECAY,
+        training_size=len(train_dataset),
+        amp=USE_AMP,
+        optimizer=str(optimizer),
+    )
+)
+logging.info(
+    f"""🚀 Starting training🚀 :
+    Epochs:          {NUM_EPOCHS}
+    Batch size:      {BATCH_SIZE}
+    Learning rate:   {LEARNING_RATE}
+    Weight decay:    {WEIGHT_DECAY}
+    Training size:   {len(train_dataset)}
+    Device:          {device.type}
+    Mixed Precision: {USE_AMP},
+    Optimizer:       {str(optimizer)}
+"""
+)
+wandb_logger.log(
+    {
+        "epoch loss": epoch_loss,
+        "epoch": epoch,
+        "learning rate": current_lr,
+        "total_weight_norm": total_weight_norm,
+        "elapsed_time": timer.lapse_time(),
+    }
+)
+
 wandb.finish()
 ```
 
