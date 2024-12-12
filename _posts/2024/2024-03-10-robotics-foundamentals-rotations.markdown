@@ -282,6 +282,33 @@ $$
 
 ## Left and Right Perturbations
 
+Imagine we have a world frame, a car frame, and a pedestrian. Now the car has rotated from the `car1` pose to the `car2` pose. We assume the pedestrain has not moved:
+
+In `car1` and `car2` poses, the pedestrian is at
+$$
+\begin{gather*}
+p_1 = R_{c1w}p_w
+\\
+p_2 = R_{c2c1} R_{c1w}p_w
+\end{gather*}
+$$
+
+$R_{c2c1} R_{c1w}$ is called a "left perturbation".
+
+On the other hand, at the world frame,
+
+$$
+\begin{gather*}
+p_w = R_{wc1}p_1
+\\
+p_w = R_{wc1}R_{c1c2}p_2
+\end{gather*}
+$$
+
+$R_{wc1}R_{c1c2}$ is called a "right perturbation". This is **the more common** since we are always more interested in world frame coordinates.
+
+### Perturbations Can Not Be Added On `so(3)` Or `SO(3)`
+
 One question is can skew matrices `so(3)` be added?
 
 $$
