@@ -117,9 +117,11 @@ $$
 
 --------------------------------------------------
 
-## Using Quaternion
+## Rotation With Quaternion
 
-### Rotations With Quaternion
+A general quaternion does NOT have to be a unit vector, however, a rotation quaternion **must be a unit vector**.
+
+### Rotation is $p'=qpq^{-1}$
 
 <div style="text-align: center;">
     <p align="center">
@@ -129,7 +131,7 @@ $$
     </p>
 </div>
 
-For a point `(x, y, z)`, `p' = Rp`. $p' = qpq^{-1}$, where `p'` has zero real part. Here is why:
+For a point `(x, y, z)`, `p' = Rp`. If we want to do rotation in quaternions, we write `p = [0, x, y, z]`. $p' = qpq^{-1}$. Actually `p'` is a pure imaginary number. Here is why:
 
 - Let's define 2 matrices: (the only difference is the sign of $v^{\land}$)
 
@@ -203,7 +205,7 @@ $$
 
 Here, it's easy to see that $p' = qpq^{-1} = q^{+} q^{-1 \oplus} p$ has a zero real part.
 
-#### Relationship with Rotation Matrix
+### Relationship with Rotation Matrix
 
 Rotation Matrix can be represented as the last element in $q^{+} q^{-1 \oplus}$
 
@@ -292,36 +294,95 @@ $$
 
 Most libraries will use quaternion for rotations as it only requires 4 numbers. However, as a user, we don't need to worry too much about the lower level implementation details
 
-## TODO
-
-With a known rotation axis (also a unit vector) in real space, `n`, and a known roation angle $\theta$, q can be represented as
-
-$$
-\begin{gather*}
-q = cos(\frac{\theta}{2}) + sin(\frac{\theta}{2}) (n \cdot v)
-\end{gather*}
-$$
-
-A general quaternion does NOT have to be a unit vector, however, a rotation quaternion **must be a unit vector**.
-
-So one can see that `q` is still a unit vector from the rotation axis:
-
-$$
-\begin{gather*}
-q_0 = cos(\frac{\theta}{2}), q_1 = n_x sin(\frac{\theta}{2}), q_2 = n_y sin(\frac{\theta}{2}), q_3 = n_z sin(\frac{\theta}{2})
-\end{gather*}
-$$
-
 ## Kinematics Using Quaternions
+
+### Define Pure Imaginary Quaternion $q^{*}q' = \bar{w}$
 
 Since we have $qq^{*} = 1$, we can get the derivative of:
 
 $$
 \begin{gather*}
-q'q^{*} + qq'^{*} = 0
+q^{*}q' + q'^{*}q = 0
 \\ =>
-\\ q'q^{*} = -qq'^{*} = -(q'q^{*})^{*}
+\\ q^{*}q' = -q'^{*}q = -(q^{*}q')^{*}
 \end{gather*}
 $$
 
-So we can see that `q'q^{*}` must be a pure imaginary number $q'q^{*} = \bar{w} = [0, w_1, w_2, w_3]$
+So we can see that $q^{*}q'$ must be a pure imaginary number $q^{*}q' = \bar{w} = [0, w_1, w_2, w_3]$
+
+### Pure Imaginary Quaternion $Exp(\bar{w})$ is A Unit Quaternion
+
+With pure imaginary $\bar{w} = [0, w]$,
+$$
+\begin{gather*}
+q^{*}q' = \bar{w} => (qq^{*})q' = q \bar{w}
+\end{gather*}
+$$
+
+So we can write the solution to `q` as:
+
+$$
+\begin{gather*}
+q(t) = q(t_0)exp(\bar{w} \Delta t)
+\end{gather*}
+$$
+
+Now the question is what does this exponential look like? Quaternion exponential can be defined with Taylor Series as well:
+
+$$
+\begin{gather*}
+exp(\bar{w}) = \sum_{K=0} \frac{1}{k!} (\bar{w})^k
+\end{gather*}
+$$
+
+Similar to Rodrigues formula, there's an interesting attribute of quaternion:
+
+$$
+\begin{gather*}
+\bar{w} = \theta u
+\\
+u^2 = -1
+\\
+u^3 = -u
+\end{gather*}
+$$
+
+Where `u` is a unit vector, $\theta$ is the angle of rotation. This leads to **the extension of the Euler's Formula in Quaternion**:
+
+$$
+\begin{gather*}
+exp(\bar{w}) = 1 + \theta u - \frac{1}{2!}\theta^2 - \frac{1}{3!}\theta^3 u + \frac{1}{4!}\theta^4 + ...
+\\
+= (1 - \frac{1}{2!}\theta^2 + \frac{1}{4!}\theta^4 + ...) + (\theta u - \frac{1}{3!}\theta^3 u + ...)
+\\
+= cos \theta + usin\theta
+\end{gather*}
+$$
+
+Refresher: in the complex plane, Euler's Formula is:
+
+$$
+\begin{gather*}
+exp(i \theta) = cos \theta + i sin \theta
+\end{gather*}
+$$
+
+Exponential of a pure imaginary quaternion $exp(\bar{w})$ is a unit quaternion, by the definition of `u`:
+
+$$
+\begin{gather*}
+|exp(\bar{w})| = \sqrt{cos^2 \theta + u^2sin^2\theta} = 1
+\end{gather*}
+$$
+
+### Rotation Quaternion's Imaginary Part Is Half Of Rotation Vector
+
+We have defined `R`:
+
+$$
+\begin{gather*}
+R = exp(\phi) = exp(\psi n)
+\end{gather*}
+$$
+
+To find out the relationshp between
