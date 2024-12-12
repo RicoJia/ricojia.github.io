@@ -102,6 +102,7 @@ Because $q^{*}q = [s_a s_b + v^T v, 0]$, we can see that the inverse of q is
 $$
 \begin{gather*}
 q^{-1} = \frac{q}{|q|}
+\\
 q q^{-1} = \frac{[s_a s_b + v^T v, 0]}{|q|^2}  = 1
 \end{gather*}
 $$
@@ -117,32 +118,6 @@ $$
 --------------------------------------------------
 
 ## Using Quaternion
-
-### From Quat to Axis-Angle
-
-We always require that $\theta \in [0, \pi]$. And for cases where $\theta$ is out of $[0, \pi]$, we change the sign of q.
-
-$$
-\begin{gather*}
-\theta = 2 arccos(q_0)
-\\
-n = [q_1, q_2, q_3]/sin(\frac{\theta}{2})
-\end{gather*}
-$$
-
-## Kinematics Using Quaternions
-
-Since we have $qq^{*} = 1$, we can get the derivative of:
-
-$$
-\begin{gather*}
-q'q^{*} + qq'^{*} = 0
-\\ =>
-\\ q'q^{*} = -qq'^{*} = -(q'q^{*})^{*}
-\end{gather*}
-$$
-
-So we can see that `q'q^{*}` must be a pure imaginary number $q'q^{*} = \bar{w} = [0, w_1, w_2, w_3]$
 
 ### Rotations With Quaternion
 
@@ -264,7 +239,7 @@ tr((v^{\land})^2) =  |v|^2 (1 - 3) = -2 |v|^2
 \end{gather*}
 $$
 
-#### Quaternion and The Rotation Angle, $\theta$
+#### From Quaternion To The Rotation Angle, $\theta$
 
 Since we know that:
 
@@ -274,7 +249,7 @@ $$
 \end{gather*}
 $$
 
-We can know the rotation angle, $\theta:
+We always require that $\theta \in [0, \pi]$. And for cases where $\theta$ is out of $[0, \pi]$, we change the sign of q. So we can know the rotation angle, $\theta$:
 
 $$
 \begin{gather*}
@@ -292,7 +267,7 @@ s = cos \frac{\theta}{2}
 \end{gather*}
 $$
 
-#### Quaternion and The Rotation Axis
+#### From Quaternion To The Rotation Axis
 
 **The virtual part of the rotation quaternion q, v** is actually on the rotation axis. Here is the proof:
 
@@ -336,3 +311,17 @@ $$
 q_0 = cos(\frac{\theta}{2}), q_1 = n_x sin(\frac{\theta}{2}), q_2 = n_y sin(\frac{\theta}{2}), q_3 = n_z sin(\frac{\theta}{2})
 \end{gather*}
 $$
+
+## Kinematics Using Quaternions
+
+Since we have $qq^{*} = 1$, we can get the derivative of:
+
+$$
+\begin{gather*}
+q'q^{*} + qq'^{*} = 0
+\\ =>
+\\ q'q^{*} = -qq'^{*} = -(q'q^{*})^{*}
+\end{gather*}
+$$
+
+So we can see that `q'q^{*}` must be a pure imaginary number $q'q^{*} = \bar{w} = [0, w_1, w_2, w_3]$
