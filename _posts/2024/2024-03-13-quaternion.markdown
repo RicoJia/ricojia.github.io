@@ -1,10 +1,11 @@
 ---
 layout: post
-title: Math - Quaternion
-date: '2017-03-13 13:19'
-subtitle: Definition of Quaternion, Quaternion Use Cases
+title: Robotics - Quaternion Kinematics
+date: '2024-03-13 13:19'
+subtitle: Definition of Quaternion, Relationship Between Quaternion and Rotation Matrix
 comments: true
 tags:
+    - Robotics
     - Math
 ---
 
@@ -117,11 +118,11 @@ $$
 
 --------------------------------------------------
 
-## Rotation With Quaternion
+## Rotation Quaternion To Rotation Matrix
 
 A general quaternion does NOT have to be a unit vector, however, a rotation quaternion **must be a unit vector**.
 
-### Rotation is $p'=qpq^{-1}$
+### 1. Rotation is $p'=qpq^{-1}$
 
 <div style="text-align: center;">
     <p align="center">
@@ -205,9 +206,9 @@ $$
 
 Here, it's easy to see that $p' = qpq^{-1} = q^{+} q^{-1 \oplus} p$ has a zero real part.
 
-### Relationship with Rotation Matrix
+### 2. Rotation Matrix is $R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$
 
-Rotation Matrix can be represented as the last element in $q^{+} q^{-1 \oplus}$
+Since rotation in quaternion is purely imaginary, the rotation Matrix can be represented as the last element in $q^{+} q^{-1 \oplus}$
 
 $$
 \begin{gather*}
@@ -215,33 +216,42 @@ p' = qpq^{-1} = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2 p = Rp
 \end{gather*}
 $$
 
-**So, we also have $R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$.**
+**So that leads to $R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$.**
 
-So we can represent trace of `R` as the real part of quaternion `q`, `s`
+### 3. From Quaternion To Rotation Angle, $\theta$ Using $tr(R)$
+
+Now, we can represent trace of `R` as the real part of quaternion `q`, `s`
 
 $$
 \begin{gather*}
 tr(R) = tr (v v^{T} + s^2 I + 2sv^{\land}) + tr((v^{\land})^2)
-\\
-\text{since:}
-\\ v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
-
-\\
-\text{we have:}
-\\
-tr((v^{\land})^2) =  |v|^2 (1 - 3) = -2 |v|^2
-
-\\
-\text{so}
-
-\\ tr(R)
-\\= (v_1^2 + v_2^2 + v_3^2) + 3s^2 + 0 - 2(v_1^2 + v_2^2 + v_3^2)
-\\ = (1-s^2) + 3s^2 - 2(1-s^2)
-\\ = 4s^2 - 1
 \end{gather*}
 $$
 
-#### From Quaternion To The Rotation Angle, $\theta$
+Since
+$$
+\begin{gather*}
+v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
+\end{gather*}
+$$
+
+We have the trace of $(v^{\land})^2$:
+$$
+\begin{gather*}
+tr((v^{\land})^2) =  |v|^2 (1 - 3) = -2 |v|^2
+\end{gather*}
+$$
+
+So ultimately,
+$$
+\begin{gather*}
+tr(R) = (v_1^2 + v_2^2 + v_3^2) + 3s^2 + 0 - 2(v_1^2 + v_2^2 + v_3^2)
+\\ = (1-s^2) + 3s^2 - 2(1-s^2)
+\\
+=>
+\\ tr(R) = 4s^2 - 1
+\end{gather*}
+$$
 
 Since we know that:
 
@@ -269,7 +279,7 @@ s = cos \frac{\theta}{2}
 \end{gather*}
 $$
 
-#### From Quaternion To The Rotation Axis
+### 4. From Quaternion To Rotation Axis
 
 **The virtual part of the rotation quaternion q, v** is actually on the rotation axis. Here is the proof:
 
@@ -294,9 +304,11 @@ $$
 
 Most libraries will use quaternion for rotations as it only requires 4 numbers. However, as a user, we don't need to worry too much about the lower level implementation details
 
-## Kinematics Using Quaternions
+--------------------------------------------------
 
-### Define Pure Imaginary Quaternion $q^{*}q' = \bar{w}$
+## Rotation Matrix To Rotation Quaternion
+
+### 1. Define "Quaternion Angular Velocity" $q^{*}q' = \bar{w}$
 
 Since we have $qq^{*} = 1$, we can get the derivative of:
 
@@ -308,14 +320,17 @@ q^{*}q' + q'^{*}q = 0
 \end{gather*}
 $$
 
-So we can see that $q^{*}q'$ must be a pure imaginary number $q^{*}q' = \bar{w} = [0, w_1, w_2, w_3]$
+So we can see that $q^{*}q'$ must be a **pure imaginary number** $q^{*}q' = \bar{w} = [0, w_1, w_2, w_3]$
 
-### Pure Imaginary Quaternion $Exp(\bar{w})$ is A Unit Quaternion
+### 2. Purely Imaginary Quaternion's Exponential $Exp(\bar{w})$ is A Unit Quaternion
 
-With pure imaginary $\bar{w} = [0, w]$,
+With pure imaginary $\bar{w} = [0, w]$, the derivative of the rotation quaternion is
 $$
 \begin{gather*}
 q^{*}q' = \bar{w} => (qq^{*})q' = q \bar{w}
+\\
+=> q' = q \bar{w}
+
 \end{gather*}
 $$
 
@@ -355,7 +370,7 @@ exp(\bar{w}) = 1 + \theta u - \frac{1}{2!}\theta^2 - \frac{1}{3!}\theta^3 u + \f
 \\
 = (1 - \frac{1}{2!}\theta^2 + \frac{1}{4!}\theta^4 + ...) + (\theta u - \frac{1}{3!}\theta^3 u + ...)
 \\
-= cos \theta + usin\theta
+= cos \theta + usin\theta = [cos \theta, u sin \theta]
 \end{gather*}
 $$
 
@@ -375,14 +390,114 @@ $$
 \end{gather*}
 $$
 
-### Rotation Quaternion's Imaginary Part Is Half Of Rotation Vector
+### 3. Rotation Quaternion Is Half of Rotation Vector: $\bar{w} = [0, \frac{\phi}{2}]$
 
-We have defined `R`:
+We have defined `R` with a Cartesian angular velocity $\phi$:
 
 $$
 \begin{gather*}
-R = exp(\phi) = exp(\psi n)
+R = exp(\phi) = exp(\theta n)
 \end{gather*}
 $$
 
-To find out the relationshp between
+To go from rotation matrix to rotation quaternion $exp(\bar{w}) = [s, v]$, we know
+
+$$
+\begin{gather*}
+\theta = 2arccos(s) \\
+[n_x, n_y, n_z] = \frac{v}{sin \frac{\theta}{2}}
+\end{gather*}
+$$
+
+So the rotation quaternion is:
+
+$$
+\begin{gather*}
+s = cos \frac{\theta}{2}    \\
+v = n sin \frac{\theta}{2}  \\
+=>
+\\
+exp(\bar{w}) = [cos \frac{\theta}{2}, n sin \frac{\theta}{2}]
+\end{gather*}
+$$
+
+Since we define $q*q' = \bar{w} = [0, \theta_w u]$, we can see that the "quaternion rotation velocity" $\bar{w}$ update is half of that in `so(3)`:
+
+$$
+\begin{gather*}
+exp(\bar{w}) = [cos \theta_w, vsin \theta_w]    \\
+=>
+\\
+n = v
+\\
+\theta_w = \frac{\theta}{2}
+\\
+=>
+\\
+\bar{w} = [0, \frac{\theta}{2} n] = [0, \frac{\phi}{2}]
+\end{gather*}
+$$
+
+So in $q' = q \bar{w}$:
+
+$$
+\begin{gather*}
+q' = q [0, \frac{\phi}{2}]
+\end{gather*}
+$$
+
+### 4. Quaternion Rotation Update
+
+#### 4.1 Quaternion Rotation Update  Can Be Approximated As $q(t) \approx q[t_0](1, \frac{\phi}{2})$
+
+We have known that $q(t) = q(t_0) exp(\bar{w} \Delta t)$. How do we approximate $exp(\bar{w} \Delta t)$? **If we slightly change our above Cartesian angular velocity's definition to angular increment: $\theta^i = \theta \Delta t$, $\phi^i = \phi \Delta t$**
+
+$$
+\begin{gather*}
+exp(\bar{w} \Delta t) = [cos \theta_w^i, u sin \theta_w^i] = [cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2})]
+\\
+\end{gather*}
+$$
+
+When $\theta \rightarrow 0$, we have
+
+$$
+\begin{gather*}
+exp(\bar{w} \Delta t) \approx [1, u \frac{\theta^i}{2}] = [1, \frac{1}{2} \phi^i]
+\\
+=>
+\\
+q(t) \approx q(t_0)exp(\bar{w} \Delta t) = q[t_0](1, \frac{\phi^i}{2})
+\end{gather*}
+$$
+
+**This shows that when we measure the Cartesian angular increment $\phi^i$ in $\Delta t$**, in quaternion, the rotation quaternion update is approximately $q[t_0](1, \frac{\phi^i}{2})$.
+
+**However, one can see that $[1, \frac{\phi^i}{2}]$ is not a unit vector, so after some updates, we need to normalize q? TODO: I'm not sure what normalization here entails.**
+
+#### 4.2 "Accurate" Quaternion Update Without Approximation and Normalization
+
+To avoid normalization, we can use
+
+$$
+\begin{gather*}
+exp(\bar{w} \Delta t) = [cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2})]
+\\
+q(t) = q(t_0)exp(\bar{w} \Delta t) = q[t_0](cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2}))
+
+\end{gather*}
+$$
+
+### 5. Update SO(3) or Rotation Quaternion Using The Same Update Function
+
+Since we have established the relationship between quaternion updates and Cartesian angular increment, we can update  SO(3) or rotation quaternion using the same update function in filters, and graph optimization.
+
+$$
+\begin{gather*}
+q(t) \approx q(t_0)exp(\bar{w} \Delta t) = q[t_0](1, \frac{\phi^i}{2})
+\\
+\text{or}
+\\
+q(t) = q(t_0)exp(\bar{w} \Delta t) = q[t_0](cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2}))
+\end{gather*}
+$$
