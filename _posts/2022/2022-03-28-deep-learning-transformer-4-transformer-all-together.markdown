@@ -457,9 +457,9 @@ At this stage, shapes of my data should be good. However, my model's loss was st
 
 Side note: On the internet, one might encounter [similar tutorials like this one](https://towardsdatascience.com/a-detailed-guide-to-pytorchs-nn-transformer-module-c80afbc9ffb1). I was inspired by them and built out a general training skeleton. However, they were testing with randomly generated values and simply training for "copying". That's a simpler task than translation. So, **please add the padding masks.**
 
-### Lesson 3 - Teacher Forcing Is Not Great For Inferencing
+### Lesson 3 - Teacher Forcing Is Subject To Exposure Bias
 
-The most stark difference I encountered in [tutorials like this one](https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch) and my hands-on training experience is the use of **teacher forcing**. Teacher forcing is to feed the entire ground truth into the transformer, specifically, the decoder, so the model learns the parameters to output target values, when **it sees the entire ground truth**. This is great for speeding up learning, and as a quick way to validate that the model, the data, the general training framework works. However, in validation, we feed the decoder outputs back into the transformer one at a time (a.k.a autoregression). The performance there is **VERY BAD**: the model outputs a bunch of `<EOS>, <SOS>, <PAD>` as if it had not learned anything.
+The most stark difference I encountered in [tutorials like this one](https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch) and my hands-on training experience is the use of **teacher forcing**. Teacher forcing is to feed the entire ground truth into the transformer, specifically, the decoder, so the model learns the parameters to output target values, when **it sees the entire ground truth**. This is great for speeding up learning, and as a quick way to validate that the model, the data, the general training framework works. However, in validation, we feed the decoder outputs back into the transformer one at a time (a.k.a autoregression). The performance there is **VERY BAD**: the model outputs a bunch of `<EOS>, <SOS>, <PAD>` as if it had not learned anything. This is called "Exposure Bias"
 
 - I added the `look_ahead mask (attn_mask)` in the belief that it could help the model learn from existent timesteps. However, that did not solve this issue.
   - I actually ran into a bunch of `NaN` again. I read that one should use a small negative value like `-1e9` for `attn_mask` instead of `-inf` to avoid underflow
@@ -480,8 +480,40 @@ The most stark difference I encountered in [tutorials like this one](https://www
     Prediction: ['SOS', 'big', 'EOS', 'you', 're', 'SOS', 'big', 'big', 'you', 'big', 'PAD']
     ```
 
-- However, this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well. TODO
+- However, this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well.
 
+  - I tried terminating training when a sentence outputs `<EOS>`. However, that could introduce unnatural learning result. So, I'm trying to see if without termination, the model can ultimately learn the correct `<EOS>` position. TODO
+
+## Raw Notes (TODO)
+
+## Teacher Forcing
+
+- In seq2seq, we use outputs y(t-1) as x[t]. This is common in machine translation. However, this method suffers slow convergence and less stability
+- Teacher Forcing is to use the teacher signal `tgt[t]` as the input `x[t]`
+
+### Experiments
+
+- No autoregression in training, just do
+"""
+logits = model(src_spanish_tokens, ground_truth_english_tokens...)   #[batch_size, sentence_length, output_embedding_dims]
+criterion(logits, target)    #
+"""
+  - During training, with ground truth, it was good
+
+- Pure Teacher Forcing: teacher_forcing_ratio = 1
+  - Loss is stuck at 0.54
+     Target: ['SOS i m the gardener EOS PAD PAD PAD PAD', 'SOS he s nervous and easily frightened EOS PAD PAD', 'SOS i m allergic to some medicine EOS PAD PAD', 'SOS we re lawyers EOS PAD PAD PAD PAD PAD', 'SOS i m indebted to you EOS PAD PAD PAD', 'SOS he is a rude person EOS PAD PAD PAD', 'SOS i m going to go sit down EOS PAD', 'SOS i m being good to you this morning EOS']
+     Translated_tokens: [['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS']]
+
+- Scheduled Teacher Forcing Ratio (so we are using the model's own output as the input x(t) = y(t))
+  - Loss is stuck at 0.37
+  - But better result
+     Input: SOS lamento decepcionarte EOS PAD PAD PAD PAD PAD PAD, translated_tokens: [['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'now', 'leaving', 'now', 'leaving', 'now', 'leaving', 'now', 'now'], ['SOS', 'EOS', 'complaining', 'complaining', 'EOS', 'complaining', 'complaining', 'complaining', 'complaining', 'complaining'], ['SOS', 'EOS', 'mother', 'EOS', 'my', 'you', 'my', 'my', 'my', 'mother']]
+
+- TODO:
+  - What about having "one-shot" prediction? That is, during inference, we read all logits predicted and use them as an output?
+  - "try starting with I"
+  - profile empty_cache()
 
 ## References
 
