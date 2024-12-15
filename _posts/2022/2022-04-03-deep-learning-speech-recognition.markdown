@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Speech Recognition
-date: '2022-03-29 13:19'
+date: '2022-04-03 13:19'
 subtitle: Audio Signal Processing, Spectogram
 comments: true
 header-img: "img/home-bg-art.jpg"

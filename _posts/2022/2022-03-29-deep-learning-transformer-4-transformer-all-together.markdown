@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Deep Learning - Transformer Series 3 - Transformer All Together
-date: '2022-03-28 13:19'
+title: Deep Learning - Transformer Series 4 - Transformer All Together
+date: '2022-03-29 13:19'
 subtitle: Encoder, Decoder
 comments: true
 header-img: "img/home-bg-art.jpg"

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Deep Learning - Neural Machine Translation
-date: '2022-04-04 13:19'
+date: '2022-04-01 13:19'
 subtitle: Hands-On Attention Project
 comments: true
 header-img: "img/home-bg-art.jpg"
