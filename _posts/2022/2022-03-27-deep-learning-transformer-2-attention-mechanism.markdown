@@ -226,6 +226,64 @@ class DotProductAttention(torch.nn.Module):
         return attention
 ```
 
+### `Look-Ahead-Mask` Omits Inputs From Later Time Steps For Each Query
+
+$$
+\begin{gather*}
+QK^T =
+
+\begin{bmatrix}
+q_1^T \\
+q_2^T \\
+\vdots \\
+q_n^T \\
+\end{bmatrix}
+
+\begin{bmatrix}
+k_1 & k_2 & \dots &k_m
+\end{bmatrix}
+=
+
+\begin{bmatrix}
+q_1^T k_1 & q_1^Tk_2 & \dots & q_1^Tk_m \\
+q_2^T k_1 & q_2^Tk_2 & \dots & q_2^Tk_m \\
+\vdots\\
+q_n^T k_1 & q_2^Tk_2 & \dots & q_2^Tk_m \\
+\end{bmatrix}
+\end{gather*}
+$$
+
+After Applying an look-ahead mask,
+
+$$
+\begin{gather*}
+\begin{bmatrix}
+
+0 & -10^{-9} & -10^{-9}& -10^{-9} & \dots& -10^{-9} \\
+0 & 0 & -10^{-9} & -10^{-9} & \dots & -10^{-9}  \\
+0 & 0 & 0 & -10^{-9} & \dots & -10^{-9} \\
+\vdots  \\
+0 & 0 & 0 & 0 & \dots & 0 \\
+\end{bmatrix}
+\end{gather*}
+$$
+
+The attention we get is a weighted sum of all rows in $V$:
+
+$$
+\begin{gather*}
+softmax(\frac{QK^T}{\sqrt{d_k}}) V =
+\begin{bmatrix}
+q_1^T k_1 v_1 \\
+q_2^T k_1 v_1 + q_2^T k_2 v_2\\
+\vdots \\
+q_n^T k_1 v_1 + q_n^T k_2 v_2 + \dots + q_n^T k_2 v_2  \\
+\end{bmatrix}
+\end{gather*}
+$$
+
+- Note that the output attention is `[num_queries, value_dimension]`. In decoder, **only the first self-attention** needs this look-ahead mask. The attention's inputs are outputs from the last timesteps, so `num_queries=sentece_length`. So effectively, the output attention at each timestep does not consider outputs from a later timestep.
+
 ## Visualization of Attention
 
 One great feature about attention is its visibility. Below is an example from [the PyTorch NLP page](https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html)

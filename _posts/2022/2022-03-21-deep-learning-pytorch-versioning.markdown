@@ -1,13 +1,15 @@
 ---
 layout: post
-title: Deep Learning - PyTorch Versioning
+title: Deep Learning - PyTorch Versioning And Memory Allocation
 date: '2022-03-21 13:19'
-subtitle: 
+subtitle: In-Place and Out-of_Place Matrix Ops
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
     - Deep Learning
 ---
+
+## PyTorch Versioning Is Necessary Because We Have In-Place and Out-of_Place Matrix Ops
 
 Takeaways:
     - `x.add_()/multiply_()` is to do in-place addition, and updates the gradient.
@@ -52,4 +54,55 @@ print(f"x._version after in-place operation: {x._version}")
 x_clone = x.clone()
 ```
 
+## PyTorch Allocates A Caching Allocator, `torch.cuda.empty_cache()` Clears It
 
+1. When creating tensors on a GPU, PyTorch requests a chunk (e.g., 20MB) larger than the tensor (3MB). The cache really decreases the number of memory request calls.
+2. When a tensor on GPU goes out of scope, the memory of the stale tensor remains in PyTorch cache, but it's labelled as `unused`.
+3. To free up that cache, we call `torch.cuda.empty_cache()`. Note that **`torch.cuda.empty_cache()` only removes UNUSED caches**
+
+```python
+import torch
+
+def print_memory_allocated_and_reserved():
+    print(f"Allocated {torch.cuda.memory_allocated() / 1024 ** 2:.2f} MB")
+    print(f"Reserved {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MB")
+# Check initial GPU memory usage
+print("Initial GPU memory:")
+print_memory_allocated_and_reserved()
+
+# Allocate a large tensor
+a = torch.randn(1000, 1000, device="cuda")
+# Check GPU memory usage after allocation
+print("After allocating tensor 'a':")
+print_memory_allocated_and_reserved()
+
+# Delete the tensor
+del a
+# Check GPU memory usage after deletion
+print("After deleting tensor 'a':")
+print_memory_allocated_and_reserved()
+
+# Empty the cache
+torch.cuda.empty_cache()
+
+# Check GPU memory usage after emptying cache
+print("After emptying cache:")
+print_memory_allocated_and_reserved()
+```
+
+See:
+
+```python
+Initial GPU memory:
+Allocated 0.00 MB
+Reserved 0.00 MB
+After allocating tensor 'a':
+Allocated 3.81 MB
+Reserved 20.00 MB
+After deleting tensor 'a':
+Allocated 0.00 MB
+Reserved 20.00 MB
+After emptying cache:
+Allocated 0.00 MB
+Reserved 0.00 MB
+```

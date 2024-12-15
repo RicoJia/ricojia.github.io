@@ -26,6 +26,17 @@ Applications
 - Machine Translation (using World-Machine-Translation datasets)
 - Named Entity Recognition (like extracting "phone number" from resumes)
 
+## Quick Word on Teacher Forcing
+
+In seq2seq, we use outputs y(t-1) as x[t]. This is common in machine translation. However, this method suffers slow convergence and less stability. Teacher Forcing is to use the teacher signal `tgt[t]` as the input `x[t]`
+
+Without autoregression in training, this would look like:
+
+```python
+logits = model(src_spanish_tokens, ground_truth_english_tokens...)   #[batch_size, sentence_length, output_embedding_dims]
+criterion(logits, target)    #
+```
+
 ## Lessons Learned From Hands-On Training and Validating
 
 I assembled my own version of the transformer, and tested them against the torch implementations. There were some bugs so I decided to assemble a test bench that could work on `nn.Transformer`. Later, if I can make sure the I/O are consistent in my custom version, there's a good chance my custom transformer will work too.
@@ -82,37 +93,25 @@ The most stark difference I encountered in [tutorials like this one](https://www
     Prediction: ['SOS', 'big', 'EOS', 'you', 're', 'SOS', 'big', 'big', 'you', 'big', 'PAD']
     ```
 
-- However, this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well.
+### Lesson 4: Early Training Termination Upon `<EOS>` Makes Training Harder
 
-  - I tried terminating training when a sentence outputs `<EOS>`. However, that could introduce unnatural learning result. So, I'm trying to see if without termination, the model can ultimately learn the correct `<EOS>` position. TODO
+The model's performance at this step this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well.
 
-## Raw Notes (TODO)
+To try different hypothesis, I was really looking to speed up the training. One thought came to my mind: "why don't we terminate training of a batch, when all output sentences already have an `<EOS>`"? This method made training stuck again.
 
-## Teacher Forcing
+My theory is that this method could introduce unnatural learning result. So, I'm trying to see if without termination, the model can ultimately learn the correct `<EOS>` position.
 
-- In seq2seq, we use outputs y(t-1) as x[t]. This is common in machine translation. However, this method suffers slow convergence and less stability
-- Teacher Forcing is to use the teacher signal `tgt[t]` as the input `x[t]`
+### Lesson 5: Regression Test Is Really Helpful For Debugging
 
-### Experiments
+In the meantime, I tried setting `teacher-forcing-ratio` to 1 so I always had teacher forcing. This is a "regression test" that helps identify any potential bug in teacher forcing mixing. Strangely, this time I didn't see a successful learning result there. This led me correct a small indexing issue I have there.
 
-- No autoregression in training, just do
-"""
-logits = model(src_spanish_tokens, ground_truth_english_tokens...)   #[batch_size, sentence_length, output_embedding_dims]
-criterion(logits, target)    #
-"""
-  - During training, with ground truth, it was good
+### Lesson 6: There Must Be Autoregression In Inference
 
-- Pure Teacher Forcing: teacher_forcing_ratio = 1
-  - Loss is stuck at 0.54
-     Target: ['SOS i m the gardener EOS PAD PAD PAD PAD', 'SOS he s nervous and easily frightened EOS PAD PAD', 'SOS i m allergic to some medicine EOS PAD PAD', 'SOS we re lawyers EOS PAD PAD PAD PAD PAD', 'SOS i m indebted to you EOS PAD PAD PAD', 'SOS he is a rude person EOS PAD PAD PAD', 'SOS i m going to go sit down EOS PAD', 'SOS i m being good to you this morning EOS']
-     Translated_tokens: [['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS', 'SOS']]
+One thought crossed into my mind was "what about having "one-shot" prediction?" That is, during inference, we read all logits predicted and use them as an output. I had this thought because the output already has all timesteps `[batch_size, time_steps, output_dim]`. Also, a look-ahead mask already omitted `[t+1, MAX_SENTENCE_LENGTH]` terms when calculating attention.
 
-- Scheduled Teacher Forcing Ratio (so we are using the model's own output as the input x(t) = y(t))
-  - Loss is stuck at 0.37
-  - But better result
-     Input: SOS lamento decepcionarte EOS PAD PAD PAD PAD PAD PAD, translated_tokens: [['SOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS', 'EOS'], ['SOS', 'EOS', 'now', 'leaving', 'now', 'leaving', 'now', 'leaving', 'now', 'now'], ['SOS', 'EOS', 'complaining', 'complaining', 'EOS', 'complaining', 'complaining', 'complaining', 'complaining', 'complaining'], ['SOS', 'EOS', 'mother', 'EOS', 'my', 'you', 'my', 'my', 'my', 'mother']]
+This idea will make inference impossible, because an attention looks at what **is in the output up until the current timestep**. When we start out by feeding `tgt=[<SOS>, ... <PAD>]` into the decoder, the decoder will use this `tgt` as the key, value, and query in its self attention. Only `<SOS>` is a meaningful input, so only the attention for `t=0` is meaningful.
+
+For Pure Teacher Forcing Training, it's Not Necessary, But We are not doing that for the exposure bias.
 
 - TODO:
-  - What about having "one-shot" prediction? That is, during inference, we read all logits predicted and use them as an output?
   - "try starting with I"
-  - profile empty_cache()
