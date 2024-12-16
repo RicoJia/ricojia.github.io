@@ -155,27 +155,6 @@ probs.gather(1, targets.unsqueeze(1))
 - `torch.manual_seed(42)` set a seed in the RPNG for both CPU and CUDA.
 - `torch.var(unbiased=False)` this is to calculate [biased variance](../2017/2017-06-03-stats-basic-recap.markdown). It's useful in batch norm calculation.
 - `torch.Tensor()`'s singleton dimensions are the dimensions with only 1 element.
-- Transpose
-  - `tensor.transpose(dim1, dim2)`: can transpose a matrix between any dimensions
-
-    ```python
-    a.transpose(1, 3)
-    ```
-
-  - `tensor.t()` can only transpose a 2D matrix.
-
-    ```python
-    a = torch.rand(2, 3)
-    print(a.shape)
-    print(a.t().shape)
-    ```
-
-  - Note that after `transpose()`, the data did not change but the `strides` and `shape` changed. `Tensor.view()` requires contiguous data, so before `view()` one needs to call `contiguous()`.
-
-    ```python
-    a1 = a.transpose(1, 3).contiguous().view(4, 3 * 32 * 32)
-    ```
-
 - Masking
 
 ```python
@@ -218,6 +197,27 @@ print(torch.unique(target))
 ```
 
 - There's no difference between `tensor.size()` and `tensor.shape`
+
+- Transpose
+  - `tensor.transpose(dim1, dim2)`: swaps the 2 dims in a matrix. Equivalent to applying `permute()` if we only re-arrange two dims there
+
+    ```python
+    a.transpose(1, 3)
+    ```
+
+  - `tensor.t()` can only transpose a 2D matrix.
+
+    ```python
+    a = torch.rand(2, 3)
+    print(a.shape)
+    print(a.t().shape)
+    ```
+
+  - Note that after `transpose()`, the data did not change but the `strides` and `shape` changed. `Tensor.view()` requires contiguous data, so before `view()` one needs to call `contiguous()`.
+
+    ```python
+    a1 = a.transpose(1, 3).contiguous().view(4, 3 * 32 * 32)
+    ```
 
 ### Broadcasting
 
@@ -306,8 +306,10 @@ gradient descent.
 ### Register Buffers
 
 A buffer:
-    - is NOT a parameter in a module, so it cannot be learned, and no gradient is computed for them.
-    - A buffer's value can be loaded with the module's dictionary. So a buffer can persist between runs.
+
+- Is NOT a parameter in a module, so it cannot be learned, and **no gradient is computed for them.**
+- A buffer's value can be loaded with the module's dictionary. So a buffer can persist between runs.
+- Once `model.to()` is called, the register buffer will be moved over as well as part of it.
 
 ```python
 self.register_buffer('running_mean', torch.zeros(num_features))

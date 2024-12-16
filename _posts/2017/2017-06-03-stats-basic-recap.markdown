@@ -24,6 +24,10 @@ $$
 
 The above unbiasing operation is caleld "Bessel correction"
 
+### Stochastic Processes and Stationarity
+
+A stochastic process is a collection of Random Variables over time. If a random variable is `X`, a process of it is `X(t)`. If the mean and variance of `X(t)` does not change, then loosely, this process is stationary.
+
 #### Reasoning For Bessel Correction
 
 - Population variance (or the true variance of the entire population) is calculated as:

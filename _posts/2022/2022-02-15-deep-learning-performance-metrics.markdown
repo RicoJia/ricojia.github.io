@@ -95,6 +95,8 @@ $$
 
 - Precision should be measured along with ROC, see below
 
+The Area-Under-Curve (AUC) of a ROC is always used in plotting the **performance of different thresholds** of a classifier. The best point on a ROC is `(0,1)` meaning the True Positive is 1, False Positive is 0. However, **people say AUC=1** means a model is good. My question is, what if a model is so good, that its data points clutter around `(0,1)`? The AUC would be small in that case.
+
 ## mean Average Precision (mAP)
 
 ### Precision (查准率) and Recall (查全率)

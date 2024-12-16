@@ -70,7 +70,7 @@ At this stage, shapes of my data should be good. However, my model's loss was st
 
 Side note: On the internet, one might encounter [similar tutorials like this one](https://towardsdatascience.com/a-detailed-guide-to-pytorchs-nn-transformer-module-c80afbc9ffb1). I was inspired by them and built out a general training skeleton. However, they were testing with randomly generated values and simply training for "copying". That's a simpler task than translation. So, **please add the padding masks.**
 
-### Lesson 3 - Teacher Forcing Is Subject To Exposure Bias
+### Lesson 4 - Teacher Forcing Is Subject To Exposure Bias
 
 The most stark difference I encountered in [tutorials like this one](https://www.datacamp.com/tutorial/building-a-transformer-with-py-torch) and my hands-on training experience is the use of **teacher forcing**. Teacher forcing is to feed the entire ground truth into the transformer, specifically, the decoder, so the model learns the parameters to output target values, when **it sees the entire ground truth**. This is great for speeding up learning, and as a quick way to validate that the model, the data, the general training framework works. However, in validation, we feed the decoder outputs back into the transformer one at a time (a.k.a autoregression). The performance there is **VERY BAD**: the model outputs a bunch of `<EOS>, <SOS>, <PAD>` as if it had not learned anything. This is called "Exposure Bias"
 
@@ -93,7 +93,7 @@ The most stark difference I encountered in [tutorials like this one](https://www
     Prediction: ['SOS', 'big', 'EOS', 'you', 're', 'SOS', 'big', 'big', 'you', 'big', 'PAD']
     ```
 
-### Lesson 4: Early Training Termination Upon `<EOS>` Makes Training Harder
+### Lesson 5: Early Training Termination Upon `<EOS>` Makes Training Harder
 
 The model's performance at this step this is still not ready for the small test data. The model doesn't seem to learn the positioning of `<EOS>`  well.
 
@@ -101,11 +101,11 @@ To try different hypothesis, I was really looking to speed up the training. One 
 
 My theory is that this method could introduce unnatural learning result. So, I'm trying to see if without termination, the model can ultimately learn the correct `<EOS>` position.
 
-### Lesson 5: Regression Test Is Really Helpful For Debugging
+### Lesson 6: Regression Test Is Really Helpful For Debugging
 
 In the meantime, I tried setting `teacher-forcing-ratio` to 1 so I always had teacher forcing. This is a "regression test" that helps identify any potential bug in teacher forcing mixing. Strangely, this time I didn't see a successful learning result there. This led me correct a small indexing issue I have there.
 
-### Lesson 6: There Must Be Autoregression In Inference
+### Lesson 7: There Must Be Autoregression In Inference
 
 One thought crossed into my mind was "what about having "one-shot" prediction?" That is, during inference, we read all logits predicted and use them as an output. I had this thought because the output already has all timesteps `[batch_size, time_steps, output_dim]`. Also, a look-ahead mask already omitted `[t+1, MAX_SENTENCE_LENGTH]` terms when calculating attention.
 
@@ -113,5 +113,6 @@ This idea will make inference impossible, because an attention looks at what **i
 
 For Pure Teacher Forcing Training, it's Not Necessary, But We are not doing that for the exposure bias.
 
-- TODO:
-  - "try starting with I"
+### Lesson 8: A Larger Batch Size Can Almost Likely Speed Up Training
+
+I had "accumulated batching" on so back-propagation is carried out only when an accumulated batch size is achieved. However, despite that in my various experiments, I still noticed an almost linear relationship between batch_size and training speed. **So, trying as large batch sizes as possible shouldn't be a bad idea**
