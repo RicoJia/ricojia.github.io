@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Velocities
 date: '2024-03-15 13:19'
-subtitle: Velocities, Accelerations
+subtitle: Velocities, Accelerations, Derivative of Rotations
 comments: true
 tags:
     - Robotics
@@ -79,12 +79,106 @@ $$
 \end{gather*}
 $$
 
-To get the derivative w.r.t quaternion `q`, one can use the right perturbation model as well.
+To get the derivative w.r.t quaternion `q`, one can use the right perturbation model as well. If we perturb `Ra` by `[0, w]`, that's equivalent to adding `[1, 0.5w]` to the quaternion. To be consistent with the `SO(3)` representation, we should be getting the same value:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& \frac{Ra}{q}
+& \frac{\partial Ra}{\partial w} = -Ra^{\land}
 \end{aligned}
 \end{gather*}
 $$
+
+This tells us that when updating rotation parameters, we use the same Jacobian for both the quaternions and the rotation matrices. (TODO: Not sure why?)
+
+## Derivative of `SO(3)` to `so(3)`
+
+To recover a composite rotation: `Log(R1R2)` to `so(3)`, we can find its derivative w.r.t `R1` by applying the right perturbation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R_1 R_2}{\partial R_1} = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
+\\
+& = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2 R_2^T \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
+\\
+& = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2  \exp((R_2^T\theta)^{\land}) ) - \text{Log}(R_1 R_2)}{\theta}
+\end{aligned}
+\tag{1}
+\\
+\begin{aligned}
+& = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2) + J_r^{-1}\text{Log}(R_1 R_2)\text{Log}(\exp((R_2^T\theta)^{\land})) - \text{Log}(R_1 R_2)}{\theta}
+\tag{2}
+\end{aligned}
+\\
+\begin{aligned}
+& = J_r^{-1}\text{Log}(R_1 R_2)R_2^T    \tag{3}
+\end{aligned}
+\end{gather*}
+$$
+
+(1) is using the property with proof:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R^T exp(\theta^{\land}) R = exp((R^T \theta)^{\land})
+\end{aligned}
+\end{gather*}
+$$
+
+- To prove (1), first check out the section **Rotation Preserves Dot Product** for proving $R^T \theta^{\land} R = (R^T \theta)^{\land}$. Then, since
+
+$$
+\begin{gather*}
+\begin{aligned}
+& exp(\theta^{\land}) = I + \theta^{\land} + \frac{(\theta^{\land})^2}{2!} + ...
+\\
+& \rightarrow R^T exp(\theta^{\land}) R = R^T (I + \theta^{\land} + \frac{(\theta^{\land})^2}{2!} + ...) R = R^T R + R^T \theta^{\land} R + \frac{(R^T \theta^{\land} R)^2}{2!} + ...
+\\
+& = I + (R^T \theta)^{\land} + \frac{((R^T \theta)^{\land})^2}{2!} + ...
+\\
+& = exp((R^T \theta)^{\land})
+\end{aligned}
+\end{gather*}
+$$
+
+- (2) is a first order BCH approximation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Log(AB)\approx J_r^{-1} Log(A)Log(B) + Log(A)
+\end{aligned}
+\end{gather*}
+$$
+
+Similarly,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R_1 R_2}{\partial R_2} = J_r^{-1}Log(R_1 R_2) \tag{4}
+\end{aligned}
+\end{gather*}
+$$
+
+**The above equations (3) and (4) are VERY INPORTANT for LiDAR SLAM!!**
+
+### Rotation Preserves Dot Product
+
+- Prove $R^T \theta^{\land} R = (R^T \theta)^{\land}$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R^T \theta^{\land} Rv = R^T (\theta \times (Rv))
+\\
+& (R^T \theta)^{\land} v = (R^T \theta) \times (v)
+\\
+& R^T (\theta \times (Rv)) = (R^T \theta) \times (R^TRv) = (R^T \theta) \times (v)
+\end{aligned}
+\end{gather*}
+$$
+
+- This is because "Rotation Preserves Dot Product". Why? Because dot product is the unique vector $Ra \times Rb = |Ra||Rb|sin\theta \rightarrow (Rn) = R(a \times b)$

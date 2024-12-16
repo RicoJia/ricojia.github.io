@@ -268,7 +268,8 @@ $$
 So,
 $$
 \begin{gather*}
-exp(\phi^{\land}) = exp(\theta a^{\land}) = \frac{1}{n!}(\theta a^{\land})^n
+\begin{aligned}
+& exp(\phi^{\land}) = exp(\theta a^{\land}) = \frac{1}{n!}(\theta a^{\land})^n
 \\
 & = I + \theta a^{\land} + \frac{1}{2!} \theta^2 a^{\land} a^{\land} + \frac{1}{3!} \theta^3 a^{\land} a^{\land} a^{\land} + ...
 \\
@@ -283,6 +284,7 @@ exp(\phi^{\land}) = exp(\theta a^{\land}) = \frac{1}{n!}(\theta a^{\land})^n
 Or
 \\
 & = I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
+\end{aligned}
 \end{gather*}
 $$
 

@@ -448,7 +448,7 @@ $$
 
 ### 4. Quaternion Rotation Update
 
-#### 4.1 Quaternion Rotation Update  Can Be Approximated As $q(t) \approx q[t_0](1, \frac{\phi}{2})$
+#### 4.1 Quaternion Rotation Update  Can Be Approximated As $q(t) \approx q(t_0)(1, \frac{\phi}{2})$
 
 We have known that $q(t) = q(t_0) exp(\bar{w} \Delta t)$. How do we approximate $exp(\bar{w} \Delta t)$? **If we slightly change our above Cartesian angular velocity's definition to angular increment: $\theta^i = \theta \Delta t$, $\phi^i = \phi \Delta t$**
 
