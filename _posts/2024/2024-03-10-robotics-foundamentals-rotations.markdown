@@ -190,29 +190,17 @@ A Lie Algebra is a **vector space that captures the infinitesimal structure of a
 
 We can see that R'R^T must be a skew matrix:
 
-<div data-rem-tags="latex-left">
 $$
 \begin{gather*}
 \begin{aligned}
-RR^T = I
-\\
-\Rightarrow (RR^T)' = R'R^T + RR'^T = 0
-\\
-\Rightarrow R'R^T = -(RR'^T) = -(R'R^T)^T = \phi(t)^{\land}
+& RR^T = I
+\\ & \Rightarrow (RR^T)' = R'R^T + RR'^T = 0
+\\ & \Rightarrow R'R^T = -(RR'^T) = -(R'R^T)^T = \phi(t)^{\land}
 \end{aligned}
 \end{gather*}
 $$
-</div>
 
 Where $\phi(t)^{\land}$ the skew matrix of vector $\phi(t) = [\phi_1, \phi_2, \phi_1,]$
-
-$$
-\begin{gather*}
-\begin{aligned}
-
-\end{aligned}
-\end{gather*}
-$$
 
 $$
 \begin{gather*}
