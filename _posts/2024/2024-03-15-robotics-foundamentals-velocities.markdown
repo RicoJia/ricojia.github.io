@@ -49,14 +49,42 @@ $$
 
 If we rotate a vector a, what's its derivative w.r.t R? That is, when there's an infinitesmal change in R, what would be that change in a?
 
-We know that `SO(3)` is a manifold that do not support direct addition. So, we need to come back to the very definition of derivatives - we perturb `Ra` using either the left/right perturbation model, then measure the derivative:
+We know that `SO(3)` is a manifold that do not support direct addition. So, we need to come back to the very definition of derivatives - we perturb `Ra` in terms of the rotation vector $\theta$ using either the left/right perturbation model, then because addition is supported among rotation vectors, we calculate the derivative there. Here we use the right perturbation model since it's more common:
 
 $$
 \begin{gather*}
-\frac{\partial Ra}{\partial R} =
+\begin{aligned}
+& \frac{\partial Ra}{\partial R} =
 \lim_{\theta \rightarrow 0} \frac{R exp(\theta^{\land}) a}{\theta}
 
 \\
-\approx \lim_{\theta \rightarrow 0} \frac{R (I + \theta^{\land}) a}{exp(\theta^{\land})}
+& \approx \lim_{\theta \rightarrow 0} \frac{R (I + \theta^{\land}) a}{\theta} = \lim_{\theta \rightarrow 0} \frac{ 0 + R (\theta^{\land}) a}{\theta}
+
+= \lim_{\theta \rightarrow 0} \frac{ R (-a^{\land}) \theta}{\theta}
+\\
+& = -Ra^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+### Derivative of Rotations Is The Same For Quaternions and Rotation Matrix
+
+Recall that rotation in quaternion is $p'=qaq*$. If `q=[s, v]`, withthout proof,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial (qaq*)}{\partial q} = 2[wa + v^{\land} a, v^{T}aI_3 + va^T - av^T - wa^{\land}]
+\end{aligned}
+\end{gather*}
+$$
+
+To get the derivative w.r.t quaternion `q`, one can use the right perturbation model as well.
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{Ra}{q}
+\end{aligned}
 \end{gather*}
 $$

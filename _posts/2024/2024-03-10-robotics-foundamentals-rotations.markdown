@@ -270,18 +270,19 @@ $$
 \begin{gather*}
 exp(\phi^{\land}) = exp(\theta a^{\land}) = \frac{1}{n!}(\theta a^{\land})^n
 \\
-= I + \theta a^{\land} + \frac{1}{2!} \theta^2 a^{\land} a^{\land} + \frac{1}{3!} \theta^3 a^{\land} a^{\land} a^{\land} + ...
+& = I + \theta a^{\land} + \frac{1}{2!} \theta^2 a^{\land} a^{\land} + \frac{1}{3!} \theta^3 a^{\land} a^{\land} a^{\land} + ...
 \\
-= aa^T - a^{\land} a^{\land} + \theta a^{\land} + \frac{1}{2!} \theta^2 a^{\land} a^{\land} - \frac{1}{3!} \theta^3 a^{\land}...
+& = aa^T - a^{\land} a^{\land} + \theta a^{\land} + \frac{1}{2!} \theta^2 a^{\land} a^{\land} - \frac{1}{3!} \theta^3 a^{\land}...
 \\
-= aa^T + (\theta - \frac{1}{3!} \theta^3 + ...)a^{\land} - (1 - \frac{1}{2!} \theta^2 + ... )a^{\land} a^{\land}
+& = aa^T + (\theta - \frac{1}{3!} \theta^3 + ...)a^{\land} - (1 - \frac{1}{2!} \theta^2 + ... )a^{\land} a^{\land}
 \\
-= aa^T + sin(\theta) a^{\land} -cos(\theta) a^{\land} a^{\land}
+& = aa^T + sin(\theta) a^{\land} -cos(\theta) a^{\land} a^{\land}
 \\
-= cos(\theta) + (I-cos(\theta)) aa^T + sin(\theta)a^{\land}
-
+& = cos(\theta) + (I-cos(\theta)) aa^T + sin(\theta)a^{\land}
 \\
-Or = I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
+Or
+\\
+& = I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
 \end{gather*}
 $$
 
