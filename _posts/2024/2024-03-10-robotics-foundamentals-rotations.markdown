@@ -66,8 +66,6 @@ R_z(\alpha) = \begin{bmatrix}
 \end{gather*}
 $$
 
-**Representation 4** Quaternion. TODO
-
 ### Order is important
 
 Different orders of Rotation about x, y, z axis could yield different final orientations. Try it yourself: first, rotate a random object you see now by z axis by +90 degrees followed by rotating about x axis by +90 degrees. Then, try rotating about x axis followed by about the z axis. A side note is that in robotics, people follow the **right hand convention** for frames. That is: x forward, y left, z up
@@ -171,13 +169,9 @@ A group is a set of algebraic structure (matrices, vectors) that is 1. globally 
 A manifold is a shape that's locally euclidean and globally connected. Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.  **A Lie group has to be a smooth manifold, meaning it's differentiable.**
     - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
 
-Some Lie Group operations are:
+#### Lie Definitions
 
 A Lie Algebra is a **vector space that captures the infinitesimal structure of a Lie Group, e.g., the tangent space of the Lie Group**. In the context of rotations,
-
-- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
-- Their corresponding skew symmetric matrices are their Lie Algebra **so(3)**
-  - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
 
 <div style="text-align: center;">
     <p align="center">
@@ -188,27 +182,37 @@ A Lie Algebra is a **vector space that captures the infinitesimal structure of a
     </p>
 </div>
 
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="" height="300" alt=""/>
-    </figure>
-</p>
-</div>
+- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
+- **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
+  - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
 
 ### From Skew Symmetric `so(3)` To SO(3)
 
 We can see that R'R^T must be a skew matrix:
 
+<div data-rem-tags="latex-left">
 $$
 \begin{gather*}
-RR^T = I => (RR^T)' = R'R^T + RR'^T = 0
+\begin{aligned}
+RR^T = I
 \\
-R'R^T = -(RR'^T) = -(R'R^T)^T = \phi(t)^{\land}
+\Rightarrow (RR^T)' = R'R^T + RR'^T = 0
+\\
+\Rightarrow R'R^T = -(RR'^T) = -(R'R^T)^T = \phi(t)^{\land}
+\end{aligned}
 \end{gather*}
 $$
+</div>
 
 Where $\phi(t)^{\land}$ the skew matrix of vector $\phi(t) = [\phi_1, \phi_2, \phi_1,]$
+
+$$
+\begin{gather*}
+\begin{aligned}
+
+\end{aligned}
+\end{gather*}
+$$
 
 $$
 \begin{gather*}
@@ -220,7 +224,7 @@ $$
 \end{gather*}
 $$
 
-Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $-\phi(t)^{\land}$ with it.**
+Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $\phi(t)^{\land}$ with it.**
 $$
 \begin{gather*}
 R'R^TR = R' = \phi(t)^{\land} R
@@ -235,7 +239,7 @@ w^{\land} = R^{T}R'
 \end{gather*}
 $$
 
-We have another form of the Poisson Formula:
+We have another form of the **Poisson Formula**:
 
 $$
 \begin{gather*}
@@ -247,7 +251,7 @@ Finally, do matrix exponential:
 
 $$
 \begin{gather*}
-R(t) = exp(-\phi(t)^{\land})
+R(t) = exp(\phi(t)^{\land})
 \end{gather*}
 $$
 

@@ -44,3 +44,19 @@ $$
 p_w'' = R_{wc} p_c''
 \end{gather*}
 $$
+
+## Derivative of Rotations, $\frac{\partial Ra}{\partial R}$
+
+If we rotate a vector a, what's its derivative w.r.t R? That is, when there's an infinitesmal change in R, what would be that change in a?
+
+We know that `SO(3)` is a manifold that do not support direct addition. So, we need to come back to the very definition of derivatives - we perturb `Ra` using either the left/right perturbation model, then measure the derivative:
+
+$$
+\begin{gather*}
+\frac{\partial Ra}{\partial R} =
+\lim_{\theta \rightarrow 0} \frac{R exp(\theta^{\land}) a}{\theta}
+
+\\
+\approx \lim_{\theta \rightarrow 0} \frac{R (I + \theta^{\land}) a}{exp(\theta^{\land})}
+\end{gather*}
+$$
