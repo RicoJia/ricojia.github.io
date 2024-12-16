@@ -179,6 +179,8 @@ for epoch in range(epochs):
         opt.zero_grad() # set_to_none=True here can modestly improve performance
 ```
 
+- It's important to have both the forward and the backward passes in `autocast`.
+
 Or using FP16 througout without scaling
 
 ```python

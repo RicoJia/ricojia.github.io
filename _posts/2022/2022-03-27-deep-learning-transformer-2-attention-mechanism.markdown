@@ -166,9 +166,7 @@ a = \frac{QK^T}{\sqrt{d_k}}
 \end{gather*}
 $$
 
-**Mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future words are not considered in the current step.
-
-The "attention is all you need" paper worded this point only with the basic intent, which I found confusing at the first time 😭
+**The attention mask, a.k.a look-ahead mask `M`** is applied before softmax, after calculating the attention score `a` (not shown in the illustration). In the attention is all you need paper, the [look-ahead mask is applied](./2022-03-26-deep-learning-transformer1-positional-encoding-and-masking.markdown/#look-ahead-mask) to make sure future words are not considered in the current step. The "attention is all you need" paper worded this point only with the basic intent, which I found confusing at the first time 😭
 
 ```
 "We need to prevent leftward information flow in the decoder to preserve the auto-regressive property. We implement this inside of scaled dot-product attention by masking out (setting to −∞) all values in the input of the softmax which correspond to illegal connections"
@@ -183,6 +181,8 @@ $$
 $$
 
 [This implementation has been tested against the PyTorch MultiHeadAttention Module, given that DotProductAttention is MultiHeadAttention with head=1](https://github.com/RicoJia/Machine_Learning/blob/ffda794938c913b54a5316d1dca6d553393f0328/RicoModels_pkg/ricomodels/tests/test_og_transformer.py#L105)
+
+All together the code looks like:
 
 ```python
 class DotProductAttention(torch.nn.Module):
@@ -253,8 +253,7 @@ q_n^T k_1 & q_2^Tk_2 & \dots & q_2^Tk_m \\
 \end{gather*}
 $$
 
-After Applying an look-ahead mask,
-
+The look ahead mask looks like:
 $$
 \begin{gather*}
 \begin{bmatrix}
@@ -268,7 +267,7 @@ $$
 \end{gather*}
 $$
 
-The attention we get is a weighted sum of all rows in $V$:
+After Applying an look-ahead mask, the attention we get is a weighted sum of all rows in $V$:
 
 $$
 \begin{gather*}
@@ -282,7 +281,7 @@ q_n^T k_1 v_1 + q_n^T k_2 v_2 + \dots + q_n^T k_2 v_2  \\
 \end{gather*}
 $$
 
-- Note that the output attention is `[num_queries, value_dimension]`. In decoder, **only the first self-attention** needs this look-ahead mask. The attention's inputs are outputs from the last timesteps, so `num_queries=sentece_length`. So effectively, the output attention at each timestep does not consider outputs from a later timestep.
+- Note that the output attention is `[num_queries, value_dimension]`. In decoder, **only the first self-attention** needs this look-ahead mask. The attention's inputs are outputs from the last timesteps, so `num_queries=sentece_length`. So effectively, the output attention at each timestep does not consider outputs from a later timestep. Later timesteps are just padding, which will pollute our attention
 
 ## Visualization of Attention
 

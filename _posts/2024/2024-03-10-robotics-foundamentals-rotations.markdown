@@ -179,7 +179,24 @@ A Lie Algebra is a **vector space that captures the infinitesimal structure of a
 - Their corresponding skew symmetric matrices are their Lie Algebra **so(3)**
   - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
 
-### From Skew Symmetric (so(3)) To SO(3)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/a66f9f2e-afbb-4f87-bd15-052e3633da60" height="300" alt=""/>
+            <figcaption><a href="https://johnwlambert.github.io/lie-groups/">Source: John Lambert</a></figcaption>
+       </figure>
+    </p>
+</div>
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+### From Skew Symmetric `so(3)` To SO(3)
 
 We can see that R'R^T must be a skew matrix:
 
