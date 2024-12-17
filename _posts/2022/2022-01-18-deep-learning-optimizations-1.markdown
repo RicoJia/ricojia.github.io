@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Optimizations Part 1
 date: '2022-01-18 13:19'
-subtitle: Momentum, RMSProp, Adam, Learning Rate Decay, Local Minima, Gradient Clipping
+subtitle: Momentum, RMSProp, Adam, AdamW, Learning Rate Decay, Local Minima, Gradient Clipping
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -268,6 +268,57 @@ But If we add **learning rate decay** on top of SGD and SGD with momentum, those
         <figcaption>SGD with Momentum and Learning Rate Decay</figcaption>
     </figure>
 </p>
+</div>
+
+## AdamW
+
+Adam was invented in 2014. Its inspiration was "Some weights are small, some are big. Their gradient's square serves as an indicator of a fitting step size." However, in 2017, it was found that its convergence is not be great sometimes. Later in that year, AdamW was proposed by Ilya Loshchilov and Frank Hutter. Here is what they found
+
+Conventionally (by Hanson & Pratt), L2 regularization (`w_j` is a parameter) is considered equivalent to "weight decay". For example, in
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \text{L2 regularization: } L = L_{criterion} + \frac{a}{2} \sum(w_j^2)
+\\
+& \text{Weight Update: } g = \frac{\partial L}{\partial w_j} =  \frac{\partial L_{criterion}}{\partial w} + aw_j = g^{loss} + aw_j
+
+\\
+& \text{Weight Decay: } \rightarrow w_j = w_j - \eta g  = (1-p)w_j - k g^{loss}
+\end{aligned}
+\end{gather*}
+$$
+
+**Loshchilov and Hutter found that L2 regularization is NOT equivalent to weight decay in adaptive optimizer**. They usually update with an `M(g)` term that regulates the weights already. For example, in AdaGrad:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& w_j = w_j - \eta M(g) g = w_j - \eta \frac{1}{\sqrt{\epsilon + \sum g \odot g}} g
+\\
+& \rightarrow = w_j = w_j - \eta M(g) g^{loss} - \eta \frac{a}{|w|}w
+\end{aligned}
+\end{gather*}
+$$
+
+The regularization term is largely a constant! This really goes against the inspiration of Adam to "find a fitting step size for each weight". So, they proposed to decouple weight decay from L2 Regularization. So instead of using L2 regularization, they explicitily subtract the decay term in weight update:
+
+$$
+\begin{gather*}
+\begin{aligned}
+&  w_j = w_j - \eta (M(g) g^{loss} + aw_j)
+\end{aligned}
+\end{gather*}
+$$
+
+Here is an illustration of the difference between Adam and AdamW:
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/5613826e-5aad-49c6-b959-b453d5265ee7" height="300" alt=""/>
+       </figure>
+    </p>
 </div>
 
 ## Gradient Clipping

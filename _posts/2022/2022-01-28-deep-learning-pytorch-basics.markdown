@@ -265,12 +265,11 @@ print(predicted_test)
 
 - Model summary: there are two methods
   - `model = print(model)  # Your model definition`
-  - `pip install torchsummary`
-
-        ```python
-        from torchsummary import summary
-        summary(model, input_size=(channels, height, width))
-        ```
+    - torchsummary only supports passing an input tensor of float() into the model, then trace the model structure
+- It's better to use `torchinfo`a package, [due to this issue](https://discuss.pytorch.org/t/issue-in-printing-model-summary-due-to-attributeerror-tuple-object-has-no-attribute-size/116155/4)
+  - `summary(model, input_size, batch_dim=batch_dim)`
+    - `input_size` should NOT contain batch size. `torchinfo` will unsqueeze it in batch_dim.
+    - One can pass in input data directly as well.
 
 ## Advanced Topics
 
