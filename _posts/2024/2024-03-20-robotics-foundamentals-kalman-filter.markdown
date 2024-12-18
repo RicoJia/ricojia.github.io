@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Kalman Filter
 date: '2024-03-15 13:19'
-subtitle: Kalman Filter Framework, Proofs From Multiple Perspectives
+subtitle: Kalman Filter Framework, Proofs With Minimizing Error Covariance
 comments: true
 tags:
     - Robotics
@@ -218,3 +218,5 @@ $$
 $$
 
 Without proof, when K_k is optimal, $P_k = (I - K_k C_k) P_k^*$.
+
+## Proof 2 - MAP (Maximum A-Posteriori)

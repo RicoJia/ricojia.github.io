@@ -60,18 +60,28 @@ logging.info(
     Optimizer:       {str(optimizer)}
 """
 )
-wandb_logger.log(
-    {
-        "epoch loss": epoch_loss,
-        "epoch": epoch,
-        "learning rate": current_lr,
-        "total_weight_norm": total_weight_norm,
-        "elapsed_time": timer.lapse_time(),
-    }
-)
+wandb.watch(model, log_freq=100)
+
+model.train()
+for batch_idx, (data, target) in enumerate(train_loader):
+    wandb_logger.log(
+        {
+            "epoch loss": epoch_loss,
+            "epoch": epoch,
+            "learning rate": current_lr,
+            "total_weight_norm": total_weight_norm,
+            "elapsed_time": timer.lapse_time(),
+        }
+    )
+
+    images_t = ...  # generate or load images as PyTorch Tensors
+    wandb.log({"examples": [wandb.Image(im) for im in images_t]})
 
 wandb.finish()
 ```
+
+- `wandb.watch(model, log_freq=100)` logs gradients and weights every 100 batches, when `log()` is called. [For more, see here](https://docs.wandb.ai/guides/integrations/pytorch/#logging-gradients-with-wandb-watch)
+- Wandb can log images as well. [For more, see here](https://docs.wandb.ai/guides/integrations/pytorch/#logging-images-and-media)
 
 ## tqdm
 
