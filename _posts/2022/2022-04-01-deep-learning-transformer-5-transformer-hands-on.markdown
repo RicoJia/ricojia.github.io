@@ -116,3 +116,44 @@ For Pure Teacher Forcing Training, it's Not Necessary, But We are not doing that
 ### Lesson 8: A Larger Batch Size Can Almost Likely Speed Up Training
 
 I had "accumulated batching" on so back-propagation is carried out only when an accumulated batch size is achieved. However, despite that in my various experiments, I still noticed an almost linear relationship between batch_size and training speed. **So, trying as large batch sizes as possible shouldn't be a bad idea**
+
+### Lesson 9: A Larger Model May / May Not Improve Performance
+
+This is the last "lesson" I want to mention, the reason being, this could slow down training while there could be potential bugs around. When the model is functional with a large size, try a larger model for better performance. Some experiments I've run:
+
+| Embedding Dim | Number of Encoder-Decoder Embedding Layers | Max Sentence Length | Loss At 100 Epochs | Loss At 200 Epochs | Teacher Forcing Ratio Decay Period
+|---------------|--------------------------------------------|---------------------|--------------------|---------------------|---------------------|
+| 64            | 3                                          | 30                  | 0.36                | 0.2221                | 900
+| 64            | 3                                          | 30                  | 0.387               | 0.1933                | 300
+| 64            | 5                                          | 30                  | 0.412               | 0.1896                | 300
+| 64            | 5                                          | 30 (x5 data)        | 0.292 (Training was 20 times slower)              | ?                | 300
+
+These experiments are not exhaustive, so some of the below observations might be biased from truth, so please take them with a grain of salt:
+
+- A shorter teacher forcing ratio decay makes training faster.
+- With more data, the training loss could be very different. For example, with a small dataset, the training loss was a smooth downward curve. With a 5 times larger dataset, the training loss goes up at the beginning. But its overall loss is smaller
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/6a1acb5d-9e97-4b34-ae2f-8d681c12b5ef" height="220" alt=""/>
+            <img src="https://github.com/user-attachments/assets/69f69d3f-1fce-4890-9364-c9cfcd8bc68e" height="220" alt=""/>
+       </figure>
+    </p>
+</div>
+
+## Cool Things To Try
+
+### 1. Weight Tying
+
+In [this paper](https://arxiv.org/pdf/1608.05859), Press & Wolf propose weight tying - the method to share the same embedding layer for both the input and output of a decoder. The general workflow is:
+
+```
+target output word ---embedding layer E---> embedding ------> Decoder ---embedding layer E---> logits ------> Softmax
+```
+
+The vanilla embedding in an one-hot vector that represents a token, then get an embedding dim. That could be "reused" to output logits as well. The biggest highlight is the reuse of the embedding layer E. The logits are simply $HE^T$ (H is `[sentence_length, embedding_dim]`, $E^T$ is `[embedding_dim, output_token_dim]`). Because of the token<->embedding relationship is shared, the model might be able to learn such an E that satisfy this need.
+
+## Good Reads
+
+- [Weight Tying, Initialization of Transformer](https://jerryzhao.com/post/guan-yu-vanilla-transformer-de-chong-chong-xi-jie/)

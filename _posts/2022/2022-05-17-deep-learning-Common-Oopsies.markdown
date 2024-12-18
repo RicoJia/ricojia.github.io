@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Common Oopsies
 date: '2022-05-17 13:19'
-subtitle: Underflow
+subtitle: Underflow, Weight Manipulation
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:

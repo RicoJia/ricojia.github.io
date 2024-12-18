@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - PyTorch Versioning And Memory Allocation
 date: '2022-03-21 13:19'
-subtitle: In-Place and Out-of_Place Matrix Ops
+subtitle: In-Place and Out-of_Place Matrix Ops, Gradient Checkpointing
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -106,3 +106,21 @@ After emptying cache:
 Allocated 0.00 MB
 Reserved 0.00 MB
 ```
+
+### Allow Memory Segments In CUDA
+
+`export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`
+    - memory is allocated by default contiguously. By using this, we are able to use fragemented memory, but it could be slightly & negligibly slower.
+
+## Gradient Checkpointing
+
+Gradient Checkpointing trades computational overhead for reduced memory consumption. When this is enabled, some intermediate outputs of layers are NOT stored. They will be recomputed in the backward pass (a.k.a checkpointed) when gradients are needed. One illustrative example of what it does is:
+
+```python
+y = f3(f2(f1(x)))
+f3 = 2x
+f2 = z + 3
+f1 = 4w
+```
+
+With checkpointing, we store `z = 2x`, compute but do not store `w=z + 3`. Eventually, we get output `4w`. But in backpropagation, we compute `w=z + 3` again.
