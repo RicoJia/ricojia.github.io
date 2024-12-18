@@ -59,6 +59,20 @@ R_1 & R_2 & R_3
 \end{gather*}
 $$
 
+### Rules
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial v^T v}{\partial x} = \frac{\partial v^T}{\partial x} v + \frac{\partial v^T}{\partial x} v^T
+\\
+& \frac{\partial v v^T}{\partial x} = \frac{\partial v}{\partial x} v^T + v \frac{\partial v^T}{\partial x}
+\\
+& \frac{\partial v}{\partial x^T} = (\frac{\partial v^T}{\partial x})^T
+\end{aligned}
+\end{gather*}
+$$
+
 ## TODO
 
 Notes: <https://github.com/RicoJia/notes/wiki/Math#basic-calculus>
