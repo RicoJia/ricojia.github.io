@@ -220,3 +220,5 @@ $$
 Without proof, when K_k is optimal, $P_k = (I - K_k C_k) P_k^*$.
 
 ## Proof 2 - MAP (Maximum A-Posteriori)
+
+For a refresher of MAP, please [see here](../2017/2017-02-13-math-MAP-MLE.markdown)
