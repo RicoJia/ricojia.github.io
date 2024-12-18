@@ -87,6 +87,14 @@ As can be seen, the final pdf value is always a number. Here's an illustration f
     </p>
 </div>
 
+### A Word On The Covariance Matrix
+
+An unbiased covariance matrix is $\frac{1}{M-1} \sum_N(x_m - \mu_m)(x_m - \mu_m)^T$. In MLE (Maximum Likelihood Estimate), it's a biased one: $\frac{1}{N} \sum_M(x_m - \mu_m)(x_m - \mu_m)^T$
+
+- `m` is the number of observations of the joint probability: $x_m = [x1, x2 ...]$
+
+Meanwhile, the covariance matrix is a symmetric, positive semi-definite matrix.
+
 ## Linear Transformation
 
 If we have two joint distributions: $y = Ax + b$, where x has a mean vector $\mu_x$, covariance matrix $\Sigma_x$, then:
