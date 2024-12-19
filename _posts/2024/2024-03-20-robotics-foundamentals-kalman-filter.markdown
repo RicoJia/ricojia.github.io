@@ -44,17 +44,11 @@ Then, The framwork is as follows:
 
 $$
 \begin{gather*}
-& \begin{aligned}
 x_k^* = A_{k} x_{k-1} + u_{k}  \tag{1}
-\end{aligned}
 \\
-& \begin{aligned}
 P_k^* = A_{k} P_{k-1} A_{k}^T + R_k \tag{2}
-\end{aligned}
 \\
-& \begin{aligned}
 K_k = P_k^* C_k^T (C_k P_k^* C_k^T + Q_k)^{-1}  \tag{3}
-\end{aligned}
 \end{gather*}
 $$
 
@@ -64,13 +58,9 @@ $$
 
 $$
 \begin{gather*}
-\begin{aligned}
 & x_k = x_k^* + K_k(z_k - C_k x_k^*)    \tag{4}
-\end{aligned}
 \\
-\begin{aligned}
 & P_k = (I - K_k C_k) P_k^*     \tag{5}
-\end{aligned}
 \end{gather*}
 $$
 
@@ -394,6 +384,8 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+The first order derivative can be achieved through Jacobians
 
 ## References
 
