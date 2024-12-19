@@ -97,23 +97,17 @@ To recover a composite rotation: `Log(R1R2)` to `so(3)`, we can find its derivat
 
 $$
 \begin{gather*}
-\begin{aligned}
 & \frac{\partial R_1 R_2}{\partial R_1} = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
 \\
 & = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2 R_2^T \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
 \\
 & = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2  \exp((R_2^T\theta)^{\land}) ) - \text{Log}(R_1 R_2)}{\theta}
-\end{aligned}
 \tag{1}
 \\
-\begin{aligned}
 & = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2) + J_r^{-1}\text{Log}(R_1 R_2)\text{Log}(\exp((R_2^T\theta)^{\land})) - \text{Log}(R_1 R_2)}{\theta}
 \tag{2}
-\end{aligned}
 \\
-\begin{aligned}
 & = J_r^{-1}\text{Log}(R_1 R_2)R_2^T    \tag{3}
-\end{aligned}
 \end{gather*}
 $$
 
