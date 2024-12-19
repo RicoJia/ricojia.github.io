@@ -151,9 +151,7 @@ Similarly,
 
 $$
 \begin{gather*}
-\begin{aligned}
 & \frac{\partial R_1 R_2}{\partial R_2} = J_r^{-1}Log(R_1 R_2) \tag{4}
-\end{aligned}
 \end{gather*}
 $$
 

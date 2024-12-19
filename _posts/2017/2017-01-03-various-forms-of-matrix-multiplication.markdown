@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Various Useful Forms Of Matrix Multiplication
-subtitle: Inner & outer Product, Correlation Matrix, etc.
+subtitle: Inner & outer Product, Correlation Matrix, Matrix Inverse etc.
 date: '2017-01-03 13:19'
 header-img: "img/post-bg-2015.jpg"
 tags:
@@ -27,7 +27,7 @@ The definition of Matrix Multiplication of $C = AB$ is $C_{ij} = \sum_k A_{ik}B_
 
 ### The matrix product is the sum of the outer product of A's columns and B's rows
 
-That is, $AB = \sum_{k=1}^n a_k b_k^{T}$. Why? 
+That is, $AB = \sum_{k=1}^n a_k b_k^{T}$. Why?
 
 Because for any given element $C_{ij}$, we have $C_{ij} = \sum_k A_{ik}B_{kj}$.
 
@@ -114,3 +114,15 @@ So the correlation matrix is
 
 - Positive semi-definite
 - Symmetric
+
+## Matrix Inverse
+
+$$
+\begin{gather*}
+\begin{aligned}
+& B^{-1} A^{-1} (A B) = I
+\\
+& (A B)^{-1} = B^{-1} A^{-1}
+\end{aligned}
+\end{gather*}
+$$
