@@ -14,27 +14,39 @@ Probabilities describe the chances of discrete, mutually-exclusive possible stat
 
 ## MLE (最大似然) vs MAP （最大后验估计）
 
-Maximum Likelihood Estimate focuses on finding the most likely state variables `x` that maximizes the observation data likelihood, `z`. So this is purely data-driven. It does NOT consider prior information:
+MLE (Maximum Likelihood Estimate_ focuses on finding the most likely state variables `x` that maximizes the observation data likelihood, `z`. So this is purely data-driven. It does NOT consider prior information:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& argmax(P(z|x))
+& argmax(L(z|x))
 \end{aligned}
 \end{gather*}
 $$
 
-MAP not only considers MLE, but also considers the prior states `x`. It is more stale than MLE and can work better in a Bayesian Filter framework. When the data is limited, MAP might be better. When observation and single state variable data are abundant, the prior's influence diminishes
+- In MLE, $x$ is unknown but fixed (so it's not a variable)
+
+MAP (Maximum A-Posterior) not only considers MLE, but also considers the prior states `x`. It is more stale than MLE and can work better in a Bayesian Filter framework. When the data is limited, MAP might be better. When observation and single state variable data are abundant, the prior's influence diminishes
 
 $$
 \begin{gather*}
 \begin{aligned}
-& argmax(P(x|z)) \alpha P(z|x) P(x)
+& argmax(P(x|z)) \propto L(z|x) P(x)
 \end{aligned}
 \end{gather*}
 $$
 
-In real life, since we always deal with Gaussian Distributions, we use the log trick on probabilities to make computaiton easier.
+- In MAP, $x$ is unknown but fixed (so it's not a variable)
+
+### The Log Trick While Working With Joint Multivariate Gaussian Distributions In MLE
+
+$$
+\begin{gather*}
+\begin{aligned}
+& argmax(L(x) L(y)) = argmax \sum(log(L(x)) + log(L(y)))
+\end{aligned}
+\end{gather*}
+$$
 
 ### Example of MLE
 
@@ -65,3 +77,7 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+## References
+
+<https://blog.csdn.net/Leon_winter/article/details/86557024>

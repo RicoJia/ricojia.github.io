@@ -95,6 +95,18 @@ An unbiased covariance matrix is $\frac{1}{M-1} \sum_N(x_m - \mu_m)(x_m - \mu_m)
 
 Meanwhile, the covariance matrix is a symmetric, positive semi-definite matrix.
 
+### How to estimate a multivariate Gaussian distribution's Covariance Matrix?
+
+$$
+\begin{gather*}
+\begin{aligned}
+& -log(p) \propto ((x - \mu)^T \Sigma^{-1} (x - \mu))
+\\
+& \text{Hessian: } D^2(-log(p)) = \Sigma^{-1}
+\end{aligned}
+\end{gather*}
+$$
+
 ## Linear Transformation
 
 If we have two joint distributions: $y = Ax + b$, where x has a mean vector $\mu_x$, covariance matrix $\Sigma_x$, then:

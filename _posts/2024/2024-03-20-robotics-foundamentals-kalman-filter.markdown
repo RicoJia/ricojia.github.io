@@ -222,3 +222,179 @@ Without proof, when K_k is optimal, $P_k = (I - K_k C_k) P_k^*$.
 ## Proof 2 - MAP (Maximum A-Posteriori)
 
 For a refresher of MAP, please [see here](../2017/2017-02-13-math-MAP-MLE.markdown)
+
+In a linear system,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x_k = A_k x_{k-1} + u_k + w_k
+\\
+& z_k = C_{k} x_{k} + v_{k}
+\end{aligned}
+\end{gather*}
+$$
+
+Here, we assume:
+
+- $x_k$, $x_{k-1}$ are ground truth
+- control noise $w_k \sim \mathcal{N}(0, Q)$,
+- observation $v_k sim \mathcal{N}(0, R)$
+- each state vector $x_k$ has a covariance matrix $P_k$
+
+So according to the [linear transforms of Multivariate Gaussian Distribution](../2017/2017-02-16-math-MultiVariate-Distribution.markdown), we can write the joint distribution:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P(x_k | x_{k-1}) \sim \mathcal{N}(A_k x_{k-1}, A_k^T P_{k-1} A_k + Q)
+\\
+& P(z_k | x_k) \sim \mathcal{N}(C_k x_{k}, R)
+\end{aligned}
+\end{gather*}
+$$
+
+- Note that the noise covariance $z_k$ is independent from $x_k$, that's why we have $P(z_k | x_k) \sim \mathcal{N}(C_k x_{k}, R)$
+
+In the MAP framework, we are interested in finding the posterior $\hat{x_k}$ (estimate of $x_k$) using [the log trick on multivariate Gaussian distribution](../2017/2017-02-13-math-MAP-MLE.markdown):
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \hat{x_k}, P_k = argmax [\mathcal{N}(C_k x_{k}, R) \mathcal{N} (A_k x_{k-1}, A_k^T P_{k-1} A_k + Q)]
+\\
+& \text{using the log trick: }
+\\
+& \Rightarrow \hat{x_k}, P_k = argmin[J_k] = argmin [(z_k - C_k x_{k})^T R^{-1} (z_k - C_k x_{k}) + (x_k - A_k x_{k-1})^T (A_k^T P_{k-1} A_k + R)^{-1} (x_k - A_k x_{k-1})]
+\end{aligned}
+\end{gather*}
+$$
+
+Let
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_k^* = A_k^T P_{k-1} A_k + R
+\\
+& \Rightarrow argmin[J_k] = argmin [(z_k - C_k x_{k})^T R^{-1} (z_k - C_k x_{k}) + (x_k - A_k x_{k-1})^T (P_k^*)^{-1} (x_k - A_k x_{k-1})]
+\end{aligned}
+\end{gather*}
+$$
+
+Now, let's do the heavy lifting: differentiating w.r.t our variable of interest, $x_k$, and solve it while it's 0:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial J_k}{\partial x_k} = -2 C_k^T R^{-1} (z_k - C_k x_{k}) + 2(P_k^*)^{-1} (x_k - A_k x_{k-1}) = 0
+\\
+& \Rightarrow \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k - \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k \mathbf{x}_k + (\mathbf{P}_k^{*})^{-1} \mathbf{x}_k - (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*} = 0
+
+\\
+& \Rightarrow (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k + (\mathbf{P}_k^{*})^{-1}) \mathbf{x}_k = \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k + (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*}
+
+\\
+& \Rightarrow \mathbf{x}_k = (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k + (\mathbf{P}_k^{*})^{-1})^{-1} (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k + (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*})
+
+\end{aligned}
+\end{gather*}
+$$
+
+We are skipping another leavy lift: getting the covariance of $x_k$, $P_k$. If you are curious, the covariance of a [multivariate Gaussian distribution can be achieved by taking the Hessian of its negative log function.](../2017/2017-02-16-math-MultiVariate-Distribution.markdown)
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_k = ((P_k^{*})^{-1} + C_k^T R^{-1} C_k)^{-1}
+\end{aligned}
+\end{gather*}
+$$
+
+By using the [Woodbury matrix identity](https://en.wikipedia.org/wiki/Woodbury_matrix_identity)
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_k = P_k^{*} - P_k^{*} C_k^{T}(R^{-1} + C_k P_k^{*} C_k^T)^{-1} C_k P_k^{*}
+\end{aligned}
+\end{gather*}
+$$
+
+Let
+
+$$
+\begin{gather*}
+\begin{aligned}
+& K_k = P_k^{*} C_k^{T}(R^{-1} + C_k P_k^{*} C_k^T)
+\\
+& \rightarrow P_k = P_k^{*} - K_k C_k P_k^{*}
+\end{aligned}
+\end{gather*}
+$$
+
+$x_k$ can be simplified to:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \mathbf{x}_k = (P_k^{*} - K_k C_k P_k^{*}) (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k + (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*})
+\\
+& = A_k x_{k-1} − K_k C_k A_k x_{k-1} + K_k z_k = (x^* - K_k C_k x^* +  K_k z_k)
+\end{aligned}
+\end{gather*}
+$$
+
+So we can see that we've derived the covariance matrix $P_k$, Kalman Gain $K_k$, and the final estimate $x_k$
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/d60f0567-3d93-4748-a2e7-894d8b5f123c" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+## EKF (Extended Kalman Filter)
+
+EKF is applied where the system is non-linear:
+
+$$
+\begin{gather*}
+\begin{cases}
+    x_k = f(x_{k-1}, u_k) + \mathbf{w}_k, \quad k = 1, \dots, N \\
+    z_k = h(x_k) + \mathbf{v}_k
+\end{cases}
+\end{gather*}
+$$
+
+Our important intermediate variables are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_k^* = A_k^T P_{k-1} A_k + R \Rightarrow  P_k^* = \frac{\partial f}{\partial x} P_{k-1} \frac{\partial f^T}{\partial x} + R
+
+\\
+& K_k = P_k^{*} C_k^{T}(R^{-1} + C_k P_k^{*} C_k^T) \Rightarrow K_k = P_k^{*} \frac{\partial h}{\partial x}^{T} (R^{-1} + \frac{\partial h}{\partial x} P_k^{*} \frac{\partial h}{\partial x}^T)
+
+\end{aligned}
+\end{gather*}
+$$
+
+Finally our updates are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x_k = x_k^* + K_k(z_k - C_k x_k^*) \Rightarrow x_k = x_{k-1} + K(z_t - h(x_k^*))
+
+\\
+& P_k = P_k^{*} - K_k C_k P_k^{*} \Rightarrow P_k = P_k^{*} - K_k \frac{\partial h}{\partial x} P_k^{*}
+\end{aligned}
+\end{gather*}
+$$
+
+## References
+
+<https://blog.yxwang.me/2018/07/robotics-slam-week2/>
