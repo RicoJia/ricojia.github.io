@@ -97,7 +97,7 @@ To recover a composite rotation: `Log(R1R2)` to `so(3)`, we can find its derivat
 
 $$
 \begin{gather*}
-& \frac{\partial R_1 R_2}{\partial R_1} = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
+& \frac{\partial Log(R_1 R_2)}{\partial R_1} = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
 \\
 & = \lim_{\theta \rightarrow 0} \frac{\text{Log}(R_1 R_2 R_2^T \exp(\theta^{\land}) R_2) - \text{Log}(R_1 R_2)}{\theta}
 \\
@@ -174,3 +174,178 @@ $$
 $$
 
 - This is because "Rotation Preserves Dot Product". Why? Because dot product is the unique vector $Ra \times Rb = |Ra||Rb|sin\theta \rightarrow (Rn) = R(a \times b)$
+
+## Exercises
+
+### Find $\frac{\partial R^{-1}p}{\partial R}$ using left and right perturbations
+
+Right Perturbation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{(Rexp(\phi^{\land}))^{-1} p - R^{-1}p}{\phi}
+
+\\
+& = \lim_{\phi \rightarrow 0} \frac{exp(\phi^{\land})^{-1} R^{-1} p - R^{-1}p}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{exp(-\phi^{\land}) R^{-1} p - R^{-1}p}{\phi}
+\\
+& \approx \lim_{\phi \rightarrow 0} \frac{(I - \phi^{\land}) R^{-1} p - R^{-1}p}{\phi}
+
+\\
+& = \lim_{\phi \rightarrow 0} \frac{- \phi^{\land} R^{-1} p}{\phi}
+
+\\
+& = \lim_{\phi \rightarrow 0} \frac{(R^{-1} p)^{\land} \phi}{\phi}
+
+\\
+& = (R^{-1} p)^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+Left Perturbation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{(exp(\phi^{\land}) R)^{-1}p - R^{-1}p }{\phi}
+\\
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} exp(\phi^{\land})^{-1} p - R^{-1}p}{\phi}
+
+\\
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} exp(-\phi^{\land}) p - R^{-1}p}{\phi}
+\\
+& \frac{\partial R^{-1}p}{\partial R} \approx \lim_{\phi \rightarrow 0} \frac{R^{-1} (I - \phi^{\land}) p - R^{-1}p}{\phi}
+
+\\
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{-R^{-1} \phi^{\land} p }{\phi}
+
+\\
+& \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} p^{\land} \phi }{\phi}
+\\
+& = R^{-1} p^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+### Find $\frac{\partial R_1R_2^{-1}}{\partial R_2}$ using left and right perturbations
+
+I'm not sure about $\lim_{\phi \rightarrow 0}\frac{-\phi^{\land}}{\phi} $
+
+- Right Perturbation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R_1R_2^{-1}}{\partial R_2} = \lim_{\phi \rightarrow 0} \frac{R_1(R_2 exp(\phi^{\land}))^{-1} - R_1R_2^{-1}}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{R_1exp(-\phi^{\land}) R_2 ^{-1} - R_1R_2^{-1}}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{R_1 R_2^T R_2exp(-\phi^{\land})R_2^{T} - R_1R_2^{T}}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{R_1 R_2^T exp(-R_2 \phi^{\land}) - R_1R_2^{T}}{\phi}
+
+\\
+& \approx \lim_{\phi \rightarrow 0} \frac{R_1 R_2^T (I -R_2 \phi^{\land}) - R_1R_2^{T}}{\phi}
+
+\\
+& = \lim_{\phi \rightarrow 0} \frac{-R_1  \phi^{\land}}{\phi}
+\\
+& = -R_1?
+\end{aligned}
+\end{gather*}
+$$
+
+Left Perturbation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial R_1R_2^{-1}}{\partial R_2} = \lim_{\phi \rightarrow 0} \frac{R_1 (exp(\phi^{\land}) R_2)^{-1} - R_1R_2^{-1}}{\phi}
+
+\\
+& = \lim_{\phi \rightarrow 0} \frac{R_1 R_2^{-1} exp(-\phi^{\land}) - R_1R_2^{-1}}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{R_1 R_2^{-1} (I -\phi^{\land}) - R_1R_2^{-1}}{\phi}
+\\
+& = \lim_{\phi \rightarrow 0} \frac{-R_1 R_2^{-1} \phi^{\land}}{\phi}
+\\
+& = -R_1 R_2^{-1}?
+\end{aligned}
+\end{gather*}
+$$
+
+### Programming Exercise
+
+```cpp
+//
+// Created by xiang on 22-12-29. Modified by Rico 2024-12-19
+//
+
+#include <gflags/gflags.h>
+#include <glog/logging.h>
+
+#include "common/eigen_types.h"
+#include "common/math_utils.h"
+#include "tools/ui/pangolin_window.h"
+
+/// 本节程序演示一个正在作圆周运动的车辆
+/// 车辆的角速度与线速度可以在flags中设置
+
+DEFINE_double(angular_velocity, 10.0, "角速度（角度）制");
+DEFINE_double(linear_velocity, 5.0, "车辆前进线速度 m/s");
+DEFINE_bool(use_quaternion, false, "是否使用四元数计算");
+
+int main(int argc, char** argv) {
+    google::InitGoogleLogging(argv[0]);
+    FLAGS_stderrthreshold = google::INFO;
+    FLAGS_colorlogtostderr = true;
+    google::ParseCommandLineFlags(&argc, &argv, true);
+
+    /// 可视化
+    sad::ui::PangolinWindow ui;
+    if (ui.Init() == false) {
+        return -1;
+    }
+
+    double angular_velocity_rad = FLAGS_angular_velocity * sad::math::kDEG2RAD;  // 弧度制角速度
+    double z_acc = -0.1;
+    SE3 pose;                                                                    // TWB表示的位姿
+    Vec3d omega(0, 0, angular_velocity_rad);                                     // 角速度矢量
+    Vec3d v_body(FLAGS_linear_velocity, 0, 0);                                   // 本体系速度
+    const double dt = 0.05;                                                      // 每次更新的时间
+
+    while (ui.ShouldQuit() == false) {
+        // 更新自身位置
+        Vec3d v_world = pose.so3() * v_body;
+        pose.translation() += v_world * dt;
+
+        // 更新自身旋转
+        if (FLAGS_use_quaternion) {
+            // theta is halved in the quaternion world
+            Quatd q = pose.unit_quaternion() * Quatd(1, 0.5 * omega[0] * dt, 0.5 * omega[1] * dt, 0.5 * omega[2] * dt);
+            // Quatd q = pose.unit_quaternion() * Quatd(std::cos(0.5 * angular_velocity_rad * dt), 0, 0, std::sin(0.5 * angular_velocity_rad * dt));
+            q.normalize();
+            // auto& quat = q;
+            // std::cout << "=========Quaternion coefficients: "
+            //   << "w = " << quat.w() << ", "
+            //   << "x = " << quat.x() << ", "
+            //   << "y = " << quat.y() << ", "
+            //   << "z = " << quat.z() << std::endl;
+            pose.so3() = SO3(q);
+        } else {
+            pose.so3() = pose.so3() * SO3::exp(omega * dt);
+        }
+        v_body += Vec3d(0, 0, z_acc * dt);
+        LOG(INFO) << "pose: " << pose.translation().transpose();
+        ui.UpdateNavState(sad::NavStated(0, pose, v_world));
+
+        usleep(dt * 1e6);
+    }
+
+    ui.Quit();
+    return 0;
+}
+```

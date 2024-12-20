@@ -2,11 +2,75 @@
 layout: post
 title: Math - Matrix Derivatives 
 date: '2017-01-20 13:19'
-subtitle: Foundation For Everything in Deep Learning and 3D SLAM
+subtitle: Jacobian and Hessian, Vector-Vector Derivative
 comments: true
 tags:
     - Math
 ---
+
+## Jacobian and Hessian
+
+### Jacobian
+
+Suppose we have a vector-valued function
+
+$$
+\begin{gather*}
+\begin{aligned}
+& f = [f_0(x), ... f_m(x)]
+\\
+& x = [x_0, ... x_n]
+\end{aligned}
+\end{gather*}
+$$
+
+Jacobian is its first derivative:
+
+$$
+\begin{gather*}
+\begin{aligned}
+J =
+\begin{bmatrix}
+\frac{\partial f_0}{\partial x_0} & \dots & \frac{\partial f_0}{\partial x_n} \\
+\vdots
+\\
+\frac{\partial f_m}{\partial x_0} & \dots & \frac{\partial f_m}{\partial x_n}
+
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+So using first order Taylor Expansion, one can approximate:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& f(x_0 + \Delta x) \approx  f(x_0) + J \Delta x
+\end{aligned}
+\end{gather*}
+$$
+
+### Hessian
+
+Hessian (**for scalar functions only**) is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_0 x_0} & \frac{\partial^2 f}{\partial x_0 x_1} & \dots & \frac{\partial^2 f}{\partial x_0x_n}
+\\
+
+\vdots
+\\
+
+\frac{\partial^2 f}{\partial x_n x_0} & \frac{\partial^2 f}{\partial x_n x_1} & \dots & \frac{\partial^2 f}{\partial x_n x_n}
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
 
 ## Vector to Vector Derivatives
 
@@ -63,12 +127,20 @@ $$
 
 $$
 \begin{gather*}
+& \frac{\partial v^T v}{\partial x} = \frac{\partial v^T}{\partial x} v + \frac{\partial v^T}{\partial x} v^T \tag{1}
+\\
+& \frac{\partial v v^T}{\partial x} = \frac{\partial v}{\partial x} v^T + v \frac{\partial v^T}{\partial x} \tag{2}
+\\
+& \frac{\partial v}{\partial x^T} = (\frac{\partial v^T}{\partial x})^T \tag{3}
+\end{gather*}
+$$
+
+### Examples
+
+$$
+\begin{gather*}
 \begin{aligned}
-& \frac{\partial v^T v}{\partial x} = \frac{\partial v^T}{\partial x} v + \frac{\partial v^T}{\partial x} v^T
-\\
-& \frac{\partial v v^T}{\partial x} = \frac{\partial v}{\partial x} v^T + v \frac{\partial v^T}{\partial x}
-\\
-& \frac{\partial v}{\partial x^T} = (\frac{\partial v^T}{\partial x})^T
+& \text{using (2): } \frac{\partial x^T A x}{\partial x^T} = (A + A^T)x
 \end{aligned}
 \end{gather*}
 $$

@@ -85,6 +85,7 @@ page-mathjax: false
 # Friends
 friends:
   [
+    { title: "Cheng Wei", href: "https://scm_mos.gitlab.io/" },
     { title: "Sebastian Castro", href: "https://roboticseabass.com/" },
     { title: "Jon Meyer", href: "https://www.jonwmeyer.com/" },
     { title: "Sik-Ho Tsang", href: "https://sh-tsang.medium.com/" },
