@@ -235,9 +235,11 @@ $$
 
 For a more detailed derivation, [please see here](./2024-07-11-rgbd-slam-bundle-adjustment.markdown)
 
+When $\Delta x$ is small, or $f(x)$ is small, GN has faster convergence. When either or both of them are large, or when the target function is highly non-linear, G-N does not work well.
+
 ## Levenberg-Marquardt (LM) Optimization
 
-Again, **Taylor expansion** works better when $\Delta x$ is small, so the function can be better estimated by it. So, similar to regularization techniques on step sizes in deep learning, like L1, L2 regularization, we can regularize the step size, $\Delta x$
+Again, **Taylor expansion** works better when $\Delta x$ is small, so the function can be better estimated by it. So, similar to regularization techniques on step sizes in deep learning, like L1, L2 regularization, we can regularize the step size, $\Delta x$. $\mu$ is called "the damping factor"
 
 $$
 \begin{gather*}
@@ -251,6 +253,8 @@ Intuitively,
 
 - as $\mu$ grows, the diagonal identity matrix $\mu I_H$ grows, so $H + \mu I_H \rightarrow \mu I_H$. So, $\Delta x \approx (H + \mu I_H)^{-1}g = \frac{g}{\mu}$, which means $\Delta x$ grows smaller. In the meantime, $\Delta x$ will be similar to that in gradient descent.
 - as $\mu$ becomes smaller, $\Delta x$ will become more like Gauss-Newton. However, due to $\mu I_H$, $(H + \mu I_H)$ is positive semi-definite, which provides more stability for solving for $\Delta x$.
+
+LM in general is more stable than GN. However, it's more computationally costly.
 
 ## References
 
