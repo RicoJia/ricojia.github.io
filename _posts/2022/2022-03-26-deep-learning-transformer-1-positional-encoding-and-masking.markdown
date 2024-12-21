@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Transformer Series 1 - Embedding Pre-Processing
 date: '2022-03-26 13:19'
-subtitle: Positional Encoding, Padding Mask, Look-ahead Mask
+subtitle: Positional Encoding, Padding Mask, Look-ahead Mask, Tokenization
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -204,3 +204,37 @@ def create_look_ahead_mask(sequence_length):
     # diagonal = 0 is to include the diagonal items
     return (1- torch.tril(torch.ones(sequence_length, sequence_length), diagonal=0)).bool()
 ```
+
+## [Advanced Topic] Tokenization
+
+Tokenization to assign an index to a token, which can be used for further processing. In its simplest form, a token can be a word.
+
+Hugging Face has [a series of tokenizers](https://huggingface.co/docs/transformers/main_classes/tokenizer).
+
+- `<CLS>` (classification token, often the first token): BERT uses [CLS]. It's similar to `<SOS>`, `<SOS>` is used in machine translation like `Seq2seq`
+- `<SEP>` (separator token): BERT uses `[SEP]` between sentences. It's similar to `<EOS>`
+
+### Subword-Tokenization
+
+What people do nowadays is "subword-tokenization" an example is to decompose the word `unsurprisingly` to [`un`, `surprising`, `ly`]. This can be illustrated using an example with the [HuggingFace 🤗  `Transformer` library](https://huggingface.co/docs/transformers/main_classes/tokenizer):
+
+```python
+%pip install transformers
+from transformers import BertTokenizerFast, BertModel
+tokenizer = BertTokenizerFast.from_pretrained("google-bert/bert-base-uncased")
+model = BertModel.from_pretrained("google-bert/bert-base-uncased")
+text = "unsurprisingly"
+encoded_input = tokenizer(text, return_tensors="pt")
+# See [101,  4895, 26210, 18098,  9355,   102]. 101, 102 are CLS and 
+print(encoded_input)
+tokens = tokenizer.convert_ids_to_tokens(encoded_input['input_ids'].squeeze())
+# See ['[CLS]', 'un', '##sur', '##pr', '##ising', '##ly', '[SEP]']
+print(tokens)
+```
+
+One technique to create subword-tokenization is through **Byte Pair Encoding (BPE)**. That is:
+
+1. Break words in a dictionary into single characters.
+    - e.g., "unpredictable" → `["u", "n", "p", "r", "e", "d", "i", "c", "t", "a", "b", "l", "e"]`
+2. Count the frequency combinations of characters, like `un`, `ble`
+3. Find the most frequent combos

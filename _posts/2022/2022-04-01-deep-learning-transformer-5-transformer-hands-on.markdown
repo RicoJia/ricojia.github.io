@@ -24,7 +24,7 @@ In practice, one can apply below methods to reduce padding:
 Applications
 
 - Machine Translation (using World-Machine-Translation datasets)
-- Named Entity Recognition (like extracting "phone number" from resumes)
+- Named Entity Recognition (NER). This is to extract structured information like "phone number" from unstrcutured data like resume.
 
 ## Quick Word on Teacher Forcing
 
