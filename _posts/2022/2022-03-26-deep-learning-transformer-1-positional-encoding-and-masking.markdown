@@ -107,6 +107,30 @@ In below's chart, 50 128-dimension positional encodings are shown. Each row is t
 
 For example, for the `50th` input embedding, the 0th dim corresponds to the value `sin(50/10000^{(2*0/128)}})`. The 127th dim corresponds to `cos(50/10000^(126/128))`. As we can see, the frequency of encoding "bit" changing decreases, as the dimension number goes higher.
 
+### Effect of Positional Embedding
+
+Using [the glove 6B 100d pretrained embedding](https://github.com/allenai/spv2/blob/master/model/glove.6B.100d.txt.gz), we can visualize some example word embeddings in the 2D plane with PCA. As one can see, similar words are close to each other, `man-woman`, `king-queen`, etc.
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/87c81f3f-d546-406e-b97c-c88bc839a633" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+After adding the positional encoding based on a sample sentence "a queen is a woman, a king is a man", now they look like this:
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/ff66b9fc-45e2-4294-9f49-c7df202b1be0" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+So one can see that `woman-queen` are pushed much closer. This relationship already learnt from the sequence.
+
 ## Masking
 
 There are two types of masking for building a transformer: **padding mask** and **look-ahead mask**
