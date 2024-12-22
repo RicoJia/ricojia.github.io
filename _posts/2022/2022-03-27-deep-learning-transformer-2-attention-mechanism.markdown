@@ -254,6 +254,7 @@ q_n^T k_1 & q_2^Tk_2 & \dots & q_2^Tk_m \\
 $$
 
 The look ahead mask looks like:
+
 $$
 \begin{gather*}
 \begin{bmatrix}
