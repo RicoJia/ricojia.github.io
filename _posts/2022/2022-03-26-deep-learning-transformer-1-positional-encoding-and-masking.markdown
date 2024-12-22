@@ -213,6 +213,7 @@ Hugging Face has [a series of tokenizers](https://huggingface.co/docs/transforme
 
 - `<CLS>` (classification token, often the first token): BERT uses [CLS]. It's similar to `<SOS>`, `<SOS>` is used in machine translation like `Seq2seq`
 - `<SEP>` (separator token): BERT uses `[SEP]` between sentences. It's similar to `<EOS>`
+- `<PAD>` (padding token for alignment): BERT uses `[PAD]`.
 
 ### Subword-Tokenization
 

@@ -75,17 +75,30 @@ $$
 
 ### What is Embedding?
 
-An embedding is basically a linearly-transformed result of an **encoding** so the embedding can be in lower dimension. Say we have a `vocabulary size = 5`, so an input word can be naively represented as an one-hot vector. But one obvious drawback of the one-hot vector is that it is so darn sparse - we want to reduce its dimensionality. In this baby example, now say we want to reduce the representation from 5 to 2, we can define a learnable matrix, where E is `2x5`:
+An embedding is a linearly-transformed result of an **encoding** so the embedding can be in lower dimension. Say we have a `vocabulary size = 5`, so an input word can be naively represented as an one-hot vector. But one obvious drawback of the one-hot vector is that it is so sparse - we want to reduce its dimensionality. In this baby example, now say we want to reduce the representation from 5 to 2, we can define a learnable matrix, where E is `2x5`:
 
 $$
 \begin{gather*}
-y = Ex
+& E = 
+\begin{bmatrix}
+1 & 2 & 3 & 4 & 5
+6 & 7 & 8 & 9 & 10
+\end{bmatrix}
 \\
-x = [0, 0, 0, 1, 0]^T
+& x = [0, 0, 0, 1, 0]^T
+
+\\
+& \rightarrow embedding = Ex
 \end{gather*}
 $$
 
-So this is essentially a linear layer + one-hot vector input. In PyTorch, this is `nn.embedding`. Effectively, it's also a "look up table". Since the input is an one-hot vector, the embedding is one column of E. One guess I have is during backpropagation, only the corresponding column will be updated by the optimizer
+So this is essentially a linear layer + one-hot vector input. In PyTorch, this is `nn.embedding`. It's work flow is:
+
+```
+token ----> one_hot vector --E--> embedding
+```
+
+One guess I have is during backpropagation, only the corresponding column will be updated by the optimizer
 
 ### Notes on Embedding Learning
 
