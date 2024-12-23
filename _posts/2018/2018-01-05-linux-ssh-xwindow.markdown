@@ -89,3 +89,15 @@ This allows a local user to access Xterminal
         ```python
         ssh -Y rico@rico-orin
         ```
+
+## Remote SSH Forwarding W/ AT&T Routers
+
+1. Log onto the `AT&T` page, `192.168.1.254`
+2. Go to Ip Passthrough -> change allocation mode from `Off` to `Passthrough`
+3. Use DCHP Fixed. Under the device list, find the ssh server's MAC address 
+4. In NAT/GAMING, add the device as an SSH server. Make sure the correct device is added.
+5. Check IP addresses that have logged on, use `who`.
+
+Trouble shooting
+
+- `sudo tcpdump -ni any tcp port 22` run a packet capture on the server itself. 

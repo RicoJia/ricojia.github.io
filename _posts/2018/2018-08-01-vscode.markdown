@@ -1,7 +1,7 @@
 ---
 layout: post
 title: VS Code
-date: '2024-08-01 13:19'
+date: '2018-08-01 13:19'
 subtitle: 
 comments: true
 tags:
