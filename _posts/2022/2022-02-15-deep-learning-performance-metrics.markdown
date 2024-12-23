@@ -256,6 +256,25 @@ F1 = \frac{2 \cdot P \cdot R}{P + R + \epsilon}
 
 $$
 
+### F1 Score Implementation
+
+```python
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+from sklearn.ensemble import randomforestclassifier
+
+# generate a synthetic dataset
+x, y = make_classification(n_samples=1000, n_features=20, n_classes=2, random_state=42, class_sep=0.8)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
+clf = randomforestclassifier(random_state=42)
+clf.fit(x_train, y_train)
+y_pred = clf.predict(x_test)
+f1 = f1_score(y_test, y_pred)   # array of binary data
+# see f1 score: 0.8266666666666667
+print(f"f1 score: {f1}")
+```
+
 ### Satisficing Metric
 
 Satisficing here means "satisfying a certain metric suffices". It's a kind of metric that we set a minumum requirement for, but do not care so much afterwards. For example, in a classifier, as long as recall is over 90%, we don't care about it as much; or in a recommendation system, we set a minimum for speed, but after that we care a lot more on the accuracy.
