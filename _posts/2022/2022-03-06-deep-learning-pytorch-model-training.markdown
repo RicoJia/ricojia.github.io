@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - PyTorch Model Training
 date: '2022-03-06 13:19'
-subtitle: Checkpointing, Op Determinisim,
+subtitle: Checkpointing, Op Determinisim,  🤗 HuggingFace Trainer
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -57,4 +57,49 @@ random.seed(1)
 # Optional to enforce sequential execution
 torch.backends.cudnn.deterministic = True 
 torch.backends.cudnn.benchmark = False
+```
+
+## HuggingFace Trainer
+
+Hugging Face has a Trainer class that has distributed training by default, and mixed precision training in [a Trainer class](https://huggingface.co/docs/transformers/main_classes/trainer). It goes hand-in-hand with the TrainerArgument class
+
+Boiler plate for image segmentation:
+
+```python
+def compute_metrics(pred):
+    preds = pred.predictions.argmax(-1)
+    labels = pred.label_ids
+    # Flatten the tensors
+    preds = preds.flatten()
+    labels = labels.flatten()
+    # Compute IoU
+    metric = load_metric("iou")
+    iou = metric.compute(predictions=preds, references=labels, average="macro")
+    return {"iou": iou}
+
+training_args = TrainingArguments(
+    output_dir="./segmentation_results",
+    num_train_epochs=10,
+    per_device_train_batch_size=4,
+    per_device_eval_batch_size=4,
+    evaluation_strategy="epoch",
+    save_strategy="epoch",
+    logging_dir="./segmentation_logs",
+    logging_steps=10,
+    load_best_model_at_end=True,
+    metric_for_best_model="iou",
+    greater_is_better=True,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
+    compute_metrics=compute_metrics,
+)
+
+eval_results = trainer.evaluate()
+print(f"Evaluation results: {eval_results}")
+trainer.save_model("./trained_segmentation_model")
 ```

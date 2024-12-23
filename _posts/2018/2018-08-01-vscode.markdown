@@ -1,6 +1,6 @@
 ---
 layout: post
-title: VS Code
+title: VSCode
 date: '2018-08-01 13:19'
 subtitle: 
 comments: true
