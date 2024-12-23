@@ -226,7 +226,9 @@ class DotProductAttention(torch.nn.Module):
         return attention
 ```
 
-### `Look-Ahead-Mask` Omits Inputs From Later Time Steps For Each Query
+### `Look-Ahead-Mask` Omits Paddding For Each Query's Attention
+
+At timestep `t`, Padding at in an input sentence start at `t`. When we train the transformer for a translation task, the decoder gets its last output as its input. So at `t`, we want to omit `<PAD>` from then on.
 
 $$
 \begin{gather*}

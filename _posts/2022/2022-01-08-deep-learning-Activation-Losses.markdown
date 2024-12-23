@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Activation and Loss Functions
 date: '2022-01-08 13:19'
-subtitle: Sigmoid, ReLU, Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss, Focal Loss
+subtitle: Sigmoid, ReLU, GELU Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss, Focal Loss
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -63,6 +63,30 @@ $$
 </div>
 
 - Typically $\alpha=0.01$
+
+- GELU (Gaussian Error Linear Units)
+  - ReLu is less common in Transformer due to its dying negative activations. GELU is `x * Cumulative Density Function (CDF) of Gaussian Distribution at point x`.
+  - Advantages:
+    - It's differentiable all over $\R$. That helps with smoothening hard gradient transitions (like in ReLU)
+    - Also, it has no dead neurons
+  - Disadvantages:
+    - It's slower
+
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & GELU(x) = 0.5x*[1 + tanh(\sqrt{\frac{2}{\pi}} (x + 0.044715 x^3))]
+    \end{aligned}
+    \end{gather*}
+    $$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/8df49272-30cc-4335-9ac1-3cd02c9d37dd" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
 - tanh: $\frac{2}{1+e^{-2x}}-1$
 
