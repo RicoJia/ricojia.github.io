@@ -9,6 +9,208 @@ tags:
     - Deep Learning
 ---
 
+## Dataset and Data Loading
+
+### DataSet
+
+In PyTorch, data is stored in the `DataSet` object. We can read input data all together, or read them one by one. Then, for many tasks, one may need to apply transforms at each loading call for data augmentation
+
+```python
+class MyDataset(Dataset)
+    def __init__(self, data_path:str, transform=None):
+        self.transform = transform
+        self.data_path = data_path
+        # for example, number of examples
+        self.metadata = read_csv_metadata(data_path)
+    def __getitem__(self, idx):
+        sample_info = self.metadata[idx]
+        sample = read_single_sample(sample_info)
+        if self.transform:
+            sample = self.transform(sample)
+        return sample
+    def __len__(self):
+        return self.metadata.length
+```
+
+- To better work with multi-worker dataloading, it's best to **read a single sample into the dataset** in `__getitem__(self, idx)`
+
+### Naive Data Loading
+
+After that, in PyTorch, we will have dataloading. A naive dataloader reads input data one-by-one, then return to the user. Some notable points include:
+
+- DataLoader uses a random sampler to determine which single samples go in batches. 
+- `collate_fn` takes in single samples, outputs a tensor. From the [PyTorch documentation](https://pytorch.org/docs/stable/data.html#automatic-batching-default),
+
+```python
+# Collate_fn equivalent
+for indices in batch_sampler:
+    yield collate_fn([dataset[i] for i in indices])
+```
+- **There's a default function for it in PyTorch**, but one can do things like padding input text (for NLP tasks)
+
+```python
+# Padding during Collate in NLP tasks
+def custom_collate_fn(batch):
+    inputs, labels = zip(*batch)
+    inputs = pad_sequence(inputs, batch_first=True, padding_value=0)
+    labels = torch.tensor(labels)
+    return inputs, labels
+```
+
+So all-together, a **naive dataloader** is equivalent to:
+
+```python
+class NaiveDataLoader:
+    def __init__(self, dataset, batch_size=64, collate_fn=default_collate):
+        self.dataset = dataset
+        self.batch_size = batch_size
+        self.collate_fn = collate_fn
+        self.index = 0
+    def __iter__(self):
+        """
+        Called to return an iterable, so it's only called once when iterable is to be returned.
+        """
+        self.index = 0
+        return self
+    def get(self):
+        """
+        Reutrn a single next item 
+        """
+        item = self.dataset[self.index]
+        self.index += 1
+        return item
+    def __next__(self):
+        """
+        Create a tensor with single inputs
+        """
+        if self.index >= len(self.dataset):
+            raise StopIteration
+        batch_size = min(len(self.dataset) - self.index, self.batch_size)
+        return self.collate_fn([self.get() for _ in range(batch_size)])
+
+# Naively, the dataloader just needs a list
+dataset = list(range(16))
+dataloader = NaiveDataLoader(dataset, batch_size=8)
+for batch in dataloader:
+    print(batch)
+```
+
+### Multi-Process Data Loading
+
+DataLoading can be done using multiple subprocesses (workers), and moving them to CUDA could be parallelized. Here, we have a simple implementation inspired [by this post](https://teddykoker.com/2020/12/dataloader/)
+
+Some notable points include:
+
+- A worker is a long-running subprocess can load data asynchronously. It checks its input queue, loads (and transforms) single input data, puts them in a tensor, then put the tensor on an output queue
+- One big feature in Multi-processing data loading is pre-fetching. Everytime before we return a single item for a batch, we make sure that in total, we have read in `2 * num_workers * batch_size` inputs asynchronously to speed up.
+
+```python
+def worker_fn(dataset, index_queue, output_queue):
+    while True:
+        index = index_queue.get()
+        # TODO: collate function?
+        output_queue.put((index, dataset[index]))
+
+class DataLoader(NaiveDataLoader):
+    def __init__(
+        self,
+        dataset,
+        batch_size=64,
+        num_workers=1,
+        prefetch_batches=2,
+        collate_fn=default_collate,
+    ):
+        super().__init__(dataset, batch_size, collate_fn)
+        self.num_workers = num_workers
+        self.prefetch_batches = prefetch_batches
+        self.output_queue = multiprocessing.Queue()
+        self.index_queues = []
+        self.workers = []
+        # Round-Robin counter
+        self.worker_cycle = itertools.cycle(range(num_workers))
+        self.cache = {}
+        self.prefetch_index = 0
+        # start all workers with a individual index_queues and one shared output queue
+        for _ in range(num_workers):
+            index_queue = multiprocessing.Queue()
+            worker = multiprocessing.Process(
+                target=worker_fn, args=(self.dataset, index_queue, self.output_queue)
+            )
+            worker.daemon = True
+            worker.start()
+            self.workers.append(worker)
+            self.index_queues.append(index_queue)
+
+        self.prefetch()
+    def __iter__(self):
+        """
+        Return the object itself as an iterable. Called once right before iteration, so this function is like reset
+        """
+        self.index = 0
+        self.cache = {}
+        self.prefetch_index = 0
+        self.prefetch()
+        return self
+
+    def prefetch(self):
+        """
+        Called in every get() call before actual fetching
+        """
+        while (
+            self.prefetch_index < len(self.dataset)
+            and self.prefetch_index
+            < self.index + 2 * self.num_workers * self.batch_size
+        ):
+            # if the prefetch_index hasn't reached the end of the dataset
+            # and it is not 2 batches ahead, add indexes to the index queues
+            self.index_queues[next(self.worker_cycle)].put(self.prefetch_index)
+            self.prefetch_index += 1
+
+    def get(self):
+        """
+        Reutrn a single next item to the __next__() call.
+        """
+        self.prefetch()
+        if self.index in self.cache:
+            item = self.cache[self.index]
+            # Delete cache to save memory
+            del self.cache[self.index]
+        else:
+            while True:
+                try:
+                    (index, data) = self.output_queue.get(timeout=0)
+                except queue.Empty:  # output queue empty, keep trying
+                    continue
+                if index == self.index:  # found our item, ready to return
+                    item = data
+                    break
+                else:  # item isn't the one we want, cache for later
+                    self.cache[index] = data
+
+        self.index += 1
+        return item
+
+    def __del__(self):
+        """
+        Called when the dataloader no longer has any references and is ready to be garbage collected
+        """
+        try:
+            # Stop each worker by passing None to its index queue
+            for i, w in enumerate(self.workers):
+                self.index_queues[i].put(None)
+                w.join(timeout=5.0)
+            for q in self.index_queues:  # close all queues
+                q.cancel_join_thread() 
+                q.close()
+            self.output_queue.cancel_join_thread()
+            self.output_queue.close()
+        finally:
+            for w in self.workers:
+                if w.is_alive():  # manually terminate worker if all else fails
+                    w.terminate()
+
+```
+
 ## RESNET-20 Example
 
 ### Imports

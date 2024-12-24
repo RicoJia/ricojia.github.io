@@ -2,7 +2,7 @@
 layout: post
 title: Python - Python Iterables
 date: '2019-01-05 13:19'
-subtitle: Iterable
+subtitle: Iterable, Itertools, Round Robin Counter
 comments: true
 header-img: "img/post-bg-2015.jpg"
 tags:
@@ -131,6 +131,16 @@ import itertools
 words = ['apple', 'banana', 'cherry', 'date']
 permutations = list(itertools.permutations(indices, 3))
 itertools.permutations(words, 3)
+```
+
+### Round Robin Counter - `itertools.cycle(range(num))`
+
+```python
+import itertools
+num_workers = 4
+worker_cycle = itertools.cycle(range(num_workers))
+for _ in range(5):
+    print(f'{next(worker_cycle)}')
 ```
 
 ## List
