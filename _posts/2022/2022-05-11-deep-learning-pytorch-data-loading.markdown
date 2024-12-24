@@ -11,11 +11,12 @@ tags:
 
 ## Dataset and Data Loading
 
-### DataSet
+### Data Set and Data Loading in All-Together In Torch
 
-In PyTorch, data is stored in the `DataSet` object. We can read input data all together, or read them one by one. Then, for many tasks, one may need to apply transforms at each loading call for data augmentation
+In a real life application, you might see dataloading something like: 
 
 ```python
+
 class MyDataset(Dataset)
     def __init__(self, data_path:str, transform=None):
         self.transform = transform
@@ -30,9 +31,71 @@ class MyDataset(Dataset)
         return sample
     def __len__(self):
         return self.metadata.length
+
+train_dataloader = DataLoader(
+    train_data,
+    sampler=train_sampler,
+    batch_size=batch_size,
+    num_workers=2,
+    pin_memory=True,
+)
+
+# in training, send a tensor to batch 
+src_batch = src_batch.to(device, non_blocking=True)
 ```
 
+In PyTorch, data is stored in the `DataSet` object. We can read input data all together, or read them one by one. Then, for many tasks, one may need to apply transforms at each loading call for data augmentation
+
 - To better work with multi-worker dataloading, it's best to **read a single sample into the dataset** in `__getitem__(self, idx)`
+
+(NOT RECOMMENDED) A slower yet naive alternative to dataset is we can create a dataset by passing established tensors into a `TensorDataset` object:
+
+```python
+train_data = TensorDataset(
+    torch.LongTensor(input_ids), torch.LongTensor(target_ids)
+)
+```
+
+### Dataset is NOT Supposed to Move Tensors Onto CUDA
+
+If you see this CUDA error:
+
+```bash
+RuntimeError: CUDA error: initialization error
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with TORCH_USE_CUDA_DSA to enable device-side assertions.
+```
+
+During dataloading:
+
+```bash
+train_dataloader = DataLoader(
+...
+num_workers=2,
+)
+```
+
+It's because CUDA tensors are not designed to be initialized by multiple processes:
+
+```python
+class MyDataset(torch.utils.data.Dataset):
+    def __init__(self, data, targets, transform=None):
+        self.data = data
+        self.targets = targets
+        self.transform = transform
+
+    def __getitem__(self, index):
+        x = self.data[index]
+        y = self.targets[index]
+        if self.transform:
+            x = self.transform(x)
+        # Do not move to GPU here!!
+        # return x.to(device), y.to(device)  
+        # Do this 
+        return x, y
+```
+
 
 ### Naive Data Loading
 
@@ -211,7 +274,10 @@ class DataLoader(NaiveDataLoader):
 
 ```
 
-## RESNET-20 Example
+### `pin_memory` TODO
+
+
+## Transforms in RESNET-20 Example
 
 ### Imports
 
