@@ -15,8 +15,7 @@ A page of memory is the smallest fixed-length block of virtual memory managed by
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/98ac5a90-ff2b-4e1e-8227-5bf8eca0aa69" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
+        <img src="https://github.com/user-attachments/assets/98ac5a90-ff2b-4e1e-8227-5bf8eca0aa69" height="500" alt=""/>
     </figure>
 </p>
 </div> 

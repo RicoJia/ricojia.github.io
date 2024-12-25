@@ -2,8 +2,88 @@
 layout: post
 title: My Journey Into CUDA 
 date: '2023-08-15 13:19'
-subtitle: Various things about CUDA that I learned...
+subtitle: Pinned Memory
 comments: true
 tags:
     - CUDA
 ---
+
+[A Great introduction video can be found here](https://www.youtube.com/watch?v=h9Z4oGN89MU&t=494s)
+
+## GPU (GA102) Architecture
+
+A graphics card's brain is its GPU. NVidia's Ampere GPU architecture family has GA102 and GA104. GA102 is shared across NVidia 3080 (Sep1 2020), 2080Ti (Sep1 2020), 3090 (May 31 2021), 3090Ti (Jan 27 2022). Here's the architecture
+
+```
+1 GPU -> 7 2D array of Graphics Processing Clusters (GPC) -> 12 Stream Processors (SM) -> 4 Warps, 1 Ray-Tracing(RT cores), *4 "Special Function Unit"*
+```
+
+Instead a warp:
+
+```
+1 warp -> 32 CUDA cores + 1 Tensor Core
+```
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/f25cd14e-1081-4e8b-be7c-632bb29d4ff1" height="500" alt=""/>
+        <figcaption><a href=""> GA102 Architecture </a></figcaption>
+    </figure>
+</p>
+</div>
+
+The architecture has 10752 CUDA cores, 336 Tensor cores, and 84 RT cores. These cores do all the computation of a GPU
+
+- A CUDA core executes standard floating-point and integer operations. Great for vector calculation, or rastererization in graphics. It's also a "thread"
+    - Non-mixed-precision **matrix multiplication and acummulation (MMA)** is done here. Within 1 clock cycle, one multiply and one add is done here.`A x B + C`
+    - A different section of the core can do: Bit shifting, bit masking, inqueing incoming operands and instructions, and accumulating outputs.
+    - Division, square root, and trigonometry are done on the special function unit in Stream Manager.
+    - In ML, this is useful in:
+        - scalar operations, summations, 
+        - data augmentation
+        - Activations like ReLU, Softmax
+- A Tensor core performs mixed-precision **matrix multiplication and acummulation (MMA)** with FP16 and INT8. It's great for ML training. 
+    - Gradient updates are tensor cores + CUDA cores
+- A Ray-Tracing corecomputes ray tracing, which simulates how light interacts with surfaces to create realistic shadows and reflections. It handles computations for ray-object intersection and bounding volume (3D Rendering)
+
+The GPU series is manufactured very smart way. Defects usually are damaged cores that affect its own SM circuitry. So depending on a chip's defects, the chip's SM circuitry can be deactivated accordingly so the chip can go on to a 3080, 3080Ti, etc.
+
+- Note that each GPU tier has different clock speed as well
+
+## GPU Peripherals
+
+Voltage Regulation:
+
+- A graphics card will have 12v input, and 1.1v output to the GA102 chip. This could produce significant amount of heat, so we need a heat sink. 
+- A graphics card also has 24 graphics memory chips (GDDR6x, GDDR7). In gaming, 3D models are loaded  `SSD ->  graphics memory -> L2 cache`. 
+    - A GA102 chip has 2 L2 Cache (3MB each), which is very limited 
+    - The 24 graphics memory chips transfer 384 bits/s (bus width) for`graphics memory -> L2 cache`. The bandwidth is 1.15Tbytes/s
+
+
+## Data Transfer
+
+
+
+### `pin_memory`
+
+A page of memory is the smallest fixed-length block of virtual memory managed by OS. [Please check here for more about paging](../2018/2018-01-20-linux-operating-systems.markdown). In CUDA, tensors are loaded from CPU (host) to GPU (device) following this process:
+
+1. CUDA allocates an array of "temporary page-locked/pinned" memory on CPU as a staging area
+2. Copy tensors to the staging area
+3. Transfer data from CPU to GPU
+
+So, in Python, `DataLoader(pin_memory=True)` stores samples in page-locked memory and speeds-up the transfer CPU and GPU.
+
+From the [NVidia documentation](https://developer.nvidia.com/blog/how-optimize-data-transfers-cuda-cc/#pinned_host_memory)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/f6814dd5-cb4c-40d4-b3d7-2bcc3f5ccefb" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+
+

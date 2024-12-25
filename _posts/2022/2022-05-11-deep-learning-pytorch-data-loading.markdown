@@ -13,7 +13,7 @@ tags:
 
 ### Data Set and Data Loading in All-Together In Torch
 
-In a real life application, you might see dataloading something like: 
+In PyTorch, data is stored in the `DataSet` object. We can read input data all together, or read them one by one. Then, for many tasks, one may need to apply transforms at each loading call for data augmentation. In a real life application, you might see dataloading something like: 
 
 ```python
 
@@ -44,8 +44,7 @@ train_dataloader = DataLoader(
 src_batch = src_batch.to(device, non_blocking=True)
 ```
 
-In PyTorch, data is stored in the `DataSet` object. We can read input data all together, or read them one by one. Then, for many tasks, one may need to apply transforms at each loading call for data augmentation
-
+- `pin_memory=True` is in general recommended (unless there's a CUDA memory shortage). [Here is why](../2023/2023-08-15-cuda.markdown)
 - To better work with multi-worker dataloading, it's best to **read a single sample into the dataset** in `__getitem__(self, idx)`
 
 (NOT RECOMMENDED) A slower yet naive alternative to dataset is we can create a dataset by passing established tensors into a `TensorDataset` object:
@@ -274,8 +273,18 @@ class DataLoader(NaiveDataLoader):
 
 ```
 
-### `pin_memory` TODO
+### `non_blocking=True`
 
+When having `pin_memory=True`, tensor transfer from CPU to GPU could be asynchronous. The GPU side of operations will wait if they depend on the specific tensor, and that's **handled by the stream manager** (so as users we don't need to worry about it). Otherwise, data transfer is by default blocking
+
+```python
+src_batch = src_batch.to(device, non_blocking=True)
+```
+
+So, `src_batch.to(device, non_blocking=True)` will return immediately,
+
+- So CPU can attend to other tasks
+- GPU operations that are not reliant on this can attend to other tasks
 
 ## Transforms in RESNET-20 Example
 
