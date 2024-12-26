@@ -229,7 +229,7 @@ $$
 \end{gather*}
 $$
 
-Its mean is 0, but variance is t
+Its mean is 0, but variance is t (so it increases)
 
 $$
 \begin{gather*}

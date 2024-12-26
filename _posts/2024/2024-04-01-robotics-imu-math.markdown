@@ -61,7 +61,11 @@ $$
 
 ### The IMU Noise Model
 
-IMU is susceptible to **noise** and **bias**. Even when stationary, the IMU does **NOT** have a zero-mean white noise on `a`, `w`. So we add mathematical bias terms $b_a$, $b_g$ to characterize it. **Note that this bias is affected by temperature, even. It's NOT a physical property, yet just a mathematical term.** The bias is a Wiener Process, whose time derivative is a Gaussian Process (This is also a Brownian motion, or random walk). The noise itself, $\eta_a$, $\eta_g$ is a zero-mean Gaussian random process
+IMU is susceptible to **noise** and **bias**. 
+- Even when stationary, the IMU does **NOT** have a zero-mean white noise on `a`, `w`. So we add mathematical bias terms $b_a$, $b_g$ to characterize it. **Note that this bias is affected by temperature, even. It's NOT a physical property, yet just a mathematical simplification.** The bias is a Wiener Process, whose time derivative is a Gaussian Process (This is also a Brownian motion, or random walk).
+- The noise itself, $\eta_a$, $\eta_g$ is a zero-mean Gaussian random process
+
+[For more about Gaussian Process and Power Spectral Density, please check here](../2017/2017-06-03-stats-basic-recap.markdown)
 
 $$
 \begin{gather*}
@@ -74,15 +78,24 @@ $$
 \end{gather*}
 $$
 
-Where the biases' time derivatives are zero-mean Gaussian random processes, with **covariance functions** $\Sigma_a$ and $\Sigma_g$:
+Where the biases' time derivatives are zero-mean Gaussian random processes, with **covariance functions** $\sigma_{ba}$ and $\sigma_{bg}^2$:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& b_a'(t) \sim \mathcal{gp}(0, \Sigma_a \delta(t - t') )
+& b_a'(t) \sim \mathcal{gp}(0, \sigma_{ba}^2 \delta(t - t') )
 \\
-& b_g'(t) \sim \mathcal{gp}(0, \Sigma_g \delta(t - t') )
+& b_g'(t) \sim \mathcal{gp}(0, \sigma_{bg}^2 \delta(t - t') )
+
+\\
+& \eta_a \sim \mathcal{gp}(0, \sigma_{\eta a}^2 \delta(t - t') )
+\\
+& \eta_g \sim \mathcal{gp}(0, \sigma_{\eta g}^2 \delta(t - t') )
 \end{aligned}
 \end{gather*}
 $$
+
+- The covariance functions of $b_a(t)$ and $b_g(t)$ increases over time. So the IMU measurements $\tilde{a}$ and $\tilde{w}$ will become less accurate over time. 
+- The bias appears to be in Brownian motion (random walk). The higher range of the random walk, the "less stable" we call the bias.
+- **A good IMU should have a bias relatively stable around 0** 
 
