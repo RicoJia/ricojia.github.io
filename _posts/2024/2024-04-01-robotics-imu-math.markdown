@@ -61,5 +61,28 @@ $$
 
 ### The IMU Noise Model
 
+IMU is susceptible to **noise** and **bias**. Even when stationary, the IMU does **NOT** have a zero-mean white noise on `a`, `w`. So we add mathematical bias terms $b_a$, $b_g$ to characterize it. **Note that this bias is affected by temperature, even. It's NOT a physical property, yet just a mathematical term.** The bias is a Wiener Process, whose time derivative is a Gaussian Process (This is also a Brownian motion, or random walk). The noise itself, $\eta_a$, $\eta_g$ is a zero-mean Gaussian random process
 
-IMU is susceptible to **noise** and **bias**. The noise itself is a zero-mean Gaussian random process. The bias is
+$$
+\begin{gather*}
+\begin{aligned}
+& \tilde{a} = R^T(a - g) + b_a + \eta_a
+
+\\
+& \tilde{w} = w + b_g + \eta_g
+\end{aligned}
+\end{gather*}
+$$
+
+Where the biases' time derivatives are zero-mean Gaussian random processes, with **covariance functions** $\Sigma_a$ and $\Sigma_g$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& b_a'(t) \sim \mathcal{gp}(0, \Sigma_a \delta(t - t') )
+\\
+& b_g'(t) \sim \mathcal{gp}(0, \Sigma_g \delta(t - t') )
+\end{aligned}
+\end{gather*}
+$$
+

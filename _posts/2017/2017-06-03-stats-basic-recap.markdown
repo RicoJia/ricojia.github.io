@@ -117,3 +117,125 @@ Y=β0​+β1​x1​+β2​x2​+⋯+βn​xn​+ϵ
 ```
 
 Transformer is "autoregressive". It's regressive because it tries to model the relationship between output and input sequences. It's "auto" because the output sequence depends on the previous output.
+
+## Random Process
+
+A random process $R(t)$ is basically a collection of random variables that vary along time. The random variables' mean and standard deviations may or may not change. If they don't change, we call the random process **stationary**
+
+### Gaussian Random Process
+
+A Gaussain Random Process is 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R(t) \sim \mathcal{gp}(m(t), k(t, t') )
+\end{aligned}
+\end{gather*}
+$$
+
+Where the mean function of the Random Process is $m(t)$, and the **covariance function** $k(t, t')$ could change over time, too.
+
+$$
+\begin{gather*}
+\begin{aligned}
+& m(t) = E[R(t)]
+
+\\
+& k(t, t') = E[(R(t) - m(t))(R(t') - m(t'))]
+\end{aligned}
+\end{gather*}
+$$
+
+One special case is white Gaussian Random noise:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R(t) \sim \mathcal{gp}(0, \delta(t - t') \sigma^2)
+\end{aligned}
+\end{gather*}
+$$
+
+the covariance $\sigma$ does not change across time. Between different times, `t, t'`, there's no correlation between them, and they are independent.
+$\delta(t - t')$ is "Dirac Delta Distribution."  It's a probability distribution, where everywhere is 0 except for at time `t'`. Also, $\int_{-\infty}^{\infty} \delta(t-t')f(t) = f(t')$
+
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/e6b0a7b9-8ee2-4f6b-a85f-78c1534110aa" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+
+
+### Power Spectral Density
+
+In signal procesisng, if we view a signal `x(t)` as a random process, then we can find its power across all frequencies. This is called "power spectral density" (PSD). 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/aec3b75d-2846-4e33-b57a-c4930049a028" height="300" alt=""/>
+        <figcaption><a href="https://www.mathworks.com/help/signal/ug/power-spectral-density-estimates-using-fft.html">Source: Mathworks</a></figcaption>
+    </figure>
+</p>
+</div>
+
+It's defined as the Fourier Transform of the auto-correlation of the signal function at time difference $\tau$. The autocorrelation is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R_{xx}(\tau) = E[x(t)x(t + \tau)]
+\end{aligned}
+\end{gather*}
+$$
+
+So if the signal is periodic with period of $\tau$, $R_{xx}(n\tau)$ would peak. The PSD $S_{xx}(f)$ is then the Fourier Transform of the autocorrelation across all time differences, $\tau$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& S_{xx}(f) = F( R_{xx}(\tau)) = \int_{-\infty}^{\infty} R_{xx}(\tau) e^{-j2\pi f \tau} d\tau
+\end{aligned}
+\end{gather*}
+$$
+
+For white Gaussian noise, the PSD is a **constant** $\sigma^2$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& S_{xx}(f) = F( R_{xx}(\tau)) = \int_{-\infty}^{\infty} \sigma^2 \delta(\tau) e^{-j2\pi f \tau} d\tau = \sigma^2
+\end{aligned}
+\end{gather*}
+$$
+
+### Wiener Process
+
+Wiener Process is a.k.a Brownian Motion. It's non-stationary
+
+$$
+\begin{gather*}
+\begin{aligned}
+& W(t + \Delta t) = W(t) + \Delta W
+
+\\
+& \Delta W \sim \mathcal{N}(0, \Delta t)
+\end{aligned}
+\end{gather*}
+$$
+
+Its mean is 0, but variance is t
+
+$$
+\begin{gather*}
+\begin{aligned}
+& E[W(t)] = 0
+\\ & Var[W(t)] = t
+\end{aligned}
+\end{gather*}
+$$
