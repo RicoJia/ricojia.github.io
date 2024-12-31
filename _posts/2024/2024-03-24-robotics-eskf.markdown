@@ -25,9 +25,9 @@ p_x \\ p_y \\ v_x \\ v_y
 =
 \begin{bmatrix}
 1 & 0 & \Delta t & 0  \\
-0 & 1 & & 0 & \Delta t  \\
-0 & 0 & & 1 & 0  \\
-0 & 0 & & 0 & 1  \\
+0 & 1 & 0 & \Delta t  \\
+0 & 0 & 1 & 0  \\
+0 & 0 & 0 & 1  \\
 \end{bmatrix}
 
 \begin{bmatrix}
@@ -125,7 +125,7 @@ $$
 \end{gather*}
 $$
 
-### Why We Are Not Using The Conventional EKF**
+### Why We Are Not Using The Conventional EKF
 
 In **discrete time EKF**, we need to estimate the state covariance matrix so we can calculate the kalman gain, and our final updated state variables. The prediction is:
 
@@ -317,7 +317,7 @@ So it's easy to write out the motion prediction:
 $$
 \begin{gather*}
 
-\delta x_{k+1}* = F \delta x_{k}
+\delta x_{k+1}^* = F \delta x_{k}
 
 \\ 
 \Rightarrow
@@ -367,7 +367,192 @@ $$
 
 ### [Step 5] Discrete Time ESKF Observation Update
 
+Observation `z` in continuous time is:
 
+$$
+\begin{gather*}
+\begin{aligned}
+& z(x) = h(x) + v
+\end{aligned}
+\end{gather*}
+$$
+
+Where the observation noise is: $v \sim \mathcal(0, V)$. We are using `v` because `R` is already in use :)
+
+Then, we linearize `z` just like we do in regular EKF. Note that here our independent varables are $\delta x$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& z = H \cdot \delta x + v
+
+\\ & 
+\Rightarrow
+\\ &
+H = \frac{\partial h}{\partial x} \frac{\partial x}{\partial \delta x}
+\end{aligned}
+\end{gather*}
+$$
+
+Because in continuous time, we have defined:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x_t = x \oplus \delta x
+\\ & 
+\rightarrow
+\\
+&
+p_t = p + \delta p 
+\\ &
+v_t = v + \delta v
+\\ &
+exp(\theta_t^{\land}) = exp(\theta^{\land})exp(\delta \theta^{\land})
+\\ &
+b_{gt} = b_g + \delta b_g
+\\ &
+b_{at} = b_a + \delta b_a
+\\ &
+g_t = g + \delta g
+\end{aligned}
+\end{gather*}
+$$
+
+and we know **directly** from the observation model:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial h}{\partial x_t}
+\end{aligned}
+\end{gather*}
+$$
+
+We can know:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial h}{\partial x} |_{x=x_{k+1}} = \frac{\partial h}{\partial x_t} \frac{\partial x_t}{\partial \delta x}_{x=x_{k+1}}
+\end{aligned}
+\end{gather*}
+$$
+
+Where:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial x_t}{\partial \delta x} = [I_3, I_3, \frac{\partial Log(exp(\theta^{\land})exp(\delta \theta^{\land}))}{\partial \delta \theta}, I_3, I_3, I_3]
+\end{aligned}
+\end{gather*}
+$$
+
+- **One simplifying assumption here is: $\delta \theta$ is small enough to be a perturbation to $\theta$**. From [here](./2024-03-15-robotics-foundamentals-velocities.markdown), we can use the right perturbation and the BCH formula to get:
+
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial Log(exp(\theta^{\land})exp(\delta \theta^{\land}))}{\partial \delta \theta} = J_r^{-1} \theta
+\end{aligned}
+\end{gather*}
+$$
+
+- If $\delta \theta$ is not small enough, we can write out the full form as well:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial Log(exp(\theta^{\land})exp(\delta \theta^{\land}))}{\partial \delta \theta} = J_r^{-1} Log(exp(\theta^{\land})exp(\delta \theta^{\land})) exp(\delta \theta^{\land})^T
+\end{aligned}
+\end{gather*}
+$$
+
+Kalman Gain and Covariance matrix updates stay the same:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T) 
+
+\\ & 
+P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1}^{*} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{*}
+\end{aligned}
+\end{gather*}
+$$
+
+And 
+$$
+\begin{gather*}
+\begin{aligned}
+& \delta x_{k+1} = K_{k+1} \delta x_{k}^{*}
+\end{aligned}
+\end{gather*}
+$$
+### [Step 6] Discrete Time ESKF Final State Update and Error Reset
+
+In discrete time, we approximate $p_{k+1}$ as the true value $p_t$ can define:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x_{k+1} = x_k \oplus \delta x_k
+\\ 
+\rightarrow
+\\
+& p_{k+1} = p_{k} + \delta p_{k}
+\\ &
+v_{k+1} = v_{k} + \delta v_{k}
+\\ &
+exp(\theta_{k+1}^{\land}) = exp(\theta_{k}^{\land})exp(\delta \theta_{k}^{\land})
+\\ &
+b_{g, k+1} = b_{g, k} + \delta b_{g, k}
+\\ &
+b_{a, k+1} = b_{a, k} + \delta b_{a, k}
+\\ &
+g_{k+1} = g_{k} + \delta g_{k}
+\end{aligned}
+\end{gather*}
+$$
+
+Since we have applied a correction, we can go ahead and reset $\delta x = 0$
+
+**However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $\delta x_{k}$, there's still an remeniscent error $\delta x^+$
+
+The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same. For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. So, to find the new covariance matrix:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& exp(\delta \theta) = exp(\delta \theta_k ) exp(\delta \theta^+ )
+
+\\ &
+\rightarrow exp(\delta \theta^+ ) = (-\delta \theta_k )exp(\delta \theta)
+\\&
+\text{Using BCH:}
+\theta^+ \approx -\delta \theta_k + \delta \theta - \frac{1}{2} \delta \theta_k^{\land} \delta \theta + o((\delta \theta_k )^2)
+
+\\ &
+\rightarrow \frac{\partial \theta^+}{\partial \delta \theta} = I-\frac{1}{2} \delta \theta_k^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+Then, the overall "Jacobian" for the covariance is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& J_k = [I_3, I_3, I-\frac{1}{2} \delta \theta_k^{\land}, I_3, I_3, I_3]
+\end{aligned}
+\end{gather*}
+$$
+
+$P_{reset} = J_k P_{k+1} J_k$
+
+TODO: Is this linear BCH? why do we use jacobian here?
 
 ## A Quick Summary
 
@@ -376,6 +561,7 @@ The main differences between ESKF and EKF is:
 - ESKF's motion update is already linearized during the velocity and angular value! No extra linearization is needed
 - Kalman Filtering is applied on the error between the estimates and the true values, not on the estimates directly.
 - The use of generic + ($\oplus$) for updating motion model and observation with SO(3) manifold
+- In ESKF, we need to reset $\delta x = 0$ and $P_{k+1} = J_k P_{k+1} J_k$
 
 $$
 \begin{gather*}
