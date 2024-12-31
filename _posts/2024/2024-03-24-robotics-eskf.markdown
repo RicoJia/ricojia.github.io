@@ -9,9 +9,7 @@ tags:
     - Robotics
 ---
 
-## ESKF
-
-### Motivating Example
+## Motivating Example
 
 Consider a 2D point travelling with constant velocity. $x = [p_x, p_y, v_x, v_y]$. Within ESKF, we think that compared to the true state values $x_t = [p_{xt}, p_{yt}, v_{xt}, v_{yt}]$, our state variable estimates $x = [p_x, p_y, v_x, v_y]$ will be subject to Gaussian errors.: $\delta x = [\delta p_x, \delta p_y, \delta v_x, \delta v_y]$
 
@@ -58,9 +56,9 @@ $$
 
 Here, $\oplus$ is the "generic add", which "adds" on a manifold.
 
-### GINS (GPS-Intertial Navigation System)
+## ESKF in GINS (GPS-Intertial Navigation System)
 
-#### States and Motion Model
+### [Step 1] States and Motion Model
 
 In a GINS system, we have below states: `[position, velocity, rotation matrix, bias a, bias gyro (rotation), gravity]`
 Our state space is: $x = [p_x, p_y, p_z, v_x, v_y, v_z, \theta_x, \theta_y, \theta_z, b_{gx}, b_{gy}, b_{gz}, b_{ax}, b_{ay}, b_{az}, g_{x}, g_{y}, g_{z}]$. We write these in short as:  $x = [p, v, \theta, b_{g}, b_{a}, g]$. Here,
@@ -129,7 +127,7 @@ $$
 \end{gather*}
 $$
 
-#### Why We Are Not Using The Conventional EKF**
+### Why We Are Not Using The Conventional EKF**
 
 In **discrete time EKF**, we need to estimate the state covariance matrix so we can calculate the kalman gain, and our final updated state variables. The prediction is:
 
@@ -145,9 +143,9 @@ $$
 
 Here for the covariance matrix, we **must linearize the system to get the Jacobian $\frac{\partial f}{\partial x}$**. One way to do this is to use quaternion (or not-recommended, Euler-angles for gimbal lock).
 
-However, to use the SO(3) manifold perks, we stick to rotation matrices. Now, we have a question: how do we get $\frac{\partial R}{\partial x}$? That will require derivative using perturbations. Without introducing tensors (multi-dimensional matrices), that'd be matrix-vector derivative, which is impossible. Another consideration for self driving cars is: if we are using global coordinate system, like UMT, or latitude-longitude, coordinates are relatively large numbers compare to the floating point number range.
+However, **to use the SO(3) manifold perks, we stick to rotation matrices.** Now, we have a question: how do we get $\frac{\partial R}{\partial x}$? That will require derivative using perturbations. Without introducing tensors (multi-dimensional matrices), that'd be matrix-vector derivative, which is impossible. Another consideration for self driving cars is: if we are using global coordinate system, like UMT, or latitude-longitude, coordinates are relatively large numbers compare to the floating point number range.
 
-#### Continuous Time Error State-Space Model
+### [Step 2] Continuous Time Error State-Space Model
 
 The error $\delta x$ model is similar to the regular model
 
@@ -165,7 +163,7 @@ $$
 \end{gather*}
 $$
 
-The rotation and velocity errors are a bit involved because of the time direvative of `R`
+The rotation and velocity errors are a bit involved because of the time derivative of `R`
 
 $$
 \begin{gather*}
@@ -238,7 +236,7 @@ $$
 \end{gather*}
 $$
 
-#### Discrete Time Error State Space Model
+### [Step 3] Discrete Time Error State Space Model
 
 Using simple $\delta x_{k+1} = \delta x_k + \delta x_{k}' \Delta t$, we can write:
 
@@ -261,7 +259,9 @@ $$
 \end{gather*}
 $$
 
-Not sure why $(\delta \theta)_{k+1} \approx exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}$? Because if in continuous time we have:
+Why $(\delta \theta)_{k+1} \approx exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}$?
+
+- Because if in continuous time we have:
 
 $$
 \begin{gather*}
@@ -271,7 +271,7 @@ $$
 \end{gather*}
 $$
 
-Its discrete time counterpart is:
+- Its discrete time counterpart is (**[PROOF SKIPPED]**):
 
 $$
 \begin{gather*}
@@ -281,21 +281,45 @@ $$
 \end{gather*}
 $$
 
-The standard deviation of the noise terms are:
+[From here,](./2024-03-22-robotics-imu-math.markdown) as a recap, the standard deviation of the noise terms are:
 
 $$
 \begin{gather*}
 \begin{aligned}
 & \sigma(\eta_v) = \Delta t \sigma(\eta_a)
-\\ & \sigma(\eta_\theta) = \Delta t \sigma(\eta_w)?
-\\ & \sigma(\eta_{bg}) = \sqrt{\Delta t} \sigma_{bg}? TODO
-\\ & \sigma(\eta_{ba}) = \sqrt{\Delta t} \sigma_{ba}? TODO
+\\ & \sigma(\eta_\theta) = \Delta t \sigma(\eta_w)
+\\ & \sigma(\eta_{bg}) = \sqrt{\Delta t} \sigma_{bg}
+\\ & \sigma(\eta_{ba}) = \sqrt{\Delta t} \sigma_{ba}
 \end{aligned}
 \end{gather*}
 $$
 
-#### TODO: standard deviations of IMU
 
-#### Motion Update
+### Motion Update
 
 From `{1}` equations, TODO
+
+
+## A Quick Summary
+
+The main differences between ESKF and EKF is:
+
+- Kalman Filtering is applied on the error between the estimates and the true values, not on the estimates directly.
+- The use of generic + ($\oplus$) for updating motion model and observation with SO(3) manifold
+$$
+\begin{gather*}
+\begin{aligned}
+& \text{true value = state variable on a manifold + error in tanget space (zero-mean Gaussian distribution)}
+\end{aligned}
+\end{gather*}
+$$
+
+## Appendix - RTK GPS
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/0750cb08-5a84-4902-abb6-646b31d61110" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
