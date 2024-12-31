@@ -59,7 +59,7 @@ $$
 \end{gather*}
 $$
 
-### The IMU Kinematics Model
+## Continuous Time IMU Kinematics Model
 
 IMU is susceptible to **noise** and **bias**.
 

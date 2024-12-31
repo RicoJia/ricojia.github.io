@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - Error-State Kalman Filter (ESKF ) in GNSS-Inertial Navigation System (GINS)
 date: '2024-03-24 13:19'
-subtitle: GINS
+subtitle: ESKF, GINS
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -40,7 +40,7 @@ p_x' \\ p_y' \\ v_x' \\ v_y'
 \end{gather*}
 $$
 
-In the meantime, we can update the covariance matrix as usual: $P_{k+1}^* = A_{k+1}^T P_{k} A_{k+1} + R$
+In the meantime, we can update the covariance matrix as usual: $P_{k+1}^* = A_{k+1}^T P_{k} A_{k+1} + Q$
 
 **The update is:**
 
@@ -58,7 +58,7 @@ Here, $\oplus$ is the "generic add", which "adds" on a manifold.
 
 ## ESKF in GINS (GPS-Intertial Navigation System)
 
-### [Step 1] States and Motion Model
+### [Step 1] States and Motion Model Setup
 
 In a GINS system, we have below states: `[position, velocity, rotation matrix, bias a, bias gyro (rotation), gravity]`
 Our state space is: $x = [p_x, p_y, p_z, v_x, v_y, v_z, \theta_x, \theta_y, \theta_z, b_{gx}, b_{gy}, b_{gz}, b_{ax}, b_{ay}, b_{az}, g_{x}, g_{y}, g_{z}]$. We write these in short as:  $x = [p, v, \theta, b_{g}, b_{a}, g]$. Here,
@@ -78,7 +78,6 @@ As we have seen in the **motivating example,** there are our best estimates $x$,
 
 $$
 \begin{gather*}
-\begin{aligned}
 &
 p_t = p + \delta p  \tag{1}
 \\ &
@@ -92,7 +91,6 @@ b_{at} = b_a + \delta b_a
 \\ &
 g_t = g + \delta g
 \\ &
-\end{aligned}
 \end{gather*}
 $$
 
@@ -218,9 +216,9 @@ $$
 Note that above, we ignored $ R\eta_a$ because $R^TR$ = I, $ R\eta_a$ is still zero-mean white Gaussian noise.
 
 All together, in continuous time, the error $\delta x$ between our best estimate and the truth value has the motion model:
+
 $$
 \begin{gather*}
-\begin{aligned}
 & \delta p' = \delta v
 \\ &
 \delta v' = - R(\tilde{a} - b_a)^{\land}\delta \theta - R\delta b_a - \eta_a + \delta g
@@ -232,7 +230,8 @@ $$
 \delta b_a' = \eta_{ba}
 \\ &
 \delta g = 0
-\end{aligned}
+
+\tag{2}
 \end{gather*}
 $$
 
@@ -259,7 +258,10 @@ $$
 \end{gather*}
 $$
 
-Why $(\delta \theta)_{k+1} \approx exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}$?
+Why
+$$
+(\delta \theta)_{k+1} \approx exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}
+$$?
 
 - Because if in continuous time we have:
 
@@ -294,18 +296,87 @@ $$
 \end{gather*}
 $$
 
+### [Step 4] Discrete Time ESKF Motion Prediction
 
-### Motion Update
+From equations `(2)`, the continuous system can be generically written with $f(\delta x)$, and Gaussian noise $n$
 
-From `{1}` equations, TODO
+$$
+\begin{gather*}
+\begin{aligned}
+& \delta x' = f(\delta x) + n
+\end{aligned}
+\end{gather*}
+$$
+
+- Noise is $n \sim \mathcal(0, Q)$
+
+So it's easy to write out the motion prediction:
+
+1. **Motion prediction** in ESKF is already linear, which is great!😊 **However, one thing to note is in ESKF, update $\delta x_{k+1}$ will be set to 0 after the update**, so this step is **optional:**
+
+$$
+\begin{gather*}
+
+\delta x_{k+1}* = F \delta x_{k}
+
+\\ 
+\Rightarrow
+\\
+
+\begin{bmatrix}
+\delta p_{k+1}* \\
+\delta v_{k+1}* \\
+\delta \theta_{k+1}* \\
+\delta  b_{g, k+1}* \\
+\delta  b_{a, k+1}* \\
+\delta g_{k+1}* \\
+\end{bmatrix}
+
+= 
+
+\begin{bmatrix}
+I & I\Delta t & 0 & 0 & 0 &0 \\
+0 & I\Delta t & -R(\tilde{a}-b_a)^{\land}\Delta t & 0 & -R \Delta t & I\Delta t \\
+0 & 0 & exp(-(\tilde{w} - b_{g}) \Delta t) & -I \Delta t & 0 & 0 \\
+0 & 0 & 0 & I & 0 & 0 \\
+0 & 0 & 0 & 0 & I & 0 \\
+0 & 0 & 0 & 0 & 0 & I \\
+\end{bmatrix}
+
+\begin{bmatrix}
+\delta p_{k} \\
+\delta v_{k} \\
+\delta \theta_{k} \\
+\delta  b_{g, k} \\
+\delta  b_{a, k} \\
+\delta g_{k} \\
+\end{bmatrix}
+
+\end{gather*}
+$$
+
+2. Covariance matrix is updated accordingly:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_{k+1}* = F P_{k} F^T + Q
+\end{aligned}
+\end{gather*}
+$$
+
+### [Step 5] Discrete Time ESKF Observation Update
+
 
 
 ## A Quick Summary
 
 The main differences between ESKF and EKF is:
 
+- ESKF's motion update is already linearized during the velocity and angular value! No extra linearization is needed
 - Kalman Filtering is applied on the error between the estimates and the true values, not on the estimates directly.
 - The use of generic + ($\oplus$) for updating motion model and observation with SO(3) manifold
+
 $$
 \begin{gather*}
 \begin{aligned}
