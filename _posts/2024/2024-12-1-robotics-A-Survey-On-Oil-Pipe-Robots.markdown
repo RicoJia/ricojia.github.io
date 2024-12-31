@@ -35,11 +35,11 @@ Different liquids could cause different types of corrosions:
 - $20000
 - Location: Arkansas
 
-## Dilemma in Oil & Gas Pipe Inspection - Precision and Recall
+## Dilemma of ML in Pipe Inspection - Precision and Recall
 
-People don't trust ML that much, but they still want to use it in manual-intensive inpection processes. This lies in the ML achieving both high ["recall" and "precision"](../2022/2022-02-15-deep-learning-performance-metrics.markdown)
+Pipe inspection is labor-intensive. People don't trust ML that much. This lies in the ML's lower ["recall" and "precision" rates](../2022/2022-02-15-deep-learning-performance-metrics.markdown)
 
-If the inspection agency missed a spot (false negative), it could bring lawsuits where we need to explain why the manual + AI system fails to detect that. In machine learning, this is characterized as "recall".
+If the inspection agency missed a spot (false negative), it could bring lawsuits where we need to explain why the manual + AI system fails to detect that. In machine learning, this is characterized as **"recall"**.
 
 If the system has too many false positives, then the system is too costly to verify. In machine learning, this is characterized as [precision](../2022/2022-02-15-deep-learning-performance-metrics.markdown) is low. In oil and gas, precision us termed as the "prove-up" rate:
 
@@ -51,7 +51,7 @@ $$
 \end{gather*}
 $$
 
-Explaining relatively low precision and recall is not easy, as ML systems are still largely "unpredictable" during run-time. What's worse is many customers and the court mistakenly think that ML systems should aim for perfect detection results, which is similar in the autonomous vehicle industry. In ML, we always compare the ML system with the "best human-level" performance.
+Explaining why relatively low precision and recall happens is not easy, as ML systems are still largely "unpredictable" during run-time. What's worse is many customers and the court mistakenly think that ML systems should aim for perfect detection results, which is similar in the autonomous vehicle industry. In ML, we always compare the ML system with the "best human-level" performance.
 
 ## Inspection with 3D LiDAR Examples
 
