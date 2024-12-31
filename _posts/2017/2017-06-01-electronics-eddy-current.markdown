@@ -2,7 +2,7 @@
 layout: post
 title: Electronics - EMF and Eddy Current
 subtitle: 
-date: '2017-06-03 13:19'
+date: '2017-06-01 13:19'
 header-img: "img/bg-material.jpg"
 tags:
     - Electronics
