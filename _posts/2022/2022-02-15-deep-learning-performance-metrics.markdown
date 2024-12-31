@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Performance Metrics
 date: '2022-02-15 13:19'
-subtitle: mean Average Precision (mAP), ROC Curve, F1 Score
+subtitle: mean Average Precision (mAP), Precision, Recall, ROC Curve, F1 Score
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -52,8 +52,8 @@ A confusion matrix shows how often an example whose label is one class ("actual"
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/929f74c6-ef03-42f4-9ecf-8b14f63920e8" height="300" alt=""/>
-        <figcaption><a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">Source: </a></figcaption>
+        <img src="https://github.com/user-attachments/assets/929f74c6-ef03-42f4-9ecf-8b14f63920e8" height="200" alt=""/>
+        <figcaption><a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">Source </a></figcaption>
     </figure>
 </p>
 </div>

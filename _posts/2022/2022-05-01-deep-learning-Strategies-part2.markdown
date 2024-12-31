@@ -68,7 +68,7 @@ Dev Accuracy
 Test Set Accuracy
 ```
 
-- Bayes Optimal Error is the best-possible error that can never be surpassed. A model's accuracy usually increases fast until it reaches "human level accuracy". After that, it will slow down as it approaches Bayes Optimal Error. Many times though, we **assume that human level accuracy is close to Bayes Optimal Error and use human level accuracy as a proxy to Bayes Optimal Error**. This on the other hand, determines "what is human error?" An amateur human level performance, or expert? We always go for the best one ;)
+- Bayes Optimal Error is the best-possible error that can never be surpassed. A model's accuracy usually increases fast until it reaches "human level accuracy". After that, it will slow down as it approaches Bayes Optimal Error. Many times though, we **assume that human level accuracy is close to Bayes Optimal Error and use human level accuracy as a proxy to Bayes Optimal Error**. This on the other hand, determines "what is human error?" - an amateur human level performance, or expert? The answer is "we always go for the best one" ;)
 
 ## Do An Error Analysis
 
