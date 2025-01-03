@@ -1,0 +1,58 @@
+---
+layout: post
+title: Raspberry Pi 4B
+date: '2023-10-10 13:19'
+subtitle: Serial Setup
+comments: true
+header-img: "img/home-bg-geek.jpg"
+tags:
+    - Raspberry Pi
+---
+
+## Set Up Rpi For Serial Communication
+
+- `sudo usermod -a -G dialout $USER`
+- `/boot/config.txt`
+
+```bash
+enable_uart=1
+dtoverlay=disable-bt
+```
+
+- `/boot/cmdline.txt`: remove this: `console=serial0,115200`
+- `sudo reboot`
+- `ls -l /dev/serial*` should see:
+
+```
+lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
+```
+
+- do a loop back test with Tx and Rx connected together
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://www.raspberrypi.com/documentation/computers/images/GPIO-Pinout-Diagram-2.png?hash=df7d7847c57a1ca6d5b2617695de6d46" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+    - Tools like `screen` and `minicom` may hang. So just test with python should be fine
+
+    - Test with `serial`
+
+    ```python
+    import serial
+
+    # Open the serial port
+    ser = serial.Serial('/dev/serial0', baudrate=9600, timeout=1)
+
+    # Write data
+    ser.write(b'Hello, UART!\n')
+
+    # Read data (loopback test)
+    data = ser.readline()
+    print(f"Received: {data}")
+
+    ser.close()
+    ```
