@@ -221,3 +221,5 @@ v(t) = v(0) + \sum_{n=0}^{k-1} R(n)[\tilde{a}_n - b_{a, n} + g_{n}] \Delta t
 \end{aligned}
 \end{gather*}
 $$
+
+The location integration will quickly diverge from the ground truth because it is second order integration.
