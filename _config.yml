@@ -1,6 +1,5 @@
 # Site settings
 title: Rico's Nerd Cluster
-title: Rico's Nerd Cluster
 SEOTitle: Rico贾若童的博客 | Rico's Blog
 header-img: img/home-bg.jpg
 email: ruotongjia2020@u.northwestern.com
@@ -86,6 +85,7 @@ page-mathjax: false
 friends:
   [
     { title: "Cheng Wei", href: "https://scm_mos.gitlab.io/" },
+    { title: "Jerry Zhao", href: "https://aipiano.github.io/" },
     { title: "Sebastian Castro", href: "https://roboticseabass.com/" },
     { title: "Jon Meyer", href: "https://www.jonwmeyer.com/" },
     { title: "Sik-Ho Tsang", href: "https://sh-tsang.medium.com/" },
