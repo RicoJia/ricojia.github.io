@@ -119,7 +119,7 @@ I had "accumulated batching" on so back-propagation is carried out only when an 
 
 ### Lesson 9: A Larger Model May / May Not Improve Performance
 
-This is the last "lesson" I want to mention, the reason being, this could slow down training while there could be potential bugs around. When the model is functional with a large size, try a larger model for better performance. Some experiments I've run:
+This is the last "lesson" I want to mention, the reason being, this could slow down training while there could be potential bugs around. When the model is functional with a large dataset, try a larger model for better performance. Some experiments I've run:
 
 | Embedding Dim | Number of Encoder-Decoder Embedding Layers | Max Sentence Length | Loss At 100 Epochs | Loss At 200 Epochs | Teacher Forcing Ratio Decay Period
 |---------------|--------------------------------------------|---------------------|--------------------|---------------------|---------------------|
