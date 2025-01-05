@@ -491,6 +491,7 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
 ### [Step 6] Discrete Time ESKF Final State Update and Error Reset
 
 In discrete time, we approximate $p_{k+1}$ as the true value $p_t$ can define:
@@ -521,7 +522,7 @@ Since we have applied a correction, we can go ahead and reset $\delta x = 0$
 
 **However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $\delta x_{k}$, there's still an remeniscent error $\delta x^+$
 
-The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same. For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. So, to find the new covariance matrix:
+The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. So, to find the new covariance matrix:
 
 $$
 \begin{gather*}
@@ -550,7 +551,17 @@ $$
 \end{gather*}
 $$
 
-$P_{reset} = J_k P_{k+1} J_k$
+So the covariance reset is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P_{reset} = J_k P_{k+1} J_k
+\end{aligned}
+\end{gather*}
+$$
+
+**Usually, this is close enough to identity because the $\theta$ covariance is small**
 
 TODO: Is this linear BCH? why do we use jacobian here?
 
