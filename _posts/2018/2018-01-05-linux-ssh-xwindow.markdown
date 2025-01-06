@@ -2,7 +2,7 @@
 layout: post
 title: Linux - SSH and X Window System
 date: '2018-01-05 13:19'
-subtitle: X Window System, SSH 
+subtitle: X Window System, SSH, Static IP
 comments: true
 tags:
     - Linux
@@ -98,10 +98,26 @@ This allows a local user to access Xterminal
 
 1. Log onto the `AT&T` page, `192.168.1.254`
 2. Go to Ip Passthrough -> change allocation mode from `Off` to `Passthrough`
-3. Use DCHP Fixed. Under the device list, find the ssh server's MAC address 
+3. Use DCHP Fixed. Under the device list, find the ssh server's MAC address
 4. In NAT/GAMING, add the device as an SSH server. Make sure the correct device is added.
 5. Check IP addresses that have logged on, use `who`.
 
 Trouble shooting
 
-- `sudo tcpdump -ni any tcp port 22` run a packet capture on the server itself. 
+- `sudo tcpdump -ni any tcp port 22` run a packet capture on the server itself.
+- When changing default port, please go to `NAT/GAMING`, specify `port` in both base port range (port of the server) and the global port range
+  - I ran into issues where the router couldn't find the MAC address in `NAT/GAMING`. It seemed to have been resolved after rebooting my machine and deleting the passthough rules.
+
+## Static IP Configuration
+
+- For Raspberry Pi:
+    1. `sudo nano /etc/dhcpcd.conf`
+
+        ```
+        interface wlan0   # Use eth0 if you're configuring Ethernet
+        static ip_address=192.168.1.100/24  # Replace with your desired static IP and subnet mask
+        static routers=192.168.1.1         # Replace with your router's IP address
+        static domain_name_servers=8.8.8.8 8.8.4.4  # Replace with preferred DNS servers
+        ```
+
+    2. `sudo systemctl restart dhcpcd`

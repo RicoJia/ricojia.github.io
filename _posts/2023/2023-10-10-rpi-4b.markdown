@@ -11,6 +11,15 @@ tags:
 
 ## Set Up Rpi For Serial Communication
 
+- Enable rpi serial:
+
+    ```
+    sudo raspi-config
+    ```
+
+    1. Rpi has an option to allow a user to login to the system via serial. Choose `no`
+    2. Answer YES to the question about serial hardware port.
+
 - `sudo usermod -a -G dialout $USER`
 - `/boot/config.txt`
 
