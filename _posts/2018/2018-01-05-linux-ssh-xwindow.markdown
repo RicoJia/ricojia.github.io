@@ -105,8 +105,31 @@ This allows a local user to access Xterminal
 Trouble shooting
 
 - `sudo tcpdump -ni any tcp port 22` run a packet capture on the server itself.
-- When changing default port, please go to `NAT/GAMING`, specify `port` in both base port range (port of the server) and the global port range
-  - I ran into issues where the router couldn't find the MAC address in `NAT/GAMING`. It seemed to have been resolved after rebooting my machine and deleting the passthough rules.
+
+### Change Port To A Non-Default One
+The default port on Linux is 22. Changing port number to another number will make it slightly more difficult for malicious bots. When changing default port, please go to `NAT/GAMING`, specify `port` in both base port range (port of the server) and the global port range
+
+- I ran into an issue where the router couldn't find the MAC address in `NAT/GAMING`. It seemed to have been resolved after rebooting my machine and deleting the passthough rules.
+
+### Public Key Only SSH
+
+When one uses a public-facing SSH service on a server, password authentication could be fragile. One can check the ssh activities with `sudo journalctl -feu ssh.service`. One security measure is to enable public-key-only SSH sessions so only selected devices can ssh into the server. 
+
+1. Copy the public key: `ssh-copy-id -i ~/.ssh/id_rsa.pub user@server_ip`
+
+2. `sudo nano /etc/ssh/sshd_config`
+
+```bash
+PasswordAuthentication no
+PubkeyAuthentication yes
+```
+
+3. Restart SSH and SSHD
+
+```bash
+sudo systemctl restart ssh
+sudo systemctl restart sshd
+```
 
 ## Static IP Configuration
 
