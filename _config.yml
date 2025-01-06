@@ -65,6 +65,16 @@ netease_comment: false
 # Google Analytics
 ga_track_id: "" # Format: UA-xxxxxx-xx
 
+gitalk:
+  enable: true    #是否开启Gitalk评论
+  clientID: Ov23licKnkwbj1axHLNU                            #生成的clientID
+  clientSecret: 82af23c2d5755497923af4f34953f8e0b182d01b    #生成的clientSecret
+  repo: ricojia.github.io    #仓库名称
+  owner: ricojia    #github用户名
+  admin: ricojia
+  distractionFreeMode: true #是否启用类似FB的阴影遮罩
+
+
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
 sidebar-about-description: "要做一个有 swag 的机器人工程师 <br> Robotics @ Northwestern University"
