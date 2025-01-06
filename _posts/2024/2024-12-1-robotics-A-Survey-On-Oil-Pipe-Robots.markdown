@@ -7,7 +7,7 @@ header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - Oil and Gas
-comments: true
+catalog: true
 ---
 
 ## Non-Destructive Testing Methods
