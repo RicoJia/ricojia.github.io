@@ -97,7 +97,11 @@ This allows a local user to access Xterminal
 ## Remote SSH Forwarding W/ AT&T Routers
 
 1. Log onto the `AT&T` page, `192.168.1.254`
-2. Go to Ip Passthrough -> change allocation mode from `Off` to `Passthrough`
+2. ~~Go to Ip Passthrough -> change allocation mode from `Off` to `Passthrough`~~
+    - I noticed that on my local network, SSH connection to the server was not stable
+        - "Hairpin NAT" is the mechanism required on a router to allow machines on local network to access the server, using its public IP Address
+        - Unfortunately, my router doesn't support that
+        - So I made `IP->Passthrough Mode` off, instead of `passthrough`
 3. Use DCHP Fixed. Under the device list, find the ssh server's MAC address
 4. In NAT/GAMING, add the device as an SSH server. Make sure the correct device is added.
 5. Check IP addresses that have logged on, use `who`.

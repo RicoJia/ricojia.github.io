@@ -565,6 +565,27 @@ $$
 
 TODO: Is this linear BCH? why do we use jacobian here?
 
+### [Step 7] GNSS Fusion
+
+There are two types of GNSS:
+
+- Traditional single-point GPS: 10m accuracy, usually found in phones
+- RTK (Real-Time-Kinematics) GPS. centimeter accuracy. It talks to a base station. Each module gives its `(x, y)`.
+
+In Autonomous Vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $\theta$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/009c1827-c12c-410f-a0eb-20b8c051a312" height="300" alt=""/>
+        <figcaption><a href="">RTK GPS </a></figcaption>
+    </figure>
+</p>
+</div>
+
+However, the polar areas have a **singularity**, because longitude `0 - 180 deg` converges there. So any longitude value 
+could be assigned to the north pole, but in the meantime, large changes in the longitude would happen, too. 
+
 ## A Quick Summary
 
 The main differences between ESKF and EKF is:
