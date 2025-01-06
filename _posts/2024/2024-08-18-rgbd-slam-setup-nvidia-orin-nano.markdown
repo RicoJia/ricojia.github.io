@@ -204,3 +204,11 @@ wifi_orin_connect(){
     sudo dhclient wlan0
 }
 ```
+
+## I Burned My $500 Nvidia-nano-orin
+
+This happened when I connected it to a Waveshare Rover with its "Jetson Nano Adapter"
+
+- How could that happen? My suspicions are: I put them on 4 metal pillars for stability. They might have caused a short on local components? **So never put your precious orin or any boards on metal surfaces**
+- I connected the orin to the robot (ESP32) through its Jetson Nano Adapter after it was powered on. Then I turned on the robot. 10s later, I saw a black smoke coming from under the NVidia board
+  - **Orin might have been subjected to a high inrush current when powered on the robot.** Always turn on the main power, let the voltage stablize and establish ground voltage, no hot plugging.

@@ -154,6 +154,10 @@ target output word ---embedding layer E---> embedding ------> Decoder ---embeddi
 
 The vanilla embedding in an one-hot vector that represents a token, then get an embedding dim. That could be "reused" to output logits as well. The biggest highlight is the reuse of the embedding layer E. The logits are simply $HE^T$ (H is `[sentence_length, embedding_dim]`, $E^T$ is `[embedding_dim, output_token_dim]`). Because of the token<->embedding relationship is shared, the model might be able to learn such an E that satisfy this need.
 
+### 2. Noam Scheduling
+
+Noam scheduling is to increase learning rate at the beginning, then decrease it. This might be a small trick to speed up the training, but probably wouldn't improve training in low-loss ranges
+
 ## Good Reads
 
 - [Weight Tying, Initialization of Transformer](https://jerryzhao.com/post/guan-yu-vanilla-transformer-de-chong-chong-xi-jie/)

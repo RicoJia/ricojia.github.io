@@ -79,3 +79,7 @@ Other High Level APIs include:
 - Gluon (Apache MXNet)
 - Sonnet (DeepMind)
 - Flax (by Google For JAX).
+
+## Courses
+
+- [Deep Learning Specialization on Coursera](https://www.bilibili.com/video/BV1cpC6YYE39?spm_id_from=333.788.videopod.episodes&vd_source=ae0bfd67b026e62fbc37ca190dfd1839&p=186)

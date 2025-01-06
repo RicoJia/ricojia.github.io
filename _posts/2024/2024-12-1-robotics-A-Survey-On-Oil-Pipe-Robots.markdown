@@ -15,13 +15,13 @@ comments: true
 American Society for Testing and Materials (ASTM) and American Society of Mechanical Engineers (ASME) develops standards for pipe inspections
 
 - Ultrasonic Testing (UT)
-    - Standard Practice for Ultrasonic Testing of Metal Pipe and Tubing ([ASTM E213-22](https://www.astm.org/e0213-22.html))
+  - Standard Practice for Ultrasonic Testing of Metal Pipe and Tubing ([ASTM E213-22](https://www.astm.org/e0213-22.html))
 - Magnetic Particle Testing (MT)
-    - Near-surface Notch Detection ([ASTM E709](https://www.astm.org/e0709-21.html))
+  - Near-surface Notch Detection ([ASTM E709](https://www.astm.org/e0709-21.html))
 - Radiographic Testing (RT)
 - Visual Inspection (VT)
 - Near-surface Eddy-Current-Testing ([ASTM E2884-22](https://www.astm.org/e2884-22.html))
-    - [A quick tutorial on eddy current is here](../2017/2017-06-01-electronics-eddy-current.markdown)
+  - [A quick tutorial on eddy current is here](../2017/2017-06-01-electronics-eddy-current.markdown)
 
 Different liquids could cause different types of corrosions:
 
@@ -56,4 +56,4 @@ Explaining why relatively low precision and recall happens is not easy, as ML sy
 ## Inspection with 3D LiDAR Examples
 
 - [Construction inspection using quadruped](https://www.youtube.com/watch?v=Eyl6II_tB3k)
-
+- [3D Factory Mapping using Livox Mid-360](https://www.bilibili.com/video/BV1zb411Z731/?spm_id_from=333.337.search-card.all.click&vd_source=ae0bfd67b026e62fbc37ca190dfd1839)
