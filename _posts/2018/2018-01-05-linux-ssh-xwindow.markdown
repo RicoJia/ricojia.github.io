@@ -17,6 +17,10 @@ tags:
 
 - `sudo nmap -sn 192.168.1.0/24`: uses ICMP echo requests (ping), TCP (SYN) packets on OSI layer 3 (the network layer). This is more robust than `sudo arp-scan -l` because the latter uses ARP (Address Resolution Protocol) protocol on layer 2 (the local subnet). Some devices may not respond due to its firewall settings. Also, ARP is an IPv4 protocol. IPv6 devices may also avoid using it.
 
+- Check login history: 
+    - `who` display the last 3 logins
+    - `last` display a longer list.
+
 ### SSH vs SSHD
 
 - SSH (Secure Shell Client): Initiates machine as an SSH Client to connect to a remote server
