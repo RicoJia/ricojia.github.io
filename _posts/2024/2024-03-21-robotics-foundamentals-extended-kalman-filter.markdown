@@ -147,6 +147,15 @@ $$
 However, because of the non linear terms like $\frac{w}{v}sin(\theta)$, we can't write the above into a linear form directly. However, we can use the taylor expansion to linearize it. One tricky thing is, the linearization is around an estimate. So the EKF framework is formulated **about the deviation from the true value.**
 
 1. We first get a prediction $x_{t+1}^*$ using the full non-linear update model above, 
+2. Define Deviation between the last state estimate and the next state estimate:
+
+$$
+\begin{gather*}
+\begin{aligned}
+&\delta x := x_{t+1, true} - \bar{x_{t}}
+\end{aligned}
+\end{gather*}
+$$
 2. Linearize the deviation $\delta x$
 
 $$
@@ -154,39 +163,32 @@ $$
 \begin{aligned}
 & x_{t+1}^* = f(\bar{x_t}, u_t)
 
-\\ \text{Let:} 
-
-\\ &\delta x := x_{t+1, true} - x_{t+1}^*
-
 \\ \Rightarrow
 
 \\ &
-x_{t+1, true} = f(\bar{x_t} + \delta x) \approx x_{t+1}^* + J_x (x_t - \bar{x_t})
-
-\\ \Rightarrow
-
-\\ &
-\delta x_{t+1} \approx J_x \delta x_{t}
+x_{t+1, true} = f(\bar{x_t} + \delta x) \approx x_{t+1}^* + J_x (x_{t + 1} - \bar{x_t}) = J_x x_{t + 1} + b
 \end{aligned}
 \end{gather*}
 $$
 
-So $\delta x_{t+1}$ is linear! **We apply Kalman Filter directly on the deviations of our estimates from ground truth: $\delta x_{t+1}$, then finally add it back to the prediction $x_{t+1}^*$.**
+So $x_{t+1, true} = J_x x_{t + 1} + b$ is linear, **w.r.t**  $x_{t+1}$! This is the foundamental difference from ESKF, where a linear system is built on error $\delta x = x_{t + 1, true} - x_{t+1}^*$
 
-- $J_x$ is the Jacobian of $\frac{\partial f}{\partial x}$ 
+- This is because we our motion model estimates a single state estimate $x_{t+1}$, and still linearizes around $x_{t}$. However ESKF estimates the error $\delta x = x_{t + 1, true} - x_{t+1}^*$
+
+$J_x$ is the Jacobian of $\frac{\partial f}{\partial x}$ 
 
 $$
 \begin{gather*}
 \begin{aligned}
-\delta x_{t+1} \approx 
+x_{t+1} \approx 
 
 \begin{bmatrix}
 1 & 0 & -\frac{w}{v} \cos(\theta_t) + \frac{w}{v}\cos(\theta_t + \Delta t) \\
 0 & 1 & -\frac{w}{v} \sin(\theta_t) + \frac{w}{v}\sin(\theta_t + \Delta t) \Delta t \\
 0 & 0 & 1
 \end{bmatrix}
+x_{t + 1} + b
 
-\delta x_{t}
 \end{aligned}
 \end{gather*}
 $$
@@ -244,13 +246,25 @@ Linearizing the above gives us the observation Jacobian $H$:
 $$
 \begin{gather*}
 \begin{aligned}
-& H = \begin{bmatrix}
+& H = \frac{\partial h(x)}{\partial x}|_{x=x_{t+1}^*} = \begin{bmatrix}
 \frac{x - c_x}{d} & \frac{y - c_y}{d} & 0 \\
 \frac{c_y - y}{d^2} & \frac{x - c_x}{d^2} & -1
 \end{bmatrix}
 \end{aligned}
 \end{gather*}
 $$
+
+This is another difference from ESKF, where 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H = \frac{\partial h(x)}{\partial \delta x} =  \frac{\partial h(x)}{\partial x} \frac{\partial x}{\partial \delta x}
+\end{aligned}
+\end{gather*}
+$$
+
+- This is because we our observation model is still linearized on $x$ (at $x=x_{t+1}^*$), but ESKF's observation model views the entire $h(x_{t+1, true}) - h(x_{t+1}^*)$ caused by the error $\delta x$
 
 ## Filtering Process
 
