@@ -319,20 +319,20 @@ $$
 
 \delta x_{k+1}^* = F \delta x_{k}
 
-\\ 
+\\
 \Rightarrow
 \\
 
 \begin{bmatrix}
-\delta p_{k+1}* \\
+\delta p_{k+1}*\\
 \delta v_{k+1}* \\
-\delta \theta_{k+1}* \\
+\delta \theta_{k+1}*\\
 \delta  b_{g, k+1}* \\
-\delta  b_{a, k+1}* \\
+\delta  b_{a, k+1}*\\
 \delta g_{k+1}* \\
 \end{bmatrix}
 
-= 
+=
 
 \begin{bmatrix}
 I & I\Delta t & 0 & 0 & 0 &0 \\
@@ -386,7 +386,7 @@ $$
 \begin{aligned}
 & z = H \cdot \delta x + v
 
-\\ & 
+\\ &
 \Rightarrow
 \\ &
 H = \frac{\partial h}{\partial x} \frac{\partial x}{\partial \delta x}
@@ -400,11 +400,11 @@ $$
 \begin{gather*}
 \begin{aligned}
 & x_t = x \oplus \delta x
-\\ & 
+\\ &
 \rightarrow
 \\
 &
-p_t = p + \delta p 
+p_t = p + \delta p
 \\ &
 v_t = v + \delta v
 \\ &
@@ -451,7 +451,6 @@ $$
 
 - **One simplifying assumption here is: $\delta \theta$ is small enough to be a perturbation to $\theta$**. From [here](./2024-03-15-robotics-foundamentals-velocities.markdown), we can use the right perturbation and the BCH formula to get:
 
-
 $$
 \begin{gather*}
 \begin{aligned}
@@ -475,21 +474,21 @@ Kalman Gain and Covariance matrix updates stay the same:
 $$
 \begin{gather*}
 \begin{aligned}
-& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T) 
+& K_{k+1} = P_{k+1}^{_} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{_} H_{k+1}^T)
 
-\\ & 
-P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1}^{*} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{*}
+\\ &
+P_{k+1} = P_{k+1}^{_} - K_{k+1} C_{k+1} P_{k+1}^{_} \Rightarrow P_{k+1} = P_{k+1}^{_} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{_}
 \end{aligned}
 \end{gather*}
 $$
 
-And 
+And
 $$
 \begin{gather*}
 \begin{aligned}
-& \delta x_{k+1} = K_{k+1} \delta x_{k}^{*}
+& \delta x_{k+1} = K_{k+1} \delta x_{k}^{_}
 \end{aligned}
-\end{gather*}
+\end{gather_}
 $$
 
 ### [Step 6] Discrete Time ESKF Final State Update and Error Reset
@@ -500,7 +499,7 @@ $$
 \begin{gather*}
 \begin{aligned}
 & x_{k+1} = x_k \oplus \delta x_k
-\\ 
+\\
 \rightarrow
 \\
 & p_{k+1} = p_{k} + \delta p_{k}
@@ -566,25 +565,6 @@ $$
 TODO: Is this linear BCH? why do we use jacobian here?
 
 ### [Step 7] GNSS Fusion
-
-There are two types of GNSS:
-
-- Traditional single-point GPS: 10m accuracy, usually found in phones
-- RTK (Real-Time-Kinematics) GPS. centimeter accuracy. It talks to a base station. Each module gives its `(x, y)`.
-
-In Autonomous Vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $\theta$
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/009c1827-c12c-410f-a0eb-20b8c051a312" height="300" alt=""/>
-        <figcaption><a href="">RTK GPS </a></figcaption>
-    </figure>
-</p>
-</div>
-
-However, the polar areas have a **singularity**, because longitude `0 - 180 deg` converges there. So any longitude value 
-could be assigned to the north pole, but in the meantime, large changes in the longitude would happen, too. 
 
 ## A Quick Summary
 
