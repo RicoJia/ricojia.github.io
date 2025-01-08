@@ -82,6 +82,10 @@ comments: true
 - Traceable Logging System (ELK + timeline tool)
 - Warnings might be helpful for when nodes go down
 
+## ROS2 Specific Designs
+
+- It's good to have a struct for ROS message equivalents. Say we want to calculate IMU information. We can have 1 `IMUData` to represent it, and at the ROS Node level, we publish it using a ROS message. Similarly, once we receive an IMU message, we immediately convert it to `IMUData`. This way, we can modify internal states in `IMUData` without touching the ROS message (if unecessary). 
+
 ## The "Soft" Architectures
 
 ### Maintainability

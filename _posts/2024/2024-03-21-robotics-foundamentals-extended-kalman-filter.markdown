@@ -14,7 +14,7 @@ EKF (Extended Kalman Filter) is widely applied in robotics to smooth sensor nois
 
 Now let's take a look at a diff (differential) drive example. 
 
-Imaging our world has two cones: `c1`, `c2`, and a diff drive with wheel encoders and a cone detector.
+Imagine our world has two cones with known locations: `c1`, `c2`, and a diff drive with wheel encoders and a cone detector.
 
 - A wheel encoder tells us how far (in m/s) a wheel has travelled within a known time window.
 - The cone detector can detect the range `d` and bearing $\beta$ of each cone at any given time.
