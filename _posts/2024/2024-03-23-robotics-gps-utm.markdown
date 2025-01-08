@@ -74,17 +74,19 @@ could be assigned to the north pole, but in the meantime, large changes in the l
 The Universal Transverse Mercator (UTM) coordinate system can better handle the significant digits issue better. Singularity issue? Its workflow is:
 
 - Projects the globe onto a map
-- Segment the map into 60 parts (longitude)  and 20 parts (latitude).
+- Segment the map into 60 parts (longitude) and 20 parts (latitude).
   - So each zone is 6 deg longitudinally, 8 deg latitudinally.
   - The 20 latitudes are represented by a letter in `C to X`, exluding `I` and `O`
     - Zone `33T` represents zone `33` in the T latitudinal region
 - Each zone has a coordinate frame `x = left = east,  y=up=norh`
 - The center line is x = 500km
+- UTM has opposite north directions in the southern hemisphere
 
 Advantages:
 
 - Directly in meters!
 - Fewer sigificant digits are required
+    - `500km` is a common scale requires 6 significant digits. So to represent centimeters, one needs 8 significant digits (FP64)
 
 Drawbacks include:
 
@@ -102,7 +104,7 @@ Drawbacks include:
 
 ## RTK GPS in Autonomous Vehicles
 
-In an autonomous vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $\theta$. This set up is also known as DUAL GNSS Compassing.
+In an autonomous vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $\theta$. This set up is also known as DUAL GNSS Compassing. **Usually, GPS signals come in at 1hz.**
 
 <div style="text-align: center;">
 <p align="center">

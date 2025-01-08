@@ -470,3 +470,45 @@ $$
 R(t) = R(t_0)exp(w^{\land}(t - t_0)) = R(t_0) exp(w^{\land} \Delta t)
 \end{gather*}
 $$
+
+## Rotation and Skew Matrices in 2D:
+
+In 2D, skew matrix is simply:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& w^{\land} = 
+\begin{bmatrix}
+0 & -a  \\
+a & 0
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+Rotation matrix is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R = 
+\begin{bmatrix}
+cos \theta & -sin \theta \\
+sin \theta & cos \theta
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+- One Key property that doesn't hold true in 2D is this: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \phi^{\land} R = R (R^T \phi)^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+But in 2D, one can easily find that: $\phi^{\land} R = R \phi^{\land}$

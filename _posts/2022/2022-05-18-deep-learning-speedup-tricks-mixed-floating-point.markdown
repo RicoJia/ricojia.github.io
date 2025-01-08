@@ -75,6 +75,12 @@ So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing g
         2. Actual Exponent `E_actual = -14`, so the FP16 exponent is `E = E_actual + bias = -14 + 127 = 113`. So we get `01110001`
         3. For mantissa: similar to the process for FP16.
 
+### Precisions
+
+- FP16 has 10 mantissa bits, which is `2^10=1024` numbers. So that's roughly `log_10(1024) = 3` significant digits.
+- FP32 has 23 mantissa bits. So that is `log_10(2^23) = 7` significant digits. 
+- FP64 has 52 mantissa bits. So that's `log_10(2^52) = 15.6` significant digits
+
 ## Mixed Precision Training
 
 [What Every User Should Know About Mixed Precision Training in PyTorch](https://pytorch.org/blog/what-every-user-should-know-about-mixed-precision-training-in-pytorch/)
