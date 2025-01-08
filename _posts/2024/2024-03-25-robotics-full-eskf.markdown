@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - Error-State Kalman Filter (ESKF ) in GNSS-Inertial Navigation System (GINS)
+title: Robotics - [ESKF Series 4] Full Error-State Kalman Filter (ESKF) in GNSS-Inertial Navigation System (GINS)
 date: '2024-03-24 13:19'
 subtitle: ESKF, GINS
 comments: true
@@ -9,54 +9,13 @@ tags:
     - Robotics
 ---
 
-## Motivating Example
+If you haven't checked out a motivational 2D robot example of ESKF, [please check here](./2024-03-25-robotics-full-eskf.markdown).
 
-Consider a 2D point travelling with constant velocity. $x = [p_x, p_y, v_x, v_y]$. Within ESKF, we think that compared to the true state values $x_t = [p_{xt}, p_{yt}, v_{xt}, v_{yt}]$, our state variable estimates $x = [p_x, p_y, v_x, v_y]$ will be subject to Gaussian errors.: $\delta x = [\delta p_x, \delta p_y, \delta v_x, \delta v_y]$
+In this post, $\oplus$ is the "generic add", which "adds" on a manifold.
 
-The motion update is:
+## ESKF (On Manifold) in GINS (GPS-Intertial Navigation System)
 
-$$
-\begin{gather*}
-\begin{aligned}
-& x_{k+1}^* = x_{k} +
-\begin{bmatrix}
-p_x \\ p_y \\ v_x \\ v_y
-\end{bmatrix}
-=
-\begin{bmatrix}
-1 & 0 & \Delta t & 0  \\
-0 & 1 & 0 & \Delta t  \\
-0 & 0 & 1 & 0  \\
-0 & 0 & 0 & 1  \\
-\end{bmatrix}
-
-\begin{bmatrix}
-p_x' \\ p_y' \\ v_x' \\ v_y'
-\end{bmatrix}
-
-= x_{k} +  Fx'_{k}
-
-\end{aligned}
-\end{gather*}
-$$
-
-In the meantime, we can update the covariance matrix as usual: $P_{k+1}^* = A_{k+1}^T P_{k} A_{k+1} + Q$
-
-**The update is:**
-
-$$
-\begin{gather*}
-\begin{aligned}
-& \delta x_{k+1} = K_{k+1} (z_{k+1} - Hx^*_{k+1})
-
-x_{k+1} = x_{k+1}^* \oplus \delta x_{k+1}
-\end{aligned}
-\end{gather*}
-$$
-
-Here, $\oplus$ is the "generic add", which "adds" on a manifold.
-
-## ESKF in GINS (GPS-Intertial Navigation System)
+GINS = GNSS + IMU
 
 ### [Step 1] States and Motion Model Setup
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics Fundamentals - GPS and Its Coordinate System
+title: Robotics Fundamentals - [ESKF Series 2] GPS and Its Coordinate System
 date: '2024-03-10 13:19'
 subtitle: RTK GPS, UTM Coordinates
 comments: true

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - ESKF Series 1 - IMU Math 
+title: Robotics - [ESKF Series 1] IMU Model 
 date: '2024-03-22 13:19'
 subtitle: Specific Force, IMU model
 comments: true
