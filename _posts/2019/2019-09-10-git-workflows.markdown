@@ -193,3 +193,21 @@ A---B---D---E---C (master) (rebased commits)
 ```
 
 I like a linear history. So I do `git rebase origin/master`.
+
+## Gitlab SSH Setup
+
+1. At the top left corner, select `subgroup information-> group memebers`
+  - Look for your username in the Project Members list. Make sure you have developer access
+2. Follow this link to:
+
+  - Generate ssh key
+  - Add SSH Key to ssh-agent
+  - Add SSH key to Gitlab
+
+3. Verify connection to Gitlab using `ssh -T git@gitlab.<COMPANY>.com`
+
+  - use `ssh-add -l` to see if you have added ssh key
+  - `ssh-add ~/.ssh/id_ed25519` must come after `eval $(ssh-agent -s)`
+
+4. If having trouble using SSH to download a repo:
+  - Have a verbose command to `ssh -v git@gitlab.<COMPANY>.com`
