@@ -433,10 +433,10 @@ Kalman Gain and Covariance matrix updates stay the same:
 $$
 \begin{gather*}
 \begin{aligned}
-& K_{k+1} = P_{k+1}^{_} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{_} H_{k+1}^T)
+& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T)
 
 \\ &
-P_{k+1} = P_{k+1}^{_} - K_{k+1} C_{k+1} P_{k+1}^{_} \Rightarrow P_{k+1} = P_{k+1}^{_} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{_}
+P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1}^{*} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{*}
 \end{aligned}
 \end{gather*}
 $$
@@ -445,9 +445,9 @@ And
 $$
 \begin{gather*}
 \begin{aligned}
-& \delta x_{k+1} = K_{k+1} \delta x_{k}^{_}
+& \delta x_{k+1} = K_{k+1} (z - h(x_{k+1}^{*}))
 \end{aligned}
-\end{gather_}
+\end{gather*}
 $$
 
 ### [Step 6] Discrete Time ESKF Final State Update and Error Reset

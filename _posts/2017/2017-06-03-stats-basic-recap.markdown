@@ -24,6 +24,16 @@ $$
 
 The above unbiasing operation is caleld "Bessel correction"
 
+An Isotropic covariance matrix is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& C = \lambda I
+\end{aligned}
+\end{gather*}
+$$
+
 ### Stochastic Processes and Stationarity
 
 A stochastic process is a collection of Random Variables over time. If a random variable is `X`, a process of it is `X(t)`. If the mean and variance of `X(t)` does not change, then loosely, this process is stationary.

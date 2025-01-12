@@ -55,11 +55,11 @@ $$
 
 ## ESKF Can Work With Higher Floating Point Precision
 
-A typical `float32` has around 7 significant digits of precision, a `double` has 15-16 decimal digits of precision. In [UTM coordinates](./2024-03-23-robotics-gps-utm.markdown), one needs at least [8 significant digits to represent centimeter level accuracy.](./2024-03-23-robotics-gps-utm.markdown) 
+A typical `float32` has around 7 significant digits of precision, a `double` has 15-16 decimal digits of precision. In [UTM coordinates](./2024-03-23-robotics-gps-utm.markdown), one needs at least [8 significant digits to represent centimeter level accuracy.](./2024-03-23-robotics-gps-utm.markdown)
 
 However, kalman filter update is rather small. Typically, RTK GPS operates at 1hz. If we have a vehicle travelling at 10km/h in congested areas, that's roughly 2.8m/s. Here in low speed scenarios, centimeter level accuracy will give us a lot of leg room. If we work with float32 in this case, centimeter updates will be rounded off when adding it to `10^6m` coordinates.
 
-- In EKF, states are GPS coordinates. We linearize around the last state, propagating the large coodinates throught the covariance matrix, and add a small correction to it to update:
+- In EKF, states are GPS coordinates. We linearize around the last state, propagate the large coodinates throught the covariance matrix, and add a small correction to it to update:
 
 $$
 \begin{gather*}
