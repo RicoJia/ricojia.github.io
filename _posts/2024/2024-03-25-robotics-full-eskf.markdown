@@ -140,7 +140,7 @@ exp(\delta \theta^{\land})' = exp(\delta \theta^{\land})\theta^{\land}
 R (\tilde{w} - b_g)^{\land} exp(\delta \theta^{\land}) + R exp(\delta \theta^{\land}) (\delta \theta^{\land})' = R exp(\delta \theta)(\tilde{w} - b_{gt} - \eta_{g})^{\land}
 
 \\ &
-\text{using: } \phi^{\land} = R(R^{T}\phi)^{\land}
+\text{using: } \phi^{\land}R = R(R^{T}\phi)^{\land}
 \\ &
 \Rightarrow [(\delta \theta)']^{\land} \approx (\tilde{w} - b_{gt} - \eta_g)^{\land} - [(I - \delta \theta)^{\land}(\tilde{w} - b_{gt})]^{\land}
 \\&
