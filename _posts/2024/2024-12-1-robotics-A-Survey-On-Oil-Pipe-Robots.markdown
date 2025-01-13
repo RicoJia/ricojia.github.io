@@ -53,6 +53,14 @@ $$
 
 Explaining why relatively low precision and recall happens is not easy, as ML systems are still largely "unpredictable" during run-time. What's worse is many customers and the court mistakenly think that ML systems should aim for perfect detection results, which is similar in the autonomous vehicle industry. In ML, we always compare the ML system with the "best human-level" performance.
 
+### Gas Meter
+
+- What is LEL in Gas meter? (Lower Explosive Limit)
+    - Calibration: to set a baseline of "good air". But when you calibrate it in an H2S rich environment, it's not good
+    - "Unknown gas 100" can be resolved by powercycling
+    - Some gas meters have two modes: slow and fast
+
+
 ## Inspection with 3D LiDAR Examples
 
 - [Construction inspection using quadruped](https://www.youtube.com/watch?v=Eyl6II_tB3k)
