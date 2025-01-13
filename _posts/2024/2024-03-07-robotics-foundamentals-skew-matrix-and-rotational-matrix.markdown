@@ -198,11 +198,36 @@ $$
 
 - $ \phi^{\land} R = R (R^T \phi)^{\land}$
 
+Proof:
+
+First, we know from $ (a \times b) \cdot c = a \times (b \cdot c)$
+
 $$
 \begin{gather*}
 \begin{aligned}
-&
+& (\phi^{\land} R)x = \phi^{\land}(Rx)
 \end{aligned}
 \end{gather*}
 $$
 
+One key property about rotation is commutation: **a rotated cross product is the same as the rotated vectors' dot product**.
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R(a \times b) = (Ra) \times (Rb)
+\end{aligned}
+\end{gather*}
+$$
+
+So on the right, 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R (R^T \phi)^{\land} x= R((R^T \phi) \times x)
+\\ &
+= \phi \times (Rx) = (\phi^{\land} R)x
+\end{aligned}
+\end{gather*}
+$$
