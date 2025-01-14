@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots, File Differences
+subtitle: Window Focus, Screenshots, File Differences, Formats
 comments: true
 tags:
     - Linux
@@ -44,6 +44,13 @@ git log -1 --format="%ci" -- filter_projects/
 
 - `-1`: Limits the output to the most recent commit.
 - `--format="%ci"`: Formats the output to display the commit date in ISO format.
+
+## File Formats
+
+- `AppImage`: a linux file format that's directly runnable without unzipping, debian instalation, etc. This might require `libfuse` to run: `sudo apt install libfuse`
+    - `libfuse` is a library that uses `FUSE` (Filesystem in Userspace). We can create and manage file systems in the user space instead of the kernel space. 
+        - It can create a virtual filesystem, like AppImage, where it's mounted as a virtual filesystem.
+        - It works with `SSHFS`, mounting remote file systems via SSH
 
 ## System Commands
 
