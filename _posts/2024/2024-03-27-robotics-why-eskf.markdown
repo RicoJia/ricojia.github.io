@@ -81,6 +81,54 @@ Along this process we operate on `10^6m` position state variables. Any associate
 
 - On the other hand, in ESKF, we operate on the error $\delta x$, which stays close to 0. All the intermediate steps just require `FP32` to achieve centimeter level accuracy. Of course, at the end, we still need to add the small update back to the large coordinates in `FP64`, but it's fairly minimal.
 
+
+## Questions
+
+### Why Do We Skip $F \delta x$ In Prediction But Still Need F For Covariance?
+
+In an Error-State Kalman Filter (ESKF), during the prediction step, we do not explicitly update the error-state mean $\delta x$ via:
+
+$$
+\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k
+$$
+
+even though we do use the Jacobian $\mathbf{F}_k$ to propagate the error covariance $\mathbf{P}$:
+
+$$
+\mathbf{P}_{k+1} = \mathbf{F}_k \, \mathbf{P}_k \, \mathbf{F}_k^\top + \mathbf{Q}_k.
+$$
+
+Then, at the update step, we correct the error-state simply by:
+
+$$
+\delta \mathbf{x}_{k+1} = \mathbf{K} \, \big(\mathbf{z} - h(\cdot)\big),
+$$
+
+without having used $\mathbf{F}_k \, \delta \mathbf{x}_k$ in the first place.
+
+Why is $\mathbf{F}_k$ still necessary for $\mathbf{P}$, if we never actually compute $\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k$?
+
+#### Answer
+
+This is because to we think the true value of the error is approximately:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \delta x_{k+1, true} \approx F \delta x_{k, true} + G w_k
+\end{aligned}
+\end{gather*}
+$$
+
+Where $G w_k$ is noise. **$\delta x_{k, true}$ is 0 after the reset from the last step**, so our prediction, $ \delta x_{k+1, pred} = F \delta x_{k, pred}=0$ Therefore, it doesn't need to be **explicitly added in code**. However, our Kalman Filter still implicitly assumes that, so we take F into account when updating covariances.
+
+### Would ba, bg, and g Stay Zero?
+
+#### Answer
+
+No. Predictions $F \delta x_{k, pred}$ are always 0, as expected. $K * (z \ominus h(x_{k, pred}))$ would yield non-zero results there, due to Kalman gain being non-zero in those observations. 
+
+
 ### Consequently, It Is Imporant To...
 
 - It is important to use `FP64` for ESKF update

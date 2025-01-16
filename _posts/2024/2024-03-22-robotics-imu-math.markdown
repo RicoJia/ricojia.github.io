@@ -226,7 +226,7 @@ The location integration will quickly diverge from the ground truth because it i
 
 ## IMU Initialization
 
-The IMU Model of accleration and angular velocity are: 
+The IMU Model of accleration and angular velocity are:
 
 $$
 \begin{gather*}
@@ -263,3 +263,8 @@ b_a = mean(\tilde{a}) - g
 \end{aligned}
 \end{gather*}
 $$
+
+## Some Code Implementation Tips
+
+- Use Sophus for `SO(3)`, `SE(3)`, etc. E.g., `SO3::exp((imu.gyro_ - bg_) * dt);`. 
+    - `Sophus::SO3` can multiply with Eigen::Matrix.
