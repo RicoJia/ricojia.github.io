@@ -2,7 +2,7 @@
 layout: post
 title: Docker Image Building
 date: '2024-06-03 13:19'
-subtitle: Dockerfile
+subtitle: Dockerfile, Image Management
 comments: true
 tags:
     - Docker
@@ -108,3 +108,59 @@ ENV PIP_BIN=/usr/local/bin/pip
 RUN pip3 install --upgrade pip setuptools wheel && \
     pip3 install --force-reinstall --ignore-installed PyYAML==6.0
 ```
+
+## Misc. Docker Build Commands
+
+- `-f` if there's a different name of a docker file: `DOCKER_BUILDKIT=1 docker build -f Dockerfile_mumble_physical_runtime -t mumble-physical-runtime .`
+    - `Dockerfile_mumble_physical_runtime` is the docker file;s name
+- Syntaxes
+    - `ARG` defines local build time variables
+    - `ENV` are environment variables that will persist throughout the runtime env.
+
+- Build args 
+    - In `docker-compose`:
+        ```
+        build:
+        context: ./mumble_physical_runtime
+        dockerfile: Dockerfile_mumble_physical_runtime
+        args:
+            # - WORKDIRECTORY=/home/mumble_physical_runtime/src
+            - WORKDIRECTORY=/home/mumble_physical_runtime
+        ```
+    - In `Dockerfile`:
+        ```
+        ARG WORKDIRECTORY="TO_GET_FROM_DOCKER_COMPOSE"
+        ```
+    - The old values of `WORKDIRECTORY` could be cached, and with the default `docker build`, the old values could still persist. In that case, we need to build without cached. TODO: I'm not sure what exactly gets cached
+
+
+## Docker Image Management
+
+General workflow includes properly tagging an image, then pushing to dockerhub:
+
+```
+docker tag dream-rgbd-rico:latest ricojia/dream-rgbd-rico:1.0    # 
+docker push ricojia/dream-rgbd-rico:1.0
+```
+- `ricojia` is my username, also my **namespace**
+- **latest** is the default tag when it's not provided. 
+- In the above, `1.0` has been properly added to as a tag. Now on Dockerhub, `latest` and `1.0` points to the same image
+
+To pull this image, 
+
+```
+docker pull ricojia/dream-rgbd-rico:latest
+```
+
+- Remove untagged images: `docker image prune -f`
+- Remove images with a common name, e.g., `ricojia/dream-rgbd-rico*`: `docker images | grep 'ricojia/dream-rgbd-rico' | awk '{print $1 ":" $2}' | xargs docker rmi`
+
+
+## General Guidelines Of Docker Development
+
+1. Use Multi-Stage Builds: Multi-stage builds allow you to use multiple `FROM` statements in your Dockerfile. This helps in creating smaller, more efficient images by copying only the necessary artifacts from one stage to another.
+2. Clean Up After Installation: Remove temporary files and package lists after installing software to keep the image size small. For example, use `apt-get clean` and `rm -rf /var/lib/apt/lists/*` after installing packages.
+3. Use `.dockerignore`: Create a `.dockerignore` file to exclude unnecessary files and directories from the build context, reducing the build time and image size.
+4. Minimize the Number of Layers: Combine multiple commands into a single `RUN` statement using && to reduce the number of layers. (For production)
+5. Use Non-Root User: Whenever possible, avoid running applications as the root user inside the container. Create a non-root user and switch to it using the USER instruction.
+6. Health Checks: Use the `HEALTHCHECK` instruction to define how Docker should test the container to check if it's still working.

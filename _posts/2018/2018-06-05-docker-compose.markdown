@@ -31,3 +31,29 @@ services:
 
 - we are creating a new environment variable `USER_NAME=${USER}`.
 - We are mounting `/home/${USER}/data` (local machine) to `/data` (docker)
+
+## Use Cases
+
+- `docker-compose.yml`:
+    ```
+    stdin_open: true  # Keep stdin open to allow interactive mode, docker run -i
+    tty: true         # Allocate a pseudo-TTY, docker run -t
+    ```
+    - `docker ps -a`: see all recently launched and exited containers
+
+- Launch a docker container based on platform:
+    - In `docker-compose.yml`:
+        ```
+        services:
+          runtime:
+            profiles:
+              - arm
+        ```
+    - In an upper level script:
+        ```
+        ARCH=$(uname -m)
+        CURRENT_DIR=$(dirname $(realpath docker-compose.yml))
+        if [ "$ARCH" = "aarch64" ]; then
+            docker compose --profile arm up
+        fi
+        ```

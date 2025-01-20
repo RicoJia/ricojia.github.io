@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Basic Pub Sub Node
 date: '2024-11-5 13:19'
-subtitle: ROS2 Basics
+subtitle: ROS2 Installation, Packaging & Build System
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -50,6 +50,8 @@ ros2 run demo_nodes_cpp listener
 - Create a package `ros2 pkg create --build-type ament_python --dependencies rclpy std_msgs`
   - `--build-type` specifies that this is a python pkg.
   - `ros2 pkg create my_mixed_pkg --build-type ament_cmake --dependencies rclcpp rclpy std_msgs` is the command for creating cmake and python package.
+  - Package naming: in ros2, please use `_` instead of `-`, like ` py_package_1` instead of ` py-package-1`
+
 
 - File Directory
 
@@ -149,3 +151,21 @@ ros2 run dummy_test demo
     - `--symlink-install` allows in-place modifications in `colcon build --packages-select dummy_test --symlink-install`
 
 
+## Packaging & Build System
+
+- In ROS2, cpp files require `CMakeLists.txt`, python files require `setup.cfg` and `setup.py`:
+
+```
+cpp_package_1/
+    CMakeLists.txt
+    include/cpp_package_1/
+    package.xml
+    src/
+
+py_package_1/
+    package.xml
+    resource/py_package_1
+    setup.cfg
+    setup.py
+    py_package_1/
+```

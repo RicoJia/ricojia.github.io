@@ -295,7 +295,7 @@ $$
 
 \begin{bmatrix}
 I & I\Delta t & 0 & 0 & 0 &0 \\
-0 & I\Delta t & -R(\tilde{a}-b_a)^{\land}\Delta t & 0 & -R \Delta t & I\Delta t \\
+0 & I & -R(\tilde{a}-b_a)^{\land}\Delta t & 0 & -R \Delta t & I\Delta t \\
 0 & 0 & exp(-(\tilde{w} - b_{g}) \Delta t) & -I \Delta t & 0 & 0 \\
 0 & 0 & 0 & I & 0 & 0 \\
 0 & 0 & 0 & 0 & I & 0 \\
