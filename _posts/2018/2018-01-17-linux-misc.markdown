@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots, File Differences, Formats
+subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys
 comments: true
 tags:
     - Linux
@@ -55,3 +55,6 @@ git log -1 --format="%ci" -- filter_projects/
 ## System Commands
 
 - `hostname`: host machine name in "USERNAME@HOSTNAME"
+
+## Shortkeys
+- If to swap the function of `Fn` when hitting F2 and mute, `Fn lock` is the way to go. Just do `Esc + Fn`

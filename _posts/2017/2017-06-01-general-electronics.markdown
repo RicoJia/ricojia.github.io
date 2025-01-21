@@ -7,6 +7,21 @@ header-img: "img/bg-material.jpg"
 tags:
     - Electronics
 ---
+## Electronics
+
+### EEPROM
+
+EEPROM (Electrically Erasable Programmable Read-Only Memory) is a type of non-volatile memory used in microcontrollers to store small amounts of data that must be preserved when power is removed.
+
+- Non-volatile (data remains in storage.)
+- Writable and erasable (Unlike traditional ROM)
+
+
+## Motors
+
+### EC (Electrically Commuted Motors) vs DC Motors
+
+TODO
 
 ## Electronics Testing
 
