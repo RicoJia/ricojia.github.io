@@ -57,3 +57,8 @@ services:
             docker compose --profile arm up
         fi
         ```
+## Launch Docker Containers
+
+- Caution: Docker containers are not completely ephemeral
+
+    - Use `docker composeup --build` with `--build` to build the containers so they are ephemeral
