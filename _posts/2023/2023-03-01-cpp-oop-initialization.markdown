@@ -46,3 +46,22 @@ Best Practices:
 ```cpp
 int i{};    // explicitly initialized to 0;
 ```
+
+## Initialization Order
+
+We need to make sure the vairable order is consisntent in both the initializer list and the variable definition. One common warning we see is `warning: <VAR> will be initialized after [-Wreorder]`
+
+```cpp
+class MyClass{
+    /*
+        * Below public functions are defined in the order of operation
+    */
+    public:
+        // Step 0: Create this object when first powered on
+        MyClass(): previous_time_(millis()), current_status_(Status::UNINITIALIZED)
+        {}
+
+        Status current_status_;
+        unsigned long previous_time_;
+};
+```

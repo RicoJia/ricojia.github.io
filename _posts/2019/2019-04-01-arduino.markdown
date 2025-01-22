@@ -1,0 +1,26 @@
+---
+layout: post
+title: Arduino Notes
+date: '2019-03-06 13:19'
+subtitle: View
+comments: true
+header-img: "img/post-bg-2015.jpg"
+tags:
+    - Python
+---
+
+## Common Commands
+
+- millis() is unsigned long
+
+```cpp
+unsigned long previous_time = millis()
+```
+
+- `uint8_t lowByte(uint16_t value);`
+
+```cpp
+uint16_t value = 0x1234;
+
+uint8_t lower = lowByte(value);
+```

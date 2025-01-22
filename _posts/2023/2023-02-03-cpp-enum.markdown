@@ -1,0 +1,22 @@
+---
+layout: post
+title: C++ - Enum
+date: '2023-02-03 13:19'
+subtitle: Static Functions And Keyword
+comments: true
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - C++
+---
+
+## Enum Class
+
+Enum class is a type safe way to initialize enums
+
+```cpp
+enum class MPS_Status: uint8_t{
+    SENSOR_UNINITIALIZED = 0x00,
+    SENSOR_STARTUP = 0x27
+};
+```
+
