@@ -80,7 +80,7 @@ $$
 
 When using euler angles, certain axes in the body frame could align to each other. E.g., when a plane has a pitch of 90 degrees (as below), its z and x axes are aligned. Then, rotation about z and rotation about x are the same. From this configuration, the plane cannot rotate about the axis that are perpendicular to x,y,z axes, hence it loses 1 degree of freedom.
 
-Mathematically,
+Mathematically, for a Z-X-Y system,
 
 $$
 \begin{gather*}
@@ -114,9 +114,7 @@ $$
 <img src="https://github.com/ChengeYang/Probabilistic-Robotics-Algorithms/assets/39393023/5aab7bcb-c434-4ad2-ae41-a4d3314f9dfe" height="200" width="width"/>
 </p>
 
-See? If in the plane's control system orientation is represented by Z-X-Y euler angles, when the plane is in this initial position, rotating about X will affect the reading of yaw (We would want the to be independent at all times).
-
-Quaternion
+See? The rotation about both the Z axis $\gamma$ and the X axis $\alpha$ will effectively create a combined rotation about the X axis, $\theta$. 
 
 ### Implementations
 
