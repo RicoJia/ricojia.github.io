@@ -90,8 +90,10 @@ $$
 \\ &
 \rightarrow (x^4 + x^3 + x^2 + 1) - (x^3 + x^2 +1)x = x^2 + x + 1
 \\ &
-\text{Since cannot be divided by }
+\text{Since: }
 \\ & (x^2 + x + 1) = 0 \times (x^3 + x^2 +1) + (x^2 + x + 1)
+\\ &
+\text{Therefore: }
 \\ & \rightarrow y = 0, remainder = x^2 + x + 1
 \end{aligned}
 \end{gather*}
