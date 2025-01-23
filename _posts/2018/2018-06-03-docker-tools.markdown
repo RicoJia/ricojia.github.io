@@ -109,6 +109,15 @@ RUN pip3 install --upgrade pip setuptools wheel && \
     pip3 install --force-reinstall --ignore-installed PyYAML==6.0
 ```
 
+### Common Build Issues
+
+- See `exec /usr/bin/sh: exec format error`. Try below. [referece](https://stackoverflow.com/questions/73285601/docker-exec-usr-bin-sh-exec-format-error)
+
+```bash
+docker buildx create --use
+```
+
+
 ## Misc. Docker Build Commands
 
 - `-f` if there's a different name of a docker file: `DOCKER_BUILDKIT=1 docker build -f Dockerfile_mumble_physical_runtime -t mumble-physical-runtime .`
