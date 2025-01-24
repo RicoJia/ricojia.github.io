@@ -2,7 +2,7 @@
 layout: post
 title: Math - Lie Group
 date: '2017-02-22 13:19'
-subtitle: Group Definition, Lie Group and Lie Algebras, Skew Matrices
+subtitle: Group Definition, Lie Group and Lie Algebras, Skew Matrices, Manifold
 comments: true
 tags:
     - Math
@@ -48,6 +48,8 @@ Every Lie group has a Lie algebra. A Lie Algebra is a **vector space that captur
 
 In the context of `SO(3)`, the lie algebra `so(3)` describes the algebra of infinitesimal rotations. Specifically, it's a skew matrix (see below), with **Lie Bracket** defined as $[X,Y]=XY−YX$
 
+### Manifold
+
 A manifold is a shape that's locally euclidean and globally connected. Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.  **A Lie group has to be a smooth manifold, meaning it's differentiable.**
     - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
 
@@ -62,7 +64,27 @@ A manifold is a shape that's locally euclidean and globally connected. Integers 
 
 - All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
 - **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
-  - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
+
+A sphere is a manifold. Any two points on a sphere cannot produce another point on the sphere. However, at any point on the sphere, there's a tangent plane where any two points there could add up to a point on the same plane (using the local coordinates there). Then, using some mapping, point addition result on the tangent plane can be projected onto the sphere. We describe that addition as:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x \oplus \delta = y
+\end{aligned}
+\end{gather*}
+$$
+
+Where `x`, `y` are points on the manifold, $\delta$ is a point on the tangent plane
+
+Reference: https://zhuanlan.zhihu.com/p/545370811
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/f70ff212-e345-4b51-9264-7546b76fe722" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
 ## SO(3)
 
