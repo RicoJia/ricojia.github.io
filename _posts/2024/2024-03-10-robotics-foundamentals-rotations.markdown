@@ -34,7 +34,7 @@ $$
 \end{gather*}
 $$
 
-**Representation 3** [SO(3)](./2024-03-07-robotics-foundamentals-skew-matrix-and-rotational-matrix.markdown)
+**Representation 3** [SO(3)](../2017/2017-02-19-lie-group.markdown)
 
 
 ### Order is important
@@ -159,7 +159,7 @@ R = exp(\phi_1^{\land}) exp(\phi_2^{\land}) = exp(\phi_1^{\land} + \phi_2^{\land
 \end{gather*}
 $$
 
-However, the BCH formula tells us that it's not the case. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
+In 2D, the above form is correct. However, in 3D, we know that $R_1R_2 \ne R_2R_1$, so the above can't be true. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
 
 ### BCH (Baker-Cambell-Hausdorff) Formula
 

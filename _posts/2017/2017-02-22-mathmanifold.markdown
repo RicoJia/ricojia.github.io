@@ -1,14 +1,14 @@
 ---
 layout: post
 title: Math - Manifold
-date: '2017-02-13 13:19'
+date: '2017-02-22 13:19'
 subtitle: 
 comments: true
 tags:
     - Math
 ---
 
-## Manifold Definitiont 
+## Manifold Definition
 
 A sphere is a manifold. Any two points on a sphere cannot produce another point on the sphere. However, at any point on the sphere, there's a tangent plane where any two points there could add up to a point on the same plane (using the local coordinates there). Then, using some mapping, point addition result on the tangent plane can be projected onto the sphere. We describe that addition as:
 

@@ -1,12 +1,37 @@
 ---
 layout: post
-title: Robotics Fundamentals - Skew Matrix and Rotational Matrix
-date: '2024-03-10 13:19'
-subtitle: Introduction To Rotation Matrices, Lie Group and Lie Algebras
+title: Math - Lie Group
+date: '2017-02-22 13:19'
+subtitle: Group Definition, Lie Group and Lie Algebras, Skew Matrices
 comments: true
 tags:
-    - Robotics
+    - Math
 ---
+
+## Group Definition
+
+Group (Group) is an algebraic structure consisting of **a set** and **an operation**. Denote the set as `A`, and the operation as `⋅`. Then, the group can be written as `G=(A,⋅)`. 
+
+- Closure (封闭性): `∀a1,a2∈A, a1​⋅a2​∈A`.
+- Associativity （结合律）: `∀a1,a2,a3∈A, (a1⋅a2)⋅a3=a1⋅(a2⋅a3)`
+- Identity （幺元）: There exists a0​∈A such that `a⋅a0​=a0​⋅a=a`
+- Inverse （逆）: `∀a∈A,∃a_i∈A such that a⋅a_i=a_i⋅a=a0`
+
+If you speak mandarin, this rule is shortened to "封结幺逆", which rhymes with "凤姐咬你" 💩
+
+Some commonly seen groups include:
+
+- The integers under addition (Z,+Z,+), 
+- Rational numbers under multiplication (excluding 0)
+- General Linear Group `GL(n)`: The group of `n×n` invertible matrices under matrix multiplication.
+- Special Orthogonal Group `SO(n)`: The group of rotation matrices, where `SO(2)` and `SO(3)` are the most common.
+- Special Euclidean Group `SE(n)`: The group of transformations in n-dimensional space, such as `SE(2)` and `SE(3)`.
+
+Abstract groups can be discrete (like integers) or continuous (like real numbers). `SO(n)` and `SE(n)` are continuous. The Lie group is named after **Sophus Lie**. A group is a Lie group if it is a group, and is smooth (so integers are not a Lie group). Common Lie groups include:
+
+- `SO(n)`, `SE(n)`
+- `GL(n)`
+- `SU(n)`: Special unitary group of nxn complex matrices that preserve complex inner products.
 
 ## SO(3)
 
