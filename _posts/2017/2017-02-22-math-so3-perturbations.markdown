@@ -75,24 +75,27 @@ Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-
 
 $$
 \begin{gather*}
-A = \begin{bmatrix}
+\begin{aligned}
+& A = \begin{bmatrix}
 0 & -a  \\
 a & 0
 \end{bmatrix}
-\\
+\\ &
 B = \begin{bmatrix}
 0 & -b  \\
 b & 0
 \end{bmatrix}
 
-\\
+\\ &
 [A, B] = AB - BA = 0
-\\
+
+\\ &
 C = A + B + \frac{1}{2}[A, B] = \begin{bmatrix}
 0 & -(a+b)  \\
 a+b & 0
 \end{bmatrix}
 
+\end{aligned}
 \end{gather*}
 $$
 
@@ -116,14 +119,16 @@ This approximation linearizes manipulation to skew matrices addition. To see how
 
 $$
 \begin{gather*}
-\\
+\begin{aligned}
+&
 A = \theta a
-\\
+\\ &
 R = exp(A^{\land})
-\\
+\\ &
 = I + (1-cos \theta) a^{\land} a^{\land} + sin \theta a^{\land}
-\\
+\\ &
 = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}  
+\end{aligned}
 \end{gather*}
 $$
 
@@ -165,11 +170,13 @@ $$
 And the right Jacobian is:
 $$
 \begin{gather*}
-exp^{(C)} = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
-\\
+\begin{aligned}
+& exp^{(C)} = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
+\\ &
 = J_r^{-1}(A) \Delta A + A
-\\
-J_r(-\theta) = J_l(\theta)   // TODO?
+\\ &
+J_r(-\theta) = J_l(\theta) 
+\end{aligned}
 \end{gather*}
 $$
 
