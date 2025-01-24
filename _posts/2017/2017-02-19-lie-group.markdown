@@ -27,11 +27,42 @@ Some commonly seen groups include:
 - Special Orthogonal Group `SO(n)`: The group of rotation matrices, where `SO(2)` and `SO(3)` are the most common.
 - Special Euclidean Group `SE(n)`: The group of transformations in n-dimensional space, such as `SE(2)` and `SE(3)`.
 
-Abstract groups can be discrete (like integers) or continuous (like real numbers). `SO(n)` and `SE(n)` are continuous. The Lie group is named after **Sophus Lie**. A group is a Lie group if it is a group, and is smooth (so integers are not a Lie group). Common Lie groups include:
+Abstract groups can be discrete (like integers) or continuous (like real numbers). `SO(n)` and `SE(n)` are continuous. 
+
+## Lie Group, Lie Algebra and Manifold Definition
+
+This is an intuitive introduction of Lie Group and Lie algebras, [inspired by this post](https://physics.stackexchange.com/questions/148116/lie-algebra-in-simple-terms).
+
+The Lie group is named after **Sophus Lie**. A group is a Lie group if it is a group, and is smooth (so integers are not a Lie group). Common Lie groups include:
 
 - `SO(n)`, `SE(n)`
 - `GL(n)`
 - `SU(n)`: Special unitary group of nxn complex matrices that preserve complex inner products.
+
+Every Lie group has a Lie algebra. A Lie Algebra is a **vector space that captures the infinitesimal structure of a Lie Group, e.g., the tangent space of the Lie Group**. The general definition of Lie algebras is: a Lie algebra consists of a set `V`, a field `F`, and a binary operation `,`. We also define `[]` as the **Lie bracket**:
+
+- Closure: `∀X,Y∈V, [X,Y]∈V.`
+- Bilinearity: `∀X,Y,Z∈V, ∀a,b∈F`, $[aX+bY,Z]=a[X,Z]+b[Y,Z],[Z,aX+bY]=a[Z,X]+b[Z,Y].$
+- Antisymmetry (or Skew-symmetry): `∀X∈V, [X,X]=0`.
+- Jacobi Identity: `∀X,Y,Z∈V` $[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0$
+
+In the context of `SO(3)`, the lie algebra `so(3)` describes the algebra of infinitesimal rotations. Specifically, it's a skew matrix (see below), with **Lie Bracket** defined as $[X,Y]=XY−YX$
+
+A manifold is a shape that's locally euclidean and globally connected. Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.  **A Lie group has to be a smooth manifold, meaning it's differentiable.**
+    - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/a66f9f2e-afbb-4f87-bd15-052e3633da60" height="300" alt=""/>
+            <figcaption><a href="https://johnwlambert.github.io/lie-groups/">Source: John Lambert</a></figcaption>
+       </figure>
+    </p>
+</div>
+
+- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
+- **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
+  - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
 
 ## SO(3)
 
@@ -80,39 +111,6 @@ $$
 $$
 
 for any $x \in R^3$
-
-## Formalize Rotation into A Lie Group
-
-### What Are the Lie Group and Lie Algebras
-
-This is an intuitive introduction of Lie Group and Lie algebras, [inspired by this post](https://physics.stackexchange.com/questions/148116/lie-algebra-in-simple-terms).
-
-A group is a set of algebraic structure (matrices, vectors) that is 1. globally connected to each other, 2. can transition between each other. Formally, a group has:
-
-- Closure: if a and b are in the group, `a op b` is also in the group
-- Associativity: `(a op b) op c = a op (b op c)`
-- Identity: for any element a, identity element e has `e op a = a`
-- Inverses: `a op a_inv = e`
-
-A manifold is a shape that's locally euclidean and globally connected. Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.  **A Lie group has to be a smooth manifold, meaning it's differentiable.**
-    - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
-
-#### Lie Definitions
-
-A Lie Algebra is a **vector space that captures the infinitesimal structure of a Lie Group, e.g., the tangent space of the Lie Group**. In the context of rotations,
-
-<div style="text-align: center;">
-    <p align="center">
-       <figure>
-            <img src="https://github.com/user-attachments/assets/a66f9f2e-afbb-4f87-bd15-052e3633da60" height="300" alt=""/>
-            <figcaption><a href="https://johnwlambert.github.io/lie-groups/">Source: John Lambert</a></figcaption>
-       </figure>
-    </p>
-</div>
-
-- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
-- **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
-  - **Within any Lie algebra, there is Lie Bracket for vectors A and B**: `[A, B] = AB - BA`
 
 ### From Skew Symmetric `so(3)` To SO(3)
 
