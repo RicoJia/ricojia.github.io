@@ -28,3 +28,7 @@ uint8_t lower = lowByte(value);
 - `serial_port.println()` vs `serial_port.write()`
     - `serial_port.println()` adds carriage `\r`, and `\n`
         - it knows the size of the string because a C-string actually ends with a special null terminator (\0). We must add the null ourselves
+
+- what's the difference between unsigned char and signed char?  Any difference in serial comm?
+    - signed char: -128 to 127, signed char 0 - 255
+    - So from a serial communication's perspective, there's no practical difference. However, to interpret data, yes, and unsigned char makes more sense for ASCII data
