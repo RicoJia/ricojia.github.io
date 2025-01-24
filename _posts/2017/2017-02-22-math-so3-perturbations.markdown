@@ -154,8 +154,17 @@ Eventually, we get
 
 $$
 \begin{gather*}
+\begin{aligned}
+&
 J_{l}(A) = \frac{\partial{e^{A^{\land}}}}{\partial{A}} = \frac{sin \theta}{\theta} I + (1 - \frac{sin \theta}{\theta}) aa^T + \frac{1 - cos\theta}{\theta} a^{\land}
 
+\\ &
+\rightarrow
+C = ln(exp((\Delta A)^{\land})exp(A^{\land}) )
+\\ &
+= J_l^{-1}(B) \Delta A + B
+
+\end{aligned}
 \end{gather*}
 $$
 
@@ -171,9 +180,9 @@ And the right Jacobian is:
 $$
 \begin{gather*}
 \begin{aligned}
-& exp^{(C)} = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
+& C = ln(exp(A^{\land}) exp((\Delta A)^{\land}))
 \\ &
-= J_r^{-1}(A) \Delta A + A
+= J_r^{-1}(A) \Delta B + A
 \\ &
 J_r(-\theta) = J_l(\theta) 
 \end{aligned}
