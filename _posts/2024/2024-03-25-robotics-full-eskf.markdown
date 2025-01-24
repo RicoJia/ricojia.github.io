@@ -450,7 +450,87 @@ $$
 \end{gather*}
 $$
 
-### [Step 6] Discrete Time ESKF Final State Update and Error Reset
+#### GNSS Updates
+
+While the above is the general update, a dual-RTK-GPS can have a simplified observation model.
+
+First, a dual-RTK-GPS system can output: $y = [R_{GNSS}, P_{GNSS}]$
+- $R_{GNSS}$: orientation observation of the robot
+- $P_{GNSS}$: position observation of the robot
+
+In general $y = h(x) \oplus v$, but here we think the same observation model also holds true for $\delta x$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& z_{\theta} = Log(I^T R_{GNSS})
+\\ &
+z_{\delta \theta} = Log(R^T R_{GNSS})
+\end{aligned}
+\end{gather*}
+$$
+
+See? TODO (I'm not sure the above is true)
+
+This makes things easier, because this means our observation gives a direct observation of $\theta$. we can directly get: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H_{\theta} = \frac{\partial h}{\partial \delta \theta} = I
+\end{aligned}
+\end{gather*}
+$$
+
+Same thing with position update:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H_{p} = \frac{\partial h}{\partial \delta p} = I
+\end{aligned}
+\end{gather*}
+$$
+
+In the meantime, innovation $y \ominus h(x_{pred}) = [\delta p, \delta \theta]$ and it is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& y \ominus h(x_{pred}) = [p_{GNSS} - p, Log(R^T R_{GNSS})]
+\end{aligned}
+\end{gather*}
+$$
+
+So: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H = \begin{bmatrix}
+I_3 & 0_3 & 0_3 & 0_3 & 0_3 & 0_3\\
+0_3 & I_3 & 0_3 & 0_3 & 0_3 & 0_3
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+Then the rest remains the same as the above:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T)
+
+\\ &
+P_{k+1} = P_{k+1}^{*} - K_{k+1} H P_{k+1}^{*}
+\\ &
+\delta x_{k+1} = K_{k+1} (z - h(x_{k+1}^{*}))
+\end{aligned}
+\end{gather*}
+$$
+
+### [Step 6] Covariance Matrix Of Errors After Resetting
 
 In discrete time, we approximate $p_{k+1}$ as the true value $p_t$ can define:
 
@@ -480,15 +560,24 @@ Since we have applied a correction, we can go ahead and reset $\delta x = 0$
 
 **However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $\delta x_{k}$, there's still an remeniscent error $\delta x^+$
 
-The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. So, to find the new covariance matrix:
+The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. 
+
+So, if we define:
+
+- $\delta \theta^+$ is the error after reset. It is zero of course, but we are interested in the finding the Jacobian of that.
+
+to find the new covariance matrix:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& exp(\delta \theta) = exp(\delta \theta_k ) exp(\delta \theta^+ )
+& R_k exp(\delta \theta_k) exp(\delta \theta^+ ) = R_k exp(\delta \theta)
+
+\\ \rightarrow
+\\ & exp(\delta \theta) = exp(\delta \theta_k ) exp(\delta \theta^+ )
 
 \\ &
-\rightarrow exp(\delta \theta^+ ) = (-\delta \theta_k )exp(\delta \theta)
+\rightarrow exp(\delta \theta^+ ) = exp(-\delta \theta_k )exp(\delta \theta)
 \\&
 \text{Using BCH:}
 \theta^+ \approx -\delta \theta_k + \delta \theta - \frac{1}{2} \delta \theta_k^{\land} \delta \theta + o((\delta \theta_k )^2)
@@ -522,8 +611,6 @@ $$
 **Usually, this is close enough to identity because the $\theta$ covariance is small**
 
 TODO: Is this linear BCH? why do we use jacobian here?
-
-### [Step 7] GNSS Fusion
 
 ## A Quick Summary
 

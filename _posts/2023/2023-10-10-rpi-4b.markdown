@@ -65,3 +65,12 @@ lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
 
     ser.close()
     ```
+
+## Running Docker on Rpi 4b+
+
+- Issue: My docker container exited immediately after launching. There is a warning: `The requested image's platform (linux/arm64) does not match the detected host platform (linux/arm/v8) `
+    - Solution: "You've got a mixed kernel/userspace install as a result of Raspbian forcibly upgrading your kernel to 64-bit and as a result you can't run most images, even forcing the architecture via the tag."
+    - [Reference](https://github.com/linuxserver/docker-wireguard/issues/312)
+    - One can confirm that the raspbian is truly 32 bits:
+        - `file /bin/bash`, If it says 32-bit executable, the system is 32-bit. If it says 64-bit executable, the system is 64-bit. 
+        - `dpkg --print-architecture`. `armhf` indicates a 32-bit system, `arm64` indicates a 64-bit system.
