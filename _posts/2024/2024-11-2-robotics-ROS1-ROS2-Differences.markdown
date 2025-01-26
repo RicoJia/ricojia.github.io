@@ -69,26 +69,6 @@ comments: true
 
 ### DDS
 
-- Middleware:
-  - ROS1: custom serialization format, a custom transport protocol as well as a custom central discovery mechanism (TCPROS)
-  - ROS2: existing middleware interface, DDS. There are multiple DDS implementations. ROS has a unified interface for these implementations
-    - In DDS, each ROS 1 node is equivalent to a DDS "participant". There could be multiple ROS nodes in the same process. Each node is still a DDS participant
-    - Under the hood, there are DDS datareader, datawriter, and DDS topics. They are not exposed to ROS users
-
-```
-+-----------------------------------------------+
-|                   user land                   |   No middleware implementation specific code
-+-----------------------------------------------+
-|              ROS client library               |
-+-----------------------------------------------+
-|             middleware interface              |   No DDS specifics
-+-----------------------------------------------+
-| DDS adapter 1 | DDS adapter 2 | DDS adapter 3 |
-+---------------+---------------+---------------+
-|    DDS impl 1 |    DDS impl 2 |    DDS impl 3 |
-+---------------+---------------+---------------+
-```
-
 - Pub-Sub Data Flow
 
 ```
@@ -116,9 +96,6 @@ comments: true
 
 QOS: Some DDS QOS parameters are exposed to ROS2: (TODO)
 
-## Message Generation
-
-IDL: TODO
 
 ## Bag Conversions
 

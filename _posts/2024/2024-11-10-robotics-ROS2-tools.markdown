@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Tools
 date: '2024-11-5 13:19'
-subtitle: Ros2 Doctor
+subtitle: Ros2 Doctor, Ros2 Topic, Ros2 Multicast
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -42,3 +42,15 @@ One can check failed checks only (`report fail`): `ros2 doctor -rf`. [Reference]
         - `sensor_msgs` that has different symbols or behavior in `Iron`
 
 
+## Ros2 Topic
+
+In ROS 2 design, it's generally good to keep in mind what `QoS` we might need for each topic
+
+- `ros2 topic echo /your_topic --qos-reliability best_effort`
+    - Messages might be dropped if the subscriber cannot keep up or if the network connection is unreliable.
+
+### Multicast
+
+This command is a diagnostic tool that's often used in ROS 2 for discovery and communication between nodes
+
+- `ros2 multicast receive`
