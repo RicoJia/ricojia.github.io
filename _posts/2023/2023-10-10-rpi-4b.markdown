@@ -2,7 +2,7 @@
 layout: post
 title: Raspberry Pi 4B
 date: '2023-10-10 13:19'
-subtitle: Serial Setup
+subtitle: Serial Setup, Ubuntu Core
 comments: true
 header-img: "img/home-bg-geek.jpg"
 tags:
@@ -74,3 +74,25 @@ lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
     - One can confirm that the raspbian is truly 32 bits:
         - `file /bin/bash`, If it says 32-bit executable, the system is 32-bit. If it says 64-bit executable, the system is 64-bit. 
         - `dpkg --print-architecture`. `armhf` indicates a 32-bit system, `arm64` indicates a 64-bit system.
+
+## Ubuntu Core
+
+Ubuntu core is a light-weight Ubuntu system for IoT. 
+
+**IMPORTANT: Enable Password Login (at least temporarily)**
+
+- Add SSH Key: Ubuntu One account just adds a trustable device to the device. **But Ubuntu core device doesn't sync with it.**. This means if we don't enable password login, the device on Ubuntu One will be the only machine that can log onto the IoT Device. 
+- To enable password login:
+    - Go to `/etc/ssh/sshd_config`, add `PasswordAuthentication yes`
+    - Restart ssh
+        ```bash
+        sudo systemctl start ssh
+        sudo systemctl enable ssh
+        ```
+    - set a password:
+        ```
+        sudo passwd <USERNAME>
+        ```
+
+
+
