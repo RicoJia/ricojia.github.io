@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Docker Image Building
-date: '2024-06-03 13:19'
+date: '2024-06-03 13:19on'
 subtitle: Dockerfile, Image Management
 comments: true
 tags:
@@ -111,10 +111,15 @@ RUN pip3 install --upgrade pip setuptools wheel && \
 
 ### Common Build Issues
 
-- See `exec /usr/bin/sh: exec format error`. Try below. [referece](https://stackoverflow.com/questions/73285601/docker-exec-usr-bin-sh-exec-format-error)
+- See `exec /usr/bin/sh: exec format error`. Try initializing and activating a new buildx builder instance. ([referece](https://stackoverflow.com/questions/73285601/docker-exec-usr-bin-sh-exec-format-error))
+    - `buildx` enables multi-platform builds in Docker. This is crucial for building arm v8 images on amd64 host.
+    - Default `docker build` does not support multi-platform builds
 
 ```bash
 docker buildx create --use
+
+# To verify:
+docker buildx ls
 ```
 
 

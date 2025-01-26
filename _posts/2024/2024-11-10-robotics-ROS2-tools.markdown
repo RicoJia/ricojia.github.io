@@ -1,0 +1,44 @@
+---
+layout: post
+title: Robotics - ROS2 Tools
+date: '2024-11-5 13:19'
+subtitle: Ros2 Doctor
+header-img: "img/post-bg-os-metro.jpg"
+tags:
+    - Robotics
+    - ROS2
+comments: true
+---
+
+## ROS 2 Doctor
+
+[References: ROS2 Doctro](https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Getting-Started-With-Ros2doctor.html)
+
+`ROS2 Doctor` is a diagnostic tool that succeeds `ros wtf` (where is the fault). It checks all aspects of ROS 2, including platform, version, network, environment, running systems. It's part of the `ros2cli` package. So if `ros2cli` is installed, `ROS2doctor` is installed.
+
+### What Does ROS2 Doctor Check?
+
+One can see `ros2 doctor --report`
+
+- Package versioning, such as `tf2_bullet`
+- `NETWORK CONFIGURATION`, items like:
+    -  `inet         : 192.168.1.65`...
+- `PLATFORM INFORMATION`, items like:
+    - like `platform info    : Linux-6.9.3-76060903-generic-x86_64-with-glibc2.35`
+- `QOS COMPATIBILITY LIST`
+    - `compatibility status    : No publisher/subscriber pairs found`
+- `ROS 2 INFORMATION`:
+    - `distribution name      : humble`
+- `TOPIC LIST`
+    - Existence of "dangling" topics without subscribers.
+
+
+One can check failed checks only (`report fail`): `ros2 doctor -rf`. [Reference](https://github.com/ros2/ros2cli/tree/foxy/ros2doctor)
+
+### What `ros2 doctor` Can't Detect
+
+- I had a mix of `ROS2 Iron` and `ROS2 Humble`
+    - ROS 2 Iron cannot directly listen to ROS 2 Humble messages due to ABI incompatibility and other changes between ROS 2 distributions. E.g.,
+        - `sensor_msgs` that has different symbols or behavior in `Iron`
+
+
