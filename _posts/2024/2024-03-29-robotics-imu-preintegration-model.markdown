@@ -67,3 +67,70 @@ $$
 - All three values are independent of absolute state variables
 
 ## Pre-integration Model
+
+Using the BCH approximation: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& exp((\Delta B + B)^{\land}) \approx exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
+\end{aligned}
+\end{gather*}
+$$
+
+- We can separate the noise terms from the measurement terms of the rotation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta R_{ij} := R_i^T R_j \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
+\\ &
+\approx R_i^T R_j  \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k})\Delta t)  Exp( -J_l^{-1} \eta_{gd, k} )\Delta t)
+\end{aligned}
+\end{gather*}
+$$
+
+- Measured rotation part is: $\Delta  \tilde{R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)$. 
+
+- Using:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Exp(-J_{r,i}\eta_{gd,i}\Delta t)\Delta \tilde{R}_{i+1, i+2} = \Delta \tilde{R}_{i+1, i+2}Exp(- \Delta \tilde{R}_{i+1, i+2} ^T J_{r,i}\eta_{gd,i}\Delta t)
+\end{aligned}
+\end{gather*}
+$$
+
+The above becomes:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta R_{ij} = Exp \left( (\tilde{\omega}_i - b_{g,i}) \Delta t \right) 
+Exp \left( -J_{r,i} \eta_{gd,i} \Delta t \right)
+\underbrace{Exp \left( (\tilde{\omega}_{i+1} - b_{g,i}) \Delta t \right)}_{\Delta \tilde{R}_{i+1,i+2}}
+Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right)\cdots ,
+
+\\ &
+= \Delta \tilde{R}_{i,i+1}
+Exp \left( -J_{r,i} \eta_{gd,i} \Delta t \right)
+\Delta \tilde{R}_{i+1,i+2}
+Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right) \cdots ,
+
+\\ &
+= \Delta \tilde{R}_{i,i+2}
+Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
+Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right) \cdots ,
+
+\\ &
+= \Delta \tilde{R}_{i,i+2}
+Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
+\Delta \tilde{R}_{i+2,i+3} \cdots .
+
+\end{aligned}
+\end{gather*}
+$$
+
+TODO: 
+Exp(A)R = RExp(R^TA) (similarity transformation)

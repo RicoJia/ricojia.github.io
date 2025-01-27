@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Rotations
 date: '2024-03-10 13:19'
-subtitle: BCH Formula, Instantaneous Rotation
+subtitle: Representation of Rotations, Gimbal Lock
 comments: true
 tags:
     - Robotics
@@ -114,7 +114,7 @@ $$
 <img src="https://github.com/ChengeYang/Probabilistic-Robotics-Algorithms/assets/39393023/5aab7bcb-c434-4ad2-ae41-a4d3314f9dfe" height="200" width="width"/>
 </p>
 
-See? The rotation about both the Z axis $\gamma$ and the X axis $\alpha$ will effectively create a combined rotation about the X axis, $\theta$. 
+See? The rotation about both the Z axis $\gamma$ and the X axis $\alpha$ will effectively create a combined rotation about the X axis, $\theta$. So, such rotations do not have unique angular values.
 
 ### Implementations
 

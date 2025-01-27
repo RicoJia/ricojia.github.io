@@ -57,7 +57,7 @@ $$
 
 In 2D, the above form is correct. However, in 3D, we know that $R_1R_2 \ne R_2R_1$, so the above can't be true. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
 
-### BCH (Baker-Cambell-Hausdorff) Formula
+## BCH (Baker-Cambell-Hausdorff) Formula
 
 BCH formula states that for two Lie Algebras $e^{A}$ and $e^{B}$ with skew matrices `A` and `B` that composes `C`: $R = e^{C} = e^{A^{\land}} e^{B^{\land}}$, Then to determine C
 
@@ -69,7 +69,7 @@ $$
 
 Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-BA) - (AB-BA)A$. If we take the taylor expansion with perturbations as shown, we get:
 
-#### Small Example of BCH
+### Small Example of BCH
 
 - For small $A$, $B$, one have $C \approx A + B + \frac{1}{2}[A, B]$. Example: for two rotations `A` and `B`
 
@@ -99,13 +99,13 @@ a+b & 0
 \end{gather*}
 $$
 
-#### How BCH Approximates The Left Perturbation
+### How BCH Approximates The Left Perturbation
 
 I'm omitting the derivation of below `SO(3)` BCH linerization formulae because it's not trivial.
 
 $$
 \begin{gather*}
-exp^{(C)} = ln(exp(A^{\land}) exp^(B^{\land})) =
+C = ln(exp(A^{\land}) exp^(B^{\land})) =
 \begin{cases}
 J_l^{-1}(B)A + B \text{when perturbation (small value) is} A \\
 J_r^{-1}(A)B + A \text{when perturbation (small value) is} B \\
@@ -113,7 +113,7 @@ J_r^{-1}(A)B + A \text{when perturbation (small value) is} B \\
 \end{gather*}
 $$
 
-This approximation linearizes manipulation to skew matrices addition. To see how this is derived:
+**This approximation linearizes manipulation to skew matrices addition.**
 
 - Rodrigues Formula can also be written as: (**A is a rotation vector**)
 
@@ -132,7 +132,7 @@ R = exp(A^{\land})
 \end{gather*}
 $$
 
-Left Jacobian is defined as the "derivative" that measures the infinitesimally small change in R w.r.t to $A^{\land}$. So it's
+- Left Jacobian is defined as the "derivative" that measures the infinitesimally small change in R w.r.t to $A^{\land}$. So it's
 
 $$
 \begin{gather*}
@@ -140,9 +140,9 @@ J_{l}(A) =  \frac{\partial{exp(A^{\land})}}{\partial{A}}
 \end{gather*}
 $$
 
-So note that in $exp(A^{\land}) = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}$, $\frac{\partial A^{\land}}{A}$ is not hard because TODO?
+- So note that in $exp(A^{\land}) = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}$, $\frac{\partial A^{\land}}{A}$ is not hard because TODO?
 
-$\frac{\theta}{A}$ is a bit tricky. But we have $\theta = \sqrt{A_1^2 + A_2^2 + A_3^2}$. So
+- $\frac{\theta}{A}$ is a bit tricky. But we have $\theta = \sqrt{A_1^2 + A_2^2 + A_3^2}$. So
 
 $$
 \begin{gather*}
@@ -150,7 +150,7 @@ $$
 \end{gather*}
 $$
 
-Eventually, we get
+- Eventually, we get
 
 $$
 \begin{gather*}
@@ -197,14 +197,12 @@ exp(C) = exp(\Delta B^{\land}) exp(B^{\land}) = exp((B + J_l^{-1}(\Delta B) B)^{
 \end{gather*}
 $$
 
-So when we want to add a small value vector together:
+**Also when we want to add a small value vector together**:
 
 $$
 \begin{gather*}
-exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
+\begin{aligned}
+& exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
+\end{aligned}
 \end{gather*}
 $$
-
-
-
-
