@@ -65,11 +65,25 @@ int main()
 
 ```
 
+Alignment and Padding:
+
+- To satisfy alignment requirements, compilers may add padding between variables or at the end of the struct.
+- For example, in the struct above, a (4 bytes) might leave a 4-byte padding before b (8 bytes) to align b on an 8-byte boundary.
+- Inheritance: for classes with inheritance, memory layout may include hidden padding or vtable pointers (if virtual functions are used). For non-inherited plain structs, the layout is straightforward.
 
 
-### Sizeof 
+### Miscellaneous Size Issues
 
-`sizeof(object_or_type)` returns the number of bytes a type or object consumes. 
+-  Does static constexpr Change the Object's Size?
+    - No. `static constexpr` variables belong to the class itself, not part of the instance. E.g, 
+        ```cpp
+        struct Example {
+            static constexpr int static_var = 42;  // Shared by all objects, not part of any instance
+            int a;
+        };  // 4bytes, only for a
+        ```
+
+- `sizeof(object_or_type)` returns the number of bytes a type or object consumes. 
 
 ## Type Conversion
 

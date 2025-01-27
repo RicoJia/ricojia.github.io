@@ -1,7 +1,7 @@
 ---
 layout: post
 title: C++ - Static Functions And Keyword
-date: '2023-01-30 13:19'
+date: '2023-02-06 13:19'
 subtitle: Static Functions And Keyword
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"

@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [OOP] Initialization
 date: '2023-01-15 13:19'
-subtitle: Default Initialization
+subtitle: Default Initialization, Memory Order
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -14,6 +14,7 @@ tags:
 Default Initialization is **when a variable is initialized without explicit value**. They could be in an uninitialized state and accessing them could be an undefined behavior.
 
 - POD types like `int`, `float` are initialized to an **intermediate value**. Accessing them without initialization is an undefined behavior,
+    - Default initialization guarantees to initialize POD data, **but not array data**
 - User defined types should either **have no constructor provided, or have a default constructor present.**
 
 ```cpp
@@ -63,5 +64,19 @@ class MyClass{
 
         Status current_status_;
         unsigned long previous_time_;
+};
+```
+
+- The order of class variable initialization is determined by the declaration order, not the order in initializers. [Reference](https://wiki.sei.cmu.edu/confluence/display/cplusplus/OOP53-CPP.+Write+constructor+member+initializers+in+the+canonical+order)
+
+### Memory Order of Class Members
+
+Declaration Order: Variables appear in memory in the order they are declared in the struct/class.
+
+```cpp
+struct Example {
+    int a;     // Offset 0
+    double b;  // Offset 8 (if 8-byte alignment is required for double)
+    char c;    // Offset 16 (next available slot for alignment)
 };
 ```
