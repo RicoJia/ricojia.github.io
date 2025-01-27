@@ -32,3 +32,13 @@ uint8_t lower = lowByte(value);
 - what's the difference between unsigned char and signed char?  Any difference in serial comm?
     - signed char: -128 to 127, signed char 0 - 255
     - So from a serial communication's perspective, there's no practical difference. However, to interpret data, yes, and unsigned char makes more sense for ASCII data
+
+## Serial Interface
+
+There might be a permission issue about serial port. Just do:
+
+```bash
+sudo chmod a+rw /dev/ttyUSB0
+```
+
+- Also, on Arduino, the timing for decoding might be messed up for serial. Hit the start button for serial to work properl
