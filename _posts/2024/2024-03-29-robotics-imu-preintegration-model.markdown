@@ -30,9 +30,9 @@ $$
 \begin{gather*}
 & R_j = R_i \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
 \\ &
-v_j = v_i +g_k \Delta t_{ij} + \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta{ad, k}) \Delta t
+v_j = v_i +g_k \Delta t_{ij} + \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 \\ &
-p_j = p_i + \sum_{k=i}^{j-1} v_k \Delta t + \frac{1}{2} g_k \Delta t_{ij}^2 + \frac{1}{2} \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta{ad, k}) \Delta t^2 
+p_j = p_i + \sum_{k=i}^{j-1} v_k \Delta t + \frac{1}{2} g_k \Delta t_{ij}^2 + \frac{1}{2} \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2 
 \tag{1}
 \end{gather*}
 $$
@@ -54,9 +54,9 @@ $$
 \begin{aligned}
 & \Delta R_{ij} := R_i^T R_j \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
 \\ &
-\Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta{ad, k}) \Delta t
+\Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 \\ &
-\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta{ad, k}) \Delta t^2 
+\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2 
 \end{aligned}
 \end{gather*}
 $$
@@ -67,6 +67,8 @@ $$
 - All three values are independent of absolute state variables
 
 ## Pre-integration Model
+
+### Rotation Model
 
 Using the BCH approximation: 
 
@@ -128,9 +130,163 @@ Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right) \cdots ,
 Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
 \Delta \tilde{R}_{i+2,i+3} \cdots .
 
+\\ &
+= \Delta \tilde{R}_{i,j} \prod_{k=0}^{j-1}
+Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) \cdots
+
+\\ &
+= \Delta \tilde{R}_{i,j} Exp \left(-\delta \phi_{i,j} \right)
 \end{aligned}
 \end{gather*}
 $$
 
-TODO: 
-Exp(A)R = RExp(R^TA) (similarity transformation)
+Where the accumulated observed rotation part is $\Delta \tilde{R}_{i,j}$
+
+#### I'm not sure about... TODO: 
+
+- Is this similarity transformation??
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Exp(A)R = RExp(R^TA)
+\end{aligned}
+\end{gather*}
+$$
+
+### Velocity Model
+
+For velocity, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $Exp(-\delta \phi) \approx (I - \delta \phi)$, and drop second order small terms:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
+
+\\ &
+= \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} Exp \left(-\delta \phi_{i,k} \right) (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
+
+\\ &
+\approx \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (I -\delta \phi_{i,k}) (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
+
+\\& 
+= \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t + \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} - \eta_{ad, k})^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k}
+
+\\ &
+\text{Defining velocity observation:}
+
+\\ & 
+\Delta \tilde{v_{ij}} = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t
+
+\\ &
+\rightarrow = \Delta \tilde{v_{ij}} +  \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} - \eta_{ad, k})^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k}
+
+\\ &
+=  \Delta \tilde{v_{ij}} - \delta v_{i,j} 
+
+\end{aligned}
+\end{gather*}
+$$
+
+### Position Model
+
+For position, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $Exp(-\delta \phi) \approx (I - \delta \phi)$, and drop second order small terms:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& 
+\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = 
+
+\\ &
+
+= \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2
+
+\\ &
+= \sum_{k=i}^{j-1} (\Delta \tilde{v_{ij}} - \delta v_{i,j} )\Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2 
+
+\\ &
+- \delta v_{ik} \Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 - \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
+
+\\ &
+\text{Define accumulated position part observation:}
+
+\\ &
+\Delta \tilde{p_{i,j}} = \sum_{k=i}^{j-1}[\Delta v_{i,k} \Delta t] + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2
+
+\\ &
+\text{The above becomes:}
+
+\\ &
+= \Delta \tilde{p_{i,j}} + \sum_{k=i}^{j-1} - \delta v_{ik} \Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 - \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
+
+\\ &
+:= \Delta \tilde{p_{i,j}} - \delta p_{i,j}
+\end{aligned}
+\end{gather*}
+$$
+
+To further analyze their noises, the right-hand-side of the accumlated observations can also be written in terms of their true values and the noises
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta \tilde{R_{ij}} := R_i^T R_j Exp(\delta \phi_{ij})
+
+\\ &
+
+\Delta \tilde{v_{ij}} =  R_i^T(v_j - v_i - g_k \Delta t_{ij}) + \delta v_{i,j}
+
+\\ &
+\Delta \tilde{p_{i,j}} = R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) + \delta p_{i,j}
+\end{aligned}
+\end{gather*}
+$$
+
+So, in short, the accumulated observations can be reasonably easy to add up / multiply. The right-hand-side of the accumlated observations are easy to form edges in a graph for Least-Square-Error problems between nodes. Now the question is, are the noises Gaussian? If so, how large are they? 
+
+## IMU Preintegration Noise Model
+
+### Accumulated Rotation Noise
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Exp \left(-\delta \phi_{i,j} \right) = \prod_{k=0}^{j-1}
+Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) 
+
+\end{aligned}
+\end{gather*}
+$$
+
+Now let's get 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \phi_{ij} = -Log(\prod_{k=0}^{j-1}
+Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right))
+\end{aligned}
+\end{gather*}
+$$
+
+By using BCH for right perturbation:
+
+$$
+\begin{gather*}
+C = ln(exp(A^{\land}) exp(B^{\land})) = 
+J_r^{-1}(A)B + A 
+\end{gather*}
+$$
+
+And that each noise angle themselves are small, we know the Jacobians are almost identity. So we get:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \phi_{ij} \approx \sum_{k=i}^{j} \Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t
+\end{aligned}
+\end{gather*}
+$$
+
+The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance

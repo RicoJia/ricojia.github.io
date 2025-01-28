@@ -105,7 +105,7 @@ I'm omitting the derivation of below `SO(3)` BCH linerization formulae because i
 
 $$
 \begin{gather*}
-C = ln(exp(A^{\land}) exp^(B^{\land})) =
+C = ln(exp(A^{\land}) exp(B^{\land})) =
 \begin{cases}
 J_l^{-1}(B)A + B \text{when perturbation (small value) is} A \\
 J_r^{-1}(A)B + A \text{when perturbation (small value) is} B \\
