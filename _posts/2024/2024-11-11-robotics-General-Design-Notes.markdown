@@ -79,8 +79,19 @@ comments: true
 
 ## Reproducibility
 
-- Traceable Logging System (ELK + timeline tool)
+- Traceable Logging System
+
+    - Prometheus, collectd->influxdb->Grafana (trace), time series 
+        - Victoria Metrics
+        - https://discourse.ros.org/t/how-do-you-mitigate-robot-bugs-and-issues-related-to-system-resources/15682/4
+        - A trace tree, or distributed tracing in microservices
+            - opentracing? + yegger?
+        - Datadog / elk
+
 - Warnings might be helpful for when nodes go down
+
+## Logging
+
 
 ## ROS2 Specific Designs
 

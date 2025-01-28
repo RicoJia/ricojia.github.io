@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Robotics - ROS2 in Docker
-date: '2024-11-5 13:19'
+title: Robotics - [ROS2 Foundation 2] ROS2 in Docker
+date: '2024-11-16 13:19'
 subtitle: Various Things to Note For Building Dockerized ROS2 App
 header-img: "img/post-bg-os-metro.jpg"
 tags:

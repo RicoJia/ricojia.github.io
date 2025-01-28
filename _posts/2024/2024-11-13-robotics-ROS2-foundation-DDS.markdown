@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Robotics - ROS2 DDS Notes
-date: '2024-11-5 13:19'
+title: Robotics - [ROS2 Foundation - 1] DDS Notes
+date: '2024-11-13 13:19'
 subtitle: DDS, Zeroconf, IDL, FastRTPS, ROS2 Messaging Mechanism
 header-img: "img/post-bg-os-metro.jpg"
 tags:

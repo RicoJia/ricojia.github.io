@@ -35,10 +35,12 @@ uint8_t lower = lowByte(value);
 
 ## Serial Interface
 
-There might be a permission issue about serial port. Just do:
+- There might be a permission issue about serial port. Just do:
 
 ```bash
 sudo chmod a+rw /dev/ttyUSB0
 ```
 
-- Also, on Arduino, the timing for decoding might be messed up for serial. Hit the start button for serial to work properl
+- Also, in Arduino, the timing for decoding might be messed up for serial. Hit the start button for serial to work properl
+
+- `numBytesWaiting = SERIAL_GAS_DETECT.available();` is the hardware serial interface. returns number of available bytes in the serial receive buffer.

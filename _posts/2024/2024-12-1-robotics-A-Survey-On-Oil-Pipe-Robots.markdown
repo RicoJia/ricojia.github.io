@@ -59,6 +59,7 @@ Explaining why relatively low precision and recall happens is not easy, as ML sy
     - Calibration: to set a baseline of "good air". But when you calibrate it in an H2S rich environment, it's not good
     - "Unknown gas 100" can be resolved by powercycling
     - Some gas meters have two modes: slow and fast
+    - "Zero-air" mode means clean air. If a flammable gas is detected, it can trigger an alarm.
 
 
 ## Inspection with 3D LiDAR Examples

@@ -56,5 +56,54 @@ git log -1 --format="%ci" -- filter_projects/
 
 - `hostname`: host machine name in "USERNAME@HOSTNAME"
 
-## Shortkeys
+## Hot keys
+
 - If to swap the function of `Fn` when hitting F2 and mute, `Fn lock` is the way to go. Just do `Esc + Fn`
+
+## Hardware Interfaces
+
+### `gpiochip` Interface
+
+The `gpiochip` interface in Linux represents a GPIO (General Purpose Input/Output) controller. It allows users to interact with GPIO pins on embedded systems, SoCs, or microcontrollers.
+
+- The active-high state means that a logical 1 corresponds to a high voltage level.
+- Some GPIOs are configured as inputs, while others are outputs.
+- `gpioinfo` to check such info
+- `ttyACMx` is for serial-USB interface. `ttySx` is for native Hardware-Serial interface
+
+```
+/dev/ttyACM0  (Main USB Serial - SERIAL_DEBUG)
+```
+
+### Linux Device Tree
+
+Linux Device Tree is a hardware description of the layout of hardware components in embedded linux systems. (Buses, peripherals, memory). With it, we don't need to modify the kernel source code.
+
+- Device tree source (DTS) files define the config, and are compiled into **device tree blobs** (DTB), which the kernel load at boot.
+- A device tree snippet:
+
+```
+pinctrl_uart3: uart3grp {
+    fsl,pins = <
+        MX8MP_IOMUXC_UART3_RXD__UART3_DCE_RX  0x40
+        MX8MP_IOMUXC_UART3_TXD__UART3_DCE_TX  0x40
+    >;
+};
+```
+
+- Many embedded processors have **multiplexed I/O pins** that are muxed (multiplexed) to a specific functionailty, like I2C, SPI, UART, GPIO
+    - `MX8MP_IOMUXC_UART3_RXD__UART3_DCE_RX` configures UART3
+    - `MX8MP_IOMUXC_UART3_TXD__UART3_DCE_TX`: configures UART3 TX
+    - `0x40` is a pad control register configuration for electrical characteristics like pull-up/down, drive strength, etc. 
+    - UART2 and UART3 have the same pad control values. They don't necessarily cause issues as long as they are mapped to different pins.
+
+- To verify serial being successfully configured at runtime:
+    ```
+    ls -l /dev/serial*
+    dmesg | grep tty
+    cat /proc/tty/drivers
+    ```
+    - check for `ttyUSBX` and `ttymxcX`
+- To check pins at runtime: `cat /sys/kernel/debug/pinctrl/*/pins | grep UART`
+
+`dmesg` (diagnostic message) prints **kernel ring buffer** that contains system logs for: boot process, hardware detection (UART, I2C, SPI, etc.), driver loading, kernel errors.
