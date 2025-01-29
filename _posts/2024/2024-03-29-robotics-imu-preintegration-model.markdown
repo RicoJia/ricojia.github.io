@@ -131,8 +131,8 @@ Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
 \Delta \tilde{R}_{i+2,i+3} \cdots .
 
 \\ &
-= \Delta \tilde{R}_{i,j} \prod_{k=0}^{j-1}
-Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) \cdots
+= \Delta \tilde{R}_{i,j} \prod_{k=i}^{j-1}
+Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) \cdots
 
 \\ &
 = \Delta \tilde{R}_{i,j} Exp \left(-\delta \phi_{i,j} \right)
@@ -179,7 +179,10 @@ $$
 \Delta \tilde{v_{ij}} = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t
 
 \\ &
-\rightarrow = \Delta \tilde{v_{ij}} +  \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} - \eta_{ad, k})^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k}
+\text{Omitting second order term} - \eta_{ad, k}^{\land} \phi_{i,k},
+
+\\ &
+\rightarrow = \Delta \tilde{v_{ij}} +  \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} )^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t
 
 \\ &
 =  \Delta \tilde{v_{ij}} - \delta v_{i,j} 
@@ -252,8 +255,8 @@ So, in short, the accumulated observations can be reasonably easy to add up / mu
 $$
 \begin{gather*}
 \begin{aligned}
-& Exp \left(-\delta \phi_{i,j} \right) = \prod_{k=0}^{j-1}
-Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) 
+& Exp \left(-\delta \phi_{i,j} \right) = \prod_{k=i}^{j-1}
+Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) 
 
 \end{aligned}
 \end{gather*}
@@ -264,8 +267,8 @@ Now let's get
 $$
 \begin{gather*}
 \begin{aligned}
-& \phi_{ij} = -Log(\prod_{k=0}^{j-1}
-Exp \left( -\Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right))
+& \phi_{ij} = -Log(\prod_{k=i}^{j-1}
+Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right))
 \end{aligned}
 \end{gather*}
 $$
@@ -284,9 +287,163 @@ And that each noise angle themselves are small, we know the Jacobians are almost
 $$
 \begin{gather*}
 \begin{aligned}
-& \phi_{ij} \approx \sum_{k=i}^{j} \Delta \tilde{R}_{i+k,i+k+1}^\top J_{r,i} \eta_{gd,i} \Delta t
+& \phi_{ij} \approx \sum_{k=i}^{j} \Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t
 \end{aligned}
 \end{gather*}
 $$
 
-The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance
+The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance. We can show that the covariance is a recursive form, too. 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \phi_{ij} \approx \sum_{k=i}^{j} \Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t
+\\ &
+= \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + \underbrace{\Delta R_{j,j}^{\top}}_{=I} J_{r,j-1} \eta_{gd,j-1} \Delta t,
+
+\\ &
+
+= \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + J_{r,j-1} \eta_{gd,j-1} \Delta t,
+
+
+\\ & \text{Since:}
+\tilde{\Delta R}_{k+1,j}^{\top} = \left( \tilde{\Delta R}_{k+1,j-1} \tilde{\Delta R}_{j-1,j} \right)^{\top}
+
+\\ &
+= \tilde{\Delta R}_{j-1,j}^{\top} \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + J_{r,j-1} \eta_{gd,j-1} \Delta t,
+
+\\ &
+= \tilde{\Delta R}_{j-1,j}^{\top} \delta \phi_{i,j-1} + J_{r,j-1} \eta_{gd,j-1} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+This is a linear system. Using the covariance of mulplied matrix: $cov(AX) = A cov(X) A^T$, we can see that **the covariance keeps growing** if we accumulate:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Sigma_j =  \Delta \tilde{R}_{j-1, j}^T \Sigma_{j-1} \Delta \tilde{R}_{j-1, j} + J_{r, j-1} \Sigma_{\eta_{gd}} J_{r, j-1}^T \Delta t^2
+\end{aligned}
+\end{gather*}
+$$
+
+And this covariance growth makes sense.
+
+### Accumulated Velocity Noise
+
+If we find the recursive form of the noise:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \delta v_{ij} = \sum_{k=i}^{j-1} - \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land} \phi_{i,k} \Delta t + \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t
+
+\\ &
+= \sum_{k=i}^{j-2} \left[ -\tilde{\Delta R}_{ik} (\tilde{a}_k - b_{a,i})^\wedge \delta \phi_{ik} \Delta t + \tilde{\Delta R}_{ik} \eta_{ad,k} \Delta t \right]
+
+\\ &
+
+\quad - \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t + \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t,
+
+\\ &
+= \delta v_{i,j-1} - \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t + \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+This may or may not increase.
+
+### Accumulated Position Noise
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \delta p_{i,j} =  \sum_{k=i}^{j-1}  \delta v_{ik} \Delta t - \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 + \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
+
+\\ &
+= \sum_{k=i}^{j-2} \left[ \delta v_{ik} \Delta t - \frac{1}{2} \tilde{\Delta R}_{ik} (\tilde{a}_k - b_{a,i})^\wedge \delta \phi_{ik} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{ik} \eta_{ad,k} \Delta t^2 \right]
+
+\\ &
+\quad + \delta v_{i,j-1} \Delta t - \frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t^2,
+
+\\ &
+= \delta p_{i,j-1} + \delta v_{i,j-1} \Delta t - \frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t^2.
+\end{aligned}
+\end{gather*}
+$$
+
+### Accumulated Noise Model All Together
+
+If we put the accumulated noises into a vector $\eta_{ik}$
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \eta_{ik} =
+\begin{bmatrix}
+\delta \phi_{ik} \\
+\delta v_{ik} \\
+\delta p_{ik}
+\end{bmatrix},
+\end{aligned}
+\end{gather*}
+$$
+
+Noise of biases into a vector: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \eta_{d,j} =
+\begin{bmatrix}
+\eta_{gd,j} \\
+\eta_{ad,j}
+\end{bmatrix},
+\end{aligned}
+\end{gather*}
+$$
+
+The recursive form of the accumulated noises are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \eta_{ij} = \mathbf{A}_{j-1} \eta_{i,j-1} + \mathbf{B}_{j-1} \eta_{d,j-1},
+\end{aligned}
+\end{gather*}
+$$
+
+Where:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& A_{j-1} =
+\begin{bmatrix}
+\tilde{\Delta R}_{j-1,j}^{\top} & 0 & 0 \\
+-\tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \Delta t & I & 0 \\
+-\frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \Delta t^2 & \Delta t I & I
+\end{bmatrix},
+
+B_{j-1} =
+\begin{bmatrix}
+J_{r,j-1} \Delta t & 0 \\
+0 & \tilde{\Delta R}_{i,j-1} \Delta t \\
+0 & \frac{1}{2} \tilde{\Delta R}_{i,j-1} \Delta t^2
+\end{bmatrix}.
+\end{aligned}
+\end{gather*}
+$$
+
+The covariance is accumulated as well:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Sigma_{i,k+1} = A_{k+1} \Sigma_{i,k} A_{k+1}^{\top} + B_{k+1} \text{Cov}(\eta_{d,k}) B_{k+1}^{\top},
+\end{aligned}
+\end{gather*}
+$$
+
+Note that $A_{k+1}$ is close to identity, rotational noises are solely added up by incremental rotational noises. Noises of the velocity and positional parts primarily come from themselves.

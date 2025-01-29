@@ -2,7 +2,7 @@
 layout: post
 title: Electronics - General Electronics Notes
 subtitle: Encoders, Motors, Testing
-date: '2017-06-04 13:19'
+date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
     - Electronics
