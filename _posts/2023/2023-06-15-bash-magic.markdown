@@ -83,3 +83,9 @@ for key in "${!bags_link_lookup[@]}"; do
 done
 echo "Done Downloading"
 ```
+
+## Error Handling
+
+Trap an error:
+- `set -e` will exits the parent shell immediately upon an error
+- `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell

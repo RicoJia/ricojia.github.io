@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys
+subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys, UART, Tmux
 comments: true
 tags:
     - Linux
@@ -107,3 +107,23 @@ pinctrl_uart3: uart3grp {
 - To check pins at runtime: `cat /sys/kernel/debug/pinctrl/*/pins | grep UART`
 
 `dmesg` (diagnostic message) prints **kernel ring buffer** that contains system logs for: boot process, hardware detection (UART, I2C, SPI, etc.), driver loading, kernel errors.
+
+## UART Setup
+
+- UART communication is typically a point-to-point protocol, meaning only one device should transmit (TX) while another listens (RX). However, UART is Push-Pull (actively driving line High/Low), not open-drain (like I2C), this could result in electrical conflicts.
+    - Indeterminate bus values (data corruption)
+    - High current draw (power dissipation due to short circuits?), and possible hardware damage
+
+- Setting a processor pin to `GPIO` is safer, because it doesn't drive the bus. Instead it uses pull-up resistors or open-drain config.
+    - When the GPIO pin is set to input, it has high impedance.
+
+
+## Tmux
+- `Ctrl + b, w`: all windows
+- `Ctrl + b, n`: next window, `Ctrl + b, p`: previous window, `Ctrl + b, <number>`: numbered window
+- `Ctrl + b, arrow`
+- Horizontal split: `Ctrl + b, "`, vertical split: `Ctrl + b, %`
+- scroll up: `c-b [`
+```
+tmux attach-session -t <WINDOW_NUM_OPTIONAL>
+```

@@ -44,3 +44,7 @@ sudo chmod a+rw /dev/ttyUSB0
 - Also, in Arduino, the timing for decoding might be messed up for serial. Hit the start button for serial to work properl
 
 - `numBytesWaiting = SERIAL_GAS_DETECT.available();` is the hardware serial interface. returns number of available bytes in the serial receive buffer.
+
+- Teensy sketch uploads could corrupt Serial... One Can do a file checksum on the host linux machine, using `md5sum`
+
+- "lockable teensy" is to clone hex dump. (defined in PRJC)
