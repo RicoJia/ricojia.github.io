@@ -447,3 +447,23 @@ $$
 $$
 
 Note that $A_{k+1}$ is close to identity, rotational noises are solely added up by incremental rotational noises. Noises of the velocity and positional parts primarily come from themselves.
+
+## Update Pre-integration When Updating Biases
+
+Pre-integration parts are functions are functions `w.r.t` gyro and acceleration biases: $b_{g,i}, b_{a,i}$. In graph optimization, we would usually need to update these bias terms. So how do we update the preintegration terms? **The trick is again, linearization: we assume each pre-integration term can be approximated linearly**
+
+Recall:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \tilde{\Delta R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)
+
+\\ &
+\rightarrow \text{with bias update}
+
+\\ &
+\tilde{\Delta R_{ij}}(b_{g,i} + \delta b_{g,i}) = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}  - \delta b_{g,i}) \Delta t) :\approx \tilde{\Delta R_{ij}}(b_{g,i}) Exp(\frac{\partial \Delta R_{ij}}{\partial b_{g,i}} \delta b_{g,i})
+\end{aligned}
+\end{gather*}
+$$
