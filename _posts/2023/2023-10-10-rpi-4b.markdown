@@ -79,7 +79,7 @@ lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
 
 Ubuntu core is a light-weight Ubuntu system for IoT. 
 
-**IMPORTANT: Enable Password Login (at least temporarily)**
+### IMPORTANT: Enable Password Login (at least temporarily)
 
 - Add SSH Key: Ubuntu One account just adds a trustable device to the device. **But Ubuntu core device doesn't sync with it.**. This means if we don't enable password login, the device on Ubuntu One will be the only machine that can log onto the IoT Device. 
 - To enable password login:
@@ -94,5 +94,46 @@ Ubuntu core is a light-weight Ubuntu system for IoT.
         sudo passwd <USERNAME>
         ```
 
+### Git and Docker
 
+First, let's download docker: `sudo snap install docker`. Then, we need to create a `group docker`
+
+- [create new group](https://askubuntu.com/questions/872621/how-do-you-modify-group-membership-in-ubuntu-core)
+- `sudo groupadd --system --extrausers test`. Ubuntu core manages group membership in `/var/lib/extrausers`
+- `sudo usermod -aG docker $USER`
+- `getent group|grep docker`  can verify that we have been truly added to the docker group.
+- This is significant, because otherwise, all dockers need to be launched with `sudo!!`.
+
+~~On Ubuntu Core, it's common to use the `alpine/git` docker image to do `git` (because `git` is not in the snapstore)~~
+
+~~- without `USER` being in the docker group, all git commands actually go through `sudo docker run ....`, which will set up repos in `root`~~
+
+
+### Enable Serial
+
+- `sudo usermod -a -G dialout $(whoami)`
+- config.txt and cmdline.txt files moved to ` /run/mnt/ubuntu-seed/`. Open the config.txt file with a text editor:
+
+    ```
+    sudo nano /run/mnt/ubuntu-seed/config.txt
+    # Add or update the following lines to enable the UART:
+
+    enable_uart=1
+    dtoverlay=disable-bt
+
+    ```
+    - `enable_uart=1`: Enables UART on the Pi.
+    - `dtoverlay=disable-bt`: Disables the Bluetooth module to free up the serial port.
+
+- Edit `cmdline.txt`: `sudo nano /run/mnt/ubuntu-seed/cmdline.txt`
+
+    - Find the line that starts with console= and make sure it includes `console=serial0,115200`. If it's missing, add it. The final line might look something like this: `console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 ro fsck.repair=yes net.ifnames=0`
+
+- Reboot the Pi
+- Verify Serial Connection `ls -l /dev/serial*`. You should see entries like /dev/serial0 or /dev/ttyAMA0.
+- If there's a serial permission denied issue, it seems to be resolved by running `sudo...`
+    ```
+    raise SerialException("Could not configure port: {}".format(msg))
+serial.serialutil.SerialException: Could not configure port: (5, 'Input/output error')
+    ```
 
