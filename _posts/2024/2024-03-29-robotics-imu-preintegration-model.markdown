@@ -451,6 +451,8 @@ Note that $A_{k+1}$ is close to identity, rotational noises are solely added up 
 
 Pre-integration parts are functions are functions `w.r.t` gyro and acceleration biases: $b_{g,i}, b_{a,i}$. In graph optimization, we would usually need to update these bias terms. So how do we update the preintegration terms? **The trick is again, linearization: we assume each pre-integration term can be approximated linearly**
 
+### Jacobian of Rotational Part w.r.t Gyro Bias 
+
 Recall:
 
 $$
@@ -497,6 +499,154 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} = \text{Exp} \left( -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t \right)
+
+\\ &
+\text{Where inside the exponent:}
+
+\\ &
+-\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t
+
+\\ &
+= - \sum_{k=i}^{j-2} \Delta \tilde{R}_{k+1,j}^{\top} J_{r,k} \Delta t - \Delta \tilde{R}_{j,j}^{\top} J_{r,j-1} \Delta t,
+
+\\ &
+= - \sum_{k=i}^{j-2} \left( \Delta \tilde{R}_{k+1,j-1} \Delta \tilde{R}_{j-1,j} \right)^{\top} J_{r,k} \Delta t - J_{r,j-1} \Delta t,
+
+\end{aligned}
+\end{gather*}
+$$
+
+Written recursively:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} =
+\Delta \tilde{R}_{j-1,j}^{\top} \frac{\partial \Delta \tilde{R}_{i,j-1}}{\partial b_{g,i}} - J_{r,k} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+### Jacobian of Velocity Part w.r.t Gyro Bias And Accelerometer Bias
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta \tilde{v}_{ij} (b_{g,i} + \delta b_{g,i}, \mathbf{b}_{a,i} + \delta b_{a,i}) :=
+\Delta \tilde{v}_{ij} (b_{g,i}, \mathbf{b}_{a,i}) + \frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{g,i}} \delta b_{g,i} + \frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{a,i}} \delta b_{a,i},
+
+\\ &
+\rightarrow
+
+\\ &
+= \Delta \tilde{v}_{ij} (b_i + \delta b_i) =
+\sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} (b_{g,i} + \delta b_{g,i}) (\tilde{a}_k - b_{a,i} - \delta b_{a,i}) \Delta t,
+
+\\ &
+= \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \text{Exp} \left( \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \delta b_{g,i} \right) (\tilde{a}_k - b_{a,i} - \delta b_{a,i}) \Delta t,
+
+\\ &
+\approx \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \left( I + \left( \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \delta b_{g,i} \right)^{\wedge} \right) (\tilde{a}_k - b_{a,i} - \delta b_{a,i}) \Delta t,
+
+\\ &
+\approx \Delta \tilde{v}_{ij} - \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \Delta t \delta b_{a,i} - \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} (\tilde{a}_k - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t \delta b_{g,i},
+
+\\ &
+= \Delta \tilde{v}_{ij} + \frac{\partial \Delta v_{ij}}{\partial b_{a,i}} \delta b_{a,i} + \frac{\partial \Delta v_{ij}}{\partial b_{g,i}} \delta b_{g,i}.
+
+\end{aligned}
+\end{gather*}
+$$
+
+So, the velocity Jacobian is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{a,i}} =
+- \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \Delta t,
+
+\\ &
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{g,i}} =
+- \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} (\tilde{a}_k - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+
+Written recursively:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{a,i}} =
+\frac{\partial \Delta \tilde{v}_{i,j-1}}{\partial b_{a,i}} - \Delta \tilde{R}_{i,j-1} \Delta t,
+
+\\ &
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{g,i}} =
+\frac{\partial \Delta \tilde{v}_{i,j-1}}{\partial b_{g,i}} - \Delta \tilde{R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{i,j-1}}{\partial b_{g,i}} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+### Jacobian of Position Part w.r.t Gyro Bias And Accelerometer Bias
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Delta \tilde{p}_{ij} (b_{g,i} + \delta b_{g,i}, \mathbf{b}_{a,i} + \delta b_{a,i}) =
+\Delta \tilde{p}_{ij} (b_{g,i}, \mathbf{b}_{a,i}) + \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}} \delta b_{g,i} + \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{a,i}} \delta b_{a,i}.
+
+\\ &
+\rightarrow
+
+\\ &
+
+
+\Delta \tilde{p}_{ij} (b_i + \delta b_i) \approx 
+\sum_{k=i}^{j-1} \left[ \left( \Delta \tilde{v}_{ik} + \frac{\partial \Delta v_{ik}}{\partial b_{a,i}} \delta b_{a,i} + \frac{\partial \Delta v_{ik}}{\partial b_{g,i}} \delta b_{g,i} \right) \Delta t + \right.
+
+\\ &
+\left. \frac{1}{2} \Delta \tilde{R}_{ik} \left( I + \left( \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \delta b_{g,i} \right)^{\wedge} \right) (\tilde{a}_k - b_{a,i} - \delta b_{a,i}) \Delta t^2 \right],
+
+\\ &
+\approx \Delta \tilde{p}_{ij} + \sum_{k=i}^{j-1} \left[ \frac{\partial \Delta v_{ik}}{\partial b_{a,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} \Delta t^2 \right] \delta b_{a,i} +
+
+\\ &
+\sum_{k=i}^{j-1} \left[ \frac{\partial \Delta v_{ik}}{\partial b_{g,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} (\tilde{a}_k - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t^2 \right] \delta b_{g,i},
+
+\\ &
+= \Delta \tilde{p}_{ij} + \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{a,i}} \delta b_{a,i} + \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}} \delta b_{g,i}.
+
+\end{aligned}
+\end{gather*}
+$$
+
+So the Jacobians of position part w.r.t. Gyro Bias and Accelerometer Bias are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{a,i}} =
+\sum_{k=i}^{j-1} \left[ \frac{\partial \Delta v_{ik}}{\partial b_{a,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} \Delta t^2 \right],
+
+\\ &
+\frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}} =
+\sum_{k=i}^{j-1} \left[ \frac{\partial \Delta v_{ik}}{\partial b_{g,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} (\tilde{a}_k - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t^2 \right].
+\end{aligned}
+\end{gather*}
+$$
+
+Written recursively:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{a,i}} =
+\frac{\partial \Delta \tilde{p}_{i,j-1}}{\partial b_{a,i}} + \frac{\partial \Delta \tilde{v}_{i,j-1}}{\partial b_{a,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{i,j-1} \Delta t^2,
+
+\\ &
+\frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}} =
+\frac{\partial \Delta \tilde{p}_{i,j-1}}{\partial b_{g,i}} + \frac{\partial \Delta \tilde{v}_{i,j-1}}{\partial b_{g,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{i,j-1}}{\partial b_{g,i}} \Delta t^2.
 \end{aligned}
 \end{gather*}
 $$
