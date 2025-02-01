@@ -142,17 +142,16 @@ $$
 
 Where the accumulated observed rotation part is $\Delta \tilde{R}_{i,j}$
 
-#### I'm not sure about... TODO: 
-
-- Is this similarity transformation??
+#### The above is to use [this property](../2017/2017-02-19-lie-group.markdown) to move rotation matrices to the right:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& Exp(A)R = RExp(R^TA)
+& R^T \text{Exp}(\phi) R = \text{Exp}(R^T \phi)
 \end{aligned}
 \end{gather*}
 $$
+
 
 ### Velocity Model
 
@@ -478,16 +477,26 @@ $$
 = \text{Exp} \left( (\tilde{\omega}_i - b_{g,i}) \Delta t \right) \text{Exp} \left( -J_{r,i} \delta b_{g,i} \Delta t \right) \text{Exp} \left( (\tilde{\omega}_{i+1} - b_{g,i}) \Delta t \right) \text{Exp} \left( -J_{r,i+1} \delta b_{g,i} \Delta t \right) \cdots
 
 \\ &
-= \Delta \tilde{R}_{i,i+1} \text{Exp} \left( -J_{r,i} \delta b_{g,i} \Delta t \right) \Delta \tilde{R}_{i+1,i+2} \left( -J_{r,i+1} \delta b_{g,i} \Delta t \right) \dots,
+= \Delta \tilde{R}_{i,i+1} \text{Exp} \left( -J_{r,i} \delta b_{g,i} \Delta t \right) \Delta \tilde{R}_{i+1,i+2} \text{Exp}\left( -J_{r,i+1} \delta b_{g,i} \Delta t \right) \dots,
 
 \\ &
-= \tilde{R}_{i,j+1} \tilde{R}_{i+1,i+2} \text{Exp} \left( - \tilde{R}_{r,j}^\top J_{r,j} \delta b_{g,i} \Delta t \right) \dots,
+= \Delta \tilde{R}_{i,i+1} \Delta \tilde{R}_{i+1,i+2} \text{Exp} \left( - \tilde{R}_{i+1,i+2}^\top J_{r,j} \delta b_{g,i} \Delta t \right) \dots,
 
 \\ &
 = \Delta \tilde{R}_{i,j} \prod_{k=i}^{j-1} \text{Exp} \left( -\Delta \tilde{R}_{k+1,j}^\top J_{r,k} \delta b_{g,i} \Delta t \right),
 
 \\ &
 \approx \Delta \tilde{R}_{i,j} \text{Exp} \left( -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t \delta b_{g,i} \right).
+\end{aligned}
+\end{gather*}
+$$
+
+THe last step makes use of the fact that when angles are small, Jacobian $J \approx I $. So, multiplying them all together is approx adding up the angles in $Exp()$ So this gives the general Jacobian of the rotation part w.r.t gyro bias:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} = \text{Exp} \left( -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t \right)
 \end{aligned}
 \end{gather*}
 $$
