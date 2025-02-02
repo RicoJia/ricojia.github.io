@@ -715,7 +715,15 @@ Now, the question is: what's the Jacobian of each residual, with respect to each
 
 To find the Jacobian, (the first order partial derivatives), we can go back to the original definition of derivative:
 
-TODO: lim R(phi)/ phi
+$$
+\begin{gather*}
+\begin{aligned}
+& J = \lim_{\phi \to 0} \frac{r_{\Delta R_{ij}}(R(\phi)) - r_{\Delta R_{ij}}(R)}{\phi}
+\end{aligned}
+\end{gather*}
+$$
+
+Where $R(\phi)$ represents the perturbed rotation.
 
 By using [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) and the BCH formula, we can write out the right perturbation of $\phi_i$
 
@@ -756,3 +764,138 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+Meanwhile, the rotational error is a function of gyro bias $b_g$ as well. In an arbitrary iteration, we calculate a correction $\delta b_g$. When calculating the Jacobian (for the next iteration update), we need to take that into account as well:
+
+$$
+\begin{gather*}
+\begin{aligned}
+r_{\Delta R_{ij}}(b_{g,i} + \delta b_{g,i} + \tilde{\delta} b_{g,i}) &= \log \left( \left( \Delta \tilde{R}_{ij} \operatorname{Exp} \left( \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} (\delta b_{g,i} + \tilde{\delta} b_{g,i}) \right) \right)^{\top} R_i^{\top} R_j \right), \\
+&\overset{\text{BCH}}{\approx} \log \left( \left( \underbrace{\Delta \tilde{R}_{ij} \operatorname{Exp} \left( \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} \delta b_{g,i} \right) \operatorname{Exp} \left( J_{r,b} \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} \tilde{\delta} b_{g,i} \right)}_{\tilde{R}_{ij}'} \right)^{\top} R_i^{\top} R_j \right), \\
+&= \log \left( \operatorname{Exp} \left( - J_{r,b} \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} \tilde{\delta} b_{g,i} \right) (\Delta \tilde{R}_{ij}')^{\top} R_i^{\top} R_j \right), \\
+&= \log \left( \operatorname{Exp} \left( r'_{\Delta R_{ij}} \right) \operatorname{Exp} \left( - \operatorname{Exp} \left( r'_{\Delta R_{ij}} \right)^{\top} J_{r,b} \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} \tilde{\delta} b_{g,i} \right) \right), \\
+&\approx r'_{\Delta R_{ij}} - J_r^{-1} (r'_{\Delta R_{ij}})^{\top} J_{r,b} \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}} \tilde{\delta} b_{g,i}.
+\end{aligned}
+\end{gather*}
+$$
+
+So the partial derivative of the rotational part w.r.t gyro bias $b_g$ is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\frac{\partial r_{\Delta R_{ij}}}{\partial b_i} = - J_r^{-1} (r'_{\Delta R_{ij}})^{\top} J_{r,b} \frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}}
+\end{aligned}
+\end{gather*}
+$$
+
+### Jacobians of the Velocity Part
+
+Since:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& r_{\Delta v_{ij}} = R_i^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) - \Delta \tilde{v}_{ij}
+\end{aligned}
+\end{gather*}
+$$
+
+The Jacobians w.r.t to $v_i$, $v_j$ are very intuitive,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial r_{\Delta v_{i,j}}}{\partial v_i} = -R_i^T
+\\ &
+\frac{\partial r_{\Delta v_{i,j}}}{\partial v_j} = R_i^T
+\end{aligned}
+\end{gather*}
+$$
+
+For rotation, we simply use first order expansion:
+
+$$
+\begin{gather*}
+\begin{aligned}
+r_{\Delta v_{ij}} \left( R_i \operatorname{Exp}(\delta \phi_i) \right) &= \left( R_i \operatorname{Exp}(\delta \phi_i) \right)^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) - \Delta \tilde{v}_{ij}, \\
+&= \left( I - \delta \phi_i^{\wedge} \right) R_i^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) - \Delta \tilde{v}_{ij}, \\
+&= r_{\Delta v_{ij}} \left( R_i \right) + \left( R_i^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) \right)^{\wedge} \delta \phi_i.
+\end{aligned}
+\end{gather*}
+$$
+
+For velocity, recall that the Jacobian of the "observed" velocity part w.r.t biases are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{a,i}} &= - \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \Delta t, \\
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{g,i}} &= - \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \left( \tilde{a}_k - b_{a,i} \right)^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+Since in $r_{\Delta v_{ij}}$, only the $-\Delta \tilde{v}_{ij}$ is a function of the biases,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& r_{\Delta v_{ij}} = R_i^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) - \Delta \tilde{v}_{ij}
+\end{aligned}
+\end{gather*}
+$$
+
+We can get:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\frac{\partial r_{\Delta v_{i,j}}}{\partial b_{a,i}} &= \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \Delta t, \\
+\frac{\partial r_{\Delta v_{i,j}}}{\partial b_{g,i}} &= \sum_{k=i}^{j-1} \Delta \tilde{R}_{ik} \left( \tilde{a}_k - b_{a,i} \right)^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t.
+\end{aligned}
+\end{gather*}
+$$
+
+### Jacobians of the Position Part
+
+Using First order taylor expansion, it's easy to get:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\frac{\partial r_{\Delta p_{ij}}}{\partial p_i} &= - R_i^{\top}, \\
+\frac{\partial r_{\Delta p_{ij}}}{\partial p_j} &= R_i^{\top}, \\
+\frac{\partial r_{\Delta p_{ij}}}{\partial v_i} &= - R_i^{\top} \Delta t_{ij}, \\
+\frac{\partial r_{\Delta p_{ij}}}{\partial \phi_i} &= \left( R_i^{\top} \left( p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g \Delta t_{ij}^2 \right) \right)^{\wedge}.
+\end{aligned}
+\end{gather*}
+$$
+
+And for the biases, we simply reverse the signs just like the velocity part:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\frac{\partial r_{\Delta p_{i,j}}}{\partial b_{a,i}} &= -\sum_{k=i}^{j-1} \left[ \frac{\partial \Delta \tilde{v}_{ik}}{\partial b_{a,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} \Delta t^2 \right], \\
+\frac{\partial r_{\Delta p_{i,j}}}{\partial b_{g,i}} &= -\sum_{k=i}^{j-1} \left[ \frac{\partial \Delta \tilde{v}_{ik}}{\partial b_{g,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{ik} \left( \tilde{a}_k - b_{a,i} \right)^{\wedge} \frac{\partial \Delta \tilde{R}_{ik}}{\partial b_{g,i}} \Delta t^2 \right].
+\end{aligned}
+\end{gather*}
+$$
+
+### Formulation
+
+In a graph optimization systems, we have keyframes.
+
+1. Given the current estimates of biases, we can adjust the pre-integration in a linear manner.
+1. The residuals are edges (constraints) between nodes.
+
+When a new IMU data comes in:
+
+1. Calculate $\Delta R_{ij}, \Delta v_{ij}, \Delta p_{ij}$
+1. Calculate noise covariances as the information matrices for the graph optimization
+1. Jacobians of Pre-integration w.r.t biases (so we can update them in a linear manner): $\frac{\partial \Delta \tilde{R}_{ij}}{\partial b_{g,i}},
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{a,i}},
+\frac{\partial \Delta \tilde{v}_{ij}}{\partial b_{g,i}},
+\frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{a,i}},
+\frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}}$
