@@ -91,9 +91,16 @@ Then, we given an initial set of estimate $X$, we want to apply a step size $\De
 
 $$
 \begin{gather*}
+\begin{aligned}
+& \text{Approximating F(x) to find its minimum more easily:}
+
+\\ &
 F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
-\\ = (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
-\\ = C + 2b \Delta X + \Delta X^T H \Delta X
+\\ &
+\approx (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
+\\ &
+= C + 2b \Delta X + \Delta X^T H \Delta X
+\end{aligned}
 \end{gather*}
 $$
 

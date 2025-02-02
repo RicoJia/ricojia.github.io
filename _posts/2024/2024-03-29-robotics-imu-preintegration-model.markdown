@@ -32,7 +32,7 @@ $$
 \\ &
 v_j = v_i +g_k \Delta t_{ij} + \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 \\ &
-p_j = p_i + \sum_{k=i}^{j-1} v_k \Delta t + \frac{1}{2} g_k \Delta t_{ij}^2 + \frac{1}{2} \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2 
+p_j = p_i + \sum_{k=i}^{j-1} v_k \Delta t + \frac{1}{2} g_k \Delta t_{ij}^2 + \frac{1}{2} \sum_{k=i}^{j-1} R_k (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2
 \tag{1}
 \end{gather*}
 $$
@@ -43,11 +43,11 @@ $$
 Pre-integration is a standard method that's used in tightly-coupled LIO and VIO systems. We can easily find intermidate state variables (pre-integration factors) that do not rely on state variables? (TODO, and review below as well)
 
 1. Pre-integrate all measurements into compact pre-integration factors.
-2. On each optimizer iteration, upon receving an update, apply the linearized updates to state variables. 
+2. On each optimizer iteration, upon receving an update, apply the linearized updates to state variables.
 
 ## Definitions of Intermediate Variables
 
-To make $(1)$ easier, we accumulate intermediate values that are separate from absolute state values. These intermediate values are defined by moving absolute state terms to the left. These are what pre-integration integrates. Note that they share the same physical units as the rotation, velocity, and position, but they are just intermediate values without clear physical meanings: 
+To make $(1)$ easier, we accumulate intermediate values that are separate from absolute state values. These intermediate values are defined by moving absolute state terms to the left. These are what pre-integration integrates. Note that they share the same physical units as the rotation, velocity, and position, but they are just intermediate values without clear physical meanings:
 
 $$
 \begin{gather*}
@@ -56,21 +56,21 @@ $$
 \\ &
 \Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 \\ &
-\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2 
+\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2
 \end{aligned}
 \end{gather*}
 $$
 
 - The "rotation part" $\Delta R_{ij}$ is the accumulated rotation between i, j
 - The "velocity part" $\Delta v_{ij}$ and the "position part" $\Delta p_{ij}$ are less intuitive. But all three values start at 0 at ith time. They are in the forms of product or sum, which makes later linearization with Jacobian easier.
-    - With linearization, we can just apply correction terms based if bias terms like $b_{a} changes.
+  - With linearization, we can just apply correction terms based if bias terms like $b_{a} changes.
 - All three values are independent of absolute state variables
 
 ## Pre-integration Model
 
 ### Rotation Model
 
-Using the BCH approximation: 
+Using the BCH approximation:
 
 $$
 \begin{gather*}
@@ -92,7 +92,7 @@ $$
 \end{gather*}
 $$
 
-- Measured rotation part is: $\Delta  \tilde{R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)$. 
+- Measured rotation part is: $\Delta  \tilde{R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)$.
 
 - Using:
 
@@ -109,7 +109,7 @@ The above becomes:
 $$
 \begin{gather*}
 \begin{aligned}
-& \Delta R_{ij} = Exp \left( (\tilde{\omega}_i - b_{g,i}) \Delta t \right) 
+& \Delta R_{ij} = Exp \left( (\tilde{\omega}_i - b_{g,i}) \Delta t \right)
 Exp \left( -J_{r,i} \eta_{gd,i} \Delta t \right)
 \underbrace{Exp \left( (\tilde{\omega}_{i+1} - b_{g,i}) \Delta t \right)}_{\Delta \tilde{R}_{i+1,i+2}}
 Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right)\cdots ,
@@ -142,7 +142,7 @@ $$
 
 Where the accumulated observed rotation part is $\Delta \tilde{R}_{i,j}$
 
-#### The above is to use [this property](../2017/2017-02-19-lie-group.markdown) to move rotation matrices to the right:
+#### The above is to use [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) to move rotation matrices to the right
 
 $$
 \begin{gather*}
@@ -151,7 +151,6 @@ $$
 \end{aligned}
 \end{gather*}
 $$
-
 
 ### Velocity Model
 
@@ -168,13 +167,13 @@ $$
 \\ &
 \approx \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (I -\delta \phi_{i,k}) (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 
-\\& 
+\\&
 = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t + \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} - \eta_{ad, k})^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k}
 
 \\ &
 \text{Defining velocity observation:}
 
-\\ & 
+\\ &
 \Delta \tilde{v_{ij}} = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t
 
 \\ &
@@ -184,7 +183,7 @@ $$
 \rightarrow = \Delta \tilde{v_{ij}} +  \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} )^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t
 
 \\ &
-=  \Delta \tilde{v_{ij}} - \delta v_{i,j} 
+=  \Delta \tilde{v_{ij}} - \delta v_{i,j}
 
 \end{aligned}
 \end{gather*}
@@ -197,15 +196,15 @@ For position, we plug the above into the formula. Similarly, we apply the first 
 $$
 \begin{gather*}
 \begin{aligned}
-& 
-\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) = 
+&
+\Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) =
 
 \\ &
 
 = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2
 
 \\ &
-= \sum_{k=i}^{j-1} (\Delta \tilde{v_{ij}} - \delta v_{i,j} )\Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2 
+= \sum_{k=i}^{j-1} (\Delta \tilde{v_{ij}} - \delta v_{i,j} )\Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2
 
 \\ &
 - \delta v_{ik} \Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 - \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
@@ -245,7 +244,7 @@ $$
 \end{gather*}
 $$
 
-So, in short, the accumulated observations can be reasonably easy to add up / multiply. The right-hand-side of the accumlated observations are easy to form edges in a graph for Least-Square-Error problems between nodes. Now the question is, are the noises Gaussian? If so, how large are they? 
+So, in short, the accumulated observations can be reasonably easy to add up / multiply. The right-hand-side of the accumlated observations are easy to form edges in a graph for Least-Square-Error problems between nodes. Now the question is, are the noises Gaussian? If so, how large are they?
 
 ## IMU Preintegration Noise Model
 
@@ -255,13 +254,13 @@ $$
 \begin{gather*}
 \begin{aligned}
 & Exp \left(-\delta \phi_{i,j} \right) = \prod_{k=i}^{j-1}
-Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) 
+Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
 
 \end{aligned}
 \end{gather*}
 $$
 
-Now let's get 
+Now let's get
 
 $$
 \begin{gather*}
@@ -276,8 +275,8 @@ By using BCH for right perturbation:
 
 $$
 \begin{gather*}
-C = ln(exp(A^{\land}) exp(B^{\land})) = 
-J_r^{-1}(A)B + A 
+C = ln(exp(A^{\land}) exp(B^{\land})) =
+J_r^{-1}(A)B + A
 \end{gather*}
 $$
 
@@ -291,7 +290,7 @@ $$
 \end{gather*}
 $$
 
-The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance. We can show that the covariance is a recursive form, too. 
+The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance. We can show that the covariance is a recursive form, too.
 
 $$
 \begin{gather*}
@@ -303,7 +302,6 @@ $$
 \\ &
 
 = \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + J_{r,j-1} \eta_{gd,j-1} \Delta t,
-
 
 \\ & \text{Since:}
 \tilde{\Delta R}_{k+1,j}^{\top} = \left( \tilde{\Delta R}_{k+1,j-1} \tilde{\Delta R}_{j-1,j} \right)^{\top}
@@ -389,7 +387,7 @@ $$
 \end{gather*}
 $$
 
-Noise of biases into a vector: 
+Noise of biases into a vector:
 
 $$
 \begin{gather*}
@@ -451,7 +449,7 @@ Note that $A_{k+1}$ is close to identity, rotational noises are solely added up 
 
 Pre-integration parts are functions are functions `w.r.t` gyro and acceleration biases: $b_{g,i}, b_{a,i}$. In graph optimization, we would usually need to update these bias terms. So how do we update the preintegration terms? **The trick is again, linearization: we assume each pre-integration term can be approximated linearly**
 
-### Jacobian of Rotational Part w.r.t Gyro Bias 
+### Jacobian of Rotational Part w.r.t Gyro Bias
 
 Recall:
 
@@ -573,7 +571,6 @@ $$
 \end{gather*}
 $$
 
-
 Written recursively:
 
 $$
@@ -602,8 +599,7 @@ $$
 
 \\ &
 
-
-\Delta \tilde{p}_{ij} (b_i + \delta b_i) \approx 
+\Delta \tilde{p}_{ij} (b_i + \delta b_i) \approx
 \sum_{k=i}^{j-1} \left[ \left( \Delta \tilde{v}_{ik} + \frac{\partial \Delta v_{ik}}{\partial b_{a,i}} \delta b_{a,i} + \frac{\partial \Delta v_{ik}}{\partial b_{g,i}} \delta b_{g,i} \right) \Delta t + \right.
 
 \\ &
@@ -648,6 +644,115 @@ $$
 \\ &
 \frac{\partial \Delta \tilde{p}_{ij}}{\partial b_{g,i}} =
 \frac{\partial \Delta \tilde{p}_{i,j-1}}{\partial b_{g,i}} + \frac{\partial \Delta \tilde{v}_{i,j-1}}{\partial b_{g,i}} \Delta t - \frac{1}{2} \Delta \tilde{R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^{\wedge} \frac{\partial \Delta \tilde{R}_{i,j-1}}{\partial b_{g,i}} \Delta t^2.
+\end{aligned}
+\end{gather*}
+$$
+
+## Using Pre-Integration Terms as Edges in Graph Optimization
+
+Formulating a graph optimization problem using pre-integration (as edges) and states as nodes is quite flexible. [Recall that from here](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/) that a graph optimization problem is formulated as:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& F(X) = \sum_{i \leq 6, j \leq 6} (r_{ij})^T \Omega r_{ij}
+
+\\ &
+\text{Approximating F(x) to find its minimum more easily:}
+
+F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
+\\ &
+\approx (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
+\\ &
+= C + 2b \Delta X + \Delta X^T H \Delta X
+
+\\ &
+\text{Where:}
+
+\\ &
+J = \frac{\partial r_{ij}}{\partial(X)}
+
+\\ &
+H = \sum_{ij} H_{ij} = \sum_{ij} J^T_{ij} \Omega J_{ij} \text{(Gauss Newton)}
+\\ &
+\text{OR}
+\\ &
+H = \sum_{ij} H_{ij} = \sum_{ij} (J^T_{ij} \Omega J_{ij} + \lambda I) \text{(Levenberg-Marquardt)}
+\end{aligned}
+\end{gather*}
+$$
+
+One way is to use a single node to encompass all states. That however, would create a giant Jacobian & Hessian for the problem, but in the meantime there are a lot of zeros in them. So now we use separate nodes for each state.
+
+**The error, a.k.a residual**, can be defined flexibly as well. Here, we define it to be the `difference` between the integration terms calculated from our state estimates, and the ones come from our IMU (but with $b_g$ and $b_a$).
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/474a4208-f8d7-418e-ad3a-bbad92478217" height="300" alt=""/>
+        <figcaption>Source: 深蓝学院</figcaption>
+    </figure>
+</p>
+</div>
+
+So formally, we define our residuals to be:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& r_{\Delta R_{ij}} = \log \left( \Delta \tilde{R}_{ij}^{\top} \left( R_i^{\top} R_j \right) \right),
+\\ &
+r_{\Delta v_{ij}} = R_i^{\top} \left( v_j - v_i - g \Delta t_{ij} \right) - \Delta \tilde{v}_{ij}
+\\ &
+r_{\Delta p_{ij}} = R_i^{\top} \left( p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g \Delta t_{ij}^2 \right) - \Delta \tilde{p}_{ij}.
+\end{aligned}
+\end{gather*}
+$$
+
+Now, the question is: what's the Jacobian of each residual, with respect to each element?
+
+### Jacobian of the Rotation Part w.r.t Angles
+
+To find the Jacobian, (the first order partial derivatives), we can go back to the original definition of derivative:
+
+TODO: lim R(phi)/ phi
+
+By using [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) and the BCH formula, we can write out the right perturbation of $\phi_i$
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \begin{aligned}
+r_{\Delta R_{ij}}(R_i \operatorname{Exp}(\phi_i)) &= \log \left( \Delta \tilde{R}_{ij} \left( (R_i \operatorname{Exp}(\phi_i))^{\top} R_j \right) \right), \\
+&= \log \left( \Delta \tilde{R}_{ij} \operatorname{Exp}(-\phi_i) R_i^{\top} R_j \right), \\
+&= \log \left( \Delta \tilde{R}_{ij} R_i^{\top} R_j \operatorname{Exp}(-R_i^{\top} R_j \phi_i) \right), \\
+&= r_{\Delta R_{ij}} - J_r^{-1}(r_{\Delta R_{ij}}) R_j^{\top} R_i \phi_i.
+\end{aligned}
+
+\end{aligned}
+\end{gather*}
+$$
+
+The perturbation of $\phi_j$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+r_{\Delta R_{ij}}(R_j \operatorname{Exp}(\phi_j)) &= \log \left( \Delta \tilde{R}_{ij} R_i^{\top} R_j \operatorname{Exp}(\phi_j) \right), \\
+&= r_{\Delta R_{ij}} + J_r^{-1}(r_{\Delta R_{ij}}) \phi_j.
+\end{aligned}
+\end{gather*}
+$$
+
+So the Jacobians are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial r_{\Delta R_{ij}}}{\partial \phi_i} = - J_r^{-1}(r_{\Delta R_{ij}}) R_j^{\top} R_i
+
+\\ &
+\frac{\partial r_{\Delta R_{ij}}}{\partial \phi_j} = J_r^{-1}(r_{\Delta R_{ij}})
 \end{aligned}
 \end{gather*}
 $$
