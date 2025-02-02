@@ -52,7 +52,7 @@ To make $(1)$ easier, we accumulate intermediate values that are separate from a
 $$
 \begin{gather*}
 \begin{aligned}
-& \Delta R_{ij} := R_i^T R_j \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
+& \Delta R_{ij} := R_i^T R_j = \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
 \\ &
 \Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
 \\ &
