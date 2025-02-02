@@ -7,11 +7,10 @@ header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - ROS2
-    - Docker
 comments: true
 ---
 
-## Create a ROS2 Service
+## Set up a ROS2 Service File
 
 ROS2's ament build system does not support generating `msg` and `srv` files in pure python packages. So it's a common practice to define an interface package that could be imported into pure Python Packages. 
 
@@ -74,3 +73,79 @@ ROS2's ament build system does not support generating `msg` and `srv` files in p
     #Python
     from mumble_interfaces.srv import ComputePath
     ```
+
+## Create a Service Server in Python
+
+By default, a ros service call back is not running on a separate thread. 
+
+- If we are using a single function:
+
+```python
+def motor_command(request, response):
+    print(request)
+    return response
+
+node = Node("imu_broadcaster")
+node.create_service(MotorCommand, "motor_command", motor_command)
+
+executor = MultiThreadedExecutor()
+executor.add_node(node)
+```
+
+- To validate: 
+
+``` bash
+ros2 service call /motor_command mumble_interfaces/srv/MotorCommand "{left_speed: 0.0, right_speed: 0.0, duration: 0.0}"
+```
+
+## Create a Service Client In Python
+
+- We might need to use a separate callback group (Mutually Exclusive or Reentrant) for ros services in general;
+- Note we need to spin a daemon thread for `rclpy.spin()`, which really is a thin wrapper of a default executor
+
+```python
+import rclpy
+import time
+from rclpy.node import Node
+from mumble_interfaces.srv import MotorCommand
+import threading
+
+def call_motor_service_periodically(node, client, rate_hz=1.0):
+    """Calls the motor_command service at a fixed rate."""
+    rate = node.create_rate(rate_hz)
+
+    i = 0.0
+    while rclpy.ok():
+        i+=1.0
+        request = MotorCommand.Request()
+        request.left_speed = i
+        request.right_speed = 0.0
+        request.duration = 0.0
+
+        future = client.call_async(request)
+        node.get_logger().info("Sent motor command request.")
+        # If in a class, we can pass make the class a child class of node, and pass it in.
+        print(future.result())
+        rate.sleep()
+
+def main():
+    rclpy.init()
+    node = Node('motor_command_caller')
+    client = node.create_client(MotorCommand, 'motor_command')
+    spin_thread = threading.Thread(target = rclpy.spin, args=(node, ), daemon=True)
+    spin_thread.start()
+
+    while not client.wait_for_service(timeout_sec=1.0):
+        node.get_logger().info("Waiting for service...")
+
+    try:
+        call_motor_service_periodically(node, client, rate_hz=2.0)  # Call at 2 Hz
+    except KeyboardInterrupt:
+        node.get_logger().info("Shutting down...")
+    
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
