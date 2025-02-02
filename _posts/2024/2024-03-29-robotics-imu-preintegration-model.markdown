@@ -588,6 +588,7 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
 ### Jacobian of Position Part w.r.t Gyro Bias And Accelerometer Bias
 
 $$
