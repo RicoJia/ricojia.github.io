@@ -11,7 +11,7 @@ tags:
 
 ## Motivation
 
-In [previous posts](./2024-03-25-robotics-full-eskf.markdown), we have seen the ESKF framework, where IMU data is fused with observations (GNSS, encoders) following this incremenetal order:
+In [previous posts](https://ricojia.github.io/2024/03/24/robotics-full-eskf/), we have seen the ESKF framework, where IMU data is fused with observations (GNSS, encoders) following this incremenetal order:
 
 ```
 ESKF Prediction with IMU | ESKF Prediction with IMU | ESKF update with GPS ....
