@@ -119,11 +119,17 @@ pinctrl_uart3: uart3grp {
 
 
 ## Tmux
+
 - `Ctrl + b, w`: all windows
 - `Ctrl + b, n`: next window, `Ctrl + b, p`: previous window, `Ctrl + b, <number>`: numbered window
 - `Ctrl + b, arrow`
 - Horizontal split: `Ctrl + b, "`, vertical split: `Ctrl + b, %`
 - scroll up: `c-b [`
+
 ```
 tmux attach-session -t <WINDOW_NUM_OPTIONAL>
 ```
+
+## Checksum
+
+Most zip tools have checksum check built in, even though checksum is not part of the zip format

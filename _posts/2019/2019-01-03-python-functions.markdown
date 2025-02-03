@@ -123,6 +123,17 @@ print(expensive_function(2))  # Computes and caches the result
 print(expensive_function(2))  # Returns cached result
 ```
 
+- @lru_cache only works on functions, but a class method is not a regular function until it is converted to a bound method.
+
+```python
+class MyClass:
+    @classmethod
+    @lru_cache
+    def generate_format_string(cls):
+        return "<ii5B"
+```
+
+
 `cache` came with `Python 3.9`. It simply caches results of all functions. It's equivalent to `lru_cache(maxsize=None)`
 
 ```python
@@ -136,6 +147,9 @@ def expensive_function(x):
 print(expensive_function(2))  # Computes and caches the result
 print(expensive_function(2))  # Returns cached result
 ```
+
+- `cached_property` is available Python 3.8+
+
 
 ## Run Function Only Once
 
