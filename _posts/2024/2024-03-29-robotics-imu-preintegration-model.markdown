@@ -491,18 +491,12 @@ $$
 \end{gather*}
 $$
 
-THe last step makes use of the fact that when angles are small, Jacobian $J \approx I $. So, multiplying them all together is approx adding up the angles in $Exp()$ So this gives the general Jacobian of the rotation part w.r.t gyro bias:
+The last step makes use of the fact that when angles are small, Jacobian $J \approx I $. So, multiplying them all together is approx adding up the angles in $Exp()$ So this gives the general Jacobian of the rotation part w.r.t gyro bias:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} = \text{Exp} \left( -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t \right)
-
-\\ &
-\text{Where inside the exponent:}
-
-\\ &
--\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t
+& \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} =  -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t 
 
 \\ &
 = - \sum_{k=i}^{j-2} \Delta \tilde{R}_{k+1,j}^{\top} J_{r,k} \Delta t - \Delta \tilde{R}_{j,j}^{\top} J_{r,j-1} \Delta t,
