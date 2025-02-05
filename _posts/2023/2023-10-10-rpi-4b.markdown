@@ -11,7 +11,7 @@ tags:
 
 ## Set Up Rpi For Serial Communication
 
-- Enable rpi serial:
+1. Enable rpi serial:
 
     ```
     sudo raspi-config
@@ -20,23 +20,23 @@ tags:
     1. Rpi has an option to allow a user to login to the system via serial. Choose `no`
     2. Answer YES to the question about serial hardware port.
 
-- `sudo usermod -a -G dialout $USER`
-- `/boot/config.txt`
+2. To access UART without sudo, do `sudo usermod -a -G dialout $USER`
+3. `/boot/config.txt`
 
-```bash
-enable_uart=1
-dtoverlay=disable-bt
-```
+    ```bash
+    enable_uart=1
+    dtoverlay=disable-bt
+    ```
 
-- `/boot/cmdline.txt`: remove this: `console=serial0,115200`
-- `sudo reboot`
-- `ls -l /dev/serial*` should see:
+4. `/boot/cmdline.txt`: remove this: `console=serial0,115200`
+5. `sudo reboot`
+6. `ls -l /dev/serial*` should see:
 
-```
-lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
-```
+    ```
+    lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
+    ```
 
-- do a loop back test with Tx and Rx connected together
+7. do a loop back test with Tx and Rx connected together
 
 <div style="text-align: center;">
 <p align="center">
@@ -65,6 +65,21 @@ lrwxrwxrwx 1 root root 7 Jan  3 00:00 /dev/serial0 -> ttyAMA0
 
     ser.close()
     ```
+
+UART is not GPIOs, even though on rpi4b, UART Tx, Rx are on GPIO 14, 15. This is because the UART protocol requires active toggling from the hardware UART controller.
+
+A typical UART output looks like:
+
+```
+/dev/serial0 -> ttyS0
+/dev/serial1 -> ttyAMA0
+```
+
+### Accessing GPIO Without Root 
+
+`/dev/gpiomem` allows users in the `gpio` group to access GPIO without needing sudo. 
+- `/dev/mem` allows access to all physical memory
+
 
 ## Running Docker on Rpi 4b+
 
