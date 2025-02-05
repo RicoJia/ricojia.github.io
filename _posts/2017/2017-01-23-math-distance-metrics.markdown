@@ -2,7 +2,7 @@
 layout: post
 title: Math - Distance Metrics
 subtitle: KL Divergence , Chi-Squared Similarity
-date: '2017-06-05 13:19'
+date: '2017-01-23 13:19'
 header-img: "img/bg-walle.jpg"
 tags:
     - Math
@@ -10,7 +10,7 @@ tags:
 
 ## Statistical Distance & Divergence Metrics
 
-### Kullback-Lebler (KL) Divergence
+### Kullback-Leibler (KL) Divergence
 
 Given two distributions, $p(x)$, and $q(x)$, denotes **how different $p(x)$ is from $q(x)$**, hence it further denotes **how much information will be lost when q(x) is used to represent p(x)**
 

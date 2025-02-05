@@ -2,7 +2,7 @@
 layout: post
 title: Electronics - General Science Facts
 subtitle: Adiabatic Cooling
-date: '2017-06-05 13:19'
+date: '2017-07-01 13:19'
 header-img: "img/bg-material.jpg"
 tags:
     - Electronics

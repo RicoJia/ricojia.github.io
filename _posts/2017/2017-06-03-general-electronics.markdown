@@ -16,7 +16,6 @@ EEPROM (Electrically Erasable Programmable Read-Only Memory) is a type of non-vo
 - Non-volatile (data remains in storage.)
 - Writable and erasable (Unlike traditional ROM)
 
-
 ## Motors
 
 ### Quadrature Encoders
