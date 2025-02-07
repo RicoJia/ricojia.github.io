@@ -75,7 +75,7 @@ $F(x)$ is a non-linear function, but its evaluation is a number. But it's a func
 
 To be able to apply Gauss-Newton with increments on X, we need to linearize the cost function.
 
-- For that, we first need to linearize error. We obtain Jacobian of error: $J = \frac{\partial e_{ij}}{\partial(X)}$
+- For that, we first need to linearize error. We obtain Jacobian of error at $ij$: $J_{ij} = \frac{\partial e_{ij}}{\partial(X)}$
 
   - This will expand to $J = [\frac{\partial F}{\partial(x_1)}, \frac{\partial F}{\partial(y_1)}, \frac{\partial F}{\partial(\theta_1)} ... \frac{\partial F}{\partial(\theta_n)}]$. For a specific pair of nodes $(i, j)$, only F is only determined by $e_{ij}$. So
 
@@ -86,6 +86,8 @@ To be able to apply Gauss-Newton with increments on X, we need to linearize the 
     \end{bmatrix}
     \end{gather*}
     $$
+
+It's easy to see that the final Jacobian w.r.t to all variables in X is $J = \sum_{ij} J_{ij}$
 
 Then, we given an initial set of estimate $X$, we want to apply a step size $\Delta X$ such that $F(X+\Delta X)$ is smaller. We can approximate the cost function locally with the first order taylor expansion, and get its local mimima
 
