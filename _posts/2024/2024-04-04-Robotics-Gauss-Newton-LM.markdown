@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - Gauss Newton (GN) and Levenberg Marquardt (LM) Optimizers
-date: '2024-07-11 13:19'
+date: '2024-04-14 13:19'
 subtitle: Newton's Method, GN, LM optimizers
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
