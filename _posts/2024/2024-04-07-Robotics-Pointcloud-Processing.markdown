@@ -62,3 +62,11 @@ Some point clouds have meta data such as reflectance (intensity), RGB, etc. Refl
     - `azimuth = rotational_position * 0.01 deg / 180 deg * pi` (Velodyne lidar azimuth increments in 0.01 deg)
     - `range = array[array_index]`
 - In total, we need `2 + 2 + 32 *3 = 100 bytes` to represent the LiDAR Data. If we use the `pcl::PointCloud`, each point would be [x, y, z, intensity], and that's `32 * (4 + 4 + 4 + 1) = 416bytes`. **So packets are compressed LiDAR data.**
+
+Aside from 3D Point Cloud, another 3D representation is a Surface Element Map (Surfel). A surface element is a small 3D patch that contains: 
+
+- `x,y,z`
+- Surface normal vector
+- Color / texture
+- Size / Radius
+- Confidence
