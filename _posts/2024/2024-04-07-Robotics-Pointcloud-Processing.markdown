@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - Point Cloud Processing
 date: '2024-04-07 13:19'
-subtitle: KD Tree
+subtitle: Bruteforce KNN Search, KD Tree
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -70,3 +70,30 @@ Aside from 3D Point Cloud, another 3D representation is a Surface Element Map (S
 - Color / texture
 - Size / Radius
 - Confidence
+
+## Brute Force KNN Search
+
+KNN search is very commonly used in SLAM. A tiny bit of performance improvement can create a huge difference! Therefore, we must consider parallelism in implementation. Brute-Force KNN is very easy to parallelize, and it could be more efficient than more sophisticated algorithms. 
+
+Brute force KNN is:
+
+1. Given a point, search through all points to find their distances. Find the K shortest distances
+
+Of course, we need an extra sorting process to find the k shortest distances
+
+## Pixel & Voxelized Data Structures to Store Point Cloud
+
+Brute force is a good starting point for KNN. To speed up, there are two ways:
+
+1. Point cloud is spatial. We can store them in spatial representations for faster indexing. (This section)
+2. We can store a point cloud in a tree, a binary-search tree /KD tree, or a quad-tree or octo tree.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/d90b52d6-32d6-472e-940f-e1a7a3737cc9" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+Hash is used to store points into an `unordered_map`

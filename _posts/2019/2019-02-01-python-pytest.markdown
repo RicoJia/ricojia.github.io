@@ -61,3 +61,32 @@ def test_og_positional_encoder(basic_config):
     batch_size = basic_config["batch_size"]
     ...
 ```
+
+## Patching
+
+### Patching a Function
+
+To patch my_func() from MyModule, pytest requires it to be a `MagicMock` object. This means we must specify return_value and pass mock_my_func into the test function.
+
+```python
+from unittest.mock import patch
+import requests
+
+@patch('MyModule.my_func', return_value=my_func_patch())
+def test_get_license_hash(mock_my_func):
+    """Test if the server responds with 200 OK."""
+    response = requests.get(f"{SERVER_URL}/GetLicenseHash")
+    assert response.status_code == 200
+```
+
+### Patching a Constant or List
+
+Unlike functions, patching constants or lists does not require a `MagicMock`. Instead, patch directly replaces the original object with a real one, meaning no return_value or mock object argument is needed.
+
+```python
+@patch('MyModule.WEBCAM_RESTART_COMMAND', ["echo", "hello"])
+def test_webcam_restart():
+    """Test if the webcam restart command is patched correctly."""
+    response = requests.get(f"{SERVER_URL}/RestartService")
+    assert response.status_code == 200
+```

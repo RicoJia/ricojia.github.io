@@ -48,18 +48,39 @@ Then, we have two types of edges that represent **an error**:
 
 ## How G2O Works
 
-G2O is a "General Least Squares" Optimizer, meaning any LS problem that can be formulated in the form of a graph could be optimized like this. Then, an optimizer's job is to:
+G2O (General Graph Optimization) is a "General Least Squares" optimizer, meaning any least squares (LS) problem that can be formulated as a graph can be optimized using this framework. The optimizer’s role is to:
 
-- Find gradient of the total cost function at their vertices (i.e., adding up all constraints)
-- Apply Levenberg-Marquardt on parameters under optimization to find a local (hopefully global) minimum.
+    Compute the gradient of the total cost function at each vertex by summing all constraints.
+    Apply the Levenberg-Marquardt algorithm to optimize parameters, aiming to find a local (and hopefully global) minimum.
 
-In SLAM, a vertex needs to satisfy $se(3)$ requirements. In `g2o/types/sba/types_six_dof_expmap.h` these vertices can be defined:
+In SLAM (Simultaneous Localization and Mapping), a vertex must satisfy SE(3)SE(3) constraints. These vertices are defined in g2o/types/sba/types_six_dof_expmap.h:
 
-- `VertexSE3Expmap` represents robot poses in SE3 space,
-- `VertexSBAPointXYZ` represents a 3D point
-- `EdgeProjectXYZ2UV` represents the projection of a 3D point onto the image plane
+- `VertexSE3Expmap`: Represents robot poses in SE(3) space.
+- `VertexSBAPointXYZ`: Represents a 3D point.
+- `EdgeProjectXYZ2UV`: Represents the projection of a 3D point onto the image plane.
 
-G2O is used in famous SLAM algorithms like ORB_SLAM. [Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
+G2O is widely used in SLAM algorithms, such as ORB-SLAM. [Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
+
+### G2O Optimization Steps
+
+1. Compute Residual Error:
+    - Calls `computeError()` to compute the residual error `e(X)`
+2. Compute Jacobian:
+    - Calls `linearizeOplus()` to compute the Jacobian J.
+    - This function can be overridden by the user to provide a custom Jacobian. If no override is provided, auto-differentiation is used.
+    - In a simple case where we have an after-previous relationship, `xj` represents the "after" state, and `xi` represents the "before" state. The residual, (a.k.a error) is `e = xj-xi`. The Jacobian is computed as:
+        ```
+        J=Jacobian xj−Jacobian xi
+        J=Jacobian xj​−Jacobian xi​
+        ```
+3. Construct Hessian Matrix: `H = JTJ`
+
+4. Solve for ΔXΔX: uses either Gauss-Newton or Levenberg-Marquardt to solve for ΔX.
+
+5. Update vertices linearly:
+    ```
+    X←X+ΔX
+    ```
 
 ### Optimizers
 

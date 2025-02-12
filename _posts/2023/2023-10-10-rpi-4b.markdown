@@ -75,7 +75,7 @@ A typical UART output looks like:
 /dev/serial1 -> ttyAMA0
 ```
 
-### Accessing GPIO Without Root 
+### Accessing GPIO Without Root
 
 `/dev/gpiomem` allows users in the `gpio` group to access GPIO without needing sudo. 
 - `/dev/mem` allows access to all physical memory
