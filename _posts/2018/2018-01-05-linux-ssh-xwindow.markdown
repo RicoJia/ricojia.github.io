@@ -93,6 +93,17 @@ This allows a local user to access Xterminal
         ```python
         ssh -Y rico@rico-orin
         ```
+### Adding X11 Access To Docker
+
+- on host machine, add docker to xhost: `xhost +local:docker`
+- on docker compose:
+    ```
+    environment:
+        - DISPLAY=${DISPLAY}
+    volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix
+    ```
+
 
 ## Remote SSH Forwarding W/ AT&T Routers
 
