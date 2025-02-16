@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Algorithm Functions
 date: '2023-01-20 13:19'
-subtitle: minmax_element
+subtitle: minmax_element, min_element
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -33,3 +33,5 @@ int main() {
     return 0;
 }
 ```
+
+### `std::min_element`: returns the min element based on the defintion of "smaller"

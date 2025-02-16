@@ -1,0 +1,51 @@
+---
+layout: post
+title: C++ - Cpp14 and 17 Features
+date: '2023-01-30 13:19'
+subtitle: Lambda Capture
+comments: true
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - C++
+---
+
+## Lambda Capture with Initializer (C++ 14)
+
+`[idx = 0]` is the initializer value in for each. 
+
+```cpp
+#include <stdio.h>
+#include <vector>
+#include <algorithm>
+int main()
+{
+    std::vector<int> vec(10, 0);
+    std::for_each(vec.begin(), vec.end(), [idx=0](int& i)mutable{i = ++idx;});
+    printf("%d", vec.at(9));
+    return 0;
+}
+```
+
+- what type is idx? 
+    - Here **type is deduced**, and `idx` is `int`. we can do: `[idx = 3.14]` (float), `[idx = std::string("hello")]` (a string)
+- By default, lambda capture is **const**. We need **mutable** to make sure we can modify the vector
+- We can pass a reference **int& i** into the lambda
+- `std::for_each` is in `<algorithm>`
+
+## SIMD & Vectorization Execution Policy for `for_each` (C++ 17)
+
+`std::execution::par_unseq` is an execution policy introduced in C++17 that you can pass to algorithms like `std::for_each`. It directs the algorithm to execute in parallel and in an unordered fashion, allowing the implementation to use both multi-threading and vectorization (SIMD). This means that **iterations may be run concurrently without any guarantee of order**, so you must ensure that your loop body is free of data races and side effects that depend on ordering.
+
+- Note: different execution policies have their own types. So:
+
+```cpp
+// We have to use an if-else because the parallelism_policy are different types
+// auto parallelism_policy = parallel ? std::execution::par_unseq : std::execution::seq;
+if (parallel) {
+    std::for_each(std::execution::seq, matches.begin(), matches.end(), 
+        [idx = 0](NNMatch& match) mutable {
+            match.idx_in_this_cloud = idx++;
+        });
+} else {
+}
+```
