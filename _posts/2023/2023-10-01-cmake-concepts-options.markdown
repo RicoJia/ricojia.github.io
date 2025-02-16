@@ -2,7 +2,7 @@
 layout: post
 title: CMake - Concepts and Options
 date: '2023-10-01 13:19'
-subtitle: CMake Concepts, Compile Options, Commands, CMake-Format
+subtitle: CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -107,7 +107,7 @@ It is generally possible to use different C++ standards within the same project.
 - Setting a variable by concatenating two values `set(VAR var1 var2)`
   - `set(CMAKE_PREFIX_PATH "$ENV{CUSTOM_INSTALL_PATH}" ${CMAKE_PREFIX_PATH})`
 
-## Advanced Options
+### Advanced Options
 
 - `ccache` is a compiler cache that caches previous compilations and detecting if the same compilation needs to be done again. It's meant for C/C++ projects.
   - How to use it
@@ -129,6 +129,40 @@ It is generally possible to use different C++ standards within the same project.
             - compiler name
             - input source file, compiler options (direct mode)
         2. Look up for existing hash, which includes **a cache hit or cache miss**
+
+## Header-Only Library vs Static Library 
+
+### Header-Only Library
+
+A header-only library in C++ is essentially a collection of .h (or .hpp) files that contain inline function definitions, templates, and constants without requiring a separate compilation step. This means that all the implementation details are in the headers, and there are no compiled object files (.o or .a) to link against.
+
+**Drawback of Header-only Library**: Since header-only libraries do not produce a compiled object or shared library, the dependencies (e.g., PCL, g2o, Eigen, etc.) **must be explicitly included in each project that uses the library.**
+
+In CMake, a header-only library is typically defined as an INTERFACE library using:
+
+```cmake
+add_library(my_header_lib INTERFACE)
+target_include_directories(my_header_lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+```
+
+- **The INTERFACE keyword means that no compilation happens for this library**, and it only serves as an "interface" for consumers.
+- When using this header-only library in another project, dependencies must still be explicitly added to target_link_libraries:
+
+```cmake
+target_link_libraries(my_project PRIVATE my_header_lib PCL g2o)
+```
+
+### Static Library
+
+In a static library, all the **necessary object files (.o)** from the source files are compiled and packed into the .a file. When you link against the static library, these compiled objects are copied directly into the final executable. This means that all functions and symbols defined in the static library are available at runtime without requiring separate shared library files (.so or .dll).
+
+To compile all necessary dependencies in the library, we need to: 
+
+```c
+target_link_libraries(my_static_lib PRIVATE PCL g2o)
+```
+
+- **PRIVATE ensures that PCL and g2o are only needed while compiling my_static_lib.a, but the user doesn't need to manually link them.** Now, when the user links my_static_lib.a, it should contain everything needed.
 
 ## Weird Issues
 
