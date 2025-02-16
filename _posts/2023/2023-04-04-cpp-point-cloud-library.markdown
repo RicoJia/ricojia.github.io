@@ -9,7 +9,13 @@ tags:
     - ROS
 ---
 
-## Convenience Functions
+## Point Infrastructure
+
+### Point Cloud Members
+
+[`PointCloud` Type includes](https://pointclouds.org/documentation/singletonpcl_1_1_point_cloud.html)
+
+- `points`: point vector
 
 ### PointTypes
 
@@ -25,9 +31,3 @@ tags:
 
 - `res=PointType.getVector3fMap()`
     - Since this returns an `Eigen::vector3f`, one can use `res.squaredNorm()`further.
-
-### 
-
-[`PointCloud` Type includes](https://pointclouds.org/documentation/singletonpcl_1_1_point_cloud.html)
-
-- `points`: point vector
