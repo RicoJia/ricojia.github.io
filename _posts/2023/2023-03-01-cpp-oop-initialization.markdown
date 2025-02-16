@@ -80,3 +80,7 @@ struct Example {
     char c;    // Offset 16 (next available slot for alignment)
 };
 ```
+
+### Default Parameters
+
+- Default values are given in `.hpp` files, not `.cpp`. In `.hpp` file, do `void VoxelGrid(CloudPtr cloud, float voxel_size = 0.05);`. You wouldn't need it in the `.cpp` files
