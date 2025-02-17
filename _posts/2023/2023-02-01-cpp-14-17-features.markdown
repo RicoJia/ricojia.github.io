@@ -9,47 +9,44 @@ tags:
     - C++
 ---
 
-## Lambda Capture with Initializer (C++ 14)
+## C++14 Features
 
-`[idx = 0]` is the initializer value in for each. 
+- [Lambda Capture](https://ricojia.github.io/2023/02/13/cpp-functions-lambda/)
+
+## C++ 17 Features
+
+- [SIMD and Vectorization in `std::for_each`](https://ricojia.github.io/2023/02/19/cpp-multithreading/)
+
+## Cpp 20 Features
+
+C++20 is a large coding standard upgrade (from C++ 17 code) with lots of new paradigms.
+
+- Template lambda for more explicit typing [See here](https://ricojia.github.io/2023/02/13/cpp-functions-lambda/)
+- Concepts for type constraints, [see here](https://ricojia.github.io/2023/02/10/cpp-templates/)
+- [Ranges For Lazy Evaluation](https://ricojia.github.io/2023/01/15/cpp-control-flow/)
+- [Constexpr on dynamically allocated objects](https://ricojia.github.io/2023/02/01/cpp-constness/)
+- Coroutine For Async Programming
 
 ```cpp
-#include <stdio.h>
-#include <vector>
-#include <algorithm>
-int main()
-{
-    std::vector<int> vec(10, 0);
-    std::for_each(vec.begin(), vec.end(), [idx=0](int& i)mutable{i = ++idx;});
-    printf("%d", vec.at(9));
-    return 0;
+// C++ 17
+std::future<int> async_task() {
+    return std::async([] { return 42; });
+}
+
+// C++ 20
+#include <coroutine>
+
+std::future<int> async_task() {
+    co_return 42;
 }
 ```
 
-- what type is idx? 
-    - Here **type is deduced**, and `idx` is `int`. we can do: `[idx = 3.14]` (float), `[idx = std::string("hello")]` (a string)
-- By default, lambda capture is **const**. We need **mutable** to make sure we can modify the vector
-- We can pass a reference **int& i** into the lambda
-- `std::for_each` is in `<algorithm>`
+### Summary
 
-### Template Lambda
-
-[See here](https://ricojia.github.io/2023/02/13/cpp-functions-lambda/)
-
-## SIMD & Vectorization Execution Policy for `for_each` (C++ 17)
-
-`std::execution::par_unseq` is an execution policy introduced in C++17 that you can pass to algorithms like `std::for_each`. It directs the algorithm to execute in parallel and in an unordered fashion, allowing the implementation to use both multi-threading and vectorization (SIMD). This means that **iterations may be run concurrently without any guarantee of order**, so you must ensure that your loop body is free of data races and side effects that depend on ordering.
-
-- Note: different execution policies have their own types. So:
-
-```cpp
-// We have to use an if-else because the parallelism_policy are different types
-// auto parallelism_policy = parallel ? std::execution::par_unseq : std::execution::seq;
-if (parallel) {
-    std::for_each(std::execution::seq, matches.begin(), matches.end(), 
-        [idx = 0](NNMatch& match) mutable {
-            match.idx_in_this_cloud = idx++;
-        });
-} else {
-}
-```
+| Feature                     | C++17                  | C++20                     | Benefit                         |
+|-----------------------------|------------------------|---------------------------|---------------------------------|
+| Template Lambdas            | `auto` only           | `template<>`              | More type flexibility          |
+| Concepts (`std::integral`)  | `enable_if`           | Cleaner syntax            | Faster compilation             |
+| Ranges (`views::filter`)    | Manual loops          | Functional style          | Concise, lazy evaluation       |
+| Coroutines (`co_await`)     | Threads + Futures     | Native coroutines         | Simpler async code             |
+| `constexpr` STL Containers  | Limited               | `std::vector<>` allowed   | Compile-time optimizations     |
