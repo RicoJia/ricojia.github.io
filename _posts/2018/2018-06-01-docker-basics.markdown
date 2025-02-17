@@ -109,3 +109,22 @@ However, if you want to delete a series of images that are built on top of each 
         RUN echo '"\e[A": history-search-backward' >> /home/${USER_NAME}/.inputrc && \
             echo '"\e[B": history-search-forward' >> /home/${USER_NAME}/.inputrc && \
         ```
+
+### Buildx
+`docker buildx` is an extended builder for Docker that enables multi-platform builds, caching improvements, and advanced build features. It is an alternative to `docker build` and is particularly useful for cross-architecture builds (e.g., building an ARM image on an x86 host).
+
+```bash
+docker buildx create --name mybuilder --use
+docker buildx inspect mybuilder --bootstrap
+```
+
+- Using buildx, you can build Docker images for multiple architectures (e.g., x86_64, arm64, arm32v7) on a single machine.
+
+```
+docker buildx build --platform linux/amd64,linux/arm64 -t myimage:latest .
+```
+
+- Builds Happen in an Isolated Context
+    - Docker builds are performed in a temporary containerized environment.
+    - If the build is interrupted, that container disappears, but the previous stable image remains intact.
+
