@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Control Flow
 date: '2023-01-15 13:19'
-subtitle: switch-case
+subtitle: switch-case, cpp20 range
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -55,3 +55,82 @@ case 0:{
 
 [Reference](https://stackoverflow.com/a/92730) 
 
+## Range [C++ 20]
+
+Let's say we are looking to build a data pipeline in a functional-programming style. Along this pipeline, we have multiple conditions for filtering, and multiple transforms to apply. In C++ 17, we might need to create multiple intermediate containers, and while we create them, we might need to copy elements multiple times. Some of those elements however, may not be able to get to the final stage. Here's an example:
+
+```cpp
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+int main() {
+    std::vector<int> v = {1, 2, 3, 4, 5, 6};
+
+    // Filter even numbers => intermediate1
+    std::vector<int> intermediate1;
+    for (int i : v) {
+        if (i % 2 == 0) {
+            intermediate1.push_back(i);
+        }
+    }
+
+    // Multiply by 2 => intermediate2
+    std::vector<int> intermediate2;
+    for (int i : intermediate1) {
+        intermediate2.push_back(i * 2);
+    }
+
+    // Filter out any results over 8 => intermediate3
+    std::vector<int> intermediate3;
+    for (int i : intermediate2) {
+        if (i <= 8) {
+            intermediate3.push_back(i);
+        }
+    }
+
+    // Add 1 => final_result
+    std::vector<int> final_result;
+    for (int i : intermediate3) {
+        final_result.push_back(i + 1);
+    }
+
+    // Now print final_result
+    for (int val : final_result) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+However, in C++20, we can chain those filters and transforms together to allow every single element to pass through or get eliminated along the way. At the end stage, we only create one container, and create / copy only the final elements over. This could greatly reduce the amount of memory for container creation and copy times.
+
+```cpp
+#include <vector>
+#include <iostream>
+#include <ranges>     // C++20
+
+int main() {
+    std::vector<int> v = {1, 2, 3, 4, 5, 6};
+
+    // Build a lazy pipeline:
+    auto pipeline = v
+        | std::views::filter([](int i) { return i % 2 == 0; })   // keep evens
+        | std::views::transform([](int i) { return i * 2; })     // multiply by 2
+        | std::views::filter([](int i) { return i <= 8; })       // keep <= 8
+        | std::views::transform([](int i) { return i + 1; });    // add 1
+
+    // Actually iterate (execute) the pipeline:
+    for (int val : pipeline) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+- One thing to note is, the pipeline doesn't get run until we actually call the for loop: `for (int val : pipeline)`
+- This is similar to Python's `yield`, where data are generated based on the need.

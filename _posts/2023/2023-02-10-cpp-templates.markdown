@@ -98,3 +98,35 @@ int main() {
 }
 
 ```
+
+## Concepts For T [C++ 20]
+
+When enforcing type constraints, in C++ 17, one needs to use `std::enable_if`. That results in a longer template signature. In C++ 20, one just needs to use `Concepts`
+
+```cpp
+#include <iostream>
+#include <type_traits>
+#include <concepts>
+
+template <std::integral T>
+void print_20(T x) {
+    std::cout << x << " is an integer\n";
+}
+
+template <typename T>
+typename std::enable_if<std::is_integral<T>::value, void>::type
+print_17(T x) {
+    std::cout << x << " is an integer\n";
+}
+
+int main(){
+    // print_17("123");   // See compiler error: no matching function for call to ‘print(const char [4])’
+    print_17(123);     // can compile fine
+    print_20(456);
+}
+```
+
+- ✅ More readable.
+- ✅ More efficient (compiler checks constraints upfront). 
+    - In C++17, `std::enable_if` **is checked during template instantiation**, where errors are usually versbose.
+    - In C++20, concepts are checked before template instantiation. Errors are clearer.

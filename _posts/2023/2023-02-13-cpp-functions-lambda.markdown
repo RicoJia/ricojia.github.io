@@ -37,6 +37,29 @@ auto add = [](auto a, auto b) {
 add(1, std::string("123"));  // Works fine!
 ```
 
+## Lambda Capture with Initializer (C++ 14)
+
+`[idx = 0]` is the initializer value in for each. 
+
+```cpp
+#include <stdio.h>
+#include <vector>
+#include <algorithm>
+int main()
+{
+    std::vector<int> vec(10, 0);
+    std::for_each(vec.begin(), vec.end(), [idx=0](int& i)mutable{i = ++idx;});
+    printf("%d", vec.at(9));
+    return 0;
+}
+```
+
+- what type is idx? 
+    - Here **type is deduced**, and `idx` is `int`. we can do: `[idx = 3.14]` (float), `[idx = std::string("hello")]` (a string)
+- By default, lambda capture is **const**. We need **mutable** to make sure we can modify the vector
+- We can pass a reference **int& i** into the lambda
+- `std::for_each` is in `<algorithm>`
+
 ## Full Template Lambda (C++20)
 
 In a full template lambda, we can specify the input types **more explicitly**.
