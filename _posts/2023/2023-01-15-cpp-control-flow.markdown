@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Control Flow
 date: '2023-01-15 13:19'
-subtitle: switch-case, cpp20 range
+subtitle: switch-case, cpp20 range, DSL
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -134,3 +134,18 @@ int main() {
 
 - One thing to note is, the pipeline doesn't get run until we actually call the for loop: `for (int val : pipeline)`
 - This is similar to Python's `yield`, where data are generated based on the need.
+
+### DSL
+
+A domain-specific language (DSL) is a programming or specification language that's tailored to a particular application domain. Unlike general-purpose languages (like Python, C++, or Java), which are designed to solve a wide range of problems, DSLs are focused on providing specialized notations and abstractions that make it easier to express solutions within a specific area.
+
+- SQL: Used for managing and querying relational databases.
+- HTML/CSS: Used for structuring and styling web pages.
+- Regular Expressions (regex): Used for pattern matching within text.
+- DSL: (Domain Specific Language) is not a C++20 feature. But ranges is very DSL like:
+
+```cpp
+auto result = nums
+    | std::views::filter([](int i) { return i % 2 == 0; })
+    | std::views::transform([](int i) { return i * i; });
+```

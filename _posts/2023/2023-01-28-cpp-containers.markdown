@@ -51,3 +51,11 @@ std::nth_element(keypoints.begin(),keypoints.begin() + desired_features_num - 1,
 // std::partion moves items that satisfies the pred to before the iterator
 auto new_end = std::partition(keypoints.begin() + desired_features_num, keypoints.end(), [&keypoints](const KeyPoint& k){k.response == (keypoints.begin() + desired_features_num - 1)->response});
 ```
+
+## PMR: Polymorphic Memory Resources (C++17)
+
+- Custom Allocators: Instead of having containers decide how memory is allocated, PMR allows you to supply a custom memory resource (allocator) that the container uses.
+- Reusable Strategies: You can create memory resources that implement different allocation strategies, such as pooling, monotonic allocation, or synchronized (thread-safe) allocation, and then reuse them across multiple containers.
+    - Memory Efficiency: PMR can help you pre-allocate a large chunk of memory (from a buffer) and then use it for many small allocations, which is useful in real-time or embedded systems.
+    - Multiple PMR-based containers can share the same memory resource. 
+- memory allocation strategies by using user-supplied memory resources.

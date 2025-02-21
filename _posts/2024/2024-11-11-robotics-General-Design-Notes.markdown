@@ -24,6 +24,9 @@ comments: true
 
 - Use consistent, simple notations
 - Use modern C++ (>C++17)
+    - ROS2 humble's default cpp standard is cpp 17. What if I want to have code in cpp 20?
+        - Generally, it is okay to use newer C++ versions as long as their features and flags do not end in public APIs.
+        - I.e. using modules would not be possible, but e.g. some stdlib goodies would be okay to use if they are only used in the .cpp files.
 - Use unit test and module tests
 
 ## Safety Critical Nodes Should Be Long Running
