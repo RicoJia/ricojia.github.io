@@ -16,6 +16,9 @@ tags:
 ## C++ 17 Features
 
 - [SIMD and Vectorization in `std::for_each`](https://ricojia.github.io/2023/02/19/cpp-multithreading/)
+- [std::optional to indicate whether a variable has trustable value](https://ricojia.github.io/2023/01/05/cpp-datatypes/)
+- [std::reduce to aggregates (or "reduce") a container into something else](https://ricojia.github.io/2023/01/20/cpp-algorithm-functions/)
+- [Structural binding to make unpacking easier](https://ricojia.github.io/2023/01/05/cpp-datatypes/)
 
 ## Cpp 20 Features
 

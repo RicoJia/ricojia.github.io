@@ -35,3 +35,35 @@ int main() {
 ```
 
 ### `std::min_element`: returns the min element based on the defintion of "smaller"
+
+## `std::reduce` (C++17)
+
+`std::reduce` is an algorithm introduced in C++17 (and enhanced in C++20) that aggregates a range of elements using a binary operation and an initial value. 
+
+**Unlike `std::accumulate`, `std::reduce` has no guaranteed order of evaluation, which allows it to be parallelized for improved performance.** However, because it processes elements in an unspecified order, the binary operation should be **both associative and commutative** to guarantee correct results.
+
+```cpp
+#include <optional>
+#include <iostream>
+#include <vector>
+#include <numeric>
+using namespace std;
+
+void test_reduce(){
+    std::vector<int> vec {1,2,3,4,5};
+    // order of execution is unspecified
+    double sum = std::reduce(
+        std::execution::par_unseq,
+        vec.begin(), vec.end(), 0.0, [](int a, double sum){return 0.25*a + sum;});
+    cout<<"using reduce to find sum: "<<sum<<endl;
+}
+
+int main(){
+    // test_optional();
+    test_reduce();
+
+}
+```
+
+- `std::execution::par_unseq` parallelizes the above.
+-  Pay attention to the initial value `0.0`, otherwise, it will be an int and will be rounded.
