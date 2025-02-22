@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Templates
 date: '2023-02-10 13:19'
-subtitle: Non-Type Template Parameters
+subtitle: Non-Type Template Parameters, requires, concept
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -39,7 +39,7 @@ void exampleFunction() {
 
 Non Type template parameters are compile time constants that customizes a struct. Some notes include:
 
-- `Foo<9>` is a different instantiation of `Foo<10>` 
+- `Foo<9>` is a different instantiation of `Foo<10>`
 
 ```cpp
 template <int N>
@@ -53,6 +53,15 @@ int main()
     std::cout << f.i << std::endl;
     // Print the static class member
     std::cout << Foo<10>::i << std::endl;
+}
+```
+
+### Specialized Template Function To Provide One Implementation
+
+```
+template <>
+inline size_t hash_vec<2>::operator()(const Eigen::Matrix<int, 2, 1>& v) const {
+    return size_t(((v[0] * 73856093) ^ (v[1] * 471943)) % 10000000);
 }
 ```
 
@@ -127,6 +136,69 @@ int main(){
 ```
 
 - ✅ More readable.
-- ✅ More efficient (compiler checks constraints upfront). 
-    - In C++17, `std::enable_if` **is checked during template instantiation**, where errors are usually versbose.
-    - In C++20, concepts are checked before template instantiation. Errors are clearer.
+- ✅ More efficient (compiler checks constraints upfront).
+  - In C++17, `std::enable_if` **is checked during template instantiation**, where errors are usually versbose.
+  - In C++20, concepts are checked before template instantiation. Errors are clearer.
+
+## The `requires` Clause [C++20]
+
+Puts constraints on template parameters. It takes a "boolean concept"
+
+- **compile-time predicate** `std::integral<T>` is equivalent to `concept integral = std::is_integral_v<T>;`
+
+```cpp
+template<typename T>
+T add(T a, T b) requires std::integral<T> {
+    return a + b;
+}
+
+// Can be before the function signature, or after
+template<typename T>
+requires std::integral<T>
+T add(T a, T b) {
+    return a + b;
+}
+```
+
+- Or, `(dim == 2)`:
+
+```cpp
+template <int dim>
+requires (dim == 2 || dim == 3)
+void foo(int i){}
+```
+
+- Commonly, it works with a custom concept. Otherwise, we will have to use `SFINAE`, with `enable_if`, type_traits, which come with lower readability:
+
+```cpp
+ template <class T>
+ concept Check = requires {
+     T().clear();
+ };
+ ​
+ template <Check T>
+ struct G {};
+ ​
+ G<std::vector<char>> x;      // 成功
+ G<std::string> y;            // 成功
+ // 由于std::array没有clear操作,所以编译失败
+ G<std::array<char, 10>> z;   // 失败
+```
+
+- `type = std::conditional_t<predicate, Type1, type2>`
+
+```cpp
+template<bool Flag>
+std::conditional_t<Flag, int, double> getValue() {
+    if constexpr (Flag)
+        return 42;  // int
+    else
+        return 3.14;  // double
+}
+
+template <int dim>
+class NearestNeighborGrid {
+public:
+    using Point = std::conditional_t<dim == 2, Eigen::Vector2f, Eigen::Vector3f>;
+};
+```
