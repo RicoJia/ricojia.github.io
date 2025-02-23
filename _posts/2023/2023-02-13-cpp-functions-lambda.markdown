@@ -2,12 +2,34 @@
 layout: post
 title: C++ - Functions, Lambda
 date: '2023-02-13 13:19'
-subtitle: 
+subtitle: Lambda, Functors
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - C++
 ---
+
+## Functor
+
+A functor is an object that acts like a function, using the `overloaded operator()`.
+
+``` cpp
+struct greaters{
+    greaters(){}
+    operator()(int a, int b){return a > b;}
+}
+
+struct increment{
+private:
+int a
+public:
+    increment(int a){a = a;}
+    operator()(int b){return b+a}
+}
+
+std::transform(arr, arr+n, arr, increment(a));      //equivalent to calling increment(a) first.
+std::make_heap(arr, arr+n, greaters());         //calls constructor first, then inside the function, it will call the overloaded().
+```
 
 ## Lambda Basics
 
