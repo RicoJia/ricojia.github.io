@@ -1,0 +1,22 @@
+---
+layout: post
+title: Git
+date: '2018-08-01 13:19'
+subtitle: Gitalk
+comments: true
+tags:
+    - Linux
+---
+
+## Gitalk
+
+Gitalk is a free, open-source commenting system that uses GitHub issues for comment storage. It’s an excellent option for developers hosting websites on platforms like GitHub Pages.
+
+1. Create a GitHub OAuth Application
+    1. `Developer Settings > OAuth Apps.`
+    2. Click on `New OAuth App` to get a Client ID and Client Secret
+        - Application Name: Name of your app (e.g., Gitalk Comments).
+        - Homepage URL: URL of your website.
+        - Authorization Callback URL: Same as your homepage URL (e.g., https://your-website-url.com).
+
+
