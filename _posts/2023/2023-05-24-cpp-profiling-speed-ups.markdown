@@ -2,7 +2,7 @@
 layout: post
 title: C++ Profiling and Speed Ups
 date: '2023-05-24 13:19'
-subtitle: gprof, CMake Release and Debug BoilerPlate
+subtitle: gprof, CMake Release and Debug BoilerPlate, CMake Settings
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -74,7 +74,7 @@ python3 gprof2dot.py -w analysis.txt | dot -Tpng -o profile.png
 
 ## CMake Boiler Plate For Release and Debug
 
-For a ROS 2 workspace, we generally want a structured CMakeLists.txt design that allows easy toggling between Debug and Release modes. 
+For a ROS 2 workspace, we generally want a structured CMakeLists.txt design that allows easy toggling between Debug and Release modes. Why? I worked on a KD tree implementation. The same implementation takes 0.18s for KD tree building with 20k 3D LiDAR Points under the Debug mode. Under the release mode? 3ms (60x speed up)!
 
 In a two level structure `my_ros2_workspace -> halo`, We control optimization flags, profiling tools (gprof, gdb), and CPU-specific instructions from the **top-level workspace** CMakeLists.txt, while allowing package-specific settings in halo/CMakeLists.txt.
 
@@ -168,3 +168,17 @@ To build with `CMake`:
 - `cmake .. -DCMAKE_BUILD_TYPE=Release` (This applies -O3 for maximum optimization.)
 - `cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo` (This enables -O2 optimizations while keeping debugging symbols.)
 
+### Quirk: Seeing Segfault Or Inconsistent Values In Release Runs From The Debug Mode
+
+This is almost certainly an undefined behavior. In Debug mode, **compilers often zero-initialize more aggressively or add padding/checks, so you get a “lucky” consistent result (like pointers)**. In Release mode, the uninitialized pointers can contain garbage values. So:
+
+- Always initialize pointers (and all fields) in your structs/classes. Debug mode can mask uninitialized usage. Release mode typically reveals these bugs.
+
+## Optional CMake Settings
+
+- `set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)`: useful if we are building static lib: `.a` files. set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+## UNRECOMMENDED CMake Settings
+
+- `set(CMAKE_CXX_FLAGS "-w")` - suppress all warnings
+- `set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g -ggdb ${CMAKE_CXX_FLAGS}")` This preserves debugging symbols while applying `O2` optimizations. But instead, one can just use `colcon build --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo`
