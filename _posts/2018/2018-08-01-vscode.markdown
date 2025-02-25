@@ -5,7 +5,8 @@ date: '2018-08-01 13:19'
 subtitle: Debugging ROS2 Projects, Remote SSH 
 comments: true
 tags:
-    - Linux
+    - VSCode
+    - ROS2
 ---
 
 ##  Set Up VSCode For ROS2 Development In Docker

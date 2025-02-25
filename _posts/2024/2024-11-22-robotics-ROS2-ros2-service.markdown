@@ -12,7 +12,7 @@ comments: true
 
 ## Set up a ROS2 Service File
 
-ROS2's ament build system does not support generating `msg` and `srv` files in pure python packages. So it's a common practice to define an interface package that could be imported into pure Python Packages. 
+ROS2's ament build system does not support generating `msg` and `srv` files in pure python packages. So it's a common practice to define an interface package that could be imported into pure Python Packages. [See ROS2 interfaces](https://docs.ros.org/en/foxy/Concepts/About-ROS-Interfaces.html) 
 
 1. Create a `cmake` package as an interface. 
     
@@ -76,7 +76,7 @@ ROS2's ament build system does not support generating `msg` and `srv` files in p
 
 ## Create a Service Server in Python
 
-By default, a ros service call back is not running on a separate thread. 
+By default, **a ros2 service call back is not running on a separate thread.** 
 
 - If we are using a single function:
 
@@ -92,7 +92,7 @@ executor = MultiThreadedExecutor()
 executor.add_node(node)
 ```
 
-- To validate: 
+- To validate:
 
 ``` bash
 ros2 service call /motor_command mumble_interfaces/srv/MotorCommand "{left_speed: 0.0, right_speed: 0.0, duration: 0.0}"
