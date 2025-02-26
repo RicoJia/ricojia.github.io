@@ -188,3 +188,32 @@ Eigen::IOFormat eigen_1_line_fmt(Eigen::StreamPrecision, Eigen::DontAlignCols, "
 // Print the vector using the defined format
 std::cout << "p1: " << p1.format(eigen_1_line_fmt) << std::endl;
 ```
+
+## Attention! Quirks of Eigen
+
+### Lazy Evaluation Could Cause Issues in Eigen (Version 3.4.0)
+
+In Eigen, expressions like:
+
+```cpp
+getter(item) - mean
+```
+
+may not be immediately evaluated due to lazy evaluation. Since getter(item) returns an Eigen expression, the subtraction might not execute as expected, potentially leading to unexpected behavior—such as returning a zero vector instead of the intended result.
+
+The fix is:
+
+```cpp
+(getter(item)- mean).eval() 
+```
+
+[Reference](https://github.com/gaoxiang12/slam_in_autonomous_driving/pull/191)
+
+### Check Version
+
+```cpp
+std::cout << "Eigen version: " 
+            << EIGEN_WORLD_VERSION << "." 
+            << EIGEN_MAJOR_VERSION << "." 
+            << EIGEN_MINOR_VERSION << std::endl;
+```
