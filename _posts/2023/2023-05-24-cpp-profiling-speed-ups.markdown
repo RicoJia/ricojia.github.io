@@ -174,6 +174,8 @@ This is almost certainly an undefined behavior. In Debug mode, **compilers often
 
 - Always initialize pointers (and all fields) in your structs/classes. Debug mode can mask uninitialized usage. Release mode typically reveals these bugs.
 
+- If a function has a return type but is not returning anything, in release mode, we see **seg faults**
+
 ## Optional CMake Settings
 
 - `set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)`: useful if we are building static lib: `.a` files. set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
