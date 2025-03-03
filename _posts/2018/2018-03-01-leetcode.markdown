@@ -2,12 +2,14 @@
 layout: post
 title: Things About Leetcode Before That Coding Interview
 date: '2024-05-01 13:19'
-subtitle: 
+subtitle: Leetcode IDE Tips, Common Leetcode Problems, C++ Commands
 comments: true
 tags:
     - Linux
     - Docker
 ---
+
+## Leetcode IDE Tips
 
 ## No Global Variables
 
@@ -25,6 +27,7 @@ class Solution{
 
 - `ctrl - '` is to run.
 - Leetcode does support `std::cout` in a separate window `stdout`.
+- no need for `std::`
 
 ## Questions
 
@@ -67,3 +70,79 @@ In this case, it can **actually guarantee** to find the global maximum. Why? Bec
 1. What's the max when size = L-2 (still, we can find the max there)
 
 So we find all these local maximums, which covers all combination of sides. So, two pointers is an interesting algorithm!
+
+## Common Leetcode Commands (C++)
+
+### std::string
+
+#### Substring
+
+- `std::string substr(size_t pos = 0, size_t len = std::string::npos) const;`
+    - `std::string::npos`  is optional. If not provided, it will be the full string size.
+```cpp
+
+std::string str = "Hello, World!";
+std::string sub1 = str.substr(0, 5);
+std::string sub3 = str.substr(7);
+```
+
+### Find Next Element
+
+- Universal search method: `std::search(start_it, end_it, sub_element_end, sub_element_end)`
+
+```cpp
+std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+std::vector<int> sub = {4, 5, 6};
+auto it = std::search(vec.begin(), vec.end(), sub.begin(), sub.end());
+
+std::list<int> lst = {10, 20, 30, 40, 50, 60};
+std::list<int> sub = {30, 40};
+auto it = std::search(lst.begin(), lst.end(), sub.begin(), sub.end());
+```
+
+- Vector, list:
+
+```
+auto it = std::find(vec.begin(), vec.end(), 3);
+auto it = std::find(lst.begin(), lst.end(), 30);
+```
+
+- String `str.find(sub_str)`. Returns `std::string::npos` if nothing is found
+
+```cpp
+std::string str = "Hello, World!";
+std::string sub = "World";
+size_t pos = str.find(sub);
+```
+    - For string, if the search is for **tokenization**, `std::stringstream` could be more efficient for tokenization:
+
+    ```cpp
+    #include <sstream>
+    stringstream ss(str);
+    while (std::getline(ss, token, '/')) {
+        // No '/', we get token directly
+    }
+    ```
+
+#### `std::find_if(a, b, pred)`
+
+#### `std::binary_search(vec.begin(), vec.end(), val)`  (For sorted data)
+
+### Equate
+
+#### `std::equal(sub.begin(), sub.end(), it)`
+std::search() for subsequence matching.
+
+### std::stack
+
+`std::stack` is simply an adapter for `std::deque` and `std::vector`
+
+```cpp
+stack<int> sta;
+sta.top();
+sta.pop();
+sta.empty();
+sta.push();
+```
+
+- stack can be iterated over as well. So iterating over a stack will guarantee insertion order using `std::stack().size()`
