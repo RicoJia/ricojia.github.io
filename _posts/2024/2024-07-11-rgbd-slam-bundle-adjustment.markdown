@@ -48,16 +48,17 @@ Now, we have 4 robot poses and 2 landmark poses to estimate. They are the variab
 
 - State vector: $[x_1, y_1, \theta_1 ... x_4, y_4, \theta_4]$
 - Observations: $z = [ x_{z1}, y_{z1}, x_{z2}, y_{z2}]$
-- Error $e_{ij}$: the difference between the estimated landmark pose $x_j$, and its observation from robot pose $x_i$
-    $$
-    \begin{gather*}
-    e_{ij} =
-    \begin{bmatrix}
-    x_j - (x_i + d_i*cos(\theta_i + \psi_i)), \\
-    y_j - (y_i + d_i*sin(\theta_i + \psi_i))
-    \end{bmatrix}
-    \end{gather*}
-    $$
+- Error $e_{ij}$: the difference between the estimated landmark pose $x_j$, and its observation from robot pose $x_i$:
+
+$$
+\begin{gather*}
+e_{ij} =
+\begin{bmatrix}
+x_j - (x_i + d_i*cos(\theta_i + \psi_i)), \\
+y_j - (y_i + d_i*sin(\theta_i + \psi_i))
+\end{bmatrix}
+\end{gather*}
+$$
 
 We can formulate our cost of this trajectory:
 
