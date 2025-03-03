@@ -1,0 +1,69 @@
+---
+layout: post
+title: Things About Leetcode Before That Coding Interview
+date: '2024-05-01 13:19'
+subtitle: 
+comments: true
+tags:
+    - Linux
+    - Docker
+---
+
+## No Global Variables
+
+To evaluate our code samples, Leetcode simply import the file containing our implementation. Then, it will run test cases on it. If we have a global variable, the global variable will be used consistently. E.g., 
+
+```cpp
+int MyGlobalVar2;    // bad
+
+class Solution{
+    int MyGlobalVar;    // good
+};
+```
+
+## Shortcuts & Debugging Tips
+
+- `ctrl - '` is to run.
+- Leetcode does support `std::cout` in a separate window `stdout`.
+
+## Questions
+
+### Two Pointers
+
+[Question Description](https://leetcode.com/problems/container-with-most-water/?envType=problem-list-v2&envId=two-pointers)
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/dedd4d95-5bc9-423f-a674-50d451950c41" height="400" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Two pointers is a local gradient descent technique: we use 2 points starting from the head and tail of the vector. Calculate the area, then move the pointer if its side is shorter than the other. 
+
+```cpp
+    int maxArea(vector<int>& height) {
+        int i_s = 0, i_e = height.size()-1;
+        int max = 0;
+        while (i_s != i_e){
+            int area = std::min(height.at(i_s), height.at(i_e)) * (i_e - i_s); 
+            max = std::max(area, max);
+            if (height.at(i_s) > height.at(i_e)){
+                i_e --;
+            }
+            else{
+                i_s ++;
+            }
+        }
+        // Why does this work? gradient descent? 
+        return 0;
+    }
+```
+
+In this case, it can **actually guarantee** to find the global maximum. Why? Because as we move the pointers along, we are actually evaluating:
+1. what's the max when size = L
+1. what's the max when size = L-1 (apparently if we move the pointer the way we do)
+1. What's the max when size = L-2 (still, we can find the max there)
+
+So we find all these local maximums, which covers all combination of sides. So, two pointers is an interesting algorithm!
