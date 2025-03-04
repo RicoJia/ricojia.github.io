@@ -244,7 +244,7 @@ We can stack $y_k$ together:
 $$
 \begin{gather*}
 \begin{aligned}
-& y = \begin{bmatrix}
+& Y = \begin{bmatrix}
 y_1^T
 \\ \cdots
 \\ y_k^T
@@ -262,3 +262,15 @@ $$
 $$
 
 Then, we can solve this with eigen value decomposition!
+
+From the perspective of SVD, we can find that the line is the first principal component, the plane's normal vector is the last principal component.
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/e61e0bb2-28cc-4217-bde9-d7038d897e82" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Great thing about Eigen Value Decomposition is that we do not need to iteratively evaluate. 
