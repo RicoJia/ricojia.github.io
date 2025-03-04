@@ -26,7 +26,7 @@ Let A be an `m x n` matrix. The goal is to decompose A into $A = U\Sigma V^T$, w
 - $\Sigma$ is m x n diagonal matrix, all elements are non-negative, and decreasing $\sigma 1 > \sigma 2 > \sigma 3... $.
 - $V$ is n x n orthonormal matrix, **aka right singular vectors**
 
-To solve for the above matrices, [A's correlation matrix $A^T A$](https://ricojia.github.io/2017/01/05/various-forms-of-matrix-multiplication.html) can be written as:
+To solve for the above matrices, [A's correlation matrix $A^T A$](https://ricojia.github.io/2017/01/03/various-forms-of-matrix-multiplication/) can be written as:
 
 $$
 \begin{gather*}
@@ -36,7 +36,7 @@ A^T A = (U \Sigma V^T)^T U \Sigma V^T
 \end{gather*}
 $$
 
-Note, because $V$ is orthonormal, $V^T=V^{-1}$. Then, $A^T A = V \Sigma^2 V^{-1}$, and that is **eigen value decomposition**. [More explanation see here.](https://ricojia.github.io/2017/02/07/eigen-value-decomp.html)
+Note, because $V$ is orthonormal, $V^T=V^{-1}$. Then, $A^T A = V \Sigma^2 V^{-1}$, and that is **eigen value decomposition**. [More explanation see here.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
 
 In fact, U and V are "unitary". That is $UU^T = U^TU = I$. That means:
 
@@ -80,18 +80,27 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
 ### Interpretations of U, $\Sigma$, V
 
 - Each singular value in sigma is an "importance".
-- Each column in $U$ corresponds to each singular value (or importance) 
-- $V$ is a "mixture" of columns. 
-    - Eventually, this will become: $\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$ (the sum of outer products). Each term increasingly improves the estimate of SVD
+- Each column in $U$ corresponds to each singular value (or importance)
+- $V$ is a "mixture" of columns.
+  - Eventually, this will become: $\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$ (the sum of outer products). Each term increasingly improves the estimate of SVD
 - Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $A$. So, the returned values are: $U$ as mxn, $\Sigma$ as nxn, and $V$ as nxn, are returned
-    - Many times, people would return the first $r$ columns and rows of $U$ and $V^T$
+  - Many times, people would return the first $r$ columns and rows of $U$ and $V^T$
 
 ### Applications
 
-- In eigen face, each column of U is a face's pixels in columns
-    - Each term $\sqrt{\sigma_1} u_1 v_1^T$ has rank 1, because it's formed by only 1 linearly independ row and column 
-
 - Image Compression: By SVD'ing an image and keeping first 5 columns of the U matrix (so they are eigen vectors of the image column space) and first 5 rows of the V matrix, we can already see some features.
+    1. We represent an image `I` of size `M×N` as a data matrix
+    2. Perform PCA:
+        1. Subtract mean from each row: $x = x - \mu$
+        2. Calculate covariance matrix: $C = \frac{1}{N}X^T X$ `NxN`
+        3. Eigen Value Decomposition: get eigen vectors $V$ (`NxN`) and eigen values of $C$
+        4. Select first k eigen vectors as the projection basis `V` (Nxk)
+        5. Project the image onto the k eigen vectors: `R = I*V` (Mxk)
+    3. The compression results are two matrices: `V` and `R`
+
+- In eigen face, each column of U is a face's pixels in columns
+  - Each term $\sqrt{\sigma_1} u_1 v_1^T$ has rank 1, because it's formed by only 1 linearly independ row and column
+
 - Digital Watermark: after SVD'ing an image, one can change an column in $U$ or $V$ with low $\sigma$ value to their own "digital watermark".
 
 <p align="center">
@@ -129,7 +138,7 @@ int main() {
 }
 ```
 
-[Here is an online C++ compiler with `Eigen` ](https://coderpad.io/languages/cpp/)
+[Here is an online C++ compiler with `Eigen`](https://coderpad.io/languages/cpp/)
 
 ## More Remarks
 

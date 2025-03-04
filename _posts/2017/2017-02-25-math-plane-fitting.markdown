@@ -63,11 +63,11 @@ $$
 \end{gather*}
 $$
 
-Because X is a simple matrix, this is a simple linear least-square problem. To solve it, one can use Eigen Value Decomposition or Singular Value Decomposition. 
+Because X is a simple matrix, this is a simple linear least-square problem. To solve it, one can use Eigen Value Decomposition or Singular Value Decomposition.
 
 ### Eigen Value Decomposition
 
-For eigen value decomposition, 
+For eigen value decomposition,
 
 $$
 \begin{gather*}
@@ -95,7 +95,7 @@ After plugging the above into $n^T  V \Lambda V^{-1} n$, we see that:
 $$
 \begin{gather*}
 \begin{aligned}
-& |X \tilde{n}|^2 = n^T  V \Lambda V^{-1} n 
+& |X \tilde{n}|^2 = n^T  V \Lambda V^{-1} n
 \\ & = \lambda_1 \alpha_1^2 + ... + \lambda_k \alpha_k^2
 \end{aligned}
 \end{gather*}
@@ -164,7 +164,7 @@ y_j - (y_i + d_i*sin(\theta_i + \psi_i))
 \end{gather*}
 $$
 
-Gauss-Newton iteratively linearizes the neighbor landscape of the cost $F$ so it can estimate the cost jacobian, which gives the minimum cost, w.r.t the pose variables. 
+Gauss-Newton iteratively linearizes the neighbor landscape of the cost $F$ so it can estimate the cost jacobian, which gives the minimum cost, w.r.t the pose variables.
 
 In plane fitting, $X$ is a single matrix, which makes it a linear-least-square minimization. In that case, we don't need to iteratively linearize the cost landscape. So Gauss Newton is not needed.
 
@@ -212,7 +212,7 @@ $$
 \begin{aligned}
 & \frac{\partial \sum_{k=1}^{n} f_k^2}{\partial p} = \sum_{k=1}^{n} (-2)(I - \mathbf{d} \mathbf{d}^\top)(\mathbf{x}_k - \mathbf{p}),
 
-\\& 
+\\&
 = (-2)(I - \mathbf{d} \mathbf{d}^\top) \sum_{k=1}^{n} (\mathbf{x}_k - \mathbf{p}).
 \end{aligned}
 \end{gather*}
@@ -239,7 +239,7 @@ $$
 \end{gather*}
 $$
 
-We can stack $y_k$ together: 
+We can stack $y_k$ together:
 
 $$
 \begin{gather*}
@@ -263,7 +263,7 @@ $$
 
 Then, we can solve this with eigen value decomposition!
 
-From the perspective of SVD, we can find that the line is the first principal component, the plane's normal vector is the last principal component.
+From the perspective of SVD, we can find that the line is the first principal component. With the second principal compomnet, we can find a plane. The plane's normal vector is the smallest principal component. $A^T A$ is the **covariance matrix**.
 
 <div style="text-align: center;">
     <p align="center">
@@ -273,4 +273,4 @@ From the perspective of SVD, we can find that the line is the first principal co
     </p>
 </div>
 
-Great thing about Eigen Value Decomposition is that we do not need to iteratively evaluate. 
+Great thing about Eigen Value Decomposition is that we do not need to iteratively evaluate.
