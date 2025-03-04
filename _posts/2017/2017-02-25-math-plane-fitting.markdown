@@ -170,4 +170,95 @@ In plane fitting, $X$ is a single matrix, which makes it a linear-least-square m
 
 ## Line Fitting
 
-In linear fitting, a plane is a bit easier because a plane needs 4 variables, with 1 constraint. A plane needs 6 variables. 
+In linear fitting, a plane is a bit easier because a plane needs 4 variables, with 1 constraint. A plane needs 6 variables. A line can be represented as:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x = p_0 + dt
+\end{aligned}
+\end{gather*}
+$$
+
+`t` here is a variable. We want to find 2 variables: $p_0$ and $d$, either is a 3x1 vector. To find the best line parameters, we find the minimum total distance from points to the line. By linking a point to $p_0$, we can use the Pythogorean Theorem to solve it:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& argmin \sum_k |(x_k-p_0)^2 - (d^T (x_k - p_0))^2 = argmin \sum_k f_k^2
+\\ & \text{subject to: }
+|d| = 1
+\end{aligned}
+\end{gather*}
+$$
+
+For a single point, the partial derivative of the cost w.r.t parameters is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial f_k^2}{\partial p_0} = -2(\mathbf{x}_k - \mathbf{p_0}) + 2 \left( (\mathbf{x}_k - \mathbf{p_0})^\top \mathbf{d} \right) \mathbf{d},
+
+\\ & \text{Scalar =>} = \mathbf{d}^\top (\mathbf{x}_k - \mathbf{p_0})
+\\ & = (-2)(I - \mathbf{d} \mathbf{d}^\top)(\mathbf{x}_k - \mathbf{p_0}).
+\end{aligned}
+\end{gather*}
+$$
+
+After summation:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \sum_{k=1}^{n} f_k^2}{\partial p} = \sum_{k=1}^{n} (-2)(I - \mathbf{d} \mathbf{d}^\top)(\mathbf{x}_k - \mathbf{p}),
+
+\\& 
+= (-2)(I - \mathbf{d} \mathbf{d}^\top) \sum_{k=1}^{n} (\mathbf{x}_k - \mathbf{p}).
+\end{aligned}
+\end{gather*}
+$$
+
+We can make it zero by having $p_0$ be the center of the point cloud:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& p_0 = \frac{1}{n} \sum_{k} x_k
+\end{aligned}
+\end{gather*}
+$$
+
+**With known $p_0$**, we can now find $d$. Let $y_k = x_k - p$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& f_k^2 = y_k^T y_k - d^T y_k y_k^T d
+\\ & \Rightarrow d^* = argmax \sum_k d^T y_k y_k^T d = \sum_k |y_k^T d| ^2
+\end{aligned}
+\end{gather*}
+$$
+
+We can stack $y_k$ together: 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& y = \begin{bmatrix}
+y_1^T
+\\ \cdots
+\\ y_k^T
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+$$
+\begin{gather*}
+\begin{aligned}
+& d^* = argmax |Yd|^2
+\end{aligned}
+\end{gather*}
+$$
+
+Then, we can solve this with eigen value decomposition!

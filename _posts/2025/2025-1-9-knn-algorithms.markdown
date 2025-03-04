@@ -9,12 +9,12 @@ tags:
 comments: true
 ---
 
+## One-Pass Grid Method
+
 ## KD Tree
 
 - Approximated nearest neighbor is d_split < alpha * d_max
 - KD Tree without approximated nearest neighbor should be able to find all K nearest neighbors
-
-## One-Pass Grid Method
 
 ### Optimized Hashing Function for Collision Checks
 
