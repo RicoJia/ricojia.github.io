@@ -113,7 +113,7 @@ $$
 
 without having used $\mathbf{F}_k \, \delta \mathbf{x}_k$ in the first place.
 
-Why is $\mathbf{F}_k$ still necessary for $\mathbf{P}$, if we never actually compute $\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k$?
+Why is $\mathbf{F}_k$ still necessary for $\mathbf{P}$ , if we never actually compute $\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k$?
 
 #### Answer
 
