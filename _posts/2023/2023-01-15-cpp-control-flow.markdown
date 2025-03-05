@@ -152,11 +152,14 @@ auto result = nums
 
 ## `if with initializer` (C++ 17)
 
+{% raw %}
 ```cpp
 #include <iostream>
 #include <unordered_map>
 int main() {
-    std::unordered_map <int, std::string> added_map{{1, "one"}, {2, "two"}};
+    std::unordered_map <int, std::string> added_map{
+        {1, "one"}, {2, "two"}
+    };
     if (auto iter = added_map.find(2); iter != added_map.end()) {
         std::cout << "Found: " << iter->second << std::endl;
     } else {
@@ -164,3 +167,4 @@ int main() {
     }
 }
 ```
+{% endraw %}
