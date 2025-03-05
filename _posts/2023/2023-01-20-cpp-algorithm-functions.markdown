@@ -36,6 +36,8 @@ int main() {
 
 ### `std::min_element`: returns the min element based on the defintion of "smaller"
 
+### `std::min(v1, v2)`
+
 ## `std::transform`
 
 `std::transform` is a funtion that allows us to apply a function (usually lambda) on one or two (zipped) containers, and puts the output into an output container.

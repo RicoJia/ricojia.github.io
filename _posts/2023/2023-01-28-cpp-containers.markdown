@@ -19,6 +19,9 @@ tags:
 vector1.insert(vector1.end(), vector2.begin(), vector2.end());
 ```
 
+- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
+
+
 ## Map 
 
 TODO

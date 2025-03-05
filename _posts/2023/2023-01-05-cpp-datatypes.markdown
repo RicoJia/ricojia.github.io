@@ -9,6 +9,13 @@ tags:
     - C++
 ---
 
+## POD Types
+
+- char or unsigned char is 1 byte
+- float, int, are usually 4 bytes (32 bits) on a 64 bit machine
+- double is 8 bytes (64 bits)
+- long double is 8, or even 16 bytes
+
 ## Optional
 
 `std::optional` can specify if a value is valid or not. It has:

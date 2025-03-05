@@ -20,7 +20,8 @@ tags:
 - [std::reduce to aggregates (or "reduce") a container into something else](https://ricojia.github.io/2023/01/20/cpp-algorithm-functions/)
 - [Structural binding to make unpacking easier](https://ricojia.github.io/2023/01/05/cpp-datatypes/)
 - [PMR containers](https://ricojia.github.io/2023/01/28/cpp-containers/)
-- [if constexpr]()
+- [if constexpr](https://ricojia.github.io/2023/02/01/cpp-constness/)
+- [if with initializer](https://ricojia.github.io/2023/01/15/cpp-control-flow/)
 
 ## Cpp 20 Features
 

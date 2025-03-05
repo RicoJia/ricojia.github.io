@@ -9,9 +9,13 @@ tags:
     - Docker
 ---
 
+## Introduction
+
+At the bare minimum, it's good to have a solid understanding of 2 Pointers, sliding window, BFS/DFS, Trees, Graphs, Stacks, Queus, Hash Maps.
+
 ## Leetcode IDE Tips
 
-## No Global Variables
+### No Global Variables
 
 To evaluate our code samples, Leetcode simply import the file containing our implementation. Then, it will run test cases on it. If we have a global variable, the global variable will be used consistently. E.g., 
 

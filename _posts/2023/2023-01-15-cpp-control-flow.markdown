@@ -149,3 +149,18 @@ auto result = nums
     | std::views::filter([](int i) { return i % 2 == 0; })
     | std::views::transform([](int i) { return i * i; });
 ```
+
+## `if with initializer` (C++ 17)
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+int main() {
+    std::unordered_map <int, std::string> added_map{{1, "one"}, {2, "two"}};
+    if (auto iter = added_map.find(2); iter != added_map.end()) {
+        std::cout << "Found: " << iter->second << std::endl;
+    } else {
+        std::cout << "Not found" << std::endl;
+    }
+}
+```

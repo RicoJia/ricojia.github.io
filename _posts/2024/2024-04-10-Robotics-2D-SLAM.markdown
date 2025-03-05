@@ -43,3 +43,69 @@ Concepts:
        </figure>
     </p>
 </div>
+
+## Scan Matching
+
+The goal of scan matching is: given the observation model $z = h(x, u) + w$, find the most likely estimate 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& X_{MLE} = argmax_{x}(x | z, u) = argmax_{x}(z | x, u)
+\end{aligned}
+\end{gather*}
+$$
+
+There are two main ways to do it:
+- ICP (ICP, PL_ICP, GICP, ICL): 2D and 3D are similar
+- Likelihood fields (Gaussian Likelihood field, CSM)
+
+The main problems in scan matching are:
+- Which points should we perform scan matching on? (all points for 2D)
+- How to find point association? (KNN)
+- How to find residuals 
+
+### 2D ICP
+
+In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $T_{WB}$, and Later, sub map frame. For a single 2D LiDAR Point, it comes in as $[\phi, r]$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& p_i^w = [x + r_i cos(\phi_i + \theta), y + r_i sin(\phi_i + \theta)]
+\end{aligned}
+\end{gather*}
+$$
+
+We can define error as the difference between a specific point and its nearest neighbor in the other point cloud:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& e_i = p_i^w - q_i^w
+\end{aligned}
+\end{gather*}
+$$
+
+The partial direvatives are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial e_i}{\partial x} = [1, 0]
+\\ &
+\frac{\partial e_i}{\partial y} = [0, 1]
+\\ &
+\frac{\partial e_i}{\partial \theta} = [-r_i sin(\phi_i + \theta), r_i cos(\phi_i + \theta)]
+
+\\ &
+\Rightarrow
+ \frac{\partial e_i}{\partial x} = \begin{bmatrix}
+ 1 & 0 \\
+ 0 & 1 \\
+ -r_i sin(\phi_i + \theta) & r_i cos(\phi_i + \theta)
+ \end{bmatrix}
+
+\end{aligned}
+\end{gather*}
+$$
