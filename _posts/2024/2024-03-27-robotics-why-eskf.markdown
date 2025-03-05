@@ -22,14 +22,21 @@ Key issue: Rotations lie on the special orthogonal group SO(3), which is a nonli
     
     - But quaternion addition is not the correct way to update orientation. You would need to an exponential map that properly keeps you on the manifold.
 
-- ESKF approach
-    - You store the nominal orientation (often as a quaternion or rotation matrix) as a separate entity, then maintain an error-state `δθ` in a minimal 3D representation (e.g., in the tangent space).
-    - When you do an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map:
-
-    ```
-    R_new=exp⁡ ⁣(δθ∧) R_old (where ∧ maps a 3D vector to a skew-symmetric matrix for rotations).
-    ```
-    - By doing this, you ensure the orientation remains on SO(3) after an update, and the linearization is better-conditioned because you are linearizing around a small error state rather than the full orientation.
+- ESKF approach:
+    -  If we update our system using error-states, we are able to get a linearize rotation error-state `δθ` on the tangent space of the SO(3) manifold. Here's how:
+        $$
+        \begin{gather*}
+        \begin{aligned}
+        & R_{new} := R \delta R = R Exp(\delta \theta)
+        \\ & 
+        \Rightarrow
+        R_{new}' = R' Exp(\delta \theta) + R Exp(\delta \theta)'
+        \\ &
+        = R(\tilde{w} - b_g)^{\land} + R  Exp(\delta \theta) (\delta \theta^{\land})'
+        \end{aligned}
+        \end{gather*}
+        $$
+    - This leads to a linear update of $(\delta \theta^{\land})' \approx ...$. Though we still need to apply BCH and Taylor expansion to achieve this linear update, during an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map. **By doing this, you ensure the orientation remains on SO(3) after an update**, and the linearization is better-conditioned because **you are linearizing around a small error state rather than the full orientation.**
 
 ### Could we define a “generic addition” for EKF?
 
