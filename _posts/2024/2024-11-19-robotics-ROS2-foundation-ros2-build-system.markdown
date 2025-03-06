@@ -123,3 +123,53 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
     )
     ament_package()
     ```
+
+## C++ & Python Interface Packages
+
+An interface package defines ROS2 messages, services, and common utilities for other ROS2 packages. To create Python utilities, once a Python package is built and installed, and the workspace is sourced, its Python modules in `install/MY_INTERFACE/lib/python3.10/site-packages` are automatically added to the Python path. What we need are as follow:
+
+- Make sure the python package files are here:
+    - Empty `MY_INTERFACE/MY_INTERFACE/__init__.py`
+    - Module file: `MY_INTERFACE/MY_INTERFACE/My_Module`
+- Add `MY_INTERFACE/setup.py`:
+    ```python
+    from setuptools import setup, find_packages
+
+    package_name = "MY_PACKAGE"
+
+    setup(
+        name=package_name,
+        version="0.0.1",
+        packages=find_packages(include=[package_name, f"{package_name}.*"]),
+        install_requires=["setuptools"],
+        zip_safe=True,
+        maintainer="TODO",
+        maintainer_email="your_email@example.com",
+        description="TODO",
+        license="Apache-2.0",
+        tests_require=["pytest"],
+        entry_points={
+            "console_scripts": [],
+        },
+    ) 
+    ```
+
+- `MY_INTERFACE/CMakeLists.txt`:
+
+    ```c
+    install(
+    DIRECTORY MY_INTERFACE/
+    DESTINATION lib/python3.10/site-packages/MY_INTERFACE
+    FILES_MATCHING PATTERN "*.py"
+    )
+
+    ament_package()
+    ```
+
+    - We are NOT using `ament_python_install_package` because it's meant for pure Python packages. We need to manually install `MY_INTERFACE` in `install/MY_INTERFACE/lib/python3.10/site-packages`
+
+- User Code:
+
+```python
+from MY_INTERFACE.My_Module import MyFunc
+```

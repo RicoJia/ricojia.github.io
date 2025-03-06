@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - 2D SLAM
 date: '2024-04-10 13:19'
-subtitle: 
+subtitle: Scan Matching, ICP, 
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -51,23 +51,34 @@ The goal of scan matching is: given the observation model $z = h(x, u) + w$, fin
 $$
 \begin{gather*}
 \begin{aligned}
-& X_{MLE} = argmax_{x}(x | z, u) = argmax_{x}(z | x, u)
+& X_{MLE} = argmax_{x}(x | z, m) = argmax_{x}(z | x, m)
 \end{aligned}
 \end{gather*}
 $$
 
+- Where `m` is thelast scan
+
+To calculate which grid cells a ray goes through, we need ray casting (光线投射算法) and rasterization (栅格算法)
+
 There are two main ways to do it:
-- ICP (ICP, PL_ICP, GICP, ICL): 2D and 3D are similar
+- ICP (ICP, Point-to-Line ICP (PL_ICP), GICP, ICL): 2D and 3D are similar
 - Likelihood fields (Gaussian Likelihood field, CSM)
 
 The main problems in scan matching are:
-- Which points should we perform scan matching on? (all points for 2D)
+- Which points should we perform scan matching on? 
+    - All points for 2D
+    - Sampling for 3D (according normal vectors, features, etc.)
 - How to find point association? (KNN)
-- How to find residuals 
+- How to find residuals. For scan point `[x,y]_i` and its matching point on another scan `[x, y]'_j`, we want to calculate its error (difference). The complete beam model is complicated and is not smooth for state estimation. We usually simplify the difference into a 2D Gaussian Distribution.
 
-### 2D ICP
+### 2D Iterative Closest Point (ICP)
 
-In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $T_{WB}$, and Later, sub map frame. For a single 2D LiDAR Point, it comes in as $[\phi, r]$:
+In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $T_{WB}$, and Later, sub map frame. A typical ICP-like algorithm iterative conducts 2 steps:
+
+1. Data association
+2. Pose estimation
+
+A single 2D LiDAR Point comes in as $[\phi, r]$:
 
 $$
 \begin{gather*}
@@ -77,7 +88,7 @@ $$
 \end{gather*}
 $$
 
-We can define error as the difference between a specific point and its nearest neighbor in the other point cloud:
+We can define **error as the cartesian difference between a specific point and its nearest neighbor in the other point cloud**:
 
 $$
 \begin{gather*}
@@ -87,7 +98,17 @@ $$
 \end{gather*}
 $$
 
-The partial direvatives are:
+Then, the scan matching problem becomes a non-linear least-squares optimization problem:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& (x, y, \theta)* = argmin(\sum_I |e_i|^2)
+\end{aligned}
+\end{gather*}
+$$
+
+This least squares problem is not linear (because of cos and sin in `p_i`), but it can be resolved by a Gauss-Newton minimizer like G2O. Therefore, we need the partial direvatives of each individual cost w.r.t `[x, y, theta]`:
 
 $$
 \begin{gather*}
@@ -109,3 +130,15 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+One advantage of 2D pose is its angles are additive, so it's not like 3D where we need to use `SO(3)` manifolds.
+
+**Note that during optimization, after updating [x, y, theta], point correspondence would likely change**. So ICP is reliant on the initial relative pose estimate. In the below image, when the initial pose esimate is far off, point correspondence could be wrong:
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/e2ac93ed-086f-43eb-864f-7415be0ed571" height="300" alt=""/>
+       </figure>
+    </p>
+</div>

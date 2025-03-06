@@ -32,3 +32,4 @@ Use parallelisim on associative operations `a+(b+c) = (a+b) + c`
 - `std::execution::par`: This policy tells the algorithm to run in parallel. However, while tasks are distributed across threads, the order in which operations within each thread (or chunk) are performed is still relatively predictable. The overall reduction order is unspecified between chunks, but within each chunk it maintains a certain order.
 
 - `std::execution::par_unseq`: This policy not only allows parallel execution but also permits vectorization. Vectorization may rearrange the order of operations even more freely for performance reasons. Because of this extra level of reordering, the final result can differ when using non-associative operations.
+    - There's no guarantee that this will be multi-threaded, it could be SIMD instructions only.
