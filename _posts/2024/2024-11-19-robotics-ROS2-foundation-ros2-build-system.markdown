@@ -126,7 +126,7 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
 
 ## C++ & Python Interface Packages
 
-An interface package defines ROS2 messages, services, and common utilities for other ROS2 packages. To create Python utilities, once a Python package is built and installed, and the workspace is sourced, its Python modules in `install/MY_INTERFACE/lib/python3.10/site-packages` are automatically added to the Python path. What we need are as follow:
+An interface package defines ROS2 messages, services, and common utilities for other ROS2 packages. To create Python utilities, once a Python package is built and installed, and the workspace is sourced, its Python modules in `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` are automatically added to the Python path. What we need are as follow:
 
 - Make sure the python package files are here:
     - Empty `MY_INTERFACE/MY_INTERFACE/__init__.py`
@@ -153,19 +153,13 @@ An interface package defines ROS2 messages, services, and common utilities for o
         },
     ) 
     ```
-
-- `MY_INTERFACE/CMakeLists.txt`:
-
-    ```c
-    install(
-    DIRECTORY MY_INTERFACE/
-    DESTINATION lib/python3.10/site-packages/MY_INTERFACE
-    FILES_MATCHING PATTERN "*.py"
-    )
+INTERFACE/
+        DESTINATION 
 
     ament_package()
     ```
 
+    - The destination `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` **is carefully chosen**, because that's where generated srv, msg files go. Why? Because when there are packages with the same name at two different locations, Python will look into one, and throw a `file-not-found` error if files are not there.
     - We are NOT using `ament_python_install_package` because it's meant for pure Python packages. We need to manually install `MY_INTERFACE` in `install/MY_INTERFACE/lib/python3.10/site-packages`
 
 - User Code:
