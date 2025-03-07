@@ -203,6 +203,15 @@ The worst case scenario of KD Tree is to traverse through the entire tree. That 
 
 **[Implementation](https://github.com/RicoJia/Mumble-Robot/tree/main/mumble_onboard/halo)**
 
+### NanoFLANN: what's a leaf node size?
+
+In many textbook descriptions of kd trees, each leaf is thought of as holding a single point, and internal nodes only store splitting thresholds along a chosen dimension. However, in practical implementations such as nanoflann, the tree is built as a "bucket kd tree." Here's how it works:
+
+1. The tree is built by recursively splitting the dataset. At each internal node, nanoflann chooses a **splitting dimension (typically the one with the largest spread)** and a splitting threshold (often the median of the points along that dimension). Points are partitioned into two groups: those with coordinates below (or equal to) the threshold go to the left child, and those above go to the right child.
+2. Leaf Nodes as Buckets:
+    - Instead of splitting until each leaf holds exactly one point, nanoflann **stops splitting when the number of points in a node is less than or equal to a specified maximum** (provided as a parameter in `KDTreeSingleIndexAdaptorParams`, e.g., 10). At that point, the node becomes a leaf node.
+    - Leaf nodes in nanoflann do not represent a single point; they are buckets that contain several points. When a nearest neighbor query reaches a leaf node, it performs a linear search over all the points in that bucket.
+
 ## Octo Tree
 
 Octo-Tree is similar to KD tree, it spatially segments a point cloud into tree nodes. It is a tree data structure in which each internal node has exactly eight children. Octrees are most often used to partition a three-dimensional space. In KD Tree, we have "splits", whereas in octotree, we have 3D boxes.

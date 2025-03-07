@@ -169,5 +169,7 @@ An interface package defines ROS2 messages, services, and common utilities for o
 - User Code:
 
 ```python
-from MY_INTERFACE.My_Module import MyFunc
+from MY_INTERFACE import MyFunc
 ```
+    - Or one can use: `python3 -c import MY_INTERFACE.My_Module` in the same console, because after sourcing `install/setup.bash`, the installed file is added to the Python Path. 
+    - One can check the python path with: `python3 -c "import sys; print(sys.path)"` or `echo $PYTHONPATH`
