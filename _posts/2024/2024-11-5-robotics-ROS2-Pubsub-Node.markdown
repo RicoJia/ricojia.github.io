@@ -62,18 +62,14 @@ ros2 run demo_nodes_cpp listener
 ├── package.xml
 ├── resource
 │   └── dummy_test
-├── setup.cfg
 ├── setup.py
-└── test
-    ├── test_copyright.py
-    ├── test_flake8.py
-    └── test_pep257.py
 ```
 
     - `resource`: holds files that do not need executable permissions like config, launch files, data files etc.
     - python executables **NEED executable permissions**, so they need to placed in `dummy_test`
 
-- `setup.py`: so this node executable could be run by `ros2 run` command
+- `setup.py`: so we can create exportable modules (along with `ament_python_install_package(${PROJECT_NAME})`). It's NOT used for creating python nodes
+- See this [page for creating python nodes](https://roboticsbackend.com/ros2-package-for-both-python-and-cpp-nodes/)
 
 ```python
 from setuptools import setup, find_packages

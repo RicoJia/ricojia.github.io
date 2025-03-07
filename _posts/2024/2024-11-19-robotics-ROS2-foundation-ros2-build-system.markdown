@@ -153,9 +153,13 @@ An interface package defines ROS2 messages, services, and common utilities for o
         },
     ) 
     ```
-INTERFACE/
-        DESTINATION 
-
+- `CMakeLists.txt`
+    ```c
+    install(
+        DIRECTORY mumble_interfaces/
+        DESTINATION local/lib/python3.10/dist-packages/mumble_interfaces
+        FILES_MATCHING
+    PATTERN "*.py")
     ament_package()
     ```
 
