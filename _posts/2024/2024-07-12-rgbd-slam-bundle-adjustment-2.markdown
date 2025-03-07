@@ -145,3 +145,10 @@ def SLAM_pipeline(rgb_frame, depth_frame):
 I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jCsX9R2aa-I?si=JEyQF3Gw1BrXfVxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Q&A
+
+- Are pose graph and factor graph the same thing?
+    -  A pose graph is a special case of a factor graph. It consists of the robot's poses, and the edges represent spatial constraints (like relative transformations) between these poses.
+    - a factor graph is a more general representation that can include various types of variables (e.g., robot poses, landmarks, sensor biases) and factors (which represent measurements or constraints between these variables).
+- Does ROS2 SLAM Toolbox use g2o or Ceres? G2O.
