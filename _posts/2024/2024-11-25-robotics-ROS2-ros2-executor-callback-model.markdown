@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [ROS2 Foundation] Ros2 Executor Callback Model
 date: '2024-11-22 13:19'
-subtitle: Executor, Callbacks, Rate Object
+subtitle: Executor, Callbacks, Threading Model, Rate Object
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -15,55 +15,69 @@ TODO
 
 ## [Callback groups](https://docs.ros.org/en/humble/How-To-Guides/Using-callback-groups.html)
 
-In a ROS2 multi-threaded executor, being in a callback group is kind of like acquiring a multi-threaded lock to grant permission to fire. There are two groups:
+In ROS2, callback groups are a synchronization mechanism for managing concurrent execution in multi-threaded executors. They determine which callbacks can run simultaneously, similar to how locks work for critical-section access control. 
 
-- Mutually Exclusive Callback Group: it prevents its callbacks from being executed in parallel, so that callbacks in the group were executed by a SingleThreadedExecutor.
-- Reentrant callback group: it allows the executor to schedule and execute the group’s callbacks without restrictions.
+ There are two groups:
 
-Some other rules:
+- Mutually Exclusive Callback (MEC) Group: 
+    - Prevents its callbacks from being executed in parallel, so that callbacks in the group were executed by a SingleThreadedExecutor.
+    - A node’s default callback group is MEC
+- Reentrant callback group: 
+    - Allows the executor to schedule and execute the group’s callbacks without restrictions.
 
-- Different ROS 2 entities relay their callback group to all callbacks they spawn. E.g.,, if one assigns a callback group to an action client, all callbacks created by the client will be assigned to that callback group.
+Key rules:
 
-- Callbacks belonging to different callback groups (of any type) can always be executed parallel to each other.
+- Callbacks created by a ROS 2 entity (e.g., action clients) inherit the assigned callback group. 
+    - E.g.,, if one assigns a callback group to an action client, all callbacks created by the client will be assigned to that callback group.
 
-- A node’s default callback group is a MEC.
+- Callbacks in different groups can execute in parallel.
 
-- **You are able to create multiple MEC or Reentrant groups!**
+- Multiple MECs or Reentrant groups can be created as needed.
 
+### Examples of Callbacks
 
-In ROS 2 executors, a callback means a function whose scheduling and execution is handled by an executor. Examples of callbacks in this context are:
+- Subscription callbacks (receiving and handling data from a topic),
+- Timer callbacks,
+- Service callbacks (for executing service requests in a server),
+- Action callbacks in both action servers and clients
+- Done-callbacks of Futures. E.g., `Client.call(request) in rclpy`
 
-- subscription callbacks (receiving and handling data from a topic),
-- timer callbacks,
-- service callbacks (for executing service requests in a server),
-- different callbacks in action servers and clients,
-- done-callbacks of Futures.
+## Controlling Callback Execution
 
-**ROS 2 is event driven!!**
+- Within a Single Callback:
 
-- Every function that is run by an executor is, by definition, a callback. The non-callback functions in a ROS 2 system are found mainly at the edge of the system (user and sensor inputs etc).
+    - Allowing Parallel Self-Execution: use a Reentrant Callback Group if the same callback should execute concurrently (e.g., processing multiple service requests in parallel).
 
-- Sometimes the callbacks are hidden in the user/developer API. This is the case especially with any kind of “synchronous” call to a service or an action (in rclpy). 
-    - For example, the synchronous call `Client.call(request)` to a service adds a Future`’s done-callback` that needs to be executed during the execution of the function call, but this callback is not directly visible to the user.
+    - Preventing Overlap: Use a Mutually Exclusive Callback Group if a callback must not run concurrently with itself (e.g., a timer callback running a control loop).
 
-## Controlling Execution
-
-For the interaction of an individual callback with itself:
-
-    - Register it to a Reentrant Callback Group if it should be executed in parallel to itself. 
-        - An example case could be an action/service server that needs to be able to process several action calls in parallel to each other. 
-    - Register it to a Mutually Exclusive Callback Group if it should never be executed in parallel to itself. An example case could be a timer callback that runs a control loop that publishes control commands.
-
-For the interaction of different callbacks with each other:
-
-    - Register them to the same Mutually Exclusive Callback Group if they should never be executed in parallel. An example case could be that the callbacks are accessing shared critical and non-thread-safe resources.
-
-If they should be executed in parallel, you have two options, depending on whether the individual callbacks should be able to overlap themselves or not:
-
-    - Register them to different Mutually Exclusive Callback Groups (no overlap of the individual callbacks)
-    - Register them to a Reentrant Callback Group (overlap of the individual callbacks)
+- Between Different Callbacks:
+    - Non-Parallel Execution: Assign callbacks that share non-thread-safe resources to the same MEC, ensuring they do not run concurrently.
+    - Parallel Execution: Use separate MECs if individual callbacks must not overlap themselves.
+    Alternatively, use a single Reentrant group to allow concurrent execution.
 
 An example case of running different callbacks in parallel is a Node that has a synchronous service client and a timer calling this service.
+
+### Threading Model (Subscriber, Service, etc.)
+
+ROS 2 provides two main threading models for subscription callbacks:
+    - By default, all callbacks run on a single thread.
+
+```python
+rclpy.init()
+node = rclpy.create_node("single_threaded")
+executor = rclpy.executors.SingleThreadedExecutor()
+executor.add_node(node)
+executor.spin()  # All callbacks run in ONE thread
+```
+
+- Multi-Threaded Executor (Parallel Processing of Callbacks) with Reentrant Callback Groups (More Control over Threads) When using MultiThreadedExecutor, you can explicitly declare that certain callbacks should run in parallel by using ReentrantCallbackGroup.
+
+```python
+from rclpy.callback_groups import ReentrantCallbackGroup
+group = ReentrantCallbackGroup()
+node.create_subscription(Imu, "imu_data", imu_callback, 10, callback_group=group)
+node.create_subscription(LaserScan, "scan", scan_callback, 10, callback_group=group)
+```
 
 ## `rclpy.Rate`
 

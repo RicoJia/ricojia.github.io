@@ -27,6 +27,10 @@ EXPOSE 8888
 - `--runtime=nvidia`: enable Nvidia Container Runtime, a "runtime" that connects Nvidia GPU with docker. If your laptop doesn't have an Nvidia GPU, simply remove this arg.
 - `-p 8888` to expose the Jupyter Notebook Port
 - `jupyter notebook --ip=0.0.0.0 --no-browser --allow-root`follows the image name. This is the command to run. without `-d`, docker will run this process in the foreground, which will terminates the container upon `SIGINT` (ctrl-C)
+- Make sure `/dev/shm` is shared properly
+    - On the same machine, ROS2 uses the directory for messaging
+    - But this wouldn't work `-d /dev/shm:/dev/shm`
+    - use `-v` instead
 
 ## Push To Docker Hub
 
