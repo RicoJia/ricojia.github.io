@@ -82,6 +82,25 @@ int main()
 - We can pass a reference **int& i** into the lambda
 - `std::for_each` is in `<algorithm>`
 
+Another example:
+
+```cpp
+auto my_lambda = [callback = std::move(callback), serialization = rclcpp::Serialization<MessageT>()](const rosbag2_storage::SerializedBagMessageSharedPtr& msg) mutable {
+    MessageT ros_msg;
+    rclcpp::SerializedMessage serialized_msg(*msg->serialized_data);
+    serialization.deserialize_message(&serialized_msg, &ros_msg);
+    callback(ros_msg);
+};
+```
+- Why move callback? 
+    - avoids copying a heavy callback function. 
+- why mutable?
+    - By default, lambdas guarantees captured variables to be constant. here, the internal state of serialization might change. Without mutable, you will see: `error: assignment of member in read-only object`
+- You can assign new variables in the capture list? (like callback) 
+    - Yes, in C++ 14, this is called "init capture"
+
+
+
 ## Full Template Lambda (C++20)
 
 In a full template lambda, we can specify the input types **more explicitly**.

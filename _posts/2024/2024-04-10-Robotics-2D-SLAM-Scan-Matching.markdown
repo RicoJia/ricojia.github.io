@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Robotics - 2D SLAM
+title: Robotics - [2D SLAM 1] Introduction and Scan Matching
 date: '2024-04-10 13:19'
-subtitle: Scan Matching, ICP, 
+subtitle: Point-Point ICP, Point-Line ICP
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -72,12 +72,18 @@ The main problems in scan matching are:
 - How to find point association? (KNN)
 - How to find residuals. For scan point `[x,y]_i` and its matching point on another scan `[x, y]'_j`, we want to calculate its error (difference). The complete beam model is complicated and is not smooth for state estimation. We usually simplify the difference into a 2D Gaussian Distribution.
 
-### 2D Iterative Closest Point (ICP)
+### Point-Point 2D Iterative Closest Point (ICP)
 
 In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $T_{WB}$, and Later, sub map frame. A typical ICP-like algorithm iterative conducts 2 steps:
 
 1. Data association
 2. Pose estimation
+
+#### [Step 1] Data Association
+
+In this step, we use the KD-Tree to find the nearest neighbor of each point. Data association can be naively done using the nearest neighbors directly
+
+#### [Step 2] Pose Estimation
 
 A single 2D LiDAR Point comes in as $[\phi, r]$:
 

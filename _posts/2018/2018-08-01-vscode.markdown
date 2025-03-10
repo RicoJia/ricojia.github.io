@@ -67,7 +67,7 @@ tags:
         {
             "label": "colcon build",
             "type": "shell",
-            "command": "colcon build --cmake-args DCMAKE_BUILD_TYPE=Debug --symlink-install",
+            "command": "colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug --symlink-install",
             "options": {
                 "cwd": "/home/mumble_robot"
             },

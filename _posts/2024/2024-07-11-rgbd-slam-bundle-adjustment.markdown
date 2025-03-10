@@ -118,11 +118,21 @@ H = \sum_{ij} H_{ij} = \sum_{ij} (J^T_{ij} \Omega J_{ij} + \lambda I) \text{(Lev
 \end{gather*}
 $$
 
+$b$ is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& b = J^Te
+\end{aligned}
+\end{gather*}
+$$
+
 The above is quadratic!! How nice. The minimum is achieved when
 
 $$
 \begin{gather*}
-\Delta x = H_{ij}^{-1} b
+\Delta x = -H_{ij}^{-1} b
 \end{gather*}
 $$
 
