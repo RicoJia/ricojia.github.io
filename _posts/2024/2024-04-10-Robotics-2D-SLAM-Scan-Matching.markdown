@@ -129,11 +129,24 @@ $$
 \\ &
 \Rightarrow
  \frac{\partial e_i}{\partial x} = \begin{bmatrix}
- 1 & 0 \\
- 0 & 1 \\
- -r_i sin(\phi_i + \theta) & r_i cos(\phi_i + \theta)
+ 1 & 0 & -r_i sin(\phi_i + \theta) \\
+ 0 & 1 & r_i cos(\phi_i + \theta) \\
  \end{bmatrix}
 
+\end{aligned}
+\end{gather*}
+$$
+
+Then, we can calculate $H$, $b$, and finally $x$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H = \sum_{ij} H_{ij} = \sum_{ij} J^T_{ij} \Omega J_{ij} \text{(Gauss Newton)}
+\\ &
+b = J^Te
+\\ &
+\Rightarrow \Delta x = -H^{-1} b
 \end{aligned}
 \end{gather*}
 $$
