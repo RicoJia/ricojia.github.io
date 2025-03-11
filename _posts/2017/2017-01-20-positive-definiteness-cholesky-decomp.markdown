@@ -155,6 +155,41 @@ L_{i,j} = \frac{ \left( A_{i,j} - \sum_{k=1}^{j-1} L_{i,k} L_{j,k} D_k \right) }
 \end{gather*}
 $$
 
+#### Solving Equations using LDLT Decomp.
+
+Assuming we have 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \mathbf{H}\,\mathbf{x} = -\,\mathbf{b},
+\end{aligned}
+\end{gather*}
+$$
+
+And we have decomposed it into
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \mathbf{H} = \mathbf{L}\,\mathbf{D}\,\mathbf{L}^\top,
+\end{aligned}
+\end{gather*}
+$$
+
+Where:
+
+- $\mathbf{L}$ is a lower-triangular matrix (often with ones on its diagonal),
+- $\mathbf{D}$ is a diagonal matrix,
+- $\mathbf{L}^\top$ is then upper-triangular.
+
+To solve the above equation, To solve, define $L^\top x = y$, $Dy = z$.
+
+1. $Lz = -b$. Since L is lower triangular, we can solve for `z` by going from first row to the last row
+2. $Dy = z$: the solution is `y_i = z_i/D_ii`.
+3. $L^Tx = y$: $L^T$ is upper triangular, we can solve for `z` from the bottom row to the top.
+
+
 ### LLT Decomp. Variant - Block Cholesky Decomp.
 
 Block Cholesky Decomp. is basically the same as the above, but just operate on block. It is mainly used in GPU. Here's how:

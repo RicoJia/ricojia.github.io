@@ -162,3 +162,149 @@ One advantage of 2D pose is its angles are additive, so it's not like 3D where w
        </figure>
     </p>
 </div>
+
+### Point-Line 2D Iterative Closest Point (ICP)
+
+Point-Line 2D ICP assumes that a point in the source cloud belongs to a line in the target point cloud. This could work well if the environment has linear structures like walls. 
+
+#### [Step 1] Data Association
+
+For a given point in the source cloud:
+
+1. Find K nearest points in the target point cloud
+2. Fit a line within those k points: `ax + by + c=0` using [Least squares](https://ricojia.github.io/2017/02/25/math-plane-fitting/)
+
+#### [Step 2] Pose Estimation
+
+1. Find the distance between the line and the point:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& d = \frac{a p_x + b p_y + c}{\sqrt{a^2 + b^2 + c^2}}
+\end{aligned}
+\end{gather*}
+$$
+
+- If you are curious how to get the distance, hint: use the distance from the point to point (0, -c/b) and the Pythogorean Theorem. 
+
+2. Because $\sqrt{a^2 + b^2 + c^2}$ is a constant, we use distance as error: `e = a p_x + b p_y + c`. The Jacobian is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial e}{\partial p_x} = a
+\\
+& \frac{\partial e}{\partial p_y} = b
+\\
+\Rightarrow
+\\
+& \frac{\partial e}{\partial x} = \frac{\partial e}{\partial p} \frac{\partial p}{\partial x}
+\\
+& \frac{\partial p}{\partial x} = \begin{bmatrix}
+1 & 0 & -r_i sin(\phi_i + \theta) \\
+0 & 1 & r_i cos(\phi_i + \theta)
+\end{bmatrix}
+\\
+\Rightarrow
+\\
+& \frac{\partial e}{\partial x} = \begin{bmatrix}
+a & b & -a*r_i sin(\phi_i + \theta) + b * r_i cos(\phi_i + \theta)
+\end{bmatrix}
+
+\\
+\Rightarrow
+\\ &
+J_i = e^\top e
+\end{aligned}
+\end{gather*}
+$$
+
+Then, we can calculate $H$, $b$, and finally $x$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
+
+$$
+\begin{gather*}
+\begin{aligned}
+& H = \sum_{i} H_{i} = \sum_{i} J^T_{i} \Omega J_{i} \text{(Gauss Newton)}
+\\ &
+b = \sum_{i} J_i^T e_i
+\\ &
+\Rightarrow \Delta x = -H^{-1} b
+\end{aligned}
+\end{gather*}
+$$
+
+## Likelihood Field Approach
+
+ICP methods can be thought of as minimizing the "total potential energy" of the "springs" between point cloud 1 and 2. These springs however, need to be reinstalled at the beginning of each iteration. Likelihood field method can be thought of as a potential field. Different than a real physical potential field, our field has a resolution, and a maximum distance
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/989a5c99-9511-4030-bc3f-674d34ab7c1d" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+This likelihood field is also called "distance map". Around each point, the field will become weaker as distance goes up. 
+
+For a given point $P^W$ in the world frame, we denote its field strength as $\pi (P^W)$. So the goal is to find the relative pose $x$ between point cloud 1 and 2 such that 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& x^* = argmin(|\pi (P^W)|^2)
+\end{aligned}
+\end{gather*}
+$$
+
+To iteratively find that, we need the Jacobian of $\Pi$ w.r.t pose $x$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Pi}{\partial x} = \frac{\partial \Pi}{\partial P^W} \frac{\partial P^W}{ \partial x}
+\end{aligned}
+\end{gather*}
+$$
+
+Because in the distance field, we need to discretize the world coordinates with a resolution. So the relation between image coodinate and the world coordinate is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& P^f = \alpha P^W + c
+\end{aligned}
+\end{gather*}
+$$
+
+- $\alpha$ is the resolution, `c` is image center
+
+So the Jacobian is finally:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \Pi}{\partial x} = \frac{\partial \Pi}{\partial P^f} \frac{\partial P^f}{\partial P^W}\frac{\partial P^W}{ \partial x}
+\\
+\Rightarrow 
+\\ & 
+\frac{\partial \Pi}{\partial P^W} = \alpha [\Delta \pi_x, \Delta \pi_y]
+\\ & 
+\Rightarrow 
+\frac{\partial \Pi}{\partial x} = \alpha [\Delta \pi_x, \Delta \pi_y, -\alpha \Delta \pi_x r_i sin(\theta + \phi) + \alpha \Delta \pi_y r_i cos(\theta + \phi)]
+\end{aligned}
+\end{gather*}
+$$
+
+Where $[\Delta \pi_x \Delta \pi_y]$ is the image gradient
+
+## Summary
+TODO
+Comparisons:
+
+Accuracies:
+- NDT >= Likelihood field > PL-ICP > Point-Point ICP 
+
+Speed:
+- Point-Point ICP > ?
