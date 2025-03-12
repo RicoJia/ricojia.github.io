@@ -28,6 +28,35 @@ class VertexVelocity : public g2o::BaseVertex<3, Vec3d> {
 }
 ```
 
+## Public, Protected and Private Inheritance
+
+C++ gives the user control for accessing parent classe's data. E.g., 
+
+```cpp
+class B{
+
+public:
+    int a;
+protected:
+    int b;
+private:
+    int c;
+};
+
+class A : protected B{
+int get_a() const {return a;}   // good, a is a protected member of A
+int get_b() const {return b;}   // good, b is also a protected member of A
+int get_c() const {return c;}   // bad, private members in B are never accessible to child classes
+};
+```
+
+There are 3 types of inheritance. From parent class to child class, access mapping is as follows:
+- public: `public -> public`, `protected -> protected`
+- protected : `public -> protected`, `protected -> protected`
+- private: `public -> private`, `protected -> private`
+
+Private members of the parent class are never accessible to child classes
+
 ## Virtual Functions
 
 In general computer science, **dispatching** is the action of selecting which polymorphic function to call [2]. In C++, there are **static dispatching (like templates)** and **dynamic dispatching (polymorphism)**. In static dispatching, **the dispatched function is known during compile time**, whereas in dynamic dispatching, the dispatched function **won't be known until the runtime type of an object is known**. This way, polymorphism could become useful when we have different types of objects with inheritance, and want to call their corresponding versions of a function.
@@ -127,7 +156,7 @@ int main() {
 ### Quirks
 
 - **Virtual functions cannot be called in ctor or dtor**
-    - This is because in construction or destruction, when calling a virtual function, C++ does NOT use dynamic dispatch there, and will only use the definition from the class where the constructor is defined. This is to **prevent calling a virtual function that touches uninitialized data.** See below example
+    - This is because in construction or destruction, **when calling a virtual function, C++ does NOT use dynamic dispatch there**, and will only use the definition from the class where the constructor is defined. This is to **prevent calling a virtual function that touches uninitialized data.** See below example
 
 ```cpp
 #include <iostream>
