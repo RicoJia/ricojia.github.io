@@ -292,7 +292,7 @@ $$
 \frac{\partial \Pi}{\partial P^W} = \alpha [\Delta \pi_x, \Delta \pi_y]
 \\ & 
 \Rightarrow 
-\frac{\partial \Pi}{\partial x} = \alpha [\Delta \pi_x, \Delta \pi_y, -\alpha \Delta \pi_x r_i sin(\theta + \phi) + \alpha \Delta \pi_y r_i cos(\theta + \phi)]
+\frac{\partial \Pi}{\partial x} = [\alpha \Delta \pi_x, \Delta \pi_y, -\alpha \Delta \pi_x r_i sin(\theta + \phi) + \alpha \Delta \pi_y r_i cos(\theta + \phi)]
 \end{aligned}
 \end{gather*}
 $$
