@@ -132,16 +132,33 @@ $$
 3. Hinge Loss: $\frac{1}{n} \sum max(0, 1-y_i\hat{y}_i)$
     - Mostly used in SVM training, not working well with probablistic estimations
 
-4. Huber Loss
+4. Huber Loss (a.k.a Huber Kernel)
     $$
-    \frac{1}{2} (y_i - \hat{y}_i)^2, \text{for} |y_i - \hat{y}_i| < \delta
-    \\
+    \begin{gather*}
+    \begin{aligned}
+    & \frac{1}{2} (y_i - \hat{y}_i)^2, \text{for} |y_i - \hat{y}_i| < \delta
+    \\ &
     \delta |y_i - \hat{y}_i| - \frac{1}{2} \delta^2, \text{otherwise}
+    \end{aligned}
+    \end{gather*}
     $$
+
     - Advantages:
-        - it's continuous and differentiable
+        - It's continuous and differentiable
         - Combines MAE and MSE.
+        - It's commonly used in SLAM because it's more robust to outliers errors. 
+            - It's quadratic for small errors, preserving the sensitivity there
+            - It's linear for larger errors
     - Requires tuning $\delta$
+
+    <div style="text-align: center;">
+        <p align="center">
+        <figure>
+                <img src="https://github.com/user-attachments/assets/674e6ef0-b1b5-4992-94f5-024115aa2ce2" height="300" alt=""/>
+                <figcaption><a href="https://sirineamrane.medium.com/loss-functions-in-ml-and-dl-part-1-huber-loss-quantile-loss-tweedie-loss-log-cosh-loss-313a1ddd550b">Source</a></figcaption>
+        </figure>
+        </p>
+    </div>
 
 5. Sparse Entropy Loss: designed for image segmentation, where one-hot encoding is used in model output (after softmax) but training data only has labels. The loss per pixel is $l = -log(p_{true})$
 
