@@ -2,7 +2,7 @@
 layout: post
 title: RGBD SLAM Bundle Adjustment Part 2
 date: '2024-07-12 13:19'
-subtitle: RGBD SLAM Backend Introduction
+subtitle: RGBD SLAM Backend, G2O
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -46,41 +46,6 @@ Then, we have two types of edges that represent **an error**:
 - $x_1x_2$ is an adjacent edge with odometry observation $\hat{T_{x1,x2}}$ . It represents $T_{x1. x2} - \hat{T_{x1,x2}}$ in $se(3)$
 - $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$.
 
-## How G2O Works
-
-G2O (General Graph Optimization) is a "General Least Squares" optimizer, meaning any least squares (LS) problem that can be formulated as a graph can be optimized using this framework. The optimizer’s role is to:
-
-    Compute the gradient of the total cost function at each vertex by summing all constraints.
-    Apply the Levenberg-Marquardt algorithm to optimize parameters, aiming to find a local (and hopefully global) minimum.
-
-In SLAM (Simultaneous Localization and Mapping), a vertex must satisfy SE(3)SE(3) constraints. These vertices are defined in g2o/types/sba/types_six_dof_expmap.h:
-
-- `VertexSE3Expmap`: Represents robot poses in SE(3) space.
-- `VertexSBAPointXYZ`: Represents a 3D point.
-- `EdgeProjectXYZ2UV`: Represents the projection of a 3D point onto the image plane.
-
-G2O is widely used in SLAM algorithms, such as ORB-SLAM. [Example](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
-
-### G2O Optimization Steps
-
-1. Compute Residual Error:
-    - Calls `computeError()` to compute the residual error `e(X)`
-2. Compute Jacobian:
-    - Calls `linearizeOplus()` to compute the Jacobian J.
-    - This function can be overridden by the user to provide a custom Jacobian. If no override is provided, auto-differentiation is used.
-    - In a simple case where we have an after-previous relationship, `xj` represents the "after" state, and `xi` represents the "before" state. The residual, (a.k.a error) is `e = xj-xi`. The Jacobian is computed as:
-        ```
-        J=Jacobian xj−Jacobian xi
-        J=Jacobian xj​−Jacobian xi​
-        ```
-3. Construct Hessian Matrix: `H = JTJ`
-
-4. Solve for ΔXΔX: uses either Gauss-Newton or Levenberg-Marquardt to solve for ΔX.
-
-5. Update vertices linearly:
-    ```
-    X←X+ΔX
-    ```
 
 ### Optimizers
 
@@ -108,43 +73,131 @@ e=
 \end{gather*}
 $$
 
-### Implementation
+## G2O
 
-In general, a SLAM framework is:
+`g2o` **(General Graph Optimization)** is a nonlinear least squares optimization framework designed for solving graph-based problems, commonly used in robotics and computer vision. It efficiently optimizes problems like SLAM (Simultaneous Localization and Mapping), Bundle Adjustment, and pose graph optimization by representing the problem as a factor graph.
 
+
+## How g2o Works
+
+g2o is a "General Least Squares" optimizer, meaning it can optimize any least squares (LS) problem that can be represented as a graph. The optimizer works by:
+
+    1. Computing the gradient of the total cost function at each vertex by summing all constraints.
+    2. Applying the Levenberg-Marquardt or Gauss-Newton algorithm to optimize parameters, aiming to find a local (and hopefully global) minimum.
+
+In SLAM, a **vertex** must satisfy SE(3) constraints, which define the pose of a robot in 3D space. Some key vertex and edge types in `g2o/types/sba/types_six_dof_expmap.h` include:
+
+- `VertexSE3Expmap`: Represents robot poses in SE(3) (translation + rotation).
+- `VertexSBAPointXYZ`: Represents 3D landmarks (map points).
+- `EdgeProjectXYZ2UV`: Represents the projection of a 3D landmark onto the image plane.
+
+g2o is widely used in SLAM algorithms such as ORB-SLAM. [👉 Example: Bundle Adjustment Demo](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/ba/ba_demo.cpp)
+
+### G2O Optimization Steps
+
+1. Compute Residual Error
+    - Calls `computeError()` to compute the residual error `e(X)`, which represents the difference between expected and observed measurements.
+
+2. Compute Jacobian
+    - Calls `linearizeOplus()` to compute the Jacobian matrix J.
+    This function can be overridden by the user to provide a custom Jacobian.
+    - If no override is provided, automatic differentiation is used.
+    - In a simple case where we have a consecutive pose constraint, the residual (error) is computed as:
+
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & e = x_j - x_i
+    \end{aligned}
+    \end{gather*}
+    $$
+    - The Jacobian is:
+
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & J = \frac{\partial e }{\partial x_j} - \frac{\partial e }{\partial x_i}
+    \end{aligned}
+    \end{gather*}
+    $$
+
+3. Construct Hessian Matrix
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & H = J^\top J
+    \end{aligned}
+    \end{gather*}
+    $$
+
+4. Solve for $\Delta X$ using Gauss-Newton or Levenberg-Marquardt
+
+5. Update Vertices: Each vertex (pose or landmark) is updated as:
+
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & X \rightarrow X + \Delta X
+    \end{aligned}
+    \end{gather*}
+    $$
+
+### G2O Components
+
+#### **Vertices (State Variables)**: 
+
+Vertices represent the state to be optimized, such as robot poses or landmarks. Example: 
+
+```cpp
+class VertexSE2 : public g2o::BaseVertex<3, SE2> {
+    void setToOriginImpl() override {
+        _estimate = SE2();
+    }
+    void oplusImpl(const double* update) override {
+        Eigen::Vector3d v(update);
+        _estimate = SE2::exp(v) * _estimate;
+    }
+}
 ```
-def add_to_graph(rgb_frame, depth_frame, previous_rgb_frame, previous_depth_frame)
-    matches = feature_matching(rgb_frame, previous_rgb_frame)
-    if length(matches) < LEN_THRESHOLD:
-        return
-    estimate = pnp_estimate(matches, previous_depth_frame)
-    # This is likely a bad estimate
-    if estimate.linear_norm() > LINEAR_MAX or estimate.angular_norm() > ANGULAR_MAX:
-        return
-    # Not enough motion, reject
-    if estimate.linear_norm() < LINEAR_MIN and estimate.angular_norm() < ANGULAR_MIN:
-        return
 
-    add_to_optimizer(rgb_frame)
+- `3`: Specifies degrees of freedom (DOF) for optimization `(x, y, θ)`.
+- `SE2`: The underlying Lie group representation. The optimizer only updates these 3 elements, even if the internal state has a different structure (e.g., `Eigen::Vector<D>`).
+- `setToOriginImpl()` → Resets the vertex to an identity pose. 
+- `oplusImpl()` → Applies an update using Lie algebra exponential mapping. 
 
-def SLAM_pipeline(rgb_frame, depth_frame):
-    add_to_graph(rgb_frame, previous_rgb_frame[-1]) 
-    # back end
-    # Proximity check
-    for last N previous_rgb_frames:
-        add_to_graph(rgb_frame, previous_rgb_frame[-n]) 
+#### Edges (Constraints)
 
-    # Random frame check for loop closer
-    for M random previous_rgb_frames:
-        add_to_graph(rgb_frame, previous_rgb_frame[-m]) 
+Edges define constraints between vertices, such as:
 
-    optimize() 
-    
+- Odometry constraints (connecting robot poses).
+- Landmark constraints (projecting landmarks into camera frames).
+- Loop closure constraints (closing a trajectory loop to reduce drift).
+
+### Parallelization & Performance
+
+g2o **does not natively support multi-threading**, but parallel execution can be achieved **using OpenMP.**
+
+Example: Parallelizing Error Computation with OpenMP
+
+```cpp
+#pragma omp parallel for
+for (size_t i = 0; i < edges.size(); ++i) {
+    edges[i]->computeError();
+}
 ```
+
+Comparison with Other Optimizers
+
+- 🔥 Ceres Solver (Google): Uses multi-threading and automatic differentiation.
+- ⚡ GTSAM (Georgia Tech): Supports multi-threading with Intel TBB and factor graph-based optimization.
+
+## Finally...
 
 I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/jCsX9R2aa-I?si=JEyQF3Gw1BrXfVxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 
 ## Q&A
 
