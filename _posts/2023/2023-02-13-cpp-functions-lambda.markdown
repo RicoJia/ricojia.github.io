@@ -94,7 +94,7 @@ auto my_lambda = [callback = std::move(callback), serialization = rclcpp::Serial
 ```
 - Why move callback? 
     - avoids copying a heavy callback function. 
-- why mutable?
+- why `mutable`?
     - By default, lambdas guarantees captured variables to be constant. here, the internal state of serialization might change. Without mutable, you will see: `error: assignment of member in read-only object`
 - You can assign new variables in the capture list? (like callback) 
     - Yes, in C++ 14, this is called "init capture"
