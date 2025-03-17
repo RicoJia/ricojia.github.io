@@ -67,3 +67,61 @@ int main() {
 std::vector<size_t> indices(vec1.size());
 std::iota(indices.begin(), indices.end(), 0);
 ```
+
+## `std::async`:
+
+```cpp
+#include <iostream>
+#include <future>
+#include <vector>
+#include <limits>
+
+// A simple structure to hold task results.
+struct AlignResult {
+    bool success;
+    double cost;
+};
+
+// Dummy alignment task: returns success if the input is even,
+// and the cost is simply the input value.
+AlignResult alignTask(double value) {
+    AlignResult result;
+    result.success = (static_cast<int>(value) % 2 == 0);
+    result.cost = value;  
+    return result;
+}
+
+int main() {
+    // Define some input values for our tasks.
+    std::vector<double> values = {1.0, 2.0, 3.0, 4.0};
+    std::vector<std::future<AlignResult>> futures;
+    
+    // Launch each alignment task in a separate thread.
+    for (double val : values) {
+        futures.push_back(std::async(std::launch::async, [val]() {
+            return alignTask(val);
+        }));
+    }
+    
+    // Retrieve results and choose the one with the lowest cost.
+    double bestCost = std::numeric_limits<double>::max();
+    bool found = false;
+    for (auto &fut : futures) {
+        AlignResult res = fut.get();
+        std::cout << "Task result: success=" << res.success << ", cost=" << res.cost << std::endl;
+        if (res.success && res.cost < bestCost) {
+            bestCost = res.cost;
+            found = true;
+        }
+    }
+    
+    if (found) {
+        std::cout << "Best cost: " << bestCost << std::endl;
+    } else {
+        std::cout << "No successful alignment found." << std::endl;
+    }
+    
+    return 0;
+}
+```
+-  Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
