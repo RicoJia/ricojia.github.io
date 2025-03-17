@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Multithreading
 date: '2023-02-19 13:19'
-subtitle: SIMD
+subtitle: SIMD, `std::launch`
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -68,7 +68,7 @@ std::vector<size_t> indices(vec1.size());
 std::iota(indices.begin(), indices.end(), 0);
 ```
 
-## `std::async`:
+## `std::async`
 
 ```cpp
 #include <iostream>
@@ -124,4 +124,6 @@ int main() {
     return 0;
 }
 ```
--  Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
+
+-  Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads and **immediately start them**. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
+- Alternatively, one can use `std::async(std::launch::deferred)`, function execution will be **synchronous** and single-threaded. They will start when `future.get()` is called. 
