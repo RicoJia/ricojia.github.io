@@ -92,3 +92,27 @@ Alignment and Padding:
 - `reinterpret_cast<char*>(unsigned_char_ptr)` vs `static_cast<char*>(unsigned_char_ptr)` (which doesn't work)
     - `static_cast` converts types where conversion is well defined. But it does NOT support conversions between unrelated pointer types. `char*` vs `unsigned char*`
     - Low-Level Pointer Conversion: reinterpret_cast allows arbitrary type conversion between pointer types, essentially bypassing type safety. **USE WITH CAUTION**
+
+### [Case Study] Mixing size_t and int: Potential Pitfalls and Best Practices
+
+In C++, mixing `size_t` (typically an unsigned 64-bit integer) with `int` (usually a signed 32-bit integer) can lead to unexpected behavior due to implicit type conversions. Key Issues:
+
+- Negative int converts to a large size_t:
+    - If a negative int is implicitly converted to size_t, it wraps around to a very large positive value.
+
+```
+size_t s = -1;  // -1 becomes 18446744073709551615 (UINT64_MAX on a 64-bit system)
+```
+
+- Loop Conditions (i < size_t): A loop like for `(int i = n; i >= 0; --i)` can become an infinite loop if n is size_t, since i will never be negative in unsigned comparison.
+
+Best Practices:
+
+✅ Use `ssize_t` instead of size_t for signed indices. `ssize_t` is the signed equivalent of size_t, preventing unintended conversion issues.
+
+```cpp
+ssize_t index = -1;  // Safe, avoids unsigned wrapping issues
+```
+
+
+    

@@ -2,7 +2,7 @@
 layout: post
 title: Things About Leetcode Before That Coding Interview
 date: '2024-05-01 13:19'
-subtitle: Leetcode IDE Tips, Common Leetcode Problems, C++ Commands
+subtitle: Leetcode IDE Tips, Common Leetcode Problems, C++ Commands, String
 comments: true
 tags:
     - Linux
@@ -138,6 +138,14 @@ std::vector<int> maxSlidingWindow(std::vector<int>& nums, int k) {
 std::string str = "Hello, World!";
 std::string sub1 = str.substr(0, 5);
 std::string sub3 = str.substr(7);
+```
+
+### Best way for concactenate variables of different types - use `stringstream`
+
+```cpp
+std::ostringstream oss;
+oss << "index are not matching! " << idx << "|" << match.idx_in_this_cloud;
+throw std::runtime_error(oss.str());
 ```
 
 ### Find Next Element

@@ -2,7 +2,7 @@
 layout: post
 title: Computer Vision - Image Gradient
 date: '2021-01-10 13:19'
-subtitle: Sobel Operator
+subtitle: Sobel Operator, Signed Distance Field
 comments: true
 header-img: "home/bg-o.jpg"
 tags:
@@ -121,3 +121,42 @@ The bigger the smoothing filter, the less noise will be incorporated
 <img src="https://user-images.githubusercontent.com/39393023/131610973-d202737c-262b-481d-813a-2aedf8f20589.png" height="200" width="width"/>
 <figcaption align="center">Smoothing Filter</figcaption>
 </p>
+
+## Signed Distance Field
+
+Signed Distance Field of a cat:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/eaf6881d-a9a5-4bb5-be10-00122c0b3c3c" height="300" alt=""/>
+        <figcaption><a href="https://shaderfun.com/2018/07/23/signed-distance-fields-part-8-gradients-bevels-and-noise/">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+With signed-distance-field, we can create a "fake" 3D effect on the cat:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github.com/user-attachments/assets/542c8e6b-7b09-47fe-b8bd-531bcdf775cc" height="300" alt=""/>
+        <figcaption><a href="https://shaderfun.com/2018/07/23/signed-distance-fields-part-8-gradients-bevels-and-noise/">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+A Signed Distance Field (SDF) represents surfaces implicitly by storing the shortest distance to the nearest surface at each point in space. While SDFs enable smooth surface reconstruction, they are not commonly used in industry due to computational complexity.
+
+Instead, Surfel-based methods are more practical, representing surfaces as discrete surface elements (surfels)—small patches that approximate local geometry.
+
+Here is a video of a surfel based method
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/fea4498d-9ba6-4ec6-8c78-ecc7c06b8f60" height="300" alt=""/>
+            <figcaption><a href="https://www.youtube.com/watch?v=2gZNpFE_yI4">Video:  Real-time Scalable Dense Surfel Mapping (2018)</a></figcaption>
+       </figure>
+    </p>
+</div>

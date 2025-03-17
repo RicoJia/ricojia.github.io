@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Algorithm Functions
 date: '2023-01-20 13:19'
-subtitle: minmax_element, min_element, reduce, transform
+subtitle: minmax_element, min_element, reduce, transform, numeric
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -131,3 +131,26 @@ T accumulate(Iterator first, Iterator Last, T init, Binary_Operation op){
 ```cpp
 std::accumulate(vec.begin(), vec.end(), 1, [](int product, int b){return product*b}); 
 ```
+
+## `std::numeric`
+
+### NaN: (C++11)
+
+- `std::numeric_limits<float>::quiet_NaN()`: propagates through arithmetic operations without triggering floating-point exceptions.
+
+```cpp
+    float nan_value = std::numeric_limits<float>::quiet_NaN();
+
+    std::cout << "NaN value: " << nan_value << std::endl;
+
+    // Checking if a value is NaN
+    if (std::isnan(nan_value)) {
+        std::cout << "The value is NaN." << std::endl;
+    }
+    // Propagation example
+    float result = nan_value + 5.0f;  // Still NaN
+    std::cout << "Result of NaN + 5: " << result << std::endl;
+
+```
+
+- `std::numeric_limits<T>::signaling_NaN`: signaling NaN (SNaN) raises an exception when used in computations.

@@ -130,6 +130,34 @@ It is generally possible to use different C++ standards within the same project.
             - input source file, compiler options (direct mode)
         2. Look up for existing hash, which includes **a cache hit or cache miss**
 
+## Namespace
+
+In CMake, a “namespace” is a way to qualify target names, helping to avoid collisions and clarify ownership—especially when your project or its dependencies might use generic names. For example, in `MyLib`, to create core:
+
+```c
+add_library(MyLib_core SHARED ${MyLib_CORE_SOURCES})
+# ... other MyLib targets
+
+# When installing/exporting, assign a namespace:
+set_target_properties(MyLib_core PROPERTIES
+    EXPORT_NAME core
+)
+# Then export them under the MyLib namespace:
+install(TARGETS MyLib_core ...)
+install(EXPORT MyLibTargets
+    NAMESPACE MyLib::
+    FILE MyLibTargets.cmake
+    DESTINATION lib/cmake/MyLib
+)
+```
+
+Then, in a consuming project, you would link to them as:
+
+```c
+target_link_libraries(MyApp PRIVATE MyLib::core MyLib::stuff ...)
+```
+
+
 ## Header-Only Library vs Static Library 
 
 ### Header-Only Library

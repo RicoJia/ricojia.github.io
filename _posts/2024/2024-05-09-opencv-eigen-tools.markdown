@@ -1,6 +1,6 @@
 ---
 layout: post
-title: OpenCV and Eigen Tools
+title: Tools - OpenCV, Eigen, Sophus
 date: '2024-05-09 13:19'
 subtitle: A Running List of Opencv and Eigen Tools
 comments: true
@@ -216,4 +216,17 @@ std::cout << "Eigen version: "
             << EIGEN_WORLD_VERSION << "." 
             << EIGEN_MAJOR_VERSION << "." 
             << EIGEN_MINOR_VERSION << std::endl;
+```
+
+## Sophus
+
+- In Sophus, the SE(2) group represents a rigid 2D transformation, which consists of both a rotation and a translation. The operation you're looking for, SE(2) * Eigen::Vector2d, is a common need when transforming 2D points between coordinate frames.
+
+```cpp
+using Vec2d = Eigen::Vector2d;
+using SE2 = Sophus::SE2d;
+// Example: SE(2) transformation
+SE2 transform(Eigen::Rotation2Dd(M_PI / 4), Vec2d(1.0, 2.0)); // 45-degree rotation and translation (1,2)
+Vec2d point(3.0, 4.0);
+Vec2d transformed_point = transform * point;
 ```
