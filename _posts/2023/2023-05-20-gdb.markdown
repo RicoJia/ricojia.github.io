@@ -71,3 +71,43 @@ Some cautions:
     - double (`CV_64F`), do `(gdb) x/4g var`. 4 means the first 4 values, `g` means double precision. 
     - float (`CV_32F`): `(gdb) x/4f var`
     - int: `(gdb) x/4d var`
+
+
+## Core Dump
+
+Assume we have multiple C++ nodes that crash after running a long time (so they are hard to reproduce). What would be a good way to start debugging?
+
+- Core dump
+
+ A "core dump" is a snapshot of a computer program's memory state, typically taken when the program crashes or terminates abnormally, and it's used to help diagnose the cause of the crash.
+
+- How to get it working:
+    1. `ulimit -c unlimited`
+    2. Adjust kernel settings to store it in /tmp:
+        ```
+        cat /proc/sys/kernel/core_pattern
+        ```
+    3. To change it: `sudo sysctl -w kernel.core_pattern=/tmp/core.%e.%p.%h.%t`
+    4. `/etc/systemd/system.conf`
+        ```cpp
+        DefaultLimitCORE=infinity
+        ```
+    5. `sudo systemctl daemon-reload`
+    6. Create a crash program:
+        ```cpp
+        #include <stdio.h>
+        int main() {
+            // Intentionally dereference a NULL pointer to cause a segmentation fault.
+            int *ptr = NULL;
+            *ptr = 42;
+            return 0;
+        }
+        ```
+    7. Compile the executable with **debugging symbols**:
+        ```cpp
+        gcc -o0 crash_example crash_example.c
+        ```
+    8. Temporarily Enable Core Dumps: `ulimit -c unlimited`
+    9. Verify that the current core dump file name pattern with: `cat /proc/sys/kernel/core_pattern`
+    10. Run the program: `./crash_example`
+    11. Launch gdb: `gdb ./crash_example /tmp/core.<executable_name>.<pid>.<hostname>.<timestamp>`: and run `bt` at gdb. There will be backtrace saved
