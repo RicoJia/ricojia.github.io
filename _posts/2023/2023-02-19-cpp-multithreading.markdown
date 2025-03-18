@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Multithreading
 date: '2023-02-19 13:19'
-subtitle: SIMD, `std::launch`
+subtitle: SIMD, `std::launch`, lockless array writes,  
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -127,3 +127,48 @@ int main() {
 
 -  Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads and **immediately start them**. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
 - Alternatively, one can use `std::async(std::launch::deferred)`, function execution will be **synchronous** and single-threaded. They will start when `future.get()` is called. 
+
+## Lockless Vector Writes
+
+When using a pre-allocated vector in C++, you're effectively working with a contiguous block of memory in your process's virtual address space. Once allocated, the addresses of the vector's elements remain fixed—even though the underlying operating system manages physical memory mapping behind the scenes. This means that **if each thread writes exclusively to different elements of the vector, there's no risk of memory reallocation or shifting during execution, ensuring thread-safe writes without locks.**
+
+[Referece](https://stackoverflow.com/questions/45720829/can-two-threads-write-to-different-element-of-the-same-array)
+
+Below is an example that demonstrates this concept. In the example, multiple threads are assigned distinct chunks of the vector to write to, ensuring that each thread modifies only its designated segment. Because the vector's memory is pre-allocated and remains stable in the virtual address space, there are no concurrent modifications to the same memory locations, which prevents race conditions.
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <thread>
+
+constexpr size_t NUM_THREADS = 4;
+constexpr size_t ARRAY_SIZE = 16;
+
+void worker(int thread_id, std::vector<int>& vec, size_t start, size_t end) {
+    for (size_t i = start; i < end; ++i)
+        vec[i] = thread_id;
+}
+
+int main() {
+    // Pre-allocate the vector in virtual memory.
+    std::vector<int> vec(ARRAY_SIZE, -1);
+    std::vector<std::thread> threads;
+    size_t chunk = ARRAY_SIZE / NUM_THREADS;
+
+    for (size_t i = 0; i < NUM_THREADS; ++i) {
+        size_t start = i * chunk;
+        size_t end = (i == NUM_THREADS - 1) ? ARRAY_SIZE : start + chunk;
+        threads.emplace_back(worker, i, std::ref(vec), start, end);
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    // Print the vector to verify that each element was updated by the correct thread.
+    for (int v : vec)
+        std::cout << v << " ";
+    std::cout << std::endl;
+    return 0;
+}
+```

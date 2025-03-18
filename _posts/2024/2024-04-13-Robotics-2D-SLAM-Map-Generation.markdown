@@ -27,4 +27,6 @@ In modern robotics mapping systems, efficient environment representation and rob
 
 ## Loop Closure
 
+Multi-resolution scan matching
+
 ## Final Submap  Genenration
