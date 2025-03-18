@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Common General Sofware Design Pricinples
 date: '2023-12-15 13:19'
-subtitle: Coupling & Cohesion
+subtitle: Coupling & Cohesion, Rico's Software Development Philosophy
 comments: true
 tags:
     - C++
@@ -40,3 +40,10 @@ public:
     }
 };
 ```
+
+## General Philosophy
+
+- Keep working on worthwhile personal projects, and prototype lots
+    - First of all, I view this as an eye opening experience. Second, it'd be nice to come up with designs that are close to or even better than the industry standard.
+- Always Profile. When optimizing code, an experienced programmer will have a "ball park" of each method: how fast is the raw for loop here? Would using threads worth its overhead here?
+    

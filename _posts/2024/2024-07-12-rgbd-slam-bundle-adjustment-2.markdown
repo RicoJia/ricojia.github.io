@@ -173,6 +173,16 @@ Edges define constraints between vertices, such as:
 - Landmark constraints (projecting landmarks into camera frames).
 - Loop closure constraints (closing a trajectory loop to reduce drift).
 
+The combined measurement error of an edge is called "chi_squared" ($\chi_i^2$):
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \chi_i^2 = e_i^\top \Omega e_i
+\end{aligned}
+\end{gather*}
+$$
+
 ### Parallelization & Performance
 
 g2o **does not natively support multi-threading**, but parallel execution can be achieved **using OpenMP.**
