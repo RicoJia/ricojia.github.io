@@ -9,7 +9,6 @@ tags:
     - C++
 ---
 
-------------------------------------------------------------
 ## Summary of Performance
 
 - SIMD is fast because it processes several data elements at once with minimal overhead. **THIS IS EXTREMELY USEFUL IN COMPUTER VISION** where one may find many "small loops"
@@ -19,21 +18,21 @@ tags:
 
 Here I have two tasks and they both show the trend above:
 
-<div style="text-align: center;">
-    <p align="center">
-       <figure>
-            <img src="https://github.com/user-attachments/assets/eb9a0a9a-ed42-4b81-a3a5-f106426e7099" height="300" alt=""/>
-       </figure>
-    </p>
-</div>
+    <div style="text-align: center;">
+        <p align="center">
+        <figure>
+                <img src="https://github.com/user-attachments/assets/eb9a0a9a-ed42-4b81-a3a5-f106426e7099" height="300" alt=""/>
+        </figure>
+        </p>
+    </div>
 
-<div style="text-align: center;">
-    <p align="center">
-       <figure>
-            <img src="https://github.com/user-attachments/assets/a8df0176-3b42-40db-9caa-4c75cd796f1c" height="300" alt=""/>
-       </figure>
-    </p>
-</div>
+    <div style="text-align: center;">
+        <p align="center">
+        <figure>
+                <img src="https://github.com/user-attachments/assets/a8df0176-3b42-40db-9caa-4c75cd796f1c" height="300" alt=""/>
+        </figure>
+        </p>
+    </div>
 
 ## Code For SIMD, OpenMP, Vectorization, and Raw For Loop(Benchmark) Comparisons
 
