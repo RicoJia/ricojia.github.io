@@ -30,6 +30,7 @@ In modern robotics mapping systems, efficient environment representation and rob
 ### Multi-resolution Scan Matching
 
 1. Generate M likelihood fields of different sizes and resolutions. Also, generate one template (neighborhood of any scan point)
+    - For the first scan, we simply add it to the occupancy map, then initialize likelihood fields with it.
 2. Iterate through the likelihood field pyramid, from the lowest resolution to the highest:
     1. Build a graph of the pose estimate (vertex) and distance errors of scan points (edges)
     2. Set $\delta$ in $\Chi^2$ of an edge. Above $\delta^2$, a g2o edge is considered an outlier in the data. Then these large errors will be downweighted:
@@ -47,8 +48,44 @@ In modern robotics mapping systems, efficient environment representation and rob
         rk->setDelta(delta);
         edge->setRobustKernel(rk);
         ```
-- Later scan are not added?
-- Earlier scans are not added. The inliers also decline. WHy? Because the previous scans are not added. the point cloud shape truly is different.
+    3. Count number of inliers, that is, edges with $Chi^2$ lower than its threshold. If there are not enough inlier, we are not going to add the scan for loop closure / registration
+    4. Keep the pose estimate for next level likelihood field optimization
+3. Update occupancy grid
 
+Important parameters:
+
+- Matched Scan point (inlier) ratio:
+    - If this ratio is too high, a loop is considered not detected and we will lose potential constraints there. 
+    - If used in scan registration, one might notice that earlier scans are not added. This will decline further scan additions.
+
+- Thresholds of free / occupied cell values for Visualization:
+    - This can create a huge impact of the resulted map (TODO: comparison)
+
+### Loop Closure
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/d4473c0d-02b0-43c2-a7b5-0252831bb874" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Say submap1 has world pose: T_w_m1, submap 2: T_w_m2. a particular scan is T_w_s. The transform between the two submaps are: T_m1_m2. In a pose graph, this is one "adjacent edge". 
+
+We also want to construct a loop closure edge. That is done by:
+
+
+$$
+\begin{gather*}
+\begin{aligned}
+& T_{m1, m2} = T_{w, s1} T_{s1, s2} T_{s2, w}
+\\ &
+e = log(T_{m1, m2})
+\end{aligned}
+\end{gather*}
+$$
+
+The Jacobian of the above is dependent on `x, y, theta` of both submap poses. It's quite complex and we can leave that to g2o's auto differentiation.
 
 ## Final Submap  Genenration
