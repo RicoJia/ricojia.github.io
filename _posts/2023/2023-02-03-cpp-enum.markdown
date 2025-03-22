@@ -11,12 +11,29 @@ tags:
 
 ## Enum Class
 
-Enum class is a type safe way to initialize enums
+Enum class is a type safe way to initialize enums. It's called "scoped enum", which is an integral type under the hood. They do not implicitly convert to int or any other type to enforce type safety.
+
+You can either initialize an enum class with or without values. 
+
+Standard C++ does not provide built-in reflection to count the number of enumerators. One common workaround is to include a sentinel enumerator (pre C++17)
 
 ```cpp
 enum class MPS_Status: uint8_t{
     SENSOR_UNINITIALIZED = 0x00,
     SENSOR_STARTUP = 0x27
 };
+
+
+enum class Color {
+    Red,    // Implicitly 0
+    Green,  // Implicitly 1
+    Blue,   // Implicitly 2
+    Count   // Sentinel value: implicitly 3 (represents the number of colors)
+};
+
+int main() {
+        constexpr int numColors = static_cast<int>(Color::Count);
+    std::cout << "Number of colors: " << numColors << std::endl;
+}
 ```
 

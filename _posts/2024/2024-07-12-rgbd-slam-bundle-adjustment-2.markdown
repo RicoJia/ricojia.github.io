@@ -183,6 +183,19 @@ $$
 \end{gather*}
 $$
 
+[Optional]: making out-of-bound edges
+When the edge's associated measurement falls outside a valid range, the edge can be marked as level 1, so it will be ignored during optimization: 
+
+```cpp
+void computeError() override {
+    ...
+    setlevel(1);    // marks the edge out of bound
+}
+```
+
+This is because by default, g2o only optimize level 0 edges.
+
+
 ### Parallelization & Performance
 
 g2o **does not natively support multi-threading**, but parallel execution can be achieved **using OpenMP.**

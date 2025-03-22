@@ -16,6 +16,15 @@ tags:
 - double is 8 bytes (64 bits)
 - long double is 8, or even 16 bytes
 
+### Common Bugs
+
+- Observed Error:  error: no matching function for call to ‘min(float, double)’
+
+```cpp
+// Ensure both arguments are of type float
+rk_deltas_[i] = std::min(my_var, 2.0f);
+```
+
 ## Optional
 
 `std::optional` can specify if a value is valid or not. It has:
@@ -48,3 +57,4 @@ int main(){
 ```
 
 ## Structural Binding
+TODO
