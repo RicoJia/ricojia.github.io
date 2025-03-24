@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - Multithreading [1]
+title: C++ - [Concurrency 1] Various Concurrent Methods
 date: '2023-02-19 13:19'
 subtitle: Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD
 comments: true
