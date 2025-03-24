@@ -85,3 +85,50 @@ Surprise? Here I have some pointers:
     // This creates a copy
     auto dataCopy = obj.getData();
     ```
+
+### Static Attributes
+
+There are two types of static attributes: static class member attributes and static function members. The former is a class attribute, the latter are no different than the regular static function members which are not in any class. 
+
+```cpp
+#include <iostream>
+
+class Counter {
+private:
+    static int count_;  // static member variable
+
+public:
+    Counter() {
+        ++count_;
+    }
+
+    static int getCount() {
+        return count_;
+    }
+    
+    void foo(){
+        static int foo_count = 1;
+        ++foo_count;
+        std::cout << "foo count: " << foo_count << std::endl;
+
+    }
+};
+
+// Static member must be defined outside the class
+int Counter::count_ = 0;
+
+int main() {
+    Counter a;
+    Counter b;
+    Counter c;
+
+    std::cout << "Total Counter instances created: " << Counter::getCount() << std::endl;
+    
+    a.foo();
+    a.foo();
+    a.foo();
+    return 0;
+}
+```
+
+- Note that static members are either defiend outside the class (pre C++17), usually in a `.cpp` file, or defined as an `inline static` member (C++ 17)

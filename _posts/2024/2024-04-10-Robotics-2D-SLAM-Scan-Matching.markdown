@@ -300,11 +300,34 @@ $$
 Where $[\Delta \pi_x \Delta \pi_y]$ is the image gradient
 
 ## Summary
-TODO
+
 Comparisons:
 
-Accuracies:
-- NDT >= Likelihood field > PL-ICP > Point-Point ICP 
+- Accuracies: NDT >= Likelihood field > PL-ICP > Point-Point ICP 
+- Speed: Point-Point ICP ~= likelihood field > point to line
 
-Speed:
-- Point-Point ICP > ?
+A skewed submap can lead to subsequent scans matching to incorrect features. Therefore, we introduce an "inlier" ratio of the $\Chi^2$ error that helps us identify not-so-good scans. However, if one uses multi-level scan matching, make sure there is a floor value for the threshold, because lower resolution maps may round down the threshold.
+
+- This requires us to create debugging tools every step of the way. We need to make sure you can see numeric result and visualization at the same iteration (score, scan match)
+
+Another thing is to use **bilinear interpolation** on likelihood field cells for better estimating the distance to obstacles if the inputs are float:
+
+```cpp
+template <typename T>
+inline float get_bilinear_interpolated_pixel_value(const cv::Mat& img, float x, float y){
+    // boundary check
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x >= img.cols) x = img.cols - 1;
+    if (y >= img.rows) y = img.rows - 1;
+    // Assuming this image is stored in contiguous image.
+    // this gives pointer to (y,x).
+    // data[1] is [y, x+1]. data[img.step / sizeof(T)] is [y+1, x],
+    // and data[img.step / sizeof(T) + 1] is [y+1, x+1]
+    const T* data = &img.at<T>(floor(y), floor(x));
+    float xx = x - floor(x);
+    float yy = y - floor(y);
+    return float((1 - xx) * (1 - yy) * data[0] + xx * (1 - yy) * data[1] + (1 - xx) * yy * data[img.step / sizeof(T)] +
+                 xx * yy * data[img.step / sizeof(T) + 1]);
+}
+```
