@@ -15,6 +15,57 @@ C++ and C are known for their high performance. High level languages like Python
 
 In C++, non-virtual function calls have zero runtime overhead because they are resolved at compile time. However, virtual functions introduce a small performance cost due to vtable lookups and the use of a vptr (virtual table pointer). In contrast, Python treats every function as an object, meaning function calls always involve an extra level of indirection, regardless of overriding / non-overriding methods. 
 
+Here, one example is that heap allocation is always a few more cycles more expensive than stack allocation. That is illustrated in the example below:
+
+- In Stack Allocation:
+
+```cpp
+int fun2() {
+    int x = 3;
+    return x;
+}
+```
+Its assembly shows that we simply put the value `3` onto the stack. Easy peasy. With C++20's `consteval`, this can be used for [further optimizations](https://ricojia.github.io/2023/02/01/cpp-constness/)
+
+```cpp
+fun2():
+    push    rbp
+    mov     rbp, rsp
+    mov     DWORD PTR [rbp-4], 3
+    mov     eax, DWORD PTR [rbp-4]
+    pop     rbp
+    ret
+```
+
+- In heap allocation:
+
+```cpp
+int fun1() {
+    int* x = new int(3);
+    return *x;
+}
+```
+
+Associated assembly code involves: creating a pointer on stack, calling `operator new` in runtime to allocate memory (so it can't be optimized during compile time), assign variable, and return the dereferenced result
+
+```cpp
+fun1():
+    push    rbp
+    mov     rbp, rsp
+    sub     rsp, 16
+    mov     edi, 4
+    call    operator new(unsigned long)
+    mov     DWORD PTR [rax], 3
+    mov     QWORD PTR [rbp-8], rax
+    mov     rax, QWORD PTR [rbp-8]
+    mov     eax, DWORD PTR [rax]
+    leave
+    ret
+```
+
+**In comparison, Python almost allocates EVERYTHING on the heap**. That slows down memory allocation.
+
+
 ## Garbage Collection and Performance in C++ vs. Python
 
 C++ does not require garbage collection because it relies on deterministic object destruction. When an **exception is thrown inside a try block, all objects within the block are immediately destructed in reverse order of their creation**, ensuring resource cleanup. This mechanism, **known as RAII (Resource Acquisition Is Initialization)**, provides predictable performance **without the overhead of garbage collection.**

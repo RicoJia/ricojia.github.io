@@ -31,7 +31,9 @@ std::transform(arr, arr+n, arr, increment(a));      //equivalent to calling incr
 std::make_heap(arr, arr+n, greaters());         //calls constructor first, then inside the function, it will call the overloaded().
 ```
 
-## Lambda Basics
+## Lambda 
+
+### Lambda Basics
 
 Lambda functions are introduced when? 
 
@@ -59,7 +61,7 @@ auto add = [](auto a, auto b) {
 add(1, std::string("123"));  // Works fine!
 ```
 
-## Lambda Capture with Initializer (C++ 14)
+### Lambda Capture with Initializer (C++ 14)
 
 `[idx = 0]` is the initializer value in for each. 
 
@@ -101,7 +103,7 @@ auto my_lambda = [callback = std::move(callback), serialization = rclcpp::Serial
 
 
 
-## Full Template Lambda (C++20)
+### Full Template Lambda (C++20)
 
 In a full template lambda, we can specify the input types **more explicitly**.
 
@@ -117,7 +119,7 @@ int main() {
 
 - Like a regular lambda, we can invoke an instance of the template lambda with the synthesized `operator()`.
 
-One limitation is a template lambda can only be stored as a template parameter `template <typename Func>`, not as `std::function<int(double, double)>`: 
+One limitation of the template lambda is that it can only be stored as a template parameter `template <typename Func>`, not as `std::function<int(double, double)>`: 
 
 ```cpp
 // Works:

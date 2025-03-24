@@ -9,6 +9,17 @@ tags:
     - C++
 ---
 
+## Introduction
+
+What is C++? My definition is that C++ is a set of progressive standards. So far, there are C++98/03 (small modification), C++ 11 (Major Release), C++ 14, C++17, C++20, C++23. Each standard introduced new features, and remove some un-necessary features. Some examples are:
+
+- `type_traits`: introduced in C++11 to help with generic programming
+- Lambda expression was introduced in C++11. But it was expanded and modified in all later C++ releases.
+- `auto_ptr` was deprecated in C++11 and removed in C++17. Its successor, `unique_ptr` and `shared_ptr` are much more widely used now.
+
+Each standard is a file that [could be purchased in this link](https://isocpp.org/std/the-standard), and C++ implementation is done by a few vendors, such as Clang, GCC, MSVC. 
+
+
 ## C++14 Features
 
 - [Lambda Capture](https://ricojia.github.io/2023/02/13/cpp-functions-lambda/)
