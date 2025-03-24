@@ -17,7 +17,15 @@ What is C++? My definition is that C++ is a set of progressive standards. So far
 - Lambda expression was introduced in C++11. But it was expanded and modified in all later C++ releases.
 - `auto_ptr` was deprecated in C++11 and removed in C++17. Its successor, `unique_ptr` and `shared_ptr` are much more widely used now.
 
-Each standard is a file that [could be purchased in this link](https://isocpp.org/std/the-standard), and C++ implementation is done by a few vendors, such as Clang, GCC, MSVC. 
+Each standard is a file that [could be purchased in this link](https://isocpp.org/std/the-standard), and C++ implementation is done by a few vendors, such as Clang, GCC, MSVC. Compilers however, may not be consistent to the current standard, especially if they are relatively early in their version. For the below snippet, on [Compiler Explorer](https://godbolt.org/), compiler `x86-64 gcc 14.2` would fail the compilation here, because we need `constexpr int i` instead of `int i`. In contrast, compiler `x86-64 clang 10.1` could compile fine, but its assembly code shows that foo() will be evaluated during run time, (which is an inconsistency with the standard)
+
+```cpp
+consteval void foo(int i){ return i+1;}
+int main(){
+    int i = 1;
+    foo(i);
+}
+```
 
 
 ## C++14 Features

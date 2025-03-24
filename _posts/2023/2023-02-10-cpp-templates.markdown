@@ -202,3 +202,37 @@ public:
     using Point = std::conditional_t<dim == 2, Eigen::Vector2f, Eigen::Vector3f>;
 };
 ```
+
+## Template Alias
+
+One not super commonly used feature in C++ is template alias. 
+
+```cpp
+template <typename T>
+struct A;
+
+template <typename T>
+using B = A<T>;
+```
+
+One note is that C++ standard has NOT specified if an template alias is the same as the template itself. On some compilers (e.g., x86-64 clang 10.0.1), the below code snippet can compile fine. But on some others, A and B will be treated as the same template, so the template specialization would yield errors (x86-64 gcc 14.1)
+
+```cpp
+template <typename T>
+struct A;
+
+template <typename T>
+using B = A<T>;
+
+template <template<typename> class Cont>
+struct C;
+
+template<>
+struct C<A>{};
+
+
+template<>
+struct C<B>{};
+
+int main(){}
+```
