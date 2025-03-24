@@ -195,6 +195,22 @@ void computeError() override {
 
 This is because by default, g2o only optimize level 0 edges.
 
+### [Optional] - Forced Optimization Iterations
+
+```cpp
+{
+    int performedIterations = 0;
+    for (int i = 0; i < OPTIMIZATION_ITERATIONS; ++i) {
+        bool ok = optimizer.optimize(1);   // Run one iteration at a time
+        ++performedIterations;
+
+        if (!ok) {
+            break;
+        }
+    }
+    std::cout << "Performed iterations: " << performedIterations << std::endl;
+}
+```
 
 ### Parallelization & Performance
 
