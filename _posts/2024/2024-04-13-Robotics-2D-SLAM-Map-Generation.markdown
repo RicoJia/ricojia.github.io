@@ -63,6 +63,8 @@ Important parameters:
 
 ### Loop Closure
 
+Say submap1 has world pose: T_w_m1, submap 2: T_w_m2. a particular scan is T_w_s. The transform between the two submaps are: T_m1_m2. In a pose graph, this is one "adjacent edge". 
+
 <div style="text-align: center;">
     <p align="center">
        <figure>
@@ -70,8 +72,6 @@ Important parameters:
        </figure>
     </p>
 </div>
-
-Say submap1 has world pose: T_w_m1, submap 2: T_w_m2. a particular scan is T_w_s. The transform between the two submaps are: T_m1_m2. In a pose graph, this is one "adjacent edge". 
 
 We also want to construct a loop closure edge. That is done by:
 
