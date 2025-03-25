@@ -129,6 +129,19 @@ std::vector<int> maxSlidingWindow(std::vector<int>& nums, int k) {
 
 ### std::string
 
+- Raw C strings (char arrays) should always terminate with a **null character**, '\0'. Fun fact about char arrays: `nullptr` is inserted at the back of the array. This is a convention for `argv`
+
+```cpp
+char str[] = "a string";
+printf("%s", str);  // searches for "\0" to terminate
+
+char *strs[] = {"str1", "str2", nullptr};
+for (size_t i = 0; strs[i] != nullptr; ++i){
+    // uses nullptr to terminate string array.  
+    printf("%s", strs[i]);
+}
+```
+
 #### Substring
 
 - `std::string substr(size_t pos = 0, size_t len = std::string::npos) const;`

@@ -1,0 +1,37 @@
+---
+layout: post
+title: C++ - Basic Structure
+date: '2023-01-04 13:19'
+subtitle: Compilation Model, Basic Constructs
+comments: true
+header-img: "img/post-bg-alitrip.jpg"
+tags:
+    - C++
+---
+
+## Compilation Model
+
+Creating an executable from a single, small source file is conceptually straightforward:
+
+```
+source file -> file_to_binary -> executable
+```
+
+However, when a project consists of multiple source files, determining the correct order of compilation and linking becomes essential. Recompiling the entire codebase after every change is inefficient because compilation is a time-consuming process; the compiler must thoroughly analyze and translate the code into machine code. By dividing the code into smaller compilation units and then linking them, each unit being compiled into an object file that are very similar to the final executable. we can recompile only the parts of the code that have changed:
+
+```
+source file1 -> compilation --objective_file1--> linking -> 
+                                                    executable
+source file2 -> compilation --objective_file2--> linking -> 
+```
+
+This modular approach not only speeds up the build process but also simplifies maintenance. C++ has evolved several key concepts based on this model, including:
+
+- Declaration & definition
+- Header files and source files
+- Translation Units
+- One Definition Rule (ODR)
+
+### Declaration & Definition
+
+Assume we have a variable x in one source file. We want to share it with other source files. Of course we cannot define it in all these source files. So what we can do is in file A, we define x: `int x = 1;`. In other source files, we declare it to be defined elsewhere: `extern int x;`. Then, this variable could be found during linking. The same goes with function definitions: the prototypes are declared in headerfiles, and they are defined in a single source file (or header file)

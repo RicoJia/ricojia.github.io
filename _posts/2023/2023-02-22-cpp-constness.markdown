@@ -81,6 +81,45 @@ inline size_t hash_function(const NNPoint &pt) {
 }
 ```
 
+### `if Constexpr` & `static_assert`
+
+**On some C++ 20 comiliers (for which I don't know further specifications yet)**, in `if constexpr`, if `static_assert()` is not dependent on any template parameter, it would fire anyways. So one needs to make it explicitly dependent on the desired template parameter so it's reached in the correct code path.
+
+```cpp
+  if constexpr (dim == 3)
+      query_pt = {pt.x, pt.y, pt.z};
+  else if constexpr (dim == 2)
+      query_pt = {pt.x, pt.y};
+  else
+      // BAD: 
+      // static_assert(false, "dimension can only be 2 or 3");
+      // GOOD: 
+      static_assert(dim != 2 && dim != 3, "dimension can only be 2 or 3");
+```
+
+However, [on this C++ compiler](https://www.onlinegdb.com/online_c++_compiler), below works fine:
+
+```cpp
+#include <iostream>
+
+template<bool true_val>
+void g() {
+    if constexpr (true_val) {
+        // []<bool flag = false>() { static_assert(flag, "static assert"); }();
+        // This works properly
+        static_assert(true_val, "static assert true val");
+        static_assert(false, "static assert false in constexpr true path");
+    } else {
+    }
+}
+
+int main()
+{
+    g<false>();
+    return 0;
+}
+```
+
 ## Constexpr Improvements [C++20]
 
 `constexpr` rules in cpp20 are relaxed. Operations like allocation, resizing, element access on vectors are allowed, as long as those operations themselves meet the requirements for constexpr evaluation

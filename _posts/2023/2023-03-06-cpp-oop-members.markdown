@@ -88,7 +88,7 @@ Surprise? Here I have some pointers:
 
 ### Static Attributes
 
-There are two types of static attributes: static class member attributes and static function members. The former is a class attribute, the latter are no different than the regular static function members which are not in any class. 
+There are two types of static attributes: static class member attributes and static function members. The former is a class attribute, the latter are similar to the regular static function members, but **they are shared across all class instances**. 
 
 ```cpp
 #include <iostream>
