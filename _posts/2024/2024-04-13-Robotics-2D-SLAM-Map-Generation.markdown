@@ -109,4 +109,46 @@ $$
 
 The Jacobian of the above is dependent on `x, y, theta` of both submap poses. It's quite complex and we can leave that to g2o's auto differentiation.
 
+### Loop Closure Detection And Optimization
+
+- Policies for loop candidate detection:
+    - We check for matching between the current frame and past submaps. (Which can be improved for larger maps for sure)
+        - Skip the submap if it's too recent to the last submap
+        - Skip the submap if it already has a valid loop-closing constraint with the current submap
+        - Check if the frame pose and submap pose is within a cartesian distance threshold
+        - Add the submap id to a vector as a candidate
+- Match in history submaps:
+    - For each loop candidate detection:
+    - Get the mr field of the submap
+    - Perform scan matching using the mr field with a point matching threshold.
+    - If there's a loop closure, we add a loop-closing constraint between the past submap and the current submap to a vector
+- Optimization:
+    - add all submap poses as vertices
+    - add the edges between consecutive maps to g2o as consecutive edges. The measurement is simply T_12
+    - add valid loop-closing constraints to g2o as loop-closing edges
+    - Run optimizer
+- For all loop closing edges,
+    - if the edge is valid, set robust kernel to nullptr so it will contribute fully without being downweighted by the kernel
+    - if the edge is invalid, set level to 1. Typically, only level=0 edges are used for optimization
+    - Run optimizer again
+- Get updated poses and update them in the associated submap
+
 ## Final Submap  Genenration
+
+This is what the pipeline looks like: 
+
+- Assumptions:
+    - Submaps have unique ids
+- Set up
+    - each submap has an additional multi-resolution likelihood field for loop closure detection.
+
+1. Add a new submap
+2. Upon Receiving a new frame:
+    - Check if it's a keyframe by distance threshold
+3. If the new frame is a keyframe: 
+    1. Add the keyframe to the current submap
+        - Add the keyframe to both the occupancy grid and the likelihood field
+    2. Trigger loop detection and optimization (See the above Loop Closure Detection And Optimization section)
+4. If the keyframe pose has moved out of the current submap bounds, or there are too many keyframes, create a new submap:
+    - Copy N key frames from the previous frame
+
