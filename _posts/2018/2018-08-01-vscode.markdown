@@ -9,6 +9,18 @@ tags:
     - ROS2
 ---
 
+## Useful Shortcuts
+
+Debugger;
+
+- F11: step into; 
+- Shift f11: step out
+- F5 continue
+- F10: step over
+- ctrl-shift-y to open debug console
+
+
+
 ##  Set Up VSCode For ROS2 Development In Docker
 
 [Reference](https://www.youtube.com/watch?v=j28aUHbT_c4) This feature really is an UI of running gdb on ROS2 projects.

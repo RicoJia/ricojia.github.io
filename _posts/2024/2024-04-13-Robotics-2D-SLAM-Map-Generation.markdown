@@ -25,6 +25,27 @@ In modern robotics mapping systems, efficient environment representation and rob
         1. The occupancy map already has `N` submaps
         2. Any point already falls outside of the map boundary. 
 
+In practice, bresenham line algorithm is a good alternative for generating occupancy map. Each cell in an occupancy map is technically a 2D Logit:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& p = log(\frac{x}{1-x})
+\end{aligned}
+\end{gather*}
+$$
+
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/7f788c2c-6708-4af2-81c5-fe31a86d6bc9" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+In practice a simplified binary assignment (using +1 and -1) produces similar results. This approach reduces computational complexity and implementation overhead while still capturing the essential behavior of the system.
+
 ## Loop Closure
 
 ### Multi-resolution Scan Matching

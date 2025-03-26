@@ -230,3 +230,13 @@ SE2 transform(Eigen::Rotation2Dd(M_PI / 4), Vec2d(1.0, 2.0)); // 45-degree rotat
 Vec2d point(3.0, 4.0);
 Vec2d transformed_point = transform * point;
 ```
+
+- Sophus SO2 uses a unit complex number: `[cos(θ), sin(θ)]` as its internal representation instead of a single value. This is because:
+
+```
+z = cos(θ) + i·sin(θ)
+z₁ · z₂ = cos(θ₁ + θ₂) + i·sin(θ₁ + θ₂)
+```
+
+- This can avoid numerical instability near +-pi. 
+

@@ -1,8 +1,8 @@
 ---
 layout: post
-title: C++ - Basic Structure
+title: C++ - Compilation Model
 date: '2023-01-04 13:19'
-subtitle: Compilation Model, Basic Constructs
+subtitle: Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -35,3 +35,114 @@ This modular approach not only speeds up the build process but also simplifies m
 ### Declaration & Definition
 
 Assume we have a variable x in one source file. We want to share it with other source files. Of course we cannot define it in all these source files. So what we can do is in file A, we define x: `int x = 1;`. In other source files, we declare it to be defined elsewhere: `extern int x;`. Then, this variable could be found during linking. The same goes with function definitions: the prototypes are declared in headerfiles, and they are defined in a single source file (or header file)
+
+### Header files and source files
+Header files are primarily used to declare interfaces rather than to include all of the actual definitions. They let you share declarations—such as function prototypes, type definitions, constants, and macros—across multiple source files. 
+
+There are exceptions, though. Inline functions, templates, or classes with inline member functions often have their definitions in header files because they need to be visible at the point of use. 
+
+### Translation Units
+
+A translation unit is one single source file + directly linked / indirectly lined header files - preprocessed directives (Macros, etc?). A compiler actually processes a translation unit to begin with.
+
+### One Definition Rule
+
+If we had the same variable defined in two different places, we are faced with these issues: 
+
+- Ambiguity: Which definition should the program use?
+- Memory Allocation: Multiple definitions could result in separate memory allocations for what should be a single entity, leading to inconsistent behavior.
+
+#### Exceptions - Translation Unit Level Sharing
+
+- Inline functions - functions that defined with the keyword `inline`. 
+    - It suggests to the compiler that it may replace a function call with the function’s body, potentially reducing function call overhead. 
+    - However, it's important to note that the compiler is not obligated to inline the function - it just serves as a hint.
+    - If you have an inline function defined in a header file, it is allowed (and expected) to appear in multiple translation units (source files) **as long as all these definitions are identical.** Otherwise, you'll encounter undefined behavior or linkage errors.
+- Template: **Requirement: the complete definitions must be available when the template is instantiated.**
+    - You can technically have the same template definition in multiple source files. But it's more convenient to define them in header files.
+- Class:
+    - Class declaration must be in a header file. Class member definitions could be in a source file, or in a header file if they are declared as `inline`
+
+## Include Guard 
+
+Include Guards
+
+When multiple files include the same header file, the compiler should include that file only once per translation unit, regardless of how many times it's included. To ensure this, you can use include guards:
+
+```cpp
+#ifndef MY_HEADER_FILE
+#define MY_HEADER_FILE
+
+#endif
+```
+
+This prevents duplicate definitions during compilation. However, if two different header files happen to use the same guard name (e.g., MY_HEADER_FILE), it can cause one of them to be ignored—leading to hard-to-trace bugs.
+
+A modern and simpler alternative is:
+
+```cpp
+#pragma once
+```
+
+This is a **compiler directive** (a type of `#pragma`).[ It's not part of the C++ standard, but it's widely supported](https://en.wikipedia.org/wiki/Pragma_once)
+
+## Complete Compilation Model
+
+There are 4 stages of the full compilation model:
+
+1. Preprocessing: expands preprocessor directives such as `#include`, `#define`, `#ifdef`, etc.
+    - Output: a "pure" C/C++ file with all headers and macros expanded.
+    - `g++ -E file.cpp -o file.i`
+2. Compilation: converts the preprocessed code into assembly code.
+    - Performs syntax checks and translates to low-level instructions.
+    - Output: assembly code
+    - `g++ -S file.i -o file.s`
+3. Assembly: converts the assembly code to machine code (binary), but not yet linked.
+    - Output is an object file (.o or .obj).
+    - `g++ -c file.cpp -o file.o` or from assembly: `as file.s -o file.o`
+4. Linking: combines one or more object files (.o) and libraries into a final executable.
+    - Resolves external symbols (e.g., functions or variables defined in other files).
+    - `g++ file.o -o my_program`
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/0818dc7f-eed8-4500-ae0e-37d0331eaf90" height="200" alt=""/>
+       </figure>
+    </p>
+</div>
+
+## Compiler Optimization
+
+Given a code sample:
+
+```cpp
+// Type your code here, or load an example.
+int main(){
+    int res=0;
+    for(int i=0; i < 100; ++i){
+        res += i;
+    }
+}
+```
+
+With no optimization (-O0), the compiler generates straightforward instructions:
+
+```assembly
+main:
+        push    rbp
+        mov     rbp, rsp
+        mov     DWORD PTR [rbp-4], 0
+...
+```
+
+The loop is preserved as written.
+
+With aggressive optimization (-O3), the compiler recognizes that the result of the loop isn't used and eliminates it entirely:
+
+```assembly
+xor     eax, eax
+ret
+```
+
+All code has been optimized out! **⚠️ As a result, an important point here is that in a debugger, if our executable is set to debug mode, some debug points will be missed**. Use `-O0 -g` during debugging for best results.
