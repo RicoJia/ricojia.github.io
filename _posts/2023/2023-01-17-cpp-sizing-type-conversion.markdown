@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Sizing and Type Conversion
 date: '2023-01-17 13:19'
-subtitle: Memory Alignment, Sizeof
+subtitle: Memory Alignment, Sizeof, Integral Promotion
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -113,6 +113,28 @@ Best Practices:
 ```cpp
 ssize_t index = -1;  // Safe, avoids unsigned wrapping issues
 ```
+
+## Integral Promotion Rule
+
+**REMEMBER: **  The literal 1 is an int by default, not an unsigned char. When you use arithmetic operators (like +), operands of smaller integer types (such as unsigned char) are promoted to int.
+
+```cpp
+#include <iostream>
+#include <type_traits>
+int main() {
+    unsigned char val = 1;
+    auto a = val + 1;
+    auto b = val++;
+
+    std::cout << "decltype(val + 1): " << typeid(a).name() << "\n"; // see i
+    std::cout << "decltype(val++): " << typeid(b).name() << "\n";   // see h
+    static_assert(std::is_same<decltype(a), int>::value, "val + 1 promoted to int");
+    static_assert(std::is_same<decltype(b), unsigned char>::value, "val++ is uchar");
+    return 0;
+}
+```
+
+- Note that val++ is an increment operator, not an arithmetic expression like val + 1. So its type is stil `uchar`
 
 
     

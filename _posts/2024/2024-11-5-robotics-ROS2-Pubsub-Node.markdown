@@ -165,3 +165,18 @@ py_package_1/
     setup.py
     py_package_1/
 ```
+
+- With Colcon, I like:
+
+```
+colcon build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1 --packages-select dummy_test --cmake-force-configure
+```
+
+- `-DCMAKE_BUILD_TYPE=RelWithDebInfo`: This sets the CMake variable CMAKE_BUILD_TYPE to RelWithDebInfo, meaning “Release with Debug Info.”. Despite the existence of the debugging symbols, below can still happen with optimization:
+    - Lines can be merged or removed
+    - Variables can vanish
+    - Stepping can feel “jumpy”
+    - use a pure Debug build (no optimization) or something like -Og (for GCC) or -O1 -g (for Clang) for real debug build
+
+- `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`: Tells CMake to generate a compile_commands.json file in your build directory. This JSON file lists all compiler invocations for your project, which is extremely useful for tools like clangd, code analyzers, and IDEs that need to know your include paths and compiler flags.
+- `--cmake-force-configure` This is not a standard CMake flag; it’s a colcon (ROS 2 build tool) argument. It forces CMake to re-run its configuration step for all packages, even if CMake thinks nothing has changed.
