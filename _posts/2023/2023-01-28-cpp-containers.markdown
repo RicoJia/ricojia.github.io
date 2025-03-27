@@ -55,6 +55,7 @@ int main() {
 
 ### Erase:
 
+{% raw %}
 ```cpp
 // 
 std::map<int, std::string> m = {{1, "one"}, {2, "two"}};
@@ -73,6 +74,7 @@ if (it != my_map.end()) {
     my_map.erase(it);  // faster than key lookup + erase
 }
 ```
+{% endraw %}
 
 ## Associative Containers
 
