@@ -22,9 +22,59 @@ vector1.insert(vector1.end(), vector2.begin(), vector2.end());
 - `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
 
 
-## Map 
+## Associative Containers
 
-TODO
+### Hashing
+
+By default, keys of types `std::pair<int, int>` are not hashable. One needs to define a callable for that.
+
+The first alternative is defining a functor
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <utility> 
+
+struct MyHash{
+    size_t operator()(const std::pair<size_t, size_t>& p) const {
+        return std::hash<size_t>{}(p.first) ^ (std::hash<size_t>{}(p.second) << 1);
+    }
+};
+
+int main() {
+    std::unordered_map<std::pair<size_t, size_t>, std::string, MyHash> my_map;
+
+    my_map[{1, 2}] = "one-two";
+    my_map[{3, 4}] = "three-four";
+
+    std::cout << "Value at (1, 2): " << my_map[{1, 2}] << "\n";
+    std::cout << "Value at (3, 4): " << my_map[{3, 4}] << "\n";
+
+    return 0;
+}
+```
+
+Another alternative is defining a global hash function. It's a bit intrusive
+
+```cpp
+#include <unordered_map>
+#include <utility>
+#include <iostream>
+namespace std{
+    template<>
+    struct hash <std::pair<size_t, size_t>>{
+        size_t operator()(const std::pair<size_t, size_t>& p) const {
+            return std::hash<size_t>{}(p.first) ^ (std::hash<size_t>{}(p.second) << 1);
+        }
+    };
+}
+
+int main() {
+    std::unordered_map<std::pair<size_t, size_t>, std::string> my_map;
+    my_map[{7, 8}] = "seven-eight";
+    std::cout << my_map[{7, 8}] << std::endl;
+}
+```
 
 ## Algorithms
 
