@@ -22,6 +22,58 @@ vector1.insert(vector1.end(), vector2.begin(), vector2.end());
 - `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
 
 
+### Insert 
+
+- Insert Or Assign (C++17)
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+int main() {
+    std::unordered_map<int, std::string> my_map;
+
+    my_map.insert_or_assign(1, "apple");   // Insert key 1
+    my_map.insert_or_assign(2, "banana");  // Insert key 2
+    my_map.insert_or_assign(1, "avocado"); // Assign new value to key 1
+    std::cout << "After: " << my_map[1] << "\n";   // Outputs: avocado
+}
+```
+
+In set and unordered_set, if an element already exists, insert does not do anything:
+
+```cpp
+#include <iostream>
+#include <set>
+int main() {
+    std::set<int> my_set;
+
+    auto result1 = my_set.insert(42);  // First insert
+    auto result2 = my_set.insert(42);  // Second insert
+    std::cout << "Set size: " << my_set.size() << "\n";               // 1
+}
+```
+
+### Erase:
+
+```cpp
+// 
+std::map<int, std::string> m = {{1, "one"}, {2, "two"}};
+m.erase(1);  // Removes key , o(log n)
+std::unordered_map<int, std::string> umap = {{1, "one"}, {2, "two"}};
+umap.erase(1);  // Removes key , o(1)
+std::set<int> s = {1, 2, 3};
+s.erase(2);  // Removes element with value 2, o(log n)
+std::unordered_set<int> uset = {1, 2, 3};
+uset.erase(2);  // Removes element with value 2 o(1)
+
+// Alternative 2: universal erase with iterator:
+
+auto it = my_map.find(key);
+if (it != my_map.end()) {
+    my_map.erase(it);  // faster than key lookup + erase
+}
+```
+
 ## Associative Containers
 
 ### Hashing
@@ -75,6 +127,9 @@ int main() {
     std::cout << my_map[{7, 8}] << std::endl;
 }
 ```
+
+
+## Sets
 
 ## Algorithms
 
