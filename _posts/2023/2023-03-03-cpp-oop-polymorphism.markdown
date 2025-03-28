@@ -55,7 +55,7 @@ There are 3 types of inheritance. From parent class to child class, access mappi
 - protected : `public -> protected`, `protected -> protected`
 - private: `public -> private`, `protected -> private`
 
-Private members of the parent class are never accessible to child classes
+**Private members of the parent class are never accessible to child classes** , directly. But if the parent class has public functions that invokes private functions, then yes, indirectly a child class can access them.
 
 ## Virtual Functions
 
