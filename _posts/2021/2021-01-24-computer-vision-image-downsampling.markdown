@@ -72,6 +72,46 @@ $$
 | Bicubic | Better quality | A bit slower than bilinear, might have ringing effect |
 | Lanczos | Best quality, sharpness, minimal aliasing, used in FFmpeg| Slowest, potential ringing |
 
+### 2D Cubic Interpolation (Catmull–Rom):
+
+1. Find a row neighborhood 1x4 around the given point `(x,y)`
+2. Given the intensity values at those 4 points, and a fraction $t$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& f(t) = 0.5 \left( 
+    2p_1 +
+    (-p_0 + p_2)t +
+    (2p_0 - 5p_1 + 4p_2 - p_3)t^2 +
+    (-p_0 + 3p_1 - 3p_2 + p_3)t^3
+\right)
+\end{aligned}
+\end{gather*}
+$$
+
+3. Repeat 1 and 2 for 4 neighboring rows. 
+4. Interpolate them along y axis:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& I(x, y) = 0.5 \left( 
+    2g_0 +
+    (-g_{-1} + g_1)s +
+    (2g_{-1} - 5g_0 + 4g_1 - g_2)s^2 +
+    (-g_{-1} + 3g_0 - 3g_1 + g_2)s^3
+\right)
+\end{aligned}
+\end{gather*}
+$$
+
+For the 1D case, as t changes, the interpolated value really depicts the transition of weights on each of the 4 points.
+
+- While t=0, it's $p_1$. while t=1, it's $p_2$
+- Derivative at `t=0` is $f'(0) = 0.5(p_2 - p_0)$
+
+
 ## Ring Effect
 
 Lanczos filter might introduce ringing artifacts.
