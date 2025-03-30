@@ -9,6 +9,10 @@ tags:
     - Computer Vision
 ---
 
+## Introduction
+
+In mathematical optimization and computer science, heuristic is a technique designed for problem solving more quickly when classic methods are too slow for finding an exact or approximate solution, or when classic methods fail to find any exact solution in a search space. 
+
 ## K Means
 
 Example:Given a list of points: `(2,3),(5,4),(3,8),(8,8),(7,2),(6,3)(2,3),(5,4),(3,8),(8,8),(7,2),(6,3)`, with K=2 clusters
