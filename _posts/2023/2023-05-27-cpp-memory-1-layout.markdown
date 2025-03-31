@@ -41,13 +41,13 @@ CPU caches are inside CPU. They are even faster than RAM. Their size typically i
 
 A **cache line** is typically **64 bytes** — **the smallest unit of data** fetched from cache. So reading arr[0] (with 4-byte integers) will likely bring in arr[0] through arr[15].
 
-<div style="text-align: center;">
-    <p align="center">
-       <figure>
-            <img src="https://github.com/user-attachments/assets/796d79f8-7704-4990-9c21-f40b13bb2e7a" height="300" alt=""/>
-       </figure>
-    </p>
-</div>
+    <div style="text-align: center;">
+        <p align="center">
+        <figure>
+                <img src="https://github.com/user-attachments/assets/796d79f8-7704-4990-9c21-f40b13bb2e7a" height="300" alt=""/>
+        </figure>
+        </p>
+    </div>
 
 Caches are organized into sets and associativity levels:
 
@@ -78,15 +78,20 @@ struct Counters {
 std::vector<SafeCounter> counters(num_threads);
 ```
 
-If `counters[0], counters[1]` are on the same cache line, updates from different threads will invalidate the cache line across cores, causing unnecessary slowdowns.
+If `counters[0], counters[1]` are on the same cache line, updates from different threads will invalidate the cache line across cores, causing unnecessary slowdowns. (The result of the final result will be correct.)
 
 ```cpp
 struct alignas(64) SafeCounter {
     int a; // Thread 1
 };
+
+// In C
+struct __attribute__((aligned(64))) SafeCounterC {
+    int counter;
+};
+
 std::vector<SafeCounter> counters(num_threads);
 ```
-The `alignas(64)` will make sure **the start of the struct is aligned to a 64-byte boundary** (the size of a typical cache line)
-
+The `alignas(64)` will make sure **the start of the struct is aligned to a 64-byte boundary** (the size of a typical cache line). In a small test with 2 thredads, assigning counter incrementing with `alignas(64)`took 3ms, while without it the program took 12ms. 
 
 TL;DR: **Align and pad data structures to avoid false sharing!**
