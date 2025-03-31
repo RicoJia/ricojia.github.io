@@ -9,18 +9,7 @@ tags:
     - C++
 ---
 
-## Vector
-
-### Common Operations
-
-- Append `vector2` to the end of `vector1`
-
-```cpp
-vector1.insert(vector1.end(), vector2.begin(), vector2.end());
-```
-
-- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
-
+## Common Operations
 
 ### Insert 
 
@@ -53,6 +42,38 @@ int main() {
 }
 ```
 
+### Emplace
+
+- `unordered_map::emplace() -> pair [iterator, bool]` vs `try_emplace()`: 
+    - `try_emplace()` Only constructs the value if the key doesn’t exist.
+    - `emplace(key, value)` Always constructs the key and value (even if the key already exists — it won’t be inserted though). 
+        - Returns a pair with an iterator and a bool (false if the key already existed).
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <string>
+
+int main()
+{
+    std::unordered_map<std::string, std::string> my_map;
+    std::string expensive = "expensive";
+    
+    // emplace will always create the pair, even if key exists
+    auto it = my_map.emplace("dog", expensive);  
+    
+    // try_emplace avoids creating the value if "dog" is already in map
+    my_map.try_emplace("dog", "dog2");  // Only constructs the value if the key doesn’t exist.
+    // always construct the key-value pair, but if the object exists, the pair won't be inserted
+    my_map.emplace("dog", "expensivo");  
+    std::cout<<my_map["dog"]<<std::endl;    // see expensive
+    std::cout<<(it.first->second)<<std::endl;    // see expensive
+    return 0;
+}
+```
+
+
+
 ### Erase:
 
 {% raw %}
@@ -75,6 +96,17 @@ if (it != my_map.end()) {
 }
 ```
 {% endraw %}
+
+## Vector
+
+- Append `vector2` to the end of `vector1`
+
+```cpp
+vector1.insert(vector1.end(), vector2.begin(), vector2.end());
+```
+
+- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
+
 
 ## Associative Containers
 

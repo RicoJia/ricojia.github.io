@@ -13,7 +13,9 @@ This article is inspired by [this YouTube video made by 大刘科普](https://ww
 
 ## Brief Overview Of How 3D LiDAR (Light Detection and Ranging) works
 
-There are 2 types of LiDARs: ToF LiDARs and FMCW LiDARs. The mainstream is ToF, which has 3 types: mechanical (机械式激光雷达), hybrid sold-state (混合固态激光雷达), and fully solid-state (全固态激光雷达). This classification is based on if there are moving parts in the LiDAR.
+There are 2 types of LiDARs: ToF (Time of Flight) LiDARs and FMCW LiDARs. The mainstream is ToF, which has 3 types: mechanical (机械式激光雷达), hybrid sold-state (混合固态激光雷达), and fully solid-state (全固态激光雷达). This classification is based on if there are moving parts in the LiDAR.
+
+How Time of Flight works: the emitter sends a pulse to object, then it receives a light reflected back. By measuring `time * speed_of_light`, we get distance
 
 ### Concepts
 
@@ -31,7 +33,7 @@ The term "dual return" refers to the system's ability to detect and record multi
 3. Propagation: the laser pulses travel through the air at the speed of light
 4. Reflection: when the pulses encounter an object, a portion of the light is reflected back towards the LiDAR sensor.
 
-$\Delta t$ is measured between the emission and reception of the laser pulse with picosecond ($10^-{12}$s) resolution. The distance is $d = \frac{c \times \Delta t}{2}$
+$\Delta t$ is measured between the emission and reception of the laser pulse with picosecond $10^-{12}$s resolution. The distance is $d = \frac{c \times \Delta t}{2}$
 
 To generate a 3D depth map, **a ToF LiDAR's receiver can be modeled as a pinhole camera where each pixel on the field of view corresponds to a point that's at an angle to the optical center.**
 
@@ -41,11 +43,26 @@ To generate a 3D depth map, **a ToF LiDAR's receiver can be modeled as a pinhole
 
 ### Mechanical LiDAR
 
-There is a step motor that drives a vertical lidar emitter to scan the environment. The mechanical part is hard to maintain. Example: Google car?
+There is a step motor that drives a vertical lidar emitter to scan the environment. The mechanical part is hard to maintain. Example: Google car
+
+A typical 3d mapping procedure is:
+
+1. Data Acquisition: GPS, IMU, Wheel Encoder Data
+2. Scan Matching, Loop Detection
+3. Manual Map Labelling (lanes, etc.)
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/62a7dc18-965c-4290-bcd8-0e68d005e84d" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
 
 #### Channels
 
-Mechanical LiDARs have channels, i.e emitter-receiver pairs that are stacked vertically. 16, 32, or 64 are typical channel numbers. Vertical FoV are typically ±10° to ±30°. On a LiDAR, each receiver receives light from a fixed angle, which is determined by the orientation of the emitter and the receiver pair.
+Mechanical LiDARs have channels, i.e emitter-receiver pairs that are stacked vertically. 16, 32, or 64 are typical channel numbers. Vertical FoV are typically ±30° to 45deg. On a LiDAR, each receiver receives light from a fixed angle, which is determined by the orientation of the emitter and the receiver pair.
 
 Imagine a stack of lasers and detectors aligned vertically, each pointing at a slightly different angle up or down. As the LiDAR spins around its axis, these channels sweep out horizontal slices at their respective vertical angles, collectively scanning the surrounding environment in 3D.
 
@@ -61,6 +78,8 @@ LiDAR systems are engineered to prevent interference between channels.
     </figure>
 </p>
 </div>
+
+Nowadays, 16-channel lidars are very budget-friendly and has become popular for low-speed robots. For autonomous vehicles, they placed lidar on top of the car so the lidar has 360 deg view. But in the mean time, we need lidars to cover areas below the top lidar. Non-autonomous vehicles place 1-2 front lidars (usually solid state) to detect front cars. Autonomous vehicles need 4-5 lidars around the car. (extra synchronization and calibration is needed, ofc)
 
 ### Hybrid Solid State LiDAR
 
@@ -121,6 +140,8 @@ Unlike the other types whose laser patterns are grids, the laser pattern of the 
 </div>
 
 ## Solid-State LiDAR
+
+Solid state lidars are usually used to detect nearby cars. They are cheaper than mechanical lidars because the latter is more prone to mechanical damage due to vehicle vibration. They usually are "equivalent" to 128 channels, 30-45 deg vertical fov, but their horizontal fov is just 120 fov and it's much smaller than their mechanical counterparts. For this reason, they are not usually used for HD map generation.
 
 ### OPA (Optical Phased Array, 相控阵)
 

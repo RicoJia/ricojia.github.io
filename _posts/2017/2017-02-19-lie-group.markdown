@@ -2,7 +2,7 @@
 layout: post
 title: Math - Lie Group
 date: '2017-02-22 13:19'
-subtitle: Group Definition, Lie Group and Lie Algebras, Skew Matrices, Manifold
+subtitle: Group Definition, Lie Group and Lie Algebras, Skew Matrices, Manifold, SO(3) Derivatives
 comments: true
 tags:
     - Math
@@ -299,6 +299,25 @@ $$
 \begin{gather*}
 \begin{aligned}
 & R^T \text{Exp}(\phi) R = \text{Exp}(R^T \phi)
+\end{aligned}
+\end{gather*}
+$$
+
+## SO(3) Derivatives
+
+- $\frac{\partial Ra}{\partial R} = -Ra^\land$, with $w$ being the underlying rotation vector
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial Ra}{\partial R} = \frac{\partial Ra}{\partial w}
+= lim_{\phi \rightarrow 0}\frac{(R Exp(\phi ^\land) a - Ra)}{\phi}
+\\ & 
+\approx \frac{R(I +\phi ^\land ) a - Ra}{\phi}
+\\ & 
+= \frac{R\phi ^\land  a }{\phi}
+\\ & 
+= \frac{-R a^\land \phi }{\phi} = -Ra^\land
 \end{aligned}
 \end{gather*}
 $$
