@@ -4,6 +4,7 @@ title: Bash Magic
 date: '2023-06-15 13:19'
 subtitle: Bash is great. Here is a list of bash tricks & knowledge points that I found magical
 comments: true
+header-img: "img/post-bg-infinity.jpg"
 tags:
     - Linux
 ---
