@@ -83,3 +83,47 @@ tags:
     - No clean way to convert pointer back to array form:
         - Raw pointers have no size metadata.
         - You lose bounds-checking and iteration safety.
+
+## Casting
+
+`static_pointer_cast` vs `dynamic_pointer_cast`: 
+
+- ```RTTI``` is run time type information, if a base class **has at least a virtual function**, then base class ptr can be **dynamic_cast** to derived class 
+    - **(downcast, upcast is derived -> base)**
+    - ```dynamic_cast``` is only for downcasting. dynamic_cast can happen in runtime. 
+    - **If downcasting fails (not derived class), nullptr is returned.** 
+    - You can downcast references as well → throws `std::bad_cast`
+    - Safer, but slower than `static_cast`
+    
+- ```static_cast``` happens **during compile time, no RTTI is needed**. 
+    - **If you're sure you can downcast to a specific type**, use static_cast since it's cheaper, and the language allows you to do so
+
+- ```static_pointer_cast``` vs ```static_cast```: ```static_pointer_cast``` works on shared_ptrs, because you can't cast its type directly. 
+    ```cpp
+    #include <iostream>
+    using namespace std;
+    class B {
+        //virtual void fun() {} // NEED TO ADD THIS!!
+    };
+    class D : public B {
+    };
+
+    int main()
+    {
+        B* b = new D;
+        D* d = dynamic_cast<D*>(b);
+
+        // 1. use dynamic_cast if we're not sure if we can succeed
+        if (d != NULL)
+            cout << "works";
+        else
+            cout << "cannot cast B* to D*";
+
+        // 2. cpp still allows you to use static_ptr_cast
+        std::static_pointer_cast<DerivedClass>(ptr_to_base)->f();
+        // 3. even static_pointer_cast
+        static_cast<DerivedClass*>(ptr_to_base.get())->f();      // equivalent to above
+
+        return 0;
+    }
+    ```
