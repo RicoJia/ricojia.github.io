@@ -41,13 +41,13 @@ CPU caches are inside CPU. They are even faster than RAM. Their size typically i
 
 A **cache line** is typically **64 bytes** — **the smallest unit of data** fetched from cache. So reading arr[0] (with 4-byte integers) will likely bring in arr[0] through arr[15].
 
-    <div style="text-align: center;">
-        <p align="center">
-        <figure>
-                <img src="https://github.com/user-attachments/assets/796d79f8-7704-4990-9c21-f40b13bb2e7a" height="300" alt=""/>
-        </figure>
-        </p>
-    </div>
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/39393023/428782551-796d79f8-7704-4990-9c21-f40b13bb2e7a.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250331T220634Z&X-Amz-Expires=300&X-Amz-Signature=aa504fb90d19cc694074edde3b1bcb0462e11bce580af366111f6ec9164a7be0&X-Amz-SignedHeaders=host" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
 
 Caches are organized into sets and associativity levels:
 
