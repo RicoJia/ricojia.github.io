@@ -84,3 +84,30 @@ struct Example {
 ### Default Parameters
 
 - Default values are given in `.hpp` files, not `.cpp`. In `.hpp` file, do `void VoxelGrid(CloudPtr cloud, float voxel_size = 0.05);`. You wouldn't need it in the `.cpp` files
+
+## Ctor for Inheritance
+
+- Python would allow a child class without a ctor if parent has a ctor with args. C++ wouldn't. **we need to define a ctor for the child class too**
+    ```python
+    class Parent:
+        def __init__(self, x):
+            self.x = x
+
+    class Child(Parent):
+        pass  # No constructor
+
+    c = Child(42)  # ✅ Works fine in Python
+    ```
+
+    ```cpp
+    class Parent {
+    public:
+        Parent(int x) {}  // no default constructor
+    };
+
+    class Child : public Parent {
+        // No constructor → ❌ compile error
+    };
+
+    Child c(42);  // 💥 Error: no matching constructor for 'Child'
+    ```
