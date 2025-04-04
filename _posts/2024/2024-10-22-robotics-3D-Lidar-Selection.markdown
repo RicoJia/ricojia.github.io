@@ -3,7 +3,7 @@ layout: post
 title: Robotics - 2024 3D Lidar Selection For Robotics
 date: '2024-10-22 13:19'
 subtitle: Livox, Unitree Lidars
-header-img: "img/post-bg-unix"
+header-img: "img/post-bg-miui6.jpg"
 tags:
     - Robotics
 comments: true

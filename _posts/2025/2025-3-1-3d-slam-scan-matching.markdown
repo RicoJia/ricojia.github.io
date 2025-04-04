@@ -139,9 +139,34 @@ $$
 \end{gather*}
 $$
 
-
-
 ## NDT (Normal Distribution Transform)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/39393023/429244689-5b57d20e-5652-4541-9bf4-1231d7fc4ee0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250401%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250401T225620Z&X-Amz-Expires=300&X-Amz-Signature=1eaa6634725d7bdc4025d581196115dde9b0f911119d554cc88663e0ad1b35d7&X-Amz-SignedHeaders=host" height="300" alt=""/>
+        <figcaption><a href="https://blog.csdn.net/jinshengtao/article/details/103828230">Source: CSDN </a></figcaption>
+    </figure>
+</p>
+</div>
+
+
+1. Voxelization. For each voxel, calculate the mean and variance of its points: $\mu$, $\Sigma$
+2. For each point in the source scan:
+    1. Calculate its map pose $pt$
+    2. Calculate the voxel of $pt$. Grab all points in the same voxel
+    3. We believe that if the source is well-aligned to the target, the distribution of the points in the same voxel is the same as that of the target. So: 
+        1. $e_i = Rp_t + t - \mu$
+        2. $(R,t) = \text{argmin}_{R,t} [\sum e_i^t \Sigma^{-1} e_i]$
+            - This is equivalent to Maximum Likelihood Estimate (MLE)
+            - $\text{argmax}_{R,t} [\sum log(P(R q_i + t))]$
+        3. Jacobians:
+            - $\frac{\partial e_i}{\partial R} = -Rp_t^\land$
+            - $\frac{\partial e_i}{\partial t} = I$
+
+This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common. 
+
+**Another consideration is that we add a small positive value to the covariance matrix**, because we need to get its inverse. When points happen to be on a line or a plane, elements [on its least principal vectors will become zero.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
 
 ## Comparison TODO
 
@@ -154,3 +179,12 @@ $$
         </figure>
         </p>
     </div>
+
+## References
+
+[1] M. Magnusson, The three-dimensional normal-distributions transform: an efficient representation for registra-
+tion, surface analysis, and loop detection. PhD thesis, Örebro universitet, 2009.
+
+[2] P. Biber and W. Straßer, “The normal distributions transform: A new approach to laser scan matching,” in
+Proceedings 2003 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2003)(Cat. No.
+03CH37453), vol. 3, pp. 2743–2748, IEEE, 2003.

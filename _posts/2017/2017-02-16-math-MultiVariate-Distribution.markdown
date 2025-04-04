@@ -2,7 +2,7 @@
 layout: post
 title: Math - Multivariate Normal Distribution
 date: '2017-02-13 13:19'
-subtitle: PDF, Linear Transformation
+subtitle: PDF, Linear Transformation, Covariance Matrix
 comments: true
 tags:
     - Math

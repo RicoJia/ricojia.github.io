@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation
+subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Bessel Correction
 date: '2017-02-04 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -13,6 +13,7 @@ tags:
 ### Standard Deviation and Variance
 
 Variance of a distribution can be "biased" and "unbiased". A biased variance is to always underestimate the real bias.
+
 $$
 \begin{gather*}
 \text{unbiased variance} = \frac{\sum (x - \bar{x})}{n-1}
