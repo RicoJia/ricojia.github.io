@@ -104,12 +104,14 @@ This allows a local user to access Xterminal
 ### Adding X11 Access To Docker
 
 1. Do all steps in the section above
-    - `echo $DISPLAY` on the remote server, inside and outside the container, should give the same value, like `system76-pc:10.0`.
+2. Launch containers remotely, not on the server itself
+    - This way, `echo $DISPLAY` on the remote server, inside and outside the container, should give the same value, like `system76-pc:10.0`.
 2. On remote server, add docker to xhost: `xhost +local:docker`, or do `xhost +local: `?
     - `xhost +local:docker` X server allows connections from clients running in group docker
     - `xhost +local: `: X server allows connections from any clients
 3. In docker compose:
-    ```
+
+    ```yaml
     environment:
       - DISPLAY
       - XAUTHORITY=/tmp/.host_Xauthority  # avoid name clashing with a directory with the same name??
@@ -117,6 +119,7 @@ This allows a local user to access Xterminal
       # - /tmp/.X11-unix:/tmp/.X11-unix
       - /home/ricojia/.Xauthority:/tmp/.host_Xauthority:ro
     ```
+
     - Why `# - /tmp/.X11-unix:/tmp/.X11-unix` is commented out? 
         - The `/tmp/.X11-unix` directory holds the **Unix domain sockets** for X11 communication when connecting locally (e.g., for display `:0`). 
         - In the SSH X forwarding scenario, the connection to your X server happens over TCP (using the DISPLAY value like `system76-pc:10.0`), not via the local Unix socket. So we do NOT want to include it.
@@ -125,6 +128,7 @@ This allows a local user to access Xterminal
         - Required so that the container has access to the correct authentication cookie that matches your SSH-forwarded X session. 
         - Without this file inside the container, X clients would be unable to authenticate with your X server, resulting in errors like “X11 connection rejected because of wrong authentication.”
 4. do `xclock` in the docker. The GUI should pop up on the client machine.
+    - **A catch to this method is**, because `$DISPLAY=system76-pc:10.0`, the GUI will be launched there even if you launch the GUI on the server.
 
 
 ## Remote SSH Forwarding W/ AT&T Routers
