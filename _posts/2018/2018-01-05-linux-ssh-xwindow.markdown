@@ -103,7 +103,7 @@ This allows a local user to access Xterminal
 
 ### Adding X11 Access To Docker
 
-1. Do steps in the section above
+1. Do all steps in the section above
     - `echo $DISPLAY` on the remote server, inside and outside the container, should give the same value, like `system76-pc:10.0`.
 2. On remote server, add docker to xhost: `xhost +local:docker`, or do `xhost +local: `?
     - `xhost +local:docker` X server allows connections from clients running in group docker
