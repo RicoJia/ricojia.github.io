@@ -47,3 +47,4 @@ public:
     - First of all, I view this as an eye opening experience. Second, it'd be nice to come up with designs that are close to or even better than the industry standard.
 - Always Profile. When optimizing code, an experienced programmer will have a "ball park" of each method: how fast is the raw for loop here? Would using threads worth its overhead here?
     
+- Drawing the process / data flowchart is extremely beneficial for debugging a specific problem. 

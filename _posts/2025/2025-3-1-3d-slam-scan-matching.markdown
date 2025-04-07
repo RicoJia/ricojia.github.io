@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - [3D SLAM - 1] Scan Matching
-date: '2025-2-1 13:19'
+date: '2025-3-1 13:19'
 subtitle: 3D Point-Point ICP, 3D Point-Plane ICP, NDT
 header-img: "img/post-bg-os-metro.jpg"
 tags:
@@ -163,14 +163,17 @@ $$
         3. Jacobians:
             - $\frac{\partial e_i}{\partial R} = -Rp_t^\land$
             - $\frac{\partial e_i}{\partial t} = I$
+    4. We also consider neighbor cells as well, because the point might actually belong to one of them. So we repeat step 3 for those voxels.
 
 This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common. 
 
 **Another consideration is that we add a small positive value to the covariance matrix**, because we need to get its inverse. When points happen to be on a line or a plane, elements [on its least principal vectors will become zero.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
 
+
+
 ## Comparison TODO
 
-- PCL is slower, why?
+- PCL is slower, why? We are using spatial hashing to find neighboring cells. PCL NDT uses a KD tree for that. A Kd-tree is built over the centroids of those cells
 
     <div style="text-align: center;">
         <p align="center">
