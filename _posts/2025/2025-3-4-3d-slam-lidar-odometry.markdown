@@ -10,7 +10,7 @@ tags:
 comments: true
 ---
 
-## Direct Normal Distribution Transform Odometry (NDT)
+## Direct Lidar Odometry
 
 When given two scans, a direct NDT method means no features are extracted. The two scans would directly go through NDT for finding their relative poses. The workflow is as follows
 
@@ -79,6 +79,24 @@ The main difference, however, is in `add_frame`:
 
 - If there are too many points in a specific voxels, we can choose not to update it anymore.
 
-## Indirect NDT
+## Indirect Lidar Odometry
+
+Indirect Lidar Odomety is to select "feature points" that can be used for matching. There are 2 types: **planar** and **edge feature** points. This was inspired by LOAM (lidar-odometry-and-mapping), and is adopted by subsequent versions (LeGO-LOAM, ALOAM, FLOAM). Indirect Lidar Odometry is the foundation of LIO as well. Common features include: PFH, FPFH, machine-learned-features. Point Cloud Features can be used for database indexing, comparison, compression.
+
+After feature detection, we can do scan-matching using ICP or NDT
+
+Some characteristics of 3D Lidar points are:
+
+- They are not as dense as the RGB-D point cloud. Instead they have clear **line characteristics**. 
+
+Questions:
+
+- 
+
+
+
+
+
+
 
 **There you have it, NDT odometry. Note that due to the lack of loop detection, it's still susceptible to accumulated error.**

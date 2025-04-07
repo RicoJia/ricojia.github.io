@@ -13,7 +13,7 @@ tags:
 
 The C++ memory model was formally introduced in **C++11**  mainly for multithreading. Before C++11:
 
-- Threading was platform-dependent.
+- Threading was platform-dependent. (POSIX threads for Unit systems)
 - Behavior of shared memory and data races **was undefined and left up to the OS/hardware/compiler.**
     - 🫠️ "Pthreads lib assume no data race." Pthreads are a **thin wrapper over OS-level primitives** and don’t prevent data races. It's the programmer’s job to synchronize correctly.
 

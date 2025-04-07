@@ -9,6 +9,26 @@ tags:
     - C++
 ---
 
+## Asynchronous Programming
+
+- Single-Threaded Asynchornous Programming
+    - Cooperative Multitasking & Pre-emptive Multitasking
+        - This is a model where each task **voluntarily gives up control** after executing X instructions, so other tasks can execute. This is in contrast to the **preemptive multitasking, where the scheduler forcibly interrupts tasks**.
+            - Say a line-printing thread prints 3 lines then yield control.
+    - Event loop 
+        - Used in Like Javascript in a browser / `Node.js`
+        - The python `Asyncio` has an event loop that schedules and runs coroutines.
+        ```
+        Event Loop:
+            while queue.get():
+                event = queue.pop_front(); // FIFO
+                event.handler(args)
+        ```
+        - Event could be OS notification mechanisms, like epoll, select, poll.
+
+- Concurrent Programming
+    - This involves multiple threads / processes running in parallel. (True parallelism)
+
 ## Summary of Performance
 
 - SIMD is fast because it processes several data elements at once with minimal overhead. **THIS IS EXTREMELY USEFUL IN COMPUTER VISION** where one may find many "small loops"
