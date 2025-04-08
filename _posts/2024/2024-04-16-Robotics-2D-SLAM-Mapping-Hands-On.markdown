@@ -57,7 +57,7 @@ The scan alignment appears poor likely due to motion distortion. Motion distorti
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://imgur.com/yHaxeyR" height="300" alt=""/>
+            <img src="https://i.postimg.cc/Fsd2ZfwC/lidar1.png" height="300" alt=""/>
        </figure>
     </p>
 </div>
@@ -69,7 +69,7 @@ Even if we skip a distorted frame, there's no guarantee that the next frame will
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://imgur.com/w0wkz3w" height="300" alt=""/>
+            <img src="https://i.postimg.cc/m2QhWg3s/lidar2.png" height="300" alt=""/>
        </figure>
     </p>
 </div>
@@ -101,7 +101,7 @@ These scans are distorted in different ways:
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://imgur.com/3uNcR09" height="400" alt=""/>
+            <img src="https://i.postimg.cc/nVX0k647/lidar3.png" height="400" alt=""/>
        </figure>
     </p>
 </div>
@@ -111,7 +111,7 @@ Degenerated case where there's large empty space:
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/0c3a178f-5be8-4072-97f8-6a524266927c" height="300" alt=""/>
+            <img src="https://i.postimg.cc/9FqgWvzV/lidar4.png" height="300" alt=""/>
     </figure>
 </p>
 </div>
@@ -134,12 +134,30 @@ if (scan_obj.angle < -2.35619 + 30 * M_PI / 180.0 || scan_obj.angle > 2.35619 - 
 
 Scan matching fails in a semi-degenerated scenario:
 
-![Image](https://github.com/user-attachments/assets/7b482422-2048-4950-9cef-f0fba6805448)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://i.postimg.cc/RZ5sqXnt/lidar5.png" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
 
 Consecuently, the same hallway appears in the wrong position
-![Image](https://github.com/user-attachments/assets/92bf47f4-8e1a-496b-955f-076129143899)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://i.postimg.cc/t43r6WhM/lidar6.png" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
 
 If loop detection is weak, this may not be corrected. E.g., If the submap distance threshold is too short, so loop detection wasn't triggered
     - What happens next is subsequent scans are skewed
 
-![Image](https://github.com/user-attachments/assets/f84c20c8-6297-41a6-be8b-e19d5e7549fe)
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://i.postimg.cc/Vv27qFG3/lidar7.png" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
