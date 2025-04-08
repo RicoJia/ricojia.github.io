@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Concurrency 1] Various Concurrent Methods
 date: '2023-02-19 13:19'
-subtitle: Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD
+subtitle: Asynchonous Programming, Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -13,8 +13,10 @@ tags:
 
 - Single-Threaded Asynchornous Programming
     - Cooperative Multitasking & Pre-emptive Multitasking
-        - This is a model where each task **voluntarily gives up control** after executing X instructions, so other tasks can execute. This is in contrast to the **preemptive multitasking, where the scheduler forcibly interrupts tasks**.
+        - This is a model where each task **voluntarily gives up control** after executing X instructions, so other tasks can execute. 
             - Say a line-printing thread prints 3 lines then yield control.
+        - Another paradigm is **preemptive multitasking, where the scheduler forcibly interrupts tasks**.
+            - E.g.,: `CPython` threading model. The interpreter periodically releases the GIL after a certain number of bytecode is executed
     - Event loop 
         - Used in Like Javascript in a browser / `Node.js`
         - The python `Asyncio` has an event loop that schedules and runs coroutines.

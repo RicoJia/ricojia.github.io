@@ -12,6 +12,42 @@ tags:
 
 ## Concepts
 
+CMake is a "write-only" language 😉, because it was only meant to be written, not for reading, jokingly. This is because:
+
+- The syntax is not quite a real scripting language
+- CMake uses a lot of macros (`target_include_directories, PUBLIC, INTERFACE`).
+- Debugging is hard - error messages are bad; 
+- Scoping rules are not always intuitive:
+
+    ```c
+    set (MY_VAR "global") 
+    function (my_func)
+        set(MY_VAR "local")
+        message("Inside func: ${MY_VAR}")
+    endfunction()
+    my_func()
+    message("Outside ${MY_VAR}")
+    ```
+    - In this example, we see "local", which is a actually a **new local variable** created
+    - This is unlike Bash or Python where global variable are by default accessed
+    - To access the parent scope:
+        ```c
+        function(my_func)
+            set(MY_VAR "updated globally" PARENT_SCOPE)
+        endfunction()
+        ```
+
+- Major version upgrades 
+    - Pre CMake 3.x to CMake 3.x - make commands "target" specific:
+        ```
+        include_directories -> target_include_directories
+        link_directories(${SOME_LIB_DIR}) -> target_link_directories
+        ```
+    - CMake: 3.13:
+        ```
+        target_link_options(my_app PRIVATE "-Wl,--no-as-needed")
+        ```
+
 ### Hierarchy
 
 CMake is hierarchical. That is, you have a top-level project, with multiple subprojects.

@@ -11,7 +11,9 @@ tags:
 
 ## Boehm-Demers-Weiser Collector (BDW) Collector
 
-- Usage: Drop in placement
+BDW Collector is designed as a "drop-in" replacement in C for the default memory allocation functions (malloc, free, etc.). Developers can link against it with minimal changes to their existing code.
+
+The collector scans regions of memory (such as the call stack, registers, and global data areas) for values that resemble pointers to allocated objects. If it finds such values, it marks the corresponding objects as reachable. It does not require precise knowledge about pointer locations, which is why it’s called "conservative."
 
 ### Scanning Process - Mark And Sweep
 
