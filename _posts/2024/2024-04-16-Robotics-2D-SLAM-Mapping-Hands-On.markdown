@@ -57,7 +57,7 @@ The scan alignment appears poor likely due to motion distortion. Motion distorti
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/d38f24c4-f902-4d3d-b544-2e9946aaf7ed" height="300" alt=""/>
+            <img src="https://imgur.com/yHaxeyR" height="300" alt=""/>
        </figure>
     </p>
 </div>
@@ -69,7 +69,7 @@ Even if we skip a distorted frame, there's no guarantee that the next frame will
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/4898b458-4cfc-4526-8285-430bfae42361" height="300" alt=""/>
+            <img src="https://imgur.com/w0wkz3w" height="300" alt=""/>
        </figure>
     </p>
 </div>
@@ -101,7 +101,7 @@ These scans are distorted in different ways:
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/43588de3-4194-4b63-a956-e7c95af4a233" height="400" alt=""/>
+            <img src="https://imgur.com/3uNcR09" height="400" alt=""/>
        </figure>
     </p>
 </div>
