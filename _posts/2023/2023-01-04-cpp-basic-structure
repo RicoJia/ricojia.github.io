@@ -146,3 +146,12 @@ ret
 ```
 
 All code has been optimized out! **⚠️ As a result, an important point here is that in a debugger, if our executable is set to debug mode, some debug points will be missed**. Use `-O0 -g` during debugging for best results.
+
+## Compilers
+
+- `gcc` and `g++` are both part of the `GNU Compiler Collection` (GCC). 
+    - `gcc` can be used to compile C++ code, but you need to **manually link** the C++ standard library
+        ```bash
+        gcc main.cpp -lstdc++ -o app
+        ```
+    - `g++` us built on top of `gcc`, and defines `__cplusplus` macros

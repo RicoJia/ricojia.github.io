@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Tools - OpenCV, Eigen, Sophus
+title: Tools - OpenCV, Eigen, Sophus, PCL, PCD
 date: '2024-05-09 13:19'
 subtitle: A Running List of Opencv and Eigen Tools
 comments: true
@@ -220,7 +220,7 @@ std::cout << "Eigen version: "
 
 ## Sophus
 
-- In Sophus, the SE(2) group represents a rigid 2D transformation, which consists of both a rotation and a translation. The operation you're looking for, SE(2) * Eigen::Vector2d, is a common need when transforming 2D points between coordinate frames.
+In Sophus, the SE(2) group represents a rigid 2D transformation, which consists of both a rotation and a translation. The operation you're looking for, SE(2) * Eigen::Vector2d, is a common need when transforming 2D points between coordinate frames.
 
 ```cpp
 using Vec2d = Eigen::Vector2d;
@@ -240,3 +240,12 @@ z₁ · z₂ = cos(θ₁ + θ₂) + i·sin(θ₁ + θ₂)
 
 - This can avoid numerical instability near +-pi. 
 
+To construct a rotation: we need to use `Eigen::Quaterniond`
+
+```
+ground_truth_pose.so3() = halo::SO3(Eigen::Quaterniond(qw, qx, qy, qz));
+```
+
+## PCD
+
+`pcd` stands for Point Cloud Data, and it’s the standard file format used by the `Point Cloud Library (PCL)`. It stores 3D points (and `optionally color`, `normals`, `intensity`, etc.).

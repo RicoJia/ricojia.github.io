@@ -39,7 +39,7 @@ $$
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/7f788c2c-6708-4af2-81c5-fe31a86d6bc9" height="300" alt=""/>
+            <img src="https://i.postimg.cc/YCmLMxZN/p0.png" height="300" alt=""/>
        </figure>
     </p>
 </div>
@@ -89,7 +89,7 @@ Say submap1 has world pose: T_w_m1, submap 2: T_w_m2. a particular scan is T_w_s
 <div style="text-align: center;">
     <p align="center">
        <figure>
-            <img src="https://github.com/user-attachments/assets/d4473c0d-02b0-43c2-a7b5-0252831bb874" height="300" alt=""/>
+            <img src="https://i.postimg.cc/XvSGJC6R/p1.png" height="400" alt=""/>
        </figure>
     </p>
 </div>

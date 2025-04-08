@@ -1,7 +1,7 @@
 ---
 layout: post
 title: C++ - Manual Memory Garbage Collector
-date: '2023-01-26 13:19'
+date: '2023-03-15 13:19'
 subtitle: Boehm-Demers-Weiser (BDW) Collector
 comments: true
 header-img: "img/post-bg-alitrip.jpg"

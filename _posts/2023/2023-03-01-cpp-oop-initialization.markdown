@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [OOP] Initialization
 date: '2023-03-01 13:19'
-subtitle: Default Initialization, Memory Order
+subtitle: Default Initialization, Memory Order, Ctor for Inheritance, Parsing and Construction
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -48,26 +48,6 @@ Best Practices:
 int i{};    // explicitly initialized to 0;
 ```
 
-## Initialization Order
-
-We need to make sure the vairable order is consisntent in both the initializer list and the variable definition. One common warning we see is `warning: <VAR> will be initialized after [-Wreorder]`
-
-```cpp
-class MyClass{
-    /*
-        * Below public functions are defined in the order of operation
-    */
-    public:
-        // Step 0: Create this object when first powered on
-        MyClass(): previous_time_(millis()), current_status_(Status::UNINITIALIZED)
-        {}
-
-        Status current_status_;
-        unsigned long previous_time_;
-};
-```
-
-- The order of class variable initialization is determined by the declaration order, not the order in initializers. [Reference](https://wiki.sei.cmu.edu/confluence/display/cplusplus/OOP53-CPP.+Write+constructor+member+initializers+in+the+canonical+order)
 
 ### Memory Order of Class Members
 
@@ -111,3 +91,50 @@ struct Example {
 
     Child c(42);  // 💥 Error: no matching constructor for 'Child'
     ```
+
+## [Advanced] Parsing and Construction
+
+The compiler parses class definition, then constructs class instances during runtime.
+
+### 1 - Parsing (During Compilation)
+
+Parse the class body linearly from top to bottom
+
+1. Class member **declarations**
+    - Member types, and names are registered
+    - Member default initializers `(int x = 42;)`, but this is not usable **until the full class is fully parsed**
+2. Nested structs/classes
+3. Function declarations
+    - This includes ctor. For this example:
+        ```cpp
+        class Foo{
+            public:
+                struct Options{
+                    int max_iterations = 100;
+                }
+                Foo(Option o = Options()){}
+        };
+        ```
+
+
+
+### 2 - Runtime Construction
+
+1. In the order of declaration (top to bottom): Base class ctor, then derived classes are run.  
+    - The order of class variable initialization is determined by **the declaration order**, not the order in initializers. [Reference](https://wiki.sei.cmu.edu/confluence/display/cplusplus/OOP53-CPP.+Write+constructor+member+initializers+in+the+canonical+order)
+        ```cpp
+        class MyClass{
+            /*
+                * Below public functions are defined in the order of operation
+            */
+            public:
+                // Step 0: Create this object when first powered on
+                MyClass(): previous_time_(millis()), current_status_(Status::UNINITIALIZED)
+                {}
+
+                Status current_status_;
+                unsigned long previous_time_;
+        };
+        ```
+    - `current_status_` is declared first, so it's constructed first, though  `previous_time_` appears first in the initializer list
+    - **[Extra Note]**: We need to make sure the vairable order is consisntent in both the initializer list and the variable definition. One common warning we see is `warning: <VAR> will be initialized after [-Wreorder]`
