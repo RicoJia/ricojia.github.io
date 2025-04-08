@@ -1,8 +1,8 @@
 ---
 layout: post
-title: C++ - Writing GTest for ROS
+title: C++ - GTest
 date: '2023-05-21 13:19'
-subtitle: Test! Test! Test!
+subtitle: GTest For ROS
 comments: true
 header-img: "img/post-bg-infinity.jpg"
 tags:
@@ -58,7 +58,7 @@ TEST(CvUtilsTest, TestFrobeniusNorm) {
 
 ### Test Fixture
 
-Test fixture is a mechanism to share code between test cases in a test suite. One common misconception is "the text fixture will be reused across tests". **THAT IS NOT TRUE!** Test fixtures are only for sharing initialization code. Below, we have an example
+Test fixture is a mechanism to share code between test cases in a test suite. One common misconception is "the text fixture will be reused across tests". **THAT IS NOT ENTIRELY TRUE!**  `Setup()`, `TearDown()` has **no data sharing**. `SetUpTestSuite()` `TearDownTestSuite()` is for datasharing. Below, we have an example
 
 ```cpp
 class MyTestFixture : public ::testing::Test{

@@ -51,6 +51,8 @@ auto copyToBuffer = [&](const auto& variable) {
 }
 ```
 
+- Note: if there is no args in the lambda, one can just write it as: `[&]{return ...;}`
+
 Generic Lambda also works with different input types, due to type deduction:
 
 ```cpp
