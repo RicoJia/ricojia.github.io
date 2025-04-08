@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Functions, Lambda
 date: '2023-02-13 13:19'
-subtitle: Lambda, Functors
+subtitle: Lambda, Functors, Function Pointer
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -171,3 +171,18 @@ int main() {
 ```
 
 - `[&]() { lambda(grid0, matches); }` is a smart way to bind different types of grid with the lambda function. This is an `inline, parameter less` function
+
+
+## Function Pointer
+
+```cpp
+void foo(int){}
+
+int main(){
+    void (*fp)(int) = &foo;
+    foo(1);
+    (*foo)(1);
+}
+```
+
+- Note that either `foo(1)` or `(*foo)(1)` works.
