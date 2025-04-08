@@ -144,7 +144,7 @@ $$
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/39393023/429244689-5b57d20e-5652-4541-9bf4-1231d7fc4ee0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250401%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250401T225620Z&X-Amz-Expires=300&X-Amz-Signature=1eaa6634725d7bdc4025d581196115dde9b0f911119d554cc88663e0ad1b35d7&X-Amz-SignedHeaders=host" height="300" alt=""/>
+        <img src="https://i.postimg.cc/W4Lw6zx4/dc97c62dfe7709ccb32e3ca28add63f0.png" height="200" alt=""/>
         <figcaption><a href="https://blog.csdn.net/jinshengtao/article/details/103828230">Source: CSDN </a></figcaption>
     </figure>
 </p>
@@ -178,7 +178,7 @@ This is more similar to the 2D version of NDT [2], and it different from the ori
     <div style="text-align: center;">
         <p align="center">
         <figure>
-                <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/39393023/428796840-64e87f07-dfa5-40c0-9bc5-840f3cea0ae6.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250331T220659Z&X-Amz-Expires=300&X-Amz-Signature=6d211d366a886a3715af956062f0011614de52b2301fa7757738143a66ee0294&X-Amz-SignedHeaders=host" height="300" alt=""/>
+                <img src="https://i.postimg.cc/ZRJP2gbt/2025-04-08-17-51-57.png" height="600" alt=""/>
         </figure>
         </p>
     </div>

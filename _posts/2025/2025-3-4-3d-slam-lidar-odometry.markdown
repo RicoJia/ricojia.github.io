@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - [3D SLAM - 1] Lidar Odometry
+title: Robotics - [3D SLAM - 2] Lidar Odometry
 date: '2025-3-4 13:19'
 subtitle: Direct Lidar Odometry, NDT, Incremental NDT, Indirect Lidar Odometry
 header-img: "img/post-bg-os-metro.jpg"
