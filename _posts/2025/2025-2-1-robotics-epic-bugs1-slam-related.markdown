@@ -99,3 +99,7 @@ class EdgeICP2D_PT2Line : public g2o::BaseUnaryEdge<1, double, VertexSE2> {
 - Coordinate frames matter: Even when the math looks simple, subtle frame mismatches can render your optimizer useless.
 - Scaled point-to-line errors are not frame invariant: If you're using `ap_x + bp_y + c`, you must express the point in the same frame as the line.
 - Verbose mode helps: G2O’s `setVerbose(true)` didn't show errors, but the chi² staying constant was a hint that nothing was being optimized.
+
+## Epic Bug 2: Compiler Cannot Find Overloaded Operators
+
+This is not a "giant" bug, but a tricky one. I had a bug where an `operator <<` is defined in `namespace1`. Because I spent most of my time developing within this namespace, I forgot that I should have included `namespace1` in its test, where namespaces are clearly indicated.

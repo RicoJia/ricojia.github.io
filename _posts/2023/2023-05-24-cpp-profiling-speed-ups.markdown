@@ -161,6 +161,7 @@ To build with `colcon`:
 - `colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release`
 - Enable WITH_SSE or WITH_AVX for Release: `colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release -DWITH_SSE=ON -DWITH_AVX=ON`
 
+- `colcon_build_source --executor-args -j4`: `--executor-args` is used for things like number of threads `-j4`
 
 To build with `CMake`:
 

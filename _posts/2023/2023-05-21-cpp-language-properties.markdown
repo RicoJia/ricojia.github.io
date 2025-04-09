@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Language Properties
 date: '2023-02-16 13:19'
-subtitle: Zero-Overhead Abstraction, Garbage-Collection-Free, Endianness Handling
+subtitle: Zero-Overhead Abstraction, Garbage-Collection-Free, Endianness Handling, One-Definition-Rule (ODR)
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -131,3 +131,41 @@ Python **does not enforce a specific endianness at the language level**. Instead
         ```
     - So the number `1234567890123456789` is`0x112210F4B16C1B05` in C (8 bytes). In python, it would be stored as 2 30-bit digits `0110110010110001100000110000101  (Least significant)` (4 bytes). Plus, there are: 24 bytes (as `PyLongObject` overhead in a 64-bit system). So in total, Python needs 32 bytes for storing this integer.
 - When dealing with binary formats (e.g., file I/O, network communication), Python allows you to specify endianness using modules like `struct` and `int.to_bytes()`.
+
+## One-Definition-Rule (ODR)
+
+ODR-use ("one-definition-rule use") of an object requires  to **have a unique definition** in the program. Typical examples include:
+
+- Taking the address of the object.
+- Binding a reference to it.
+- Using it in a context where a pointer to the object is needed.
+
+**In a class**, if a static member is only used as a compile-time constant (e.g., in constant expressions), it may not require a definition. But if you take its address, **then it is odr-used**, and the linker needs to see a definition somewhere.
+
+
+- In C++ 11 and 14, `static constexpr`, if we have an ODR use of the class member, **like getting a pointer to it**, we need to define it outside of the class with:
+
+```cpp
+constexpr int Foo::value;  // Out-of-line definition needed because of odr-use.
+```
+
+- In **C++17**, `static constexpr` members **are implicitly inline**, (`inline` is never needed for `static constexpr` class members), meaning they can be defined in the header without causing multiple definition errors when included in several translation units.
+
+```cpp
+#include <iostream>
+
+struct Foo {
+    static constexpr int value = 10;
+};
+
+// THIS LINE IS NEEDED
+// constexpr int Foo::value;  // Out-of-line definition needed because of odr-use.
+
+int main() {
+    // ODR-use: taking the address of Foo::value.
+    const int* ptr = &Foo::value;  
+    std::cout << *ptr << std::endl;
+    return 0;
+}
+```
+
