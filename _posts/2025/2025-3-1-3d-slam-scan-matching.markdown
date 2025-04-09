@@ -25,7 +25,7 @@ pt_pt_icp(pose_estimate, source_scan, target_scan):
             jacobians[pt] = [pose_estimate.rotation() * hat(pt_map), -Identity(3)]
         total_residual = errors* errors
         H = sum(jacobians.transpose() * jacobians)
-        b = sum(-jacobians * errors)
+        b = sum(-jacobians.transpose() * errors)
         dx = H.inverse() * b
        pose_estimate += dx;
         if get_total_error() -> constant:

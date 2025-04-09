@@ -48,8 +48,21 @@ Best Practices:
 int i{};    // explicitly initialized to 0;
 ```
 
+### Designated Initialization
 
-### Memory Order of Class Members
+```cpp
+struct A{
+    int j;
+    int k;
+};
+// A a{.k = 1, .j = 2}; // this won't work
+A a{.j = 1, .k = 2};
+```
+- Your struct must have public fields.
+- Safer: avoids bugs from wrong field order.
+
+
+## Memory Order of Class Members
 
 Declaration Order: Variables appear in memory in the order they are declared in the struct/class.
 
