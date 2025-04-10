@@ -58,23 +58,23 @@ The main difference, however, is in `add_frame`:
 
     4. For the target's new variance (ignoring Bessel correction):
 
-        $$
-        \begin{gather*}
-        \begin{aligned}
-        & \Sigma = \frac{1}{m+n} (\sum_i (x_i - \mu)(x_i - \mu)^T + (y_i - \mu)(y_i - \mu)^T)
-        \\ &
-        \sum_i (x_i - \mu)(x_i - \mu)^T = \sum_i (x_i - \mu_a + (\mu_a - \mu))(x_i - \mu_a + (\mu_a - \mu))^T
-        \\ & = \sum_i [(x_i - \mu)(x_i - \mu)^T + (x_i - \mu_a)(\mu_a - \mu)^T + (\mu_a - \mu)(x_i - \mu_a)^T + (\mu_a - \mu)(\mu_a - \mu)^T]
-        \\ & \text{one can see that}
-        \sum_i (x_i - \mu_a)(\mu_a - \mu)^T = 0 = \sum_i (\mu_a - \mu)(x_i - \mu_a)^T
-        \\ & \Rightarrow
-        \sum_i (x_i - \mu)(x_i - \mu)^T = m \Sigma_a
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & \Sigma = \frac{1}{m+n} (\sum_i (x_i - \mu)(x_i - \mu)^T + (y_i - \mu)(y_i - \mu)^T)
+    \\ &
+    \sum_i (x_i - \mu)(x_i - \mu)^T = \sum_i (x_i - \mu_a + (\mu_a - \mu))(x_i - \mu_a + (\mu_a - \mu))^T
+    \\ & = \sum_i [(x_i - \mu)(x_i - \mu)^T + (x_i - \mu_a)(\mu_a - \mu)^T + (\mu_a - \mu)(x_i - \mu_a)^T + (\mu_a - \mu)(\mu_a - \mu)^T]
+    \\ & \text{one can see that}
+    \sum_i (x_i - \mu_a)(\mu_a - \mu)^T = 0 = \sum_i (\mu_a - \mu)(x_i - \mu_a)^T
+    \\ & \Rightarrow
+    \sum_i (x_i - \mu)(x_i - \mu)^T = m \Sigma_a
 
-        \\ & \text{So ultimately:}
-        \\ & \Sigma = \frac{1}{m+n}[m (\Sigma_a + (\mu_a - \mu)(x_i - \mu_a)^T) + n(\Sigma_b + (\mu_b - \mu)(x_i - \mu_b)^T)]
-        \end{aligned}
-        \end{gather*}
-        $$
+    \\ & \text{So ultimately:}
+    \\ & \Sigma = \frac{1}{m+n}[m (\Sigma_a + (\mu_a - \mu)(x_i - \mu_a)^T) + n(\Sigma_b + (\mu_b - \mu)(x_i - \mu_b)^T)]
+    \end{aligned}
+    \end{gather*}
+    $$
 
 3. Also, if we want to discard voxels if there have been too many old ones, we can implement an Least-Recently-Used (LRU) cache of voxels. 
 
