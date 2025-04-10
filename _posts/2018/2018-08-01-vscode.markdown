@@ -139,4 +139,4 @@ Host <HOSTNAME>
 
 ## Latex Support 
 
-- $\newcommand{\abs}[1]{\left| #1 \right|} \abs{\tilde{n}} = 1$ works with Jekyll
+- $\| x \|$ works with Jekyll. Without escape, it won't
