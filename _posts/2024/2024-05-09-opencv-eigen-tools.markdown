@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Tools - OpenCV, Eigen, Sophus, PCL, PCD
+title: Computation Tools - OpenCV, Eigen, Sophus, PCL, PCD, NanoFLANN
 date: '2024-05-09 13:19'
 subtitle: A Running List of Opencv and Eigen Tools
 comments: true
@@ -242,10 +242,20 @@ z₁ · z₂ = cos(θ₁ + θ₂) + i·sin(θ₁ + θ₂)
 
 To construct a rotation: we need to use `Eigen::Quaterniond`
 
-```
+```cpp
 ground_truth_pose.so3() = halo::SO3(Eigen::Quaterniond(qw, qx, qy, qz));
+```
+
+Altogether with translation:
+
+```cpp
+ground_truth_pose = halo::SE3(Eigen::Quaterniond(qw, qx, qy, qz), halo::Vec3d(x, y, z));
 ```
 
 ## PCD
 
 `pcd` stands for Point Cloud Data, and it’s the standard file format used by the `Point Cloud Library (PCL)`. It stores 3D points (and `optionally color`, `normals`, `intensity`, etc.).
+
+## NanoFLANN
+
+- We can trust the distance values returned by the kd tree - it represents `dist(neighbor, point)`

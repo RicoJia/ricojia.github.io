@@ -11,7 +11,7 @@ tags:
 
 ## Filling Operations
 
-- Fill a vector with `0, 1,2,3,...`: `std::iota` 
+- Fill a vector with `0, 1,2,3,...`: `std::iota`. `iota` is the greek word for "small amount"
 
 ```cpp
 #include <numeric>

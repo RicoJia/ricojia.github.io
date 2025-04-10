@@ -70,6 +70,9 @@ Debugger;
   ]
 }
 ```
+
+- Note that if you have args, like `-s data/ch7/EPFL/aquarius_source.pcd`, add to `"args": ["-s", "data/ch7/EPFL/aquarius_source.pcd"]`
+
 5. And `${"workspaceFolder"}/tasks.json`
 
 ```json

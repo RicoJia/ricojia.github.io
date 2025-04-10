@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Git - Workflows
-date: '2019-09-10 13:19'
+date: '2018-08-08 13:19'
 subtitle: Git Test Runners, CI/CD, PyPi
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
@@ -19,7 +19,11 @@ git config --global user.name "Your Name"
 git config --global user.email "your_email@example.com"
 ```
 
-## Set Up Github Test Workflow
+## Regular Git Workflow
+
+- Store changes of one file to stash: `git stash push FILEPATH`
+
+## Github Test Workflow
 
 Test Workflow is done through Github Actions. Here we are going to create a workflow on Github's default runner
 
@@ -128,9 +132,9 @@ This will trigger the publish workflow and automatically push the package to PyP
 - Build the package using build and twine.
 - Publish the package to PyPI.
 
-## Combine A Diverge Between Remote And Local Repos
+## Combine A Divergence Between Remote And Local Repos
 
-When there is a diverge between the remote and the local repos, `git pull` won't work. Instead it will show:
+When there is a divergence between the remote and the local repos, `git pull` won't work. Instead it will show:
 
 ```bash
 You have diverging branches and need to specify how to reconcile them. Before performing the next pull operation, you can suppress this message by running one of the following commands:
@@ -139,7 +143,7 @@ git config pull.rebase true   # Rebase
 git config pull.ff only       # Fast-forward only
 ```
 
-To confirm that there's a diverge, we can:
+To confirm that there's a divergence, we can:
 
 1. `git log master..origin/master --oneline` to see the different commits on **remote** since the last common commit. I see
 
