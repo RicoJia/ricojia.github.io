@@ -57,6 +57,7 @@ The main difference, however, is in `add_frame`:
         $$
 
     4. For the target's new variance (ignoring Bessel correction):
+
         $$
         \begin{gather*}
         \begin{aligned}
