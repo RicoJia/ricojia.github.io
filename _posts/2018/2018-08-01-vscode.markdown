@@ -2,7 +2,7 @@
 layout: post
 title: VSCode
 date: '2018-08-01 13:19'
-subtitle: Debugging ROS2 Projects, Remote SSH 
+subtitle: Debugging ROS2 Projects, Remote SSH, Latex Support 
 comments: true
 tags:
     - VSCode
@@ -135,3 +135,8 @@ Host <HOSTNAME>
 ```
 
 - To enable Python module clicking, go to extensions -> click `"install on <HOST>"` on python extension (10-15MB, typically less than 1-2%)
+
+
+## Latex Support 
+
+- $\newcommand{\abs}[1]{\left| #1 \right|} \abs{\tilde{n}} = 1$ works with Jekyll
