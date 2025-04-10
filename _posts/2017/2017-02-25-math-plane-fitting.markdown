@@ -95,7 +95,7 @@ $$
 \end{gather*}
 $$
 
-Because $||\tilde{n}|| = 1$, assuming eigen values are in descending order through $\lambda_1 \cdots \lambda_k$:
+Because $\newcommand{\abs}[1]{\left| #1 \right|} \abs{\tilde{n}} = 1$, assuming eigen values are in descending order through $\lambda_1 \cdots \lambda_k$:
 
 $$
 \begin{gather*}
