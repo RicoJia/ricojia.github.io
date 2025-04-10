@@ -65,9 +65,9 @@ $$
 
 Because X is a simple matrix, this is a simple linear least-square problem. To solve it, one can use Eigen Value Decomposition or Singular Value Decomposition.
 
-### Eigen Value Decomposition
+### Eigen Decomposition
 
-For eigen value decomposition,
+For eigen decomposition,
 
 $$
 \begin{gather*}
@@ -80,15 +80,9 @@ $$
 \end{gather*}
 $$
 
-Here, we pack eigen values and eigen vectors into: $\Lambda = diag(\lambda_1^2, \lambda_2^2, \cdots)$. $V = [v_1 | v_2 ... | v_n]$. Since V is a vector basis in $R^n$, we can represent:
+Here, we pack eigen values and eigen vectors of $X$ into: $\Lambda = diag(\lambda_1^2, \lambda_2^2, \cdots)$. $V = [v_1, v_2 ..., v_n]$. 
 
-$$
-\begin{gather*}
-\begin{aligned}
-& x = \alpha_1 v_1 + \cdots \alpha_n v_n
-\end{aligned}
-\end{gather*}
-$$
+In the meantime, since V is a vector basis in $R^n$, we can represent $n = \alpha_1 v_1 + \cdots \alpha_n v_n$:
 
 After plugging the above into $n^T  V \Lambda V^{-1} n$, we see that:
 
@@ -101,7 +95,7 @@ $$
 \end{gather*}
 $$
 
-Because $|\tilde{n}| = 1$, assuming eigen values are in descending order through $\lambda_1 \cdots \lambda_k$:
+Because $||\tilde{n}|| = 1$, assuming eigen values are in descending order through $\lambda_1 \cdots \lambda_k$:
 
 $$
 \begin{gather*}
@@ -136,7 +130,7 @@ $$
 \end{gather*}
 $$
 
-This is equivalent to eigen value decomposition.
+This is equivalent to eigen decomposition.
 
 ### Why The Above Doesn't Need Gaussian Newton
 
@@ -261,7 +255,7 @@ $$
 \end{gather*}
 $$
 
-Then, we can solve this with eigen value decomposition!
+Then, we can solve this with eigen decomposition!
 
 From the perspective of SVD, we can find that the line is the first principal component. With the second principal compomnet, we can find a plane. The plane's normal vector is the smallest principal component. $A^T A$ is the **covariance matrix**.
 
