@@ -9,6 +9,14 @@ tags:
     - C++
 ---
 
+## Introduction 
+
+Associative containers in C++ are containers that allows fast retrieval of elements based on keys, rather than positions. 
+
+- Construction: `std::set`, and `std::map` also have sorting using comparison. `std::unordered_set`, and `unordered_map` uses a hash function. (O(log n))
+- Look up: `std::set`, and `std::map` uses a red-black tree. `std::unordered_set`, and `unordered_map` uses a hash table (O(1))
+- **Duplicates: No duplicates are allowed in associative containers** except for `std::multiset`, `std::unordered_multiset`, and `std::unordered_multimap`
+
 ## Common Operations
 
 ### Insert 
