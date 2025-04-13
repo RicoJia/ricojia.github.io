@@ -13,6 +13,20 @@ tags:
 
 An iterator needs to be dereferenced `*it` or `it->first` so its internal data can be accessed.
 
+| Iterator Category       | Examples                                  | Supported Operations                                      |
+|-------------------------|-------------------------------------------|-----------------------------------------------------------|
+| InputIterator           | `std::istream_iterator`                   | `it++`                                                    |
+| ForwardIterator         | `std::forward_list_iterator`              | `it++`                                                    |
+| BidirectionalIterator   | `std::list`, `std::set`                   | `it++`, `it--`                                            |
+| RandomAccessIterator    | `std::vector`, `std::deque`, raw arrays   | `it++`, `it--`, `it = it + n`                             |
+| ContiguousIterator (C++20) | `std::vector`, raw arrays                | `it++`, `it--`, `it = it + n`,  |
+
+**Note, ContiguousIterator is introduced in C++20 to provide a contiguous memory guarantee**
+
+To advance an iterator, the safest bet is `std::advance(it)`. 
+
+## Iterator In `std::map`, `std::set`, `std::tuple`
+
 If you have an `std::unordered_map<Key, Value>` (or `std::map<Key, Value>`), its iterator points to a key-value pair, represented as `std::pair<const Key, Value>`.
 
 ```cpp
