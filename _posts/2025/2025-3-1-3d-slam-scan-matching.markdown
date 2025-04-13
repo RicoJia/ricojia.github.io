@@ -110,7 +110,7 @@ A line is:
 $$
 \begin{gather*}
 \begin{aligned}
-& d \vec{r} + p_0 
+& d \vec{r} + p_0
 \end{aligned}
 \end{gather*}
 $$

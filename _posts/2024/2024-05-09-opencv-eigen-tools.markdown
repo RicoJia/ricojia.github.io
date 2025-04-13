@@ -218,6 +218,19 @@ std::cout << "Eigen version: "
             << EIGEN_MINOR_VERSION << std::endl;
 ```
 
+### Eigen Matrix Does NOT support dynamic matrix appending Efficiently
+
+If we want to dynamically add rows to a matrix, unfortunately, I think it'd be more efficient to have a `vector<vector<double>>`, then convert it into a matrix all at once. This is because Eigen assumes that we know the size of the matrix beforehand. So otherwise, we need to resize the matrix constantly. One quirk of eigen::matrix::resize is that it resets values as well.
+
+```cpp
+Eigen::MatrixXd mat(2, 2);
+mat << 1, 2,
+        3, 4;
+std::cout << "Before resize:\n" << mat << "\n\n";
+mat.resize(2, 2);  // resize to the same size!
+```
+
+
 ## Sophus
 
 In Sophus, the SE(2) group represents a rigid 2D transformation, which consists of both a rotation and a translation. The operation you're looking for, SE(2) * Eigen::Vector2d, is a common need when transforming 2D points between coordinate frames.

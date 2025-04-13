@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [Epic Bugs] SLAM Related Bugs
 date: '2025-2-1 13:19'
-subtitle: G2O
+subtitle: G2O Optimization Vertex Updates, Compiler-Specific Bugs
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -100,6 +100,39 @@ class EdgeICP2D_PT2Line : public g2o::BaseUnaryEdge<1, double, VertexSE2> {
 - Scaled point-to-line errors are not frame invariant: If you're using `ap_x + bp_y + c`, you must express the point in the same frame as the line.
 - Verbose mode helps: G2O’s `setVerbose(true)` didn't show errors, but the chi² staying constant was a hint that nothing was being optimized.
 
-## Epic Bug 2: Compiler Cannot Find Overloaded Operators
+## Epic Bug 2: Compiler Bugs
 
-This is not a "giant" bug, but a tricky one. I had a bug where an `operator <<` is defined in `namespace1`. Because I spent most of my time developing within this namespace, I forgot that I should have included `namespace1` in its test, where namespaces are clearly indicated.
+Here I'm not writing about "giant" bugs, but small tricky ones.
+
+### Cannot Find Overloaded Operators
+
+I had a bug where an `operator <<` is defined in `namespace1`. Because I spent most of my time developing within this namespace, I forgot that I should have included `namespace1` in its test, where namespaces are clearly indicated.
+
+### Non-Dependent static_assert in `if constexpr` Always Fails In Older Compiler
+
+In `gcc 14.2`, `if constexpr` can be evaluated properly. But in the snippet below, it cannot be evaluated properly in `gcc 10.1`. [Here is a proposal for the fix in new compiler](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p2593r0.html)
+
+[Here is a code snippet](https://godbolt.org/z/Pjfvqb6fn), but I'm posting here anyways
+
+```cpp
+#include <type_traits>
+inline constexpr bool always_false = false;
+
+template <typename T>
+inline constexpr bool templated_always_false = false;
+
+// this compiles in gcc 14.2
+template <typename Foo>
+void my_func() {
+    if constexpr (std::is_same_v<Foo, int>) {
+        // do something
+    } else {
+        // This line is fine because it is dependent on a template parameter, which forces evaluation in if constexpr?. 
+        // So use it in older compilers
+        static_assert(templated_always_false<Foo>, "Unsupported Foo type");
+
+        static_assert(false, "Unsupported Foo type");
+    }
+}
+```
+- Use `gcc --version` to check your compiler's version!
