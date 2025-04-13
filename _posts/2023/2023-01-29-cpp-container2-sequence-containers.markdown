@@ -18,7 +18,21 @@ Sequence containers in C++ include: `vector`, `array`, `list`, `forward_list`, `
 - Sequential Access, random access
 - Element removal
 
+Slightly more advanced operations are:
+
+- Appending one container to another
+- Resize, reserve
+
 In the meantime, we want to look at the time complexity of each push and removal operations. Each type of container has their unque features as well. We will see them in the following sections.
+
+## Vector Operations
+
+```cpp
+// - Append `vector2` to the end of `vector1`
+vector1.insert(vector1.end(), vector2.begin(), vector2.end());
+```
+
+- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
 
 ## List Operations
 
@@ -48,6 +62,10 @@ for (auto& m: ls){
     cout<<m<<endl;    // sew 1
 }
 ```
+
+TODO:
+- appending one container to another
+- resize, reserve
 
 ## Vector Operations
 

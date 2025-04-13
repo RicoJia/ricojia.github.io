@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - [Container 3] Container Adaptors
+title: C++ [Container 3] Container Adaptors
 date: '2023-01-29 13:19'
 subtitle: `std::queue`, `std::stack`
 comments: true

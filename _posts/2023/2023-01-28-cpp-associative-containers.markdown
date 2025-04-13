@@ -1,8 +1,8 @@
 ---
 layout: post
-title: C++ - Container Operations
+title: C++ - Associative Container
 date: '2023-01-28 13:19'
-subtitle: Vector, Map, Algorithms
+subtitle: `std::set`, `std::unordered_set`, `std::map`, `std::unordered_map`
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -96,16 +96,6 @@ if (it != my_map.end()) {
 }
 ```
 {% endraw %}
-
-## Vector
-
-- Append `vector2` to the end of `vector1`
-
-```cpp
-vector1.insert(vector1.end(), vector2.begin(), vector2.end());
-```
-
-- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
 
 
 ## Associative Containers
