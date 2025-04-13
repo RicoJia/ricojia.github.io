@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Constness
 date: '2023-02-01 13:19'
-subtitle: constexpr, if constexpr
+subtitle: constexpr, if constexpr, consteval
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -139,4 +139,31 @@ int main() {
     constexpr std::array myArray{1, 2, 3, 4, 5};                                     // (1)
     constexpr auto sum = std::accumulate(myArray.begin(), myArray.end(), 0);         // (2)
 }
+```
+
+## `consteval` [C++20]
+
+`consteval` specifies that a function must be evaluated at compile time, and generate a compile-time constant. If a function cannot be evaluated in compile time, it will fail - this is in contrast to `constexpr` which allows a function to be evaluated in runtime.
+
+One example is the following:
+
+```cpp
+consteval int add(int a, int b) {
+  return a + b;
+}
+
+int main() {
+  constexpr int result = add(2, 3); // Evaluated at compile time
+  // int runtime_result = add(2, 3); //Error: consteval function must be evaluated at compile time
+  return 0;
+}
+```
+
+[On Compiler Explorer](https://godbolt.org/), one can see that the compiled assembly code will directly put the value into the corresponding register.
+
+```assembly
+main:
+    ...
+    mov     DWORD PTR [rbp-4], 5
+    ...
 ```
