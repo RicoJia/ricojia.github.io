@@ -19,15 +19,19 @@ When an new object is created, it's either:
 Conversion and Explicit?
 
 - Construction
-  - Move construction
-    - It's in the form of:
-
+    - Copy Construction
+    - Move construction
+        - It's in the form of:
             ```cpp
             Meter temp(2);
             Meter m3(std::move(temp));  // This will call move constructor (if implemented correctly)
             ```
 
-    - Note: Copy ellision TODO
+    - Note: Copy ellision is a optimzation introduced in C++17 for the scenario where a temporary object is created, and is assigned to a new object.
+        ```cpp
+        Foo f2 = make_foo();    // Otherwise see: ctor + copy construction
+        Meter m3(Meter(4));     // Otherwise see: ctor + move construction
+        ```
 
 - Assignment
   - An assignment is to assign an existing object to another object. It returns an instance of itself, so we can do **chain assignment**: `a=b=c`
@@ -86,3 +90,60 @@ int main()
     Meter m4(std::move(m2)); // Move construction
 }
 ```
+
+## Conversion and `explicit`
+
+- Implicit conversion
+    - Single-argument constructor. E.g., if a constructor is:
+        ```cpp
+        class Foo{
+            Foo(double d){}
+        }; 
+        foo(Foo f){}
+        foo(3.0);
+        ```
+        - `foo(3.0);` implicitly converts `3.0` to Foo.
+- Explicit conversion
+    - In many scenarios, we do not want such automatic conversion to happen, because they are hidden and might yield unwanted side effects.
+    - We first need to prohibit implicit conversion by declaring a constructor `explicit`, then, one can define a conversion operator
+        ```cpp
+        class Foo{
+        public:
+            explicit Foo(double d){}
+            explicit operator float() const {return 1.0f;} 
+        }; 
+
+        float d = Meter(3.0);   // ❌ implicit conversion is banned
+        float f = float(Foo(4.0));  // ✅ explicit conversion should be used
+        ```
+- Notes:
+    - Be careful with implicit conversions between types:
+        ```cpp
+        class Foo{
+        public:
+            explicit Foo(double d){}
+            operator double() const {
+                cout<<"double"; 
+                return value_;}
+            explicit operator float() const {return 1.0f;} 
+            double value_=100;
+        }; 
+        void run(float){}
+        int main()
+        {
+            float f = Foo(4.0); // 👀 This still works! we see "double" in the output
+        }
+        ```
+        - This compiles fine, because **the compiler finds implicit conversions Foo -> double->float**. So though the direct conversion `Foo->float` is banned, if a path can be found, the compiler will still compile.
+    - In the following example, despite the existence of a default arg, the keyword `explicit` is still meaningful because it prohibits implicit conversion.
+        ```cpp
+        class ICP3D {
+        public:
+            explicit ICP3D(const Options& options = Options()) {}
+        };
+        void run(ICP3D icp) {}
+
+        Options opt;
+        run(opt);   // Not gonna work, because implicit conversion is banned.
+        run(ICP3D(opt));
+        ```
