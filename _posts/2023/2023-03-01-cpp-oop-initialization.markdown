@@ -103,6 +103,13 @@ struct Example {
     };
 
     Child c(42);  // 💥 Error: no matching constructor for 'Child'
+
+    class Child2 : public Parent {
+    public:
+        // ✅ Always need a ctor for the parent, and it should come at the beginning
+        Child2(): Parent(1), var(2){}
+        int var;
+    };
     ```
 
 ## [Advanced] Parsing and Construction

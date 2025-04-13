@@ -2,12 +2,57 @@
 layout: post
 title: C++ - Templates
 date: '2023-02-10 13:19'
-subtitle: Non-Type Template Parameters, requires, concept
+subtitle: Class Templates, Dependent Name Lookup, Non-Type Template Parameters, requires, concept, 
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - C++
 ---
+
+## Class Template
+
+- Be careful with nested class inside a class template - we need to specify the template parameters here as well.
+
+```cpp
+template <typename T>
+class A{
+public:
+    struct B{};
+    B b_;
+};
+int main()
+{
+    A<int>::B b;
+    return 0;
+}
+```
+
+### Dependent Name Lookup
+
+**`this->` is necessary to call a parent class function in a derived class of a class template.**
+
+```cpp
+template <typename T>
+class A{
+public:
+    void foo(){}
+};
+
+template <typename T>
+class B: A<T>{
+public:
+    void call_foo(){this->foo();}
+};
+```
+
+This is because:
+
+- In a regular derived class, we do NOT need `this`. 
+- When a derived class derives from a base class, its members' names are called "dependent names". 
+- Dependent name lookup is in 2 phases:
+    - look up names that do not depend on template params
+    - when a template is instantiated, resolve the remaining names
+- A parent class function in this case requires template params. We need to specify `this->` to clearly show the compiler.
 
 ## `typename` Is Required By "Dependent Names"
 

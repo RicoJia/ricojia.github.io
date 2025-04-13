@@ -48,3 +48,4 @@ public:
 - Always Profile. When optimizing code, an experienced programmer will have a "ball park" of each method: how fast is the raw for loop here? Would using threads worth its overhead here?
     
 - Drawing the process / data flowchart is extremely beneficial for debugging a specific problem. 
+- A seasoned engineer has many stashed code snippets. For example, when talking about a multi-threaded program with caching, an experienced engineer finished it within a day because he worked on it before.
