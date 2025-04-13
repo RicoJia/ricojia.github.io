@@ -187,8 +187,6 @@ int main() {
 }
 ```
 
-
-
 ## PMR: Polymorphic Memory Resources (C++17)
 
 - Custom Allocators: Instead of having containers decide how memory is allocated, PMR allows you to supply a custom memory resource (allocator) that the container uses.

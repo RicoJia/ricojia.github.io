@@ -27,17 +27,19 @@ To have fast memory access while still retaining disks, we rely on hardware-acce
 The memory hierarchy is:
 
 ```
-CPU Registers   →   L1 Cache   →   L2 Cache   →   L3 Cache   →   RAM   →   Disk
+CPU Registers   →   L1 Cache   →   L2 Cache   →   L3 Cache   →   RAM   →   Disk (swap memory)
    (tiny, fast)      ↑              ↑             ↑             ↑         ↑
    (nanoseconds)  Cache for...  Cache for...  Cache for...  Cache for...  (slow)
 ```
+
+- Note: swap memory is the designated space on disk to temporarily store pages that cannot fit into the physical RAM.
 
 ## CPU Caches: Your Program's Real Performance Friend
 
 CPU caches are inside CPU. They are even faster than RAM. Their size typically is 64KB - 64 MB. Its latency is ~10ns, compared to 100ns to RAM. Caches work by keeping frequently accessed data close to the processor:
 - L1: Smallest, fastest, per-core.
 - L2: Bigger, a bit slower.
-- L3: Shared across cores, larger still.
+- L3: **Shared across all cores, larger still.**
 
 A **cache line** is typically **64 bytes** — **the smallest unit of data** fetched from cache. So reading arr[0] (with 4-byte integers) will likely bring in arr[0] through arr[15].
 
