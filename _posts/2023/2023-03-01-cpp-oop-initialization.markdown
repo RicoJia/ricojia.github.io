@@ -16,19 +16,27 @@ When an new object is created, it's either:
 - Constructed from scratch
 - Or copied from another object. The object could be temporary or permanent.
 
-Conversion and Explicit? 
+Conversion and Explicit?
 
+- Construction
+  - Move construction
+    - It's in the form of:
+
+            ```cpp
+            Meter temp(2);
+            Meter m3(std::move(temp));  // This will call move constructor (if implemented correctly)
+            ```
+
+    - Note: Copy ellision TODO
 
 - Assignment
-    - An assignment is to assign an existing object to another object. It can be done by **copy assignment** or **move assignment**. 
-    - It returns an instance of itself, so we can do **chain assignment**: `a=b=c`
+  - An assignment is to assign an existing object to another object. It returns an instance of itself, so we can do **chain assignment**: `a=b=c`
+  - It can be done by **copy assignment** or **move assignment**.
     - Copy assignment
-        - Copy assignment just appears to be "copying." It does not copy, it calls constructor directly. It's in the form of `Meter m = 10;`
-        - It looks for an `non-explicit` ctor. 
-
-- How do I see move? 
-Meter temp(2);
-Meter m3(std::move(temp));  // This will call move constructor (if implemented correctly)
+      - Copy assignment just appears to be "copying." It does not copy, it calls constructor directly. It's in the form of `m=m3;`
+      - It looks for an `non-explicit` ctor.
+    - Move Assignment:
+      - It's in the form of `m = Meter(3);`
 
 ```cpp
 #include <iostream>
@@ -74,7 +82,7 @@ int main()
     m = Meter(3);   // ctor + move assignment
     m=m2;   // copy assignment
     // Copy ellision even with -O0, C++ 17, to optimize into one ctor call.
-    Meter m3(Meter(2)); // I see ctor, not move ctor?
+    Meter m3(Meter(4));     // ctor
+    Meter m4(std::move(m2)); // Move construction
 }
-``
-
+```
