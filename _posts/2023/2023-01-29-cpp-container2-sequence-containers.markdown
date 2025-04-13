@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Container 2] Sequence Containers
 date: '2023-01-29 13:19'
-subtitle: `std::iota`, `std::generate`, `std::vector`, `std::array`, `std::list`, `std::deque`, `std::forward_list`
+subtitle: std::iota, std::generate, std::vector, std::array, std::list, std::deque, std::forward_list
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:

@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Templates
 date: '2023-02-10 13:19'
-subtitle: Class Templates, Dependent Name Lookup, Non-Type Template Parameters, requires, concept, 
+subtitle: Class Templates, Dependent Name Lookup, Non-Type Template Parameters, requires, concept
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:

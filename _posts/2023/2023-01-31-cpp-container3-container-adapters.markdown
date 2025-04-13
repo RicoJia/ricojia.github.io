@@ -2,7 +2,7 @@
 layout: post
 title: C++ [Container 3] Container Adaptors
 date: '2023-01-29 13:19'
-subtitle: `std::queue`, `std::stack`
+subtitle: std::queue, std::stack, std::priority_queue
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
