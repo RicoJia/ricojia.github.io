@@ -28,11 +28,19 @@ In the meantime, we want to look at the time complexity of each push and removal
 ## Vector Operations
 
 ```cpp
+vector1.resize(vector1.size() + vector2.size());
 // - Append `vector2` to the end of `vector1`
 vector1.insert(vector1.end(), vector2.begin(), vector2.end());
 ```
 
-- `nodes_.resize(cloud->points.size());` the new elements are value-initialized,
+- Appending an element to the end of vector can be done by `insert(target_it, source_end_it, source_end_it);`. 
+- But once `vec.capacity() < vector1.size() + vector2.size()`, memory **reallocation** will happen. So the worst case is O(N).
+
+### Memory Reallocation Of Vector
+
+- vector under the hood is like an array, which uses contiguous memory. Therefore when no contiguous memory is found, **the whole vector needs to be moved over**
+    - If the data is POD (Plain Old Data) like int, the data will be copied over. 
+    - If the data has a move ctor, it will be moved over, otherwise copied. 
 
 ## List Operations
 
@@ -63,9 +71,27 @@ for (auto& m: ls){
 }
 ```
 
-TODO:
-- appending one container to another
-- resize, reserve
+Advanced Operations:
+
+```cpp
+list<int> ls{1,2,3};
+list<int> ls2{1,2,3};
+// 1. Appending a whole list
+ls.splice(ls.end(), ls2);
+    
+// 2. Appending a single element: 
+auto it = ls.begin();
+std::advance(it, 1);
+ls.splice(ls.end(), ls2, it);  
+
+std::advance(it, 1);    // std::advance() is a void function
+// 3. Appening a segment of list:
+ls.splice(ls.end(), ls2, ls.begin(), it);
+```
+
+- appending one container to another: use `splice`. Splice means "connecting two ropes together through intertwining".
+    - source `list ls2`  is always required in `std::list::splice`. See the above for 3 its 3 usages
+    - This is `O(1)`, because the splice will just manipulate the iterator inside.
 
 ## Vector Operations
 

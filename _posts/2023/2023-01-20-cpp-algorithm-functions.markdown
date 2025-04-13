@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - Algorithm Functions
+title: C++ - <algorithm>, <numeric> Functions
 date: '2023-01-20 13:19'
 subtitle: minmax_element, min_element, reduce, transform, numeric
 comments: true
@@ -8,6 +8,56 @@ header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---
+
+## Introduction
+
+In this article, we will explore two important STL libraries, `<algorithm>`, `<numeric>`. 
+
+In `<algorithm>`, we have:
+
+- Partitioning algorithms:
+    - Placing the nth element at the nth position using `nth_element(first, nth, last, comp)`
+    - Moving all elements that satisfies `pred=true` to the left of it, and leaving the rest to its left, using `it = std::partition(first, last, pred)`
+- Finding the minimum and maximum using `it = std::minmax_element(begin_itr, end_itr, lambda)`, `it = std::min_element`, or `std::min(value1, value2)`
+- Transforms
+    - Perform an unary operation on an input sequence, then save the result in an output sequence`std::transform(input_beg, input_end, output_beg, unary_op)`.
+    - Perform an accumulative operation on a sequence, and get a single value out
+        - C++ 11, if the operation is sequential: `std::accumulate(beg, end, begin_val, lambda_retuning_val)`. 
+        - C++ 17, we can parallelize if the operation is not associative (i.e., order of evaluation doesn't matter, a+b=b+a)`std::reduce(beg, end, begin_val, lambda_retuning_val)`
+
+In `<numeric>`, we have:
+
+- Datatype `std::NaN`
+
+## `<algorithm>`
+
+### Nth Element
+
+`nth_element(first, nth, last, comp)` makes sure:
+
+1. At `nth` place of the container, the element is actually the `nth` as if the container were sorted.
+2. Elements before the nth element has `comp(i, n) = False`, or without `comp`, they are smaller than the `nth` element
+
+```cpp
+// elements before the returned iterator has a value less than or equal to the value
+std::nth_element(keypoints.begin(),keypoints.begin() + desired_features_num - 1, keypoints.end(),
+    [](const KeyPoint& k1, const KeyPoint& k2){
+        //descending 
+        return k1.response > k2.response;
+    }
+);
+```
+
+### Partition
+
+`std::partition(first, last, pred)` moves all elements that makes pred(item) **true** to  first iterator, and returns an iterator that points to the first item that makes pred(item) **false**. In combination wtih `std::nth_element`, we can partition and find the iterator that makes sure all elements smaller than or equal to the `nth` elements are before a returned iterator, `new_end`.
+
+```cpp
+// we might still have elements equal to the nth element. So, we use partition to find them
+// std::partion moves items that satisfies the pred to before the iterator
+auto new_end = std::partition(keypoints.begin() + desired_features_num, keypoints.end(), [&keypoints](const KeyPoint& k){k.response == (keypoints.begin() + desired_features_num - 1)->response});
+```
+
 
 ## `std::minmax_element(begin_itr, end_itr, lambda)`
 
@@ -34,11 +84,11 @@ int main() {
 }
 ```
 
-### `std::min_element`: returns the min element based on the defintion of "smaller"
+### `std::min_element(begin_itr, end_itr, lambda)`: returns the min element based on the defintion of "smaller"
 
 ### `std::min(v1, v2)`
 
-## `std::transform`
+## `std::transform(input_beg, input_end, output_beg, unary_op)`
 
 `std::transform` is a funtion that allows us to apply a function (usually lambda) on one or two (zipped) containers, and puts the output into an output container.
 
@@ -69,7 +119,38 @@ std::transform(arr_1, arr_1+4, arr_2, result, [](int i1, i2){return i1 - i2; });
 
 - `std::transform(It1 it1_begin, It1, it1_end, It2 it2_end, It3 out_begin, [](const Type1& a, const Type2&b){return something})`
 
-## `std::reduce` (C++17)
+### `std::accumulate(beg, end, begin_val, lambda_retuning_val)`
+
+1. simple summing
+
+```cpp
+#include <numeric>
+sum = std::accumulate(vec.begin(), vec.end(), 0.0); 
+```
+
+- Note: in the below example, sum will be casted to int, even if `std::vector<double> vec`:
+
+```cpp
+sum = std::accumulate(vec.begin(), vec.end(), 0); 
+```
+
+2. Other accumulative tasks:
+
+```cpp
+T accumulate(Iterator first, Iterator Last, T init, Binary_Operation op){
+    for(; first != last; ++first){
+    init = op(std::move(init), *first); 
+    }
+}
+```
+
+- E.g,
+
+```cpp
+std::accumulate(vec.begin(), vec.end(), 1, [](int product, int b){return product*b}); 
+```
+
+### `std::reduce(beg, end, begin_val, lambda_retuning_val)` (C++17)
 
 `std::reduce` is an algorithm introduced in C++17 (and enhanced in C++20) that aggregates a range of elements using a binary operation and an initial value. 
 
@@ -100,37 +181,6 @@ int main(){
 
 - `std::execution::par_unseq` parallelizes the above.
 -  Pay attention to the initial value `0.0`, otherwise, it will be an int and will be rounded.
-
-## `std::accumulate`
-
-1. simple summing
-
-```cpp
-#include <numeric>
-sum = std::accumulate(vec.begin(), vec.end(), 0.0); 
-```
-
-- Note: in the below example, sum will be casted to int, even if `std::vector<double> vec`:
-
-```cpp
-sum = std::accumulate(vec.begin(), vec.end(), 0); 
-```
-
-2. Other accumulative tasks:
-
-```cpp
-T accumulate(Iterator first, Iterator Last, T init, Binary_Operation op){
-    for(; first != last; ++first){
-    init = op(std::move(init), *first); 
-    }
-}
-```
-
-- E.g,
-
-```cpp
-std::accumulate(vec.begin(), vec.end(), 1, [](int product, int b){return product*b}); 
-```
 
 ## `std::numeric`
 

@@ -9,7 +9,7 @@ tags:
     - C++
 ---
 
-## Introduction 
+## Introduction
 
 Associative containers in C++ are containers that allows fast retrieval of elements based on keys, rather than positions. 
 
@@ -17,9 +17,17 @@ Associative containers in C++ are containers that allows fast retrieval of eleme
 - Look up: `std::set`, and `std::map` uses a red-black tree. `std::unordered_set`, and `unordered_map` uses a hash table (O(1))
 - **Duplicates: No duplicates are allowed in associative containers** except for `std::multiset`, `std::unordered_multiset`, and `std::unordered_multimap`
 
-## Common Operations
+In this article, we will examine the below behaviours:
 
-### Insert 
+- Insert, assign, emplace
+- Hashing
+- Remove 
+- Element Traversal and access
+
+Finally, we will see how to define hash functions for these associative container datatypes.
+
+
+## `std::unordered_map`
 
 - Insert Or Assign (C++17)
 
@@ -36,7 +44,12 @@ int main() {
 }
 ```
 
-In set and unordered_set, if an element already exists, insert does not do anything:
+
+## `std::unordered_set`
+
+Under the hood, `unordered set` is a hash table, it can only store objects with a **hash function and equality operator**. Their values will be stored as keys. `unordered_map` is a hash-table plus a look up.
+
+- Insert: In set and unordered_set, if an element already exists, insert does not do anything:
 
 ```cpp
 #include <iostream>
@@ -49,6 +62,41 @@ int main() {
     std::cout << "Set size: " << my_set.size() << "\n";               // 1
 }
 ```
+
+## `std::set`
+
+- - Insert: In set and unordered_set, if an element already exists, insert does not do anything. See `std::unordered_set` for code snippet.
+
+## `std::map`
+
+- Erase: `map`, `unordered_map`, `set`, `unordered_set` have:
+    -  `container.erase(value)` to erase all occurences of `value`
+    -  `container.erase(it)` to erase the single occurence of it
+
+{% raw %}
+```cpp
+// 
+std::map<int, std::string> m = {{1, "one"}, {2, "two"}};
+m.erase(1);  // Removes key , o(log n)
+std::unordered_map<int, std::string> umap = {{1, "one"}, {2, "two"}};
+umap.erase(1);  // Removes key , o(1)
+std::set<int> s = {1, 2, 3};
+s.erase(2);  // Removes element with value 2, o(log n)
+std::unordered_set<int> uset = {1, 2, 3};
+uset.erase(2);  // Removes element with value 2 o(1)
+
+// Alternative 2: universal erase with iterator:
+
+auto it = my_map.find(key);
+if (it != my_map.end()) {
+    my_map.erase(it);  // faster than key lookup + erase
+}
+```
+{% endraw %}
+
+
+
+## `std::unordered_map`
 
 ### Emplace
 
@@ -80,39 +128,11 @@ int main()
 }
 ```
 
-
-
-### Erase:
-
-{% raw %}
-```cpp
-// 
-std::map<int, std::string> m = {{1, "one"}, {2, "two"}};
-m.erase(1);  // Removes key , o(log n)
-std::unordered_map<int, std::string> umap = {{1, "one"}, {2, "two"}};
-umap.erase(1);  // Removes key , o(1)
-std::set<int> s = {1, 2, 3};
-s.erase(2);  // Removes element with value 2, o(log n)
-std::unordered_set<int> uset = {1, 2, 3};
-uset.erase(2);  // Removes element with value 2 o(1)
-
-// Alternative 2: universal erase with iterator:
-
-auto it = my_map.find(key);
-if (it != my_map.end()) {
-    my_map.erase(it);  // faster than key lookup + erase
-}
-```
-{% endraw %}
-
-
-## Associative Containers
-
 ### Hashing
 
 By default, keys of types `std::pair<int, int>` are not hashable. One needs to define a callable for that.
 
-The first alternative is defining a functor
+- The first alternative is defining a functor
 
 ```cpp
 #include <iostream>
@@ -138,7 +158,7 @@ int main() {
 }
 ```
 
-Another alternative is defining a global hash function. It's a bit intrusive
+- Another alternative is defining a global hash function. It's a bit intrusive
 
 ```cpp
 #include <unordered_map>
@@ -157,40 +177,17 @@ int main() {
     std::unordered_map<std::pair<size_t, size_t>, std::string> my_map;
     my_map[{7, 8}] = "seven-eight";
     std::cout << my_map[{7, 8}] << std::endl;
+    my_map[{1, 2}] = "one-two";
+    my_map[{3, 4}] = "three-four";
+
+    std::cout << "Value at (1, 2): " << my_map[{1, 2}] << "\n";
+    std::cout << "Value at (3, 4): " << my_map[{3, 4}] << "\n";
+
+    return 0;
 }
 ```
 
 
-## Sets
-
-## Algorithms
-
-### Nth Element
-
-`nth_element(first, nth, last, comp)` makes sure:
-
-1. At `nth` place of the container, the element is actually the `nth` as if the container were sorted.
-2. Elements before the nth element has `comp(i, n) = False`, or without `comp`, they are smaller than the `nth` element
-
-```cpp
-// elements before the returned iterator has a value less than or equal to the value
-std::nth_element(keypoints.begin(),keypoints.begin() + desired_features_num - 1, keypoints.end(),
-    [](const KeyPoint& k1, const KeyPoint& k2){
-        //descending 
-        return k1.response > k2.response;
-    }
-);
-```
-
-### Partition
-
-`std::partition(first, last, pred)` moves all elements that makes pred(item) **true** to  first iterator, and returns an iterator that points to the first item that makes pred(item) **false**. In combination wtih `std::nth_element`, we can partition and find the iterator that makes sure all elements smaller than or equal to the `nth` elements are before a returned iterator, `new_end`.
-
-```cpp
-// we might still have elements equal to the nth element. So, we use partition to find them
-// std::partion moves items that satisfies the pred to before the iterator
-auto new_end = std::partition(keypoints.begin() + desired_features_num, keypoints.end(), [&keypoints](const KeyPoint& k){k.response == (keypoints.begin() + desired_features_num - 1)->response});
-```
 
 ## PMR: Polymorphic Memory Resources (C++17)
 
