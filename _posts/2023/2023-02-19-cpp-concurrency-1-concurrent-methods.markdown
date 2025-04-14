@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Concurrency 1] Various Concurrent Methods
 date: '2023-02-19 13:19'
-subtitle: Asynchonous Programming, Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD
+subtitle: Asynchonous Programming, Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD, SSE2
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -191,10 +191,20 @@ int main() {
     - `msse4.1` is for SIMD, `-fopenmp` is for OpenMP
 
 ------------------------------------------------------------
-## [Method 1] SIMD
-See above example
+## [Method 1] SIMD (Optimization Impact: ⭐️⭐⭐️️⭐️️⚪)
 
-## [Method 2] Lockless Vector Writes - Vert Powerful and Practical
+SSE2 is "streaming SIMD Extensions2" is a **SIMD** instruction set introduced with Intel's Pentium 4 (2001). It was a major step forward in enabling vectorized operations on 128-bit registers (`XMM`). In a nutshell, it can:
+- process 128 bits (2 doubles)
+- Adds instructions for: Integer math, floating point aritmatic, memory access, bitwise ops
+
+
+TODO: is this portable?
+
+```cpp
+-O3 -march=native -funroll-loops -ftree-vectorize
+```
+
+## [Method 2] Lockless Vector Writes - Vert Powerful and Practical (Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
 
 When using a pre-allocated vector in C++, you're effectively working with a contiguous block of memory in your process's virtual address space. Once allocated, the addresses of the vector's elements remain fixed—even though the underlying operating system manages physical memory mapping behind the scenes. This means that **if each thread writes exclusively to different elements of the vector, there's no risk of memory reallocation or shifting during execution, ensuring thread-safe writes without locks.**
 
@@ -238,7 +248,7 @@ int main() {
 ```
 
 ------------------------------------------------------------
-## [Method 3] Vectorization Execution Policy `std::execution::par_unseq` (C++ 17)
+## [Method 3] Vectorization Execution Policy `std::execution::par_unseq` (C++ 17, Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
 
 `std::execution::par_unseq` is an execution policy introduced in C++17 that you can pass to algorithms like `std::for_each`. It directs the algorithm to execute in parallel and in an unordered fashion, allowing the implementation to use both multi-threading and vectorization (SIMD). This means that **iterations may be run concurrently without any guarantee of order**, so you must ensure that your loop body is free of data races and side effects that depend on ordering.
 
@@ -296,7 +306,7 @@ To link: do `g++ -O2 -std=c++17 omp_test.cpp -ltbb` (note, libraries like `-ltbb
 
 
 ------------------------------------------------------------
-## [Method 4] `std::async`
+## [Method 4] `std::async` (Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
 
 ```cpp
 #include <iostream>
@@ -357,6 +367,6 @@ int main() {
 - Alternatively, one can use `std::async(std::launch::deferred)`, function execution will be **synchronous** and single-threaded. They will start when `future.get()` is called. 
 
 ------------------------------------------------------------
-## [Method 5] OpenMP
+## [Method 5] OpenMP    (Optimization Impact: ⭐️⚪⚪⚪⚪)
 
 See above example
