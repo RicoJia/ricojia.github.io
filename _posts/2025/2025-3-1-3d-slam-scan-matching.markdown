@@ -150,20 +150,51 @@ $$
 </p>
 </div>
 
+1. Voxelization. Partition the target point cloud into voxels. For each voxel, compute:
+    - Mean: $\mu$
+    - Covariance matrix: $\Sigma$
+2. Point-to-Distribution Association (for each source point). For each point $p_t$ in the source scan:
+    1. Transform to map frame using current pose estimate: $p_t = Rp_t + t$
+    2. Voxle Lookup. Find the voxel containing $pt$ in the target map. Retrieve $\mu$ and $\Sigma$ of that voxel.
+    3. Error and cost function:
+        1. Assuming correct alignment, the transformed point should follow the distribution of the voxel: 
 
-1. Voxelization. For each voxel, calculate the mean and variance of its points: $\mu$, $\Sigma$
-2. For each point in the source scan:
-    1. Calculate its map pose $pt$
-    2. Calculate the voxel of $pt$. Grab all points in the same voxel
-    3. We believe that if the source is well-aligned to the target, the distribution of the points in the same voxel is the same as that of the target. So: 
-        1. $e_i = Rp_t + t - \mu$
-        2. $(R,t) = \text{argmin}_{R,t} [\sum e_i^t \Sigma^{-1} e_i]$
-            - This is equivalent to Maximum Likelihood Estimate (MLE)
-            - $\text{argmax}_{R,t} [\sum log(P(R q_i + t))]$
-        3. Jacobians:
-            - $\frac{\partial e_i}{\partial R} = -Rp_t^\land$
-            - $\frac{\partial e_i}{\partial t} = I$
+            $$
+            e_i =  Rp_t + t - \mu
+            \\ 
+            \text{error}_i = e_i^T \Sigma^{-1} e_i
+            $$
+
+        2. Here, $\Sigma$ is the covariance matrix of the voxel. $\Sigma^{-1}$ is the information matrix, and because we are getting its inverse, in practice, we want to add a small value to it $\Sigma + 10^{-3}I$
+        3. Jacobian update:
+
+            $$
+            \begin{gather*}
+            \begin{aligned}
+            \frac{\partial e_i}{\partial R} = -Rp_t^\land
+            \\
+            \frac{\partial e_i}{\partial t} = I
+            \end{aligned}
+            \end{gather*}
+            $$
     4. We also consider neighbor cells as well, because the point might actually belong to one of them. So we repeat step 3 for those voxels.
+
+4. Maximum Likelihood Estimate (MLE):
+
+    $$
+    \begin{gather*}
+    \begin{aligned}
+    & (R,t) = \text{argmin}_{R,t} [\sum e_i^t \Sigma^{-1} e_i]
+    \\ & 
+    = \text{argmax}_{R,t} [\sum log(P(R q_i + t))]
+    \end{aligned}
+    \end{gather*}
+    $$
+    - $H = \sum_i J_i^T info J_i$
+    - $b = -\sum_i J_i^T info e_i$
+    - $\Chi^2 = \sum_i e_i^T info e_i$
+    - $dx = H^{-1} b$
+
 
 This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common. 
 
