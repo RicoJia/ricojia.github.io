@@ -146,7 +146,14 @@ It is generally possible to use different C++ standards within the same project.
 ### Advanced Options
 
 - `ccache` is a compiler cache that caches previous compilations and detecting if the same compilation needs to be done again. It's meant for C/C++ projects.
+    - How it works: 
+        1. Caching: Ccache stores the output of compiler runs (object files) in a cache
+        2. Ccache analyzes compilation parameters and source code content to determine if a cached version exists
+        3. When you compile code that has already been compiled **with the same flags and source code**, ccache can retrieve the cached output instead of running the compiler again
+    - Why it's useful:
+        - ccache can help in situations where build systems might not be able to detect identical recompilations, such as when file timestamps are not reliable or when different workspaces are involved,
   - How to use it
+        - ccache supports C, C++, Objective-C, and Objective-C++. 
     - Standalone: `ccache gcc -o myprogram myprogram.c`
     - Cmake:
 
@@ -154,6 +161,10 @@ It is generally possible to use different C++ standards within the same project.
             find_program(CCACHE_PROGRAM ccache)
             if(CCACHE_PROGRAM)
                 set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+                set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+                message(STATUS "CCACHE found, using ccache")
+            else()
+                message(STATUS "CCACHE not found, not using ccache")
             endif()
             ```
 

@@ -2,7 +2,7 @@
 layout: post
 title: Docker - Docker Basics
 date: '2018-06-01 13:19'
-subtitle: What is Docker, Basic Docker Operations, Docker Run
+subtitle: What is Docker, Basic Docker Operations, Docker Run, Docker Cp
 comments: true
 tags:
     - Docker
@@ -128,3 +128,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t myimage:latest .
     - Docker builds are performed in a temporary containerized environment.
     - If the build is interrupted, that container disappears, but the previous stable image remains intact.
 
+
+## Misc Commands
+
+- `docker cp` copies files from a docker image to the host system: `docker cp <container_id>:/path/in/container /path/on/host`
