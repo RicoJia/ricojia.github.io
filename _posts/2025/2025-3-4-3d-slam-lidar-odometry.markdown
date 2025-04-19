@@ -20,38 +20,41 @@ scan -> NDT ---pose_estimate---> Is_Keyframe? ---yes---> Add_Frame
 
 ### NDT Odometry
 
-1. NDT:
+I'm implementing a robust 3D NDT-based Odometry system, and it's been a rewarding challenge! Here's a quick breakdown of how it works, plus some lessons learned and visual results.
+
+1. NDT Registration:
     1. *Build hash map that represents voxels from all point clouds of the current submap* [**INEFFICIENT**]
     2. Calculate the mean and variance of the voxels
     3. Update motion_model = `last_pose.inverse() * pose`
         - This can be used as the pose initialization
 
-2. Is_Keyframe:
-    1. If the keyframe has travelled over an angular / distance threshold
-    2. If the keyframe has travelled over an angular / distance threshold
+2. Keyframe Detection:
+    1. 📐 Trigger a new keyframe if the pose has shifted significantly in angle or translation
 
-3. Add_Frame
-    1. We cscan -> NDT -> Is_Keyframe? ---yes---> Add_Frame
+3. Frame Integration Pipeline
+    `Scan → NDT Alignment → Keyframe Check → (If Yes) Add to Map`
+
+Here, you can [check out my implementation](https://github.com/RicoJia/Mumble-Robot/blob/main/mumble_onboard/halo/include/halo/lo3d/direct_ndt_3d_lo.hpp)
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
         <img src="https://i.postimg.cc/8cT7R7LN/ndt-sputnik.gif" height="300" alt=""/>
-        <figcaption><a href=""> Result on ULHK Dataset </a></figcaption>
+        <figcaption><a href=""> My NDT LO Result on ULHK Dataset </a></figcaption>
     </figure>
 </p>
 </div>
 
-### Lessons learned
+### 💡 Key Takeaways
 
-- **Need Voxel filtering at the beginning**
-- Only add key frames as target. Otherwise, the point cloud will be too clumped
-    - For visualization though, we still add filtered pointcloud
-- There are 2 strategies to handle Nearby6 when point cloud is sparse:
-    - Add up weighted errors all together. The errors could be large (>10^7 for a point cloud with 20k points)
-    - Find the best voxel and use that error in the optimization
-        - The error there will be small. 
-- PCL 1.12 has a bug in its `spinOnce()` function, and PCL 1.13 is slow in `spinOnce()`. PCL 1.14 is much better
+- ✅ Always voxel-filter input scans in pre-processing — it massively reduces noise and speeds things up.
+- 📌 Only keyframes are used to build the target map. Non-keyframes still contribute to visualization but don’t clutter the optimization.
+- 🧩 For sparse data, you have two options for Nearby6 voxel association:
+    - 🔺 Aggregate all voxel errors (can explode to 10⁷+ for large clouds!)
+    - ✅ Use only the best voxel — leads to more stable optimization
+- 🐛 PCL versions matter:
+    - PCL 1.12 has a `spinOnce()` bug. PCL 1.13 is stable but slow
+    - PCL 1.14 is much better
 
 ## Incrememental NDT Odometry
 
