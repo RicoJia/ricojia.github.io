@@ -136,3 +136,13 @@ void my_func() {
 }
 ```
 - Use `gcc --version` to check your compiler's version!
+
+### PCL Is A Worm Hole
+
+- PCL does not support in-place filtering. Use a tmp cloud instead:
+    ```cpp
+    voxel_filter_.setInputCloud(local_map_);
+    voxel_filter_.filter(*tmp_cloud_);
+    // swap or copy the filtered result back into local_map_
+    local_map_->swap(*tmp_cloud_);
+    ```

@@ -2,7 +2,7 @@
 layout: post
 title: C++ Tool Websites
 date: '2023-05-26 13:19'
-subtitle: CppInsights, Compiler Explorer
+subtitle: CppInsights, Compiler Explorer, Conan
 comments: true
 header-img: "img/post-bg-infinity.jpg"
 tags:
@@ -40,3 +40,23 @@ std::_List_iterator<int> it_2 = std::search(lst.begin(), lst.end(), sub_lst.begi
 
 ## Compiler Explorer
 TODO
+
+## Conan
+
+[Conan is a Python-based package manager written by JFrog.](https://github.com/conan-io/conan) It works on recipes (small tool scripts), and can install packages from [the Conan Center](https://conan.io/center). 
+
+Workflow:
+
+1. Specify packages to install in `conanfile.txt`
+2. Conan calculates the package id based on compiler version, OS, arch, build type (release), etc.
+3. Check local cache; Try download from Conan, or build from source
+4. In CMakeLists.txt, add below
+
+    ```bash
+    # Use Conan's generated toolchain file (this sets compiler flags, paths, etc.)
+    include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
+    include(${CMAKE_BINARY_DIR}/conan_deps.cmake)
+
+    find_package(MYPACKAGE REQUIRED)
+    ```
+5. Build

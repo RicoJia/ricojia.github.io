@@ -195,6 +195,12 @@ $$
     - $\Chi^2 = \sum_i e_i^T info e_i$
     - $dx = H^{-1} b$
 
+When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching. 
+
+**Advantages and Weaknesses:**
+- NDT is very concise, and it does not need to consider plane, or line like ICP. It has become a widely-used **baseline** scan matching method. 
+- In general, it's much faster than ICP methods, and its performance is a little worse than pt-plane ICP, but better than pt-pt ICP and is similar to pt-line ICP.
+- However, like many other scan-matching method, NDT is prone to bad pose intialization. Also, voxel size could be a sensitive parameter.
 
 This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common. 
 

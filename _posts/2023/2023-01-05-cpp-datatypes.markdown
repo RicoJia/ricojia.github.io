@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Datatypes
 date: '2023-01-05 13:19'
-subtitle: std::optional, structural binding, iostream
+subtitle: std::optional, structural binding, iostream, namespace
 header-img: "img/post-bg-alitrip.jpg"
 comments: true
 tags:
@@ -56,6 +56,11 @@ int main(){
     test_optional();
 }
 ```
+
+## Namespace
+
+- `::testing::InitGoogleTest(&argc, argv);`: defensive way to avoid accidental namespacing issue. This is to call the gtest module
+
 
 ## Structural Binding
 TODO
