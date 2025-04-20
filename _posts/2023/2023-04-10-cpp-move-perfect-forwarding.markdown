@@ -11,19 +11,51 @@ tags:
 
 ## Universal Reference And Perfect Forwarding
 
-Perfect fowarding in C++ preserves the type and value categories of **an input argument**.
+Perfect forwarding in C++ preserves both the **type** and the **value category** of **an input argument**.
 
 Refresher - Value categories:
 - lvalue
 - rvalue
+    - xvalue (eXpiring)
+    - prvalue (pure)
 
-In the following snippet, we have a few interesting aspects
+- The basic format is to declare `Func` in template, then forward it: `std::forward<TYPE>`
 
 ```cpp
 template<typename Func>
 void profile_and_call(Func&& func){
-    std::forward<Func>(func)();
+    std::forward<Func>(func)(); // perfectly forward and invoke
 }
+
+// Using copy ctor:
+template<typename Func>
+void profile_and_call(const Func& func){
+    func();
+}
+```
+
+- One rule in C++ is **"named parameters are lvalues"**: inside `void profile_and_call(Func&& func)`,
+    - `func` itself is an **lvalue**. we need `std::move()`. or `std::forward` to cast it to the correct value category.
+
+### Need Member Template For Class Template
+
+Inside a class template you add a member template so you can perfectly‑forward whatever key/value pair the caller gives you.
+
+```cpp
+template <typename Key, typename Value>
+class HashMap{
+    ...
+    template <typename K, typename V>
+    void add(K&& key, V&& value) {
+        emplace(std::forward<K>(key), std::forward<V>(value));
+    }
+};
+```
+
+- The compiler will have to deduce K, and V and ensures matching with Key and Value
+
+```cpp
+itr_lookup_.find(key)
 ```
 
 ### Universal Reference
@@ -42,6 +74,64 @@ On the other hand, note that **T&& is a universal reference only when T is a ded
 void func(int&& arg);   // rvalue reference only
 ```
 
+## `std::move` and Double Moved-From Issue
 
+A "moved-from" state is a valid yet unspecified state. You can assign another value to it, destroy it, etc. 
+
+```cpp
+#include <iostream>
+#include <string>
+#include <utility>
+
+struct Tracer {
+    std::string name;
+
+    Tracer(std::string n): name(std::move(n)){
+        std::cout << "[Ctor]   name = \"" << name << "\"\n";
+    }
+
+    Tracer(const Tracer& other) : name(other.name) {
+        std::cout << "[Copy]   name = \"" << name << "\"\n";
+    }
+
+    Tracer(Tracer&& other) noexcept : name(std::move(other.name)){
+        std::cout << "[Move]   new.name = \"" << name
+                  << "\",  old.name = \"" << other.name << "\"\n";
+    }
+};
+
+template <typename T>
+void double_move(T&& x) {
+    std::cout << "-> entering double_move, x.name = \"" << x.name << "\"\n";
+
+    // First move-from
+    Tracer a(std::forward<T>(x));   // should see a's move ctor called, x name is valid
+    std::cout << "   after first move, x.name = \"" << x.name << ", a name"<<a.name<<"\"\n";
+
+    // Second move-from
+    Tracer b(std::forward<T>(x));   // should see b's move ctor called, but x's name already is ""
+    std::cout << "   after second move, x.name = \"" << x.name << ", b name"<<b.name<< "\"\n";
+}
+
+int main() {
+    Tracer t("original");
+    double_move(std::move(t));
+    std::cout << "-- back in main, t.name = \"" << t.name << "\" --\n";
+    return 0;
+}
+```
+
+- The output shows only move-ctors are called, no copy ctor is called. But the first `std::forward` call has nullified x into a moved-from state, which would be an un-defined state
+- **`std::move()` is designed to move an lvalue reference into an rvalue reference**. `double_move(std::move(t));` makes `t` bind to  `T&&`, enables perfect forwarding, so move ctor can be called later with `std::forward<TYPE>()` or `std::move<TYPE>()`. If `double_move(t);` is used, everything will be copied. 
+
+
+### `prvalue`
+
+TODO
+
+```cpp
+auto map_itr = itr_lookup_.find(key);   // this is a pr-value
+auto& map_itr = itr_lookup_.find(key);
+```
 
 
