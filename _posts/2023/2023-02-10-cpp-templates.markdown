@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - Templates
+title: C++ - [Templates 1] Template Parameters
 date: '2023-02-10 13:19'
 subtitle: Class Templates, Dependent Name Lookup, Non-Type Template Parameters, requires, concept
 comments: true
