@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Common General Sofware Design Pricinples
 date: '2023-12-15 13:19'
-subtitle: Coupling & Cohesion, Rico's Software Development Philosophy
+subtitle: Coupling & Cohesion, Indempotency, Rico's Software Development Philosophy
 comments: true
 tags:
     - C++
@@ -40,6 +40,10 @@ public:
     }
 };
 ```
+
+## Misc Concepts
+
+- An "IDEMPOTENT" operation is one that has no additional effect if it's called more than once with the same params
 
 ## General Philosophy
 
