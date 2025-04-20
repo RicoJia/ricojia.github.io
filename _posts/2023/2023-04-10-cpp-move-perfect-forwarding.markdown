@@ -209,13 +209,15 @@ int main() {
             std::forward_as_tuple(7, 42)       // → ValueTracer(int,int)
         );
         ```
+        - `std::forward_as_tuple(arg1, arg2...)` is just a convenient way to create a **tuple of universal references to the args**.
+        - So `std::forward_as_tuple(7, 42)` goes into a `ValueTracer(int,int)` ctor
 
     - Without `std::piecewise_construct`, temps are constructed first, then moved into a `std::pair`:
 
         ```cpp
         m.emplace(
-        KeyTracer{"apfel"},      // this constructs a KeyTracer
-        ValueTracer{7,42}        // this constructs a ValueTracer
+            KeyTracer{"apfel"},      // this constructs a KeyTracer
+            ValueTracer{7,42}        // this constructs a ValueTracer
         );  // emplace will 1. construct a temp Key and Value object. 2. forward and calls move ctor on the temps  
         ```
 

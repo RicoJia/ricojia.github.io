@@ -19,6 +19,16 @@ tags:
 std::ofstream ofs(filename, std::ios::out | std::ios::app);
 ```
 
+- How to add a custom print function?
+
+```cpp
+inline std::ostream &operator<<(std::ostream &os, const Sophus::SE3d &pose) {
+    os << "  [SO3] " << pose.so3().log().transpose();
+    os << "  [Translation] " << pose.translation().transpose() << "\n";
+    return os;
+}
+```
+
 ### `std::string` and `std::stringstream`
 
 ## Strings
