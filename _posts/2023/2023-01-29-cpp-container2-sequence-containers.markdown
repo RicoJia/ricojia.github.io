@@ -36,6 +36,36 @@ vector1.insert(vector1.end(), vector2.begin(), vector2.end());
 - Appending an element to the end of vector can be done by `insert(target_it, source_end_it, source_end_it);`. 
 - But once `vec.capacity() < vector1.size() + vector2.size()`, memory **reallocation** will happen. So the worst case is O(N).
 
+### Filling Operations
+
+- Fill a vector with `0, 1,2,3,...`: `std::iota`. `iota` is the greek word for "small amount"
+
+```cpp
+#include <numeric>
+std::vector<int> vec(10);
+std::iota(vec.begin(), vec.end(), 0);
+```
+
+- Fill a vector with values with a custom lambda:
+
+```cpp
+#include <algorithm>
+std::vector<int> vec(10,2); // now all 2
+int x = 1;
+std::generate(vec.begin(), vec.end(), [&x](){return x*=3;}); // 3, 9, ...
+```
+    - for `std::generate()`, the lambda must be a callable without args
+
+- Fill the first `n` element with values:
+
+```cpp
+#include <algorithm>
+std::vector<int> vec(10,2); // now all 2
+int x = 1;
+int n = 5;
+std::generate_n(vec.begin(), n, [&x](){return x*=3;}); // 3, 9, ...
+```
+
 ### Memory Reallocation Of Vector
 
 - vector under the hood is like an array, which uses contiguous memory. Therefore when no contiguous memory is found, **the whole vector needs to be moved over**
@@ -98,34 +128,6 @@ ls.splice(ls.end(), ls2, ls.begin(), it);
     - source `list ls2`  is always required in `std::list::splice`. See the above for 3 its 3 usages
     - This is `O(1)`, because the splice will just manipulate the iterator inside.
 
-## Vector Operations
+## Deque Operations
 
-### Filling Operations
-
-- Fill a vector with `0, 1,2,3,...`: `std::iota`. `iota` is the greek word for "small amount"
-
-```cpp
-#include <numeric>
-std::vector<int> vec(10);
-std::iota(vec.begin(), vec.end(), 0);
-```
-
-- Fill a vector with values with a custom lambda:
-
-```cpp
-#include <algorithm>
-std::vector<int> vec(10,2); // now all 2
-int x = 1;
-std::generate(vec.begin(), vec.end(), [&x](){return x*=3;}); // 3, 9, ...
-```
-    - for `std::generate()`, the lambda must be a callable without args
-
-- Fill the first `n` element with values:
-
-```cpp
-#include <algorithm>
-std::vector<int> vec(10,2); // now all 2
-int x = 1;
-int n = 5;
-std::generate_n(vec.begin(), n, [&x](){return x*=3;}); // 3, 9, ...
-```
+- `std::deque` does not have a `reserve()` operation, because `reserve()` is to pre-allocate one contiguous block of memory. `deque` is multiple blocks of memory, and **its goal is to avoid allocating all memory at once**
