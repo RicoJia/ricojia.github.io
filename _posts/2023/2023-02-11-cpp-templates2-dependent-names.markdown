@@ -95,3 +95,17 @@ struct Weird {
 };
 ```
 
+Also, `typename` should come right before the expression, like:
+
+```cpp
+std::unordered_map<Key, typename std::list<std::pair<Key, Value>>::iterator> itr_lookup_;
+```
+
+One example that doesn't need `typename`: if the parser sees `<` with no problem, it knows `>` must come:
+
+```cpp 
+template <typename Key, typename Value>
+class LRUHashMap{
+std::list<std::pair<Key, Value>> cache_;
+}
+```

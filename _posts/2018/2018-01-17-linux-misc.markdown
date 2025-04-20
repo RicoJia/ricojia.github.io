@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys, UART, Tmux
+subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys, UART, Tmux, ffmpeg
 comments: true
 tags:
     - Linux
@@ -133,3 +133,14 @@ tmux attach-session -t <WINDOW_NUM_OPTIONAL>
 ## Checksum
 
 Most zip tools have checksum check built in, even though checksum is not part of the zip format
+
+## ffmpeg
+
+- cut a video from 8th second to 19th second: 
+    ```
+    ffmpeg -ss 8 -i ndt_sputnik2-2025-04-19_11.37.57.mp4 -to 19 -c copy cut_output2.mp4 
+    ```
+- Make the video 3x faster:
+    ```
+    ffmpeg -i cut_output2.mp4 -filter:v "setpts=0.33*PTS" -an cut_output2x.mp4    
+    ```

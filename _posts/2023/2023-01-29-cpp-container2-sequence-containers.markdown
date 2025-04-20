@@ -71,6 +71,11 @@ for (auto& m: ls){
 }
 ```
 
+Also, there are:
+
+- `list.size()`
+- `list.front()` and `list.back()`
+
 Advanced Operations:
 
 ```cpp
