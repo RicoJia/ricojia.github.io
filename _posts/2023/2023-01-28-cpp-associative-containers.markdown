@@ -26,7 +26,6 @@ In this article, we will examine the below behaviours:
 
 Finally, we will see how to define hash functions for these associative container datatypes.
 
-
 ## `std::unordered_map`
 
 - Insert Or Assign (C++17)
@@ -100,10 +99,30 @@ if (it != my_map.end()) {
 
 ### Emplace
 
-- `unordered_map::emplace() -> pair [iterator, bool]` vs `try_emplace()`: 
-    - `try_emplace()` Only constructs the value if the key doesn’t exist.
-    - `emplace(key, value)` Always constructs the key and value (even if the key already exists — it won’t be inserted though). 
-        - Returns a pair with an iterator and a bool (false if the key already existed).
+- `unordered_map::emplace() -> pair [iterator, bool]` vs `try_emplace() -> pair [iterator, bool]`: 
+    - If a key already exists, neither will replace the associated value. 
+        - `insert_or_assign()` would.
+    - However, `try_emplace()` is always preferred over `emplace`, because:
+        - `try_emplace()` **Only constructs the value** if the key doesn’t exist. (C++17)
+        - `emplace(key, value)` **Always constructs the key and value** (even if the key already exists — it won’t be inserted though). 
+    - Another subtle difference is:
+        - `piecewise_construct` is to construct either value of a pair using a tuple of args. 
+        - `try_emplace` does not take in args for key (so key must be fully constructed before the call)
+            - but it can take in args of the value, so value is constructed in-place, but **key** will have to be move-constructed / copy constructed in the container.
+
+        ```cpp
+        // emplace supports piecewise construct
+        itr_lookup_.emplace(
+            std::piecewise_construct,
+            std::forward_as_tuple(cache_.begin()->first),
+            std::forward_as_tuple(cache_.begin()));
+        
+        // try emplace only supports construct + move?
+        itr_lookup_.try_emplace(
+            list_it->first,   // key
+            list_it           // mapped_type must be constructible from this iterator
+        );
+        ```
 
 ```cpp
 #include <iostream>
@@ -194,3 +213,33 @@ int main() {
     - Memory Efficiency: PMR can help you pre-allocate a large chunk of memory (from a buffer) and then use it for many small allocations, which is useful in real-time or embedded systems.
     - Multiple PMR-based containers can share the same memory resource. 
 - memory allocation strategies by using user-supplied memory resources.
+
+## Thread-Safety of Associative Containers
+
+Can I do `std::for_each(parallel, )`, grab each deque, do stuff, then put in grid_? Will there be memory issues? 
+
+Parallel access to `map`, `unordered_map` is not inherantly thread safe.
+
+```cpp
+std::mutex mtx
+std::for_each(
+    std::execution::par,
+    my_map.begin(), my_map.end(), [&](auto& e){
+        ...
+        std::lock_guard<std::mutex> lg(mtx);
+        my_map[entry] = ... // potential memory re-allocation, etc.
+    }
+);
+```
+
+**Read-only access is fine**
+
+If there is no memory re-allocation, **AND** one element is only accessed by a single thread, lockless is fine. These operators could trigger memory re-allocation:
+
+- `reserve()`
+- `insert()`
+- `operator[]`
+
+
+- Alternatives: 
+    -  TBB’s (Thread-Building-Blocks) `concurrent_unordered_map`. TODO: test it

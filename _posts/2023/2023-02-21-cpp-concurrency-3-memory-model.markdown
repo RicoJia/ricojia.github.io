@@ -72,3 +72,27 @@ C++ compilers can reorder instructions as part of optimization — as long as th
 **How to prevent:** Use `std::atomic` with proper memory ordering (e.g., `memory_order_seq_cst`) to prevent unwanted reordering.
 
 Atomics act as compiler and CPU fences, ensuring ordering constraints are respected where required.
+
+## C++ Memory Model vs Lower Level Register Reads:
+
+In a low-level device register, a read is usually read-clear (reading an IRQ status bit), or read-toggle. Two cores reading simultaneously could acknowledge it twice. 
+
+Some dangerous MMIO (Memory-Mapped IO)examples include:
+
+| Scenario (MMIO)                               | Safe? | Why / Remedy                   |
+|----------------------------------------------|-------|--------------------------------|
+| Two threads poll a PCIe status register      | ❌    | Read‑clear → lost/dupe events. Use a single polling thread or a spin‑lock. |
+| CPU reads a continuously updating 64‑bit timer| ⚠️    | Possible tear. Follow the ‘latch‑high‑then‑low’ sequence in the datasheet. |
+| Two cores read a ROM device‑ID register      | ✅    | No side‑effects. Still mark as `volatile` / use `ioread32()`. |
+
+The above is **well outside the C++ memory model**. The C++ memory model explicitly excludes "actions performed by or on behalf of the hardware". Correctness is platform specific. 
+
+
+By the C++ memory model:
+
+- Concurrent read-only access is thread-safe, **iff no other threads are modifying**
+- Read / write to 8 byte `std::atomic<T>` is atomic, no guarantee to regular objects
+
+**Rule of thumb**: Ordinary RAM objects obey the C++ memory model; MMIO obeys the hardware datasheet + architecture I/O ordering rules.
+
+

@@ -94,7 +94,7 @@ The main difference, however, is in `add_frame`:
     \sum_i (x_i - \mu)(x_i - \mu)^T = m \Sigma_a
 
     \\ & \text{So ultimately:}
-    \\ & \Sigma = \frac{1}{m+n}[m (\Sigma_a + (\mu_a - \mu)(x_i - \mu_a)^T) + n(\Sigma_b + (\mu_b - \mu)(x_i - \mu_b)^T)]
+    \\ & \Sigma = \frac{1}{m+n}[m (\Sigma_a + (\mu_a - \mu)(\mu_a - \mu)^T) + n(\Sigma_b + (\mu_b - \mu)(\mu_b - \mu)^T)]
     \end{aligned}
     \end{gather*}
     $$
@@ -102,6 +102,18 @@ The main difference, however, is in `add_frame`:
 3. Also, if we want to discard voxels if there have been too many old ones, we can implement an Least-Recently-Used (LRU) cache of voxels. 
 
 - If there are too many points in a specific voxels, we can choose not to update it anymore.
+
+### Summary of Vanilla and Incremental NDT Odometry
+
+Similarities:
+
+- We don't store points into point cloud permanently. We just store voxels and their stats
+
+How do we update voxels? 
+- NDT3D needs a grid_: `unordered_map<key, idx>`. This means:
+    1. We need to reconstruct the grid cells from scratch.
+    2. We need keyframes which allows us to selectively add ponitclouds
+- NDT3D_inc needs an LRU cache: `std::list<data>`, `unordered_map<itr>`. We don't need to generate grid cell 
 
 ## Indirect Lidar Odometry
 
