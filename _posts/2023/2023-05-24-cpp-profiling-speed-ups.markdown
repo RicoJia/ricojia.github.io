@@ -2,7 +2,7 @@
 layout: post
 title: C++ Profiling and Speed Ups
 date: '2023-05-24 13:19'
-subtitle: gprof, CMake Release and Debug BoilerPlate, CMake Settings
+subtitle: gprof, perf, CMake Release and Debug BoilerPlate, CMake Settings
 comments: true
 header-img: "img/post-bg-infinity.jpg"
 tags:
