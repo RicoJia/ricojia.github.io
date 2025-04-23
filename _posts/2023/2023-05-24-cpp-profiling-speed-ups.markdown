@@ -67,10 +67,23 @@ gprof -p -q my_program gmon.out > analysis.txt
 5. Create a `profile.png` view of the graph:
 
 ```
-python3 gprof2dot.py -w analysis.txt | dot -Tpng -o profile.png
+python3 gprof2dot.py -s -w analysis.txt | dot -Tpng -o profile.png
 ```
 
 - `-w` means "wrap text in bounding box"
+- `-s` strips away args
+
+6. To check the times of a subtree:
+    1. Check the full function signature
+
+        ```bash
+        python3 gprof2dot.py  --list-functions='*add_scan*'   -w ~/file_exchange_port/Mumble-Robot/mumble_onboard/profile.txt
+        ```
+    2. Generate the sub-tree:
+
+        ```bash
+        python3 gprof2dot.py -s --root='halo::IncrementalNDTLO::add_scan(std::shared_ptr<pcl::PointCloud<pcl::PointXYZI> >, bool)' -w ~/file_exchange_port/Mumble-Robot/mumble_onboard/profile.txt | dot -Tpng -o profile.png
+        ```
 
 ## CMake Boiler Plate For Release and Debug
 
