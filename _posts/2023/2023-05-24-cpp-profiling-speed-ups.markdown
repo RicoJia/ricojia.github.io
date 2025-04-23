@@ -14,6 +14,9 @@ tags:
 
 GNU gprof provides CPU execution times (not wall time, so sleep is not accounted for) of functions and their subfunctions in percentage. Gprof outputs data in a text-based format, which can be difficult to interpret. This is where gprof2dot comes in—it converts the profiling data into a visual call graph that makes it easier to understand function relationships and execution costs.
 
+Gprof limitations: 
+    - It measures [user time, but not kernel time](https://ricojia.github.io/2018/01/20/linux-operating-systems/)
+
 <div style="text-align: center;">
     <p align="center">
        <figure>
@@ -47,6 +50,8 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -pg -O2")
 ```bash
 git clone https://github.com/jrfonseca/gprof2dot.git
 ```
+
+    - One can use `python3 -m gprof2dot <ARGS>` if the module has been installed successfully
 
 3. Install dot (part of Graphviz):
 
@@ -84,6 +89,24 @@ python3 gprof2dot.py -s -w analysis.txt | dot -Tpng -o profile.png
         ```bash
         python3 gprof2dot.py -s --root='halo::IncrementalNDTLO::add_scan(std::shared_ptr<pcl::PointCloud<pcl::PointXYZI> >, bool)' -w ~/file_exchange_port/Mumble-Robot/mumble_onboard/profile.txt | dot -Tpng -o profile.png
         ```
+
+## perf
+
+- [Reference post](https://www.cnblogs.com/wx170119/p/11459995.html)
+
+2. Second, run
+
+```bash
+perf record -F 99 -a -g -- MY_EXE && perf script -i perf.data &> perf.unfold                        
+```
+3. Visualization:
+    1. FlameGraph: `git clone https://github.com/brendangregg/FlameGraph.git`
+        ```
+        ./FlameGraph/stackcollapse-perf.pl perf.unfold &> perf.folded              
+        ./FlameGraph/flamegraph.pl perf.folded > perf.svg
+        ```
+    2. [Speedscope (my favorite)](https://www.speedscope.app/)
+        - Just drag `perf.unfold` onto the page!
 
 ## CMake Boiler Plate For Release and Debug
 

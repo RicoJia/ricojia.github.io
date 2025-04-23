@@ -103,6 +103,8 @@ The main difference, however, is in `add_frame`:
 
 - If there are too many points in a specific voxels, we can choose not to update it anymore.
 
+
+
 ### Summary of Vanilla and Incremental NDT Odometry
 
 Similarities:

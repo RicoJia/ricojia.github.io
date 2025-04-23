@@ -87,7 +87,6 @@ Some dangerous MMIO (Memory-Mapped IO)examples include:
 
 The above is **well outside the C++ memory model**. The C++ memory model explicitly excludes "actions performed by or on behalf of the hardware". Correctness is platform specific. 
 
-
 By the C++ memory model:
 
 - Concurrent read-only access is thread-safe, **iff no other threads are modifying**
