@@ -99,6 +99,7 @@ python3 gprof2dot.py -s -w analysis.txt | dot -Tpng -o profile.png
 ```bash
 perf record -F 99 -a -g -- MY_EXE && perf script -i perf.data &> perf.unfold                        
 ```
+
 3. Visualization:
     1. FlameGraph: `git clone https://github.com/brendangregg/FlameGraph.git`
         ```
@@ -107,6 +108,64 @@ perf record -F 99 -a -g -- MY_EXE && perf script -i perf.data &> perf.unfold
         ```
     2. [Speedscope (my favorite)](https://www.speedscope.app/)
         - Just drag `perf.unfold` onto the page!
+
+### Perf in a Docker Container
+
+Running perf inside Docker has a few quirks, especially with custom kernels like those from System76 or Pop!_OS. Here's a refined setup guide:
+
+1. If you see this error:
+
+```
+WARNING: perf not found for kernel 6.9.3-76060903
+
+  You may need to install the following packages for this specific kernel:
+    linux-tools-6.9.3-76060903-generic
+```
+
+💡 Why: 
+
+- Some systems (e.g., System76) use custom kernel builds that don’t have matching `linux-tools-<version>` packages in the default Ubuntu repos.
+- Installing linux-tools-$(uname -r) inside the container won’t work if the package doesn’t exist in apt.
+
+✅ Solution:
+
+Perf's ABI has been very stable. It is backward and forward ABI compatible via `perf_event_open(2)`. You can use a perf binary from a different kernel version as long as the syscalls remain stable (which they do). Just make sure the binary matches your host architecture and brings any needed .so dependencies. 
+
+Use the perf binary from the host, where it was successfully installed:
+
+```
+cp /usr/lib/linux-tools-$(uname -r)/perf ./perf-copy
+```
+
+- ⚠️ Do not copy /usr/bin/perf — it's just a symlink that may not point to the real binary.
+
+2. Required docker-compose settings in `docker-compose.yaml`:
+
+```yaml
+privileged: true      # or at least cap_add: [SYS_ADMIN, PERFMON]
+pid: "host"
+```
+
+- `privileged` or `SYS_ADMIN/PERFMON` are needed for `perf_event_open`
+- `pid: "host"` is critical so `perf` can trace real PIDs and resolve symbols correctly.
+
+3. If you see this warning:
+
+```
+Perf tool from other version of kernel still can be used (the syscalls in perf_event subsystem have good design and are compatible with older/newer tools). So, you can just find any perf binary (not the /usr/bin/perf script) anywhere, check its library depends with (ldd ..path_to_perf/perf) and copy perf inside Docker (and install libs).
+```
+
+Do this in the container:
+
+```bash
+sudo sysctl -w kernel.perf_event_paranoid=0
+sudo sysctl --system
+```
+
+### Optick
+
+Optick failed to run on my linux machine. I could not get JSON file out, only the `opt` file out. Also, it needs a GUI to run it. The gui only be built on MSVC.
+
 
 ## CMake Boiler Plate For Release and Debug
 
