@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Compilation 1] Compilation Model
 date: '2023-05-01 13:19'
-subtitle: Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization, Compiler, Elf File
+subtitle: Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization, Compiler, ELF
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -155,3 +155,20 @@ All code has been optimized out! **⚠️ As a result, an important point here i
         gcc main.cpp -lstdc++ -o app
         ```
     - `g++` us built on top of `gcc`, and defines `__cplusplus` macros
+
+## ELF (Executable and Linkable Format):
+
+ELF is the standard binary file format on UNIX-like systems. It's used for: 
+
+- object file `.o`
+- Executable binaries
+- Shared libraries: `.so`
+
+An ELF consists of:
+- Header: magic number, architecture, entry point
+- Program Headers: describe segments for runtime loader
+- Section Headers: sections like .text, .data, .rodata, symbol tables
+- Symbol Tables: for linking and debugging
+- String Tables: names of symbols and sections
+
+E.g., `readelf -h   # show ELF header`
