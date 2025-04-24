@@ -1,7 +1,7 @@
 ---
 layout: post
-title: C++ - Compiler Directives
-date: '2023-01-13 13:19'
+title: C++ - [Compilation 2] Compiler Directives
+date: '2023-05-04 13:19'
 subtitle: Macros, Pragmas, Attributes
 comments: true
 header-img: "img/post-bg-alitrip.jpg"

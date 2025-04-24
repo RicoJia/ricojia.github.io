@@ -1,8 +1,8 @@
 ---
 layout: post
-title: C++ - Compilation Model
-date: '2023-01-04 13:19'
-subtitle: Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization
+title: C++ - [Compilation 1] Compilation Model
+date: '2023-05-01 13:19'
+subtitle: Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization, Compiler, Elf File
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:

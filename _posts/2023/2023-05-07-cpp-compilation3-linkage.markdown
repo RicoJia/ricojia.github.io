@@ -1,7 +1,7 @@
 ---
 layout: post
-title: C++ - Linkage
-date: '2023-04-13 13:19'
+title: C++ - [Compilation 3] Linkage
+date: '2023-05-07 13:19'
 subtitle: In C++, Linkage is Either External Or Internal
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
