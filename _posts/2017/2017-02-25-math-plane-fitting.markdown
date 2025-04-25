@@ -2,7 +2,7 @@
 layout: post
 title: Math - Linear Fitting
 date: '2017-02-25 13:19'
-subtitle: Plane Fitting, Line Fitting
+subtitle: Plane Fitting, Line Fitting, Isotropic Matrix
 comments: true
 tags:
     - Math
@@ -268,3 +268,23 @@ From the perspective of SVD, we can find that the line is the first principal co
 </div>
 
 Great thing about Eigen Value Decomposition is that we do not need to iteratively evaluate.
+
+## Isometric Matrix
+
+An isotropic 3D point distribution has no preferred direction. Its covariance matrix therefore takes the form
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Sigma = \sigma^2 I
+\end{aligned}
+\end{gather*}
+$$
+
+The eigen values of the cov matrix is $\sigma^2$
+
+- $A^TA = \sum{(x_j - \bar{x})(x_j - \bar{x})^T}$ A is called a "demeaned matrix". $\frac{1}{k} A^T A$ is a "sample covariance matrix"
+
+### Mahalanobis Distance
+
+For an error vector `e∈R3` under covariance Σ, the Mahalanobis distance is $d = \sqrt{e^T \Sigma^{-1} e}$

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - [Epic Bugs] SLAM Related Bugs
+title: Robotics - [Bugs - 1] SLAM Related "Epic Bugs"
 date: '2025-2-1 13:19'
 subtitle: G2O Optimization Vertex Updates, Compiler-Specific Bugs
 header-img: "img/post-bg-os-metro.jpg"

@@ -138,7 +138,7 @@ Edge points along their vertical direction can be used for point-line ICP; plana
 
 ![Image](https://github.com/user-attachments/assets/daafcfa5-7ad2-4beb-acdd-f896a48840ac) TODO
 
-### Feature Extraction
+### LOAM-Like Feature Extraction
 
 This line of thoughts can be applied in 2D lidars as well. 
 
@@ -185,7 +185,42 @@ extract(pc_in, pc_out_edge, pc_out_surf):
                     pc_out_surf.append(n)
 ```
 
-- Why would you segment?
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/9Q1Mz9NZ/edge-points.png" height="300" alt=""/>
+        <img src="https://i.postimg.cc/YS9SFSJV/feature-points.png" height="300" alt=""/>
+        <figcaption> Left: Planar Points, Right: Edge Points</figcaption>
+    </figure>
+</p>
+</div>
+
+Why segment the scan?
+
+- We evaluate a point’s “ruggedness” (local curvature) against its neighbors to choose edge and planar features. Without segmentation, high-curvature areas would dominate, leaving other directions underrepresented. By dividing each scan line into fixed angular sectors (e.g., six), we ensure a balanced quota of features from every part of the scan, yielding uniform spatial coverage.
+
+- Handling degeneracy along a wall
+When the sensor travels parallel to a long, flat surface, all strong edges lie in roughly the same direction—this can make the Hessian in our optimizer rank-deficient. Segmentation forces us to pick features from multiple sectors (including those opposite the wall), which restores geometric diversity and prevents loss of observability.
+
+#### Differences From The LOAM Paper
+
+In the original paper:
+
+- First, points are time-warped to the beginning of the scan using either a linear “twist” model or IMU interpolation before curvature is computed (ScanRegistration §3.1)
+
+- For each scan line/beam, divide the point cloud into six sectors (each takes 1/6 of start-end index diff), and extract sharp (corner) and flat (plane/surface) features as follows.
+
+    - In each sector, sort cloud index according to curvature. The top 2 largest curvature points (if points are not selected and curvature > 0.1) are marked as **sharp**, the top 20 largest curvature points are marked as **less sharp** (including the top 2 sharp points), the top 4 smallest curvature points (with additional condition curvature < 0.1) are **marked as flat**, and all the rest points plus the **top 4 flat points** will be down sampled and marked as less flat.
+    - After each feature extraction, there will be a **non-maximum suppression** step to mark neighbor 10 points (+-5) to be already selected (marking will stop at points that are 0.05 squared distance away from currently picked point), so that they will not be picked in the next iteration for feature extraction.
+    - A downsample operation (of leaf size 0.2m) is applied to each scan of less flat points, and then all downsampled scans are combined together (into one point cloud) to be published to odometry.
+
+- For example for VLP-16 LiDAR, there could be 384 flat feature points and 192 sharp feature points extracted in a point cloud frame (if all meet the 0.1 curvature threshold).
+
+- KD Tree is used for fast indexing
+
+However, the original paper has some drawbacks too:
+
+- Most numbers are “magic constants” set in launch file or hard coded
 
 
 
