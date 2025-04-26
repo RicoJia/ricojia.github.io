@@ -43,6 +43,7 @@ int main(){
 - [if with initializer](https://ricojia.github.io/2023/01/15/cpp-control-flow/)
 - [Insert_or_assign](https://ricojia.github.io/2023/01/28/cpp-containers/)
 - [`try_emplace`](https://ricojia.github.io/2024/04/10/cpp-move-perfect-forwarding/)
+- [`std::variant`](https://ricojia.github.io/2023/01/05/cpp-datatypes/)
 
 ## Cpp 20 Features
 
