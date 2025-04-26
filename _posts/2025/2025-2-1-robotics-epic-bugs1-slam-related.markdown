@@ -146,3 +146,17 @@ void my_func() {
     // swap or copy the filtered result back into local_map_
     local_map_->swap(*tmp_cloud_);
     ```
+
+### NanoFLANN
+
+- When you create a temporary NanoflannPointCloudAdaptor and pass it by value into the KD-tree constructor, the adaptor object is destroyed as soon as the function exits. Since NanoFLANN only stores a raw pointer to your data, any subsequent query will dereference a dangling pointer—invoking undefined behavior on the very first lookup.
+
+```cpp
+nanoflann::KDTreeSingleIndexAdaptor<
+    nanoflann::L2_Simple_Adaptor<float, PointCloudAdaptor>,
+    PointCloudAdaptor,
+    dim /* dimensionality */
+>;
+```
+
+- NanoFLANN [tree search is thread safe](https://github.com/jlblancoc/nanoflann/issues/54)

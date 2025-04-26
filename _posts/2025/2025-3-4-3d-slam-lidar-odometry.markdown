@@ -140,49 +140,39 @@ Edge points along their vertical direction can be used for point-line ICP; plana
 
 ### LOAM-Like Feature Extraction
 
+Feature-based LO have better general usability than point-point ICP or point-plane ICP. In the autonomous vehicle industry, LOAM, LeGO-LOAM, ALOAM, FLOAM are common solutions. They are the foundation of many LIO systems, but due to the complexity of LOAM's code, here we have a simplified version. 
+
+For any LOAM system, we mostly care about "what features shall we extract"? Common features include PFH, FPFH, and many other deeply-learned features. In the industry, people currently use simple, hand-crafted features. This is because we don't want to take up too much CPU/GPU resources. 
+
+A simple hand-crafted feature extraction method is based on **LiDAR scan lines**. Each line has a timestamp, which makes our nearest-neighbor-search much easier. In LOAM, we extract planar and edge points. Such a concept can be used in 2D Scan-Matching as well. In 3D, LeGO-LOAM extracts ground, planar, and edge points using distance image? MULLS (Multi‐metric Linear Least‐Square, 2021) classfies points into semantic/geometric groups (ground, facade, pillars, beams, etc.) via dual‐threshold ground filtering and PCA. Of course, RGBD SLAM / Solid-State LiDAR SLAM methods do not have scan lines. So we cannot use such methods here. 
+
+
+
 This line of thoughts can be applied in 2D lidars as well. 
 
 ```python
-extract(pc_in, pc_out_edge, pc_out_surf):
-    scan_in_each_line = [[]]
-    for point in pc_in:
-        populate scan_in_each_line with points on each line
+- extract_feature
+    1. For each point in scan[5, size-5)
+        1. calculate curvature:
+            dx = sum(nearest 10 neighbors) - 10 * self.x
+            curvature = dx^2 + dy^2 + dz^2
+    2. seglength = total_points / 6;  for(i = 0; i < 6; i++)
+        seg_start = i * seg_length
+        seg_end = (i+1) * seg_length
+        extract_feature_from_segment(seg_start, seg_end)
 
-    for line in scan_in_each_line:
-        cloud_curvature = []
-        for point in line:
-            diff_x = sum(10 neighbors.x) - 10 * point.x
-            diff_y = sum(10 neighbors.x) - 10 * point.y
-            diff_z = sum(10 neighbors.x) - 10 * point.z
-            edgeness = (diff_x^2 + diff_y^2 + diff_z^2)
-            cloud_curvature.append(point.id, edgeness)
-        # segment 360 deg into 6 areas:
-        for segment in 360 deg:
-            cloud_curvature_seg = [cloud_curvature[segment.start], ... cloud_curvature[segment.end]]
-            # sort
-            sort(cloud_curvature_seg, pt.edgeness, DESCENDING_ORDER)
-            point_num = 0
-            ignored_points = []
-            for corner_candidate_point in cloud_curvature_seg:
-                if corner_candidate_point in ignored_points:
-                    continue
-                if corner_candidate_point.edgeness < CORNER_THRESHOLD:
-                    break
-                if point_num >= NUM_THRESHOLD:
-                    break
-                pc_out_edge.append(corner_candidate_point)
-
-                for n in left_5_neighbor(corner_candidate_point):
-                    if n.x^2 + n.y^2 + n.z^2 > ignore_threshold:
-                        # My understanding: We want to ignore flat point around the edge feature, 
-                        # this point has too much edgeness
-                        # we want to break here, so this point will be added
-                        # in the upcoming iteration
-                        break
-                    ignored_points.append(n)
-            for planar_pt_candidate in cloud_curvature_seg:
-                if planar_pt_candidate not in ignored_points:
-                    pc_out_surf.append(n)
+- extract_feature_from_segment:
+    1. sort points by curvature, (from low to high)
+    2. start from the end (largest curvature):
+        1. Reject curvatures less than 0.1
+        2. Add point to edge_list, and the ignored_list
+        3. Break if edge points have exceed a threshold
+        4. Check the left 5 neighbors. 
+            1. Calculate its ruggedness of [k-1], [k]. 
+            2. If ruggedness < threshold, add to ignored_list
+        5. Repeat for the right 5 neghbours
+    3. loop over the curvature list
+        1. If the point is not in the ignored list, add to the surface_list
 ```
 
 <div style="text-align: center;">
@@ -195,7 +185,7 @@ extract(pc_in, pc_out_edge, pc_out_surf):
 </p>
 </div>
 
-Why segment the scan?
+#### Why segment the scan?
 
 - We evaluate a point’s “ruggedness” (local curvature) against its neighbors to choose edge and planar features. Without segmentation, high-curvature areas would dominate, leaving other directions underrepresented. By dividing each scan line into fixed angular sectors (e.g., six), we ensure a balanced quota of features from every part of the scan, yielding uniform spatial coverage.
 
