@@ -29,6 +29,27 @@ In `<numeric>`, we have:
 
 - Datatype `std::NaN`
 
+### Strict-Weak-Ordering 
+
+In C++, the general ordering is done using a predicate. Most commonly, it's called "strict-weak-ordering". The same rule is followed in different places of the STL, e.g., `std::sort`, `std::map`, `std::set`, `std::priority_queue` / `std::heap` A strict weak-ordering is a binary predicate that **returns true if the first precedes the second**
+
+
+```cpp
+// For `std::sort`
+if (Comp(pivot,new_element)) swap(pivot, element) // put larger elements to the right
+
+// For std::priority_queue
+if (Comp(parent, child)) swap(parent, child)
+
+// For std::map
+if (Comp(new_key, node_key)){
+    go_left(new_key)
+} else {
+    go_right(new_key)
+}
+```
+
+
 ## `<algorithm>`
 
 ### Nth Element

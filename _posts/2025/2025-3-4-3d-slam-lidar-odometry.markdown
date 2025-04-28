@@ -146,8 +146,6 @@ For any LOAM system, we mostly care about "what features shall we extract"? Comm
 
 A simple hand-crafted feature extraction method is based on **LiDAR scan lines**. Each line has a timestamp, which makes our nearest-neighbor-search much easier. In LOAM, we extract planar and edge points. Such a concept can be used in 2D Scan-Matching as well. In 3D, LeGO-LOAM extracts ground, planar, and edge points using distance image? MULLS (Multi‐metric Linear Least‐Square, 2021) classfies points into semantic/geometric groups (ground, facade, pillars, beams, etc.) via dual‐threshold ground filtering and PCA. Of course, RGBD SLAM / Solid-State LiDAR SLAM methods do not have scan lines. So we cannot use such methods here. 
 
-
-
 This line of thoughts can be applied in 2D lidars as well. 
 
 ```python
@@ -185,7 +183,7 @@ This line of thoughts can be applied in 2D lidars as well.
 </p>
 </div>
 
-#### Why segment the scan?
+#### Why Segment Scans?
 
 - We evaluate a point’s “ruggedness” (local curvature) against its neighbors to choose edge and planar features. Without segmentation, high-curvature areas would dominate, leaving other directions underrepresented. By dividing each scan line into fixed angular sectors (e.g., six), we ensure a balanced quota of features from every part of the scan, yielding uniform spatial coverage.
 
@@ -212,9 +210,10 @@ However, the original paper has some drawbacks too:
 
 - Most numbers are “magic constants” set in launch file or hard coded
 
+#### Hands-On Take-Aways
 
-
-
+- Voxel filtering is still essential, but please do that when adding keyframes. Otherwise, there would be fewer edge & planar features.
+- Using `last_pose` and `second_last_pose` is better for motion modelling than `last keyframe pose`, and `second last keyframe poses`.
 
 
 **There you have it, NDT odometry. Note that due to the lack of loop detection, it's still susceptible to accumulated error.**

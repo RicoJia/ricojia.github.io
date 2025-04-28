@@ -31,3 +31,9 @@ tags:
 
 - `res=PointType.getVector3fMap()`
     - Since this returns an `Eigen::vector3f`, one can use `res.squaredNorm()`further.
+
+### Point Cloud Width and Height
+
+- `width` – how many points make up one row of the cloud
+- `height` – how many rows there are
+- `points.size()` – the total number of points = `width * height`

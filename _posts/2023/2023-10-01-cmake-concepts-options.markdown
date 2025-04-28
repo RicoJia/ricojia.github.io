@@ -135,7 +135,29 @@ It is generally possible to use different C++ standards within the same project.
   - line numbers
   - data types
 
-`set(CMAKE_BUILD_TYPE Release)` not only exclude debug symbols, but will also turn on optimization, and disable assertions. This would include `-O3`
+`set(CMAKE_BUILD_TYPE Release)` not only exclude debug symbols, but will also turn on optimization, and disable assertions. This would include `-O3`. 
+
+A snippet I use is:
+
+```c
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  message(STATUS "Halo: Building in Debug mode with gdb symbols")
+  # append -g and -O0 so both the static lib and test executables carry debug
+  # info
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -pg -ggdb -O0")
+  set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -pg")
+endif()
+
+# If there are any `gtest`
+add_test(NAME ${name} COMMAND ${name} --gtest_catch_exceptions=0)
+```
+- To trigger this debug mode: `cmake -DCMAKE_BUILD_TYPE=Debug <PATH>`, or `colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug`
+- `-O0` disables all optimizations, so the ordering of instructions will stay close to the program. This makes stepping through the binary in `gdb` much easier
+- `-ggdb` roughly similar to `-g`, but added enhanced line-number tables. It also embed type info, and symbols so you can inspect variables, view stack frames, etc.
+- `-pg` is to link in hooks for `gprof`, so there will be counters, and call-graph probes into every function. When you run the resulting binary, a `gmon.out` will be saved. The `gmon.out` file can be used to generate a human-readable report.
+- `--gtest_catch_exceptions=0`: without this line, `GTest` catches all crashes in a `try-catch` clause and immediately fail. With this line, we no-longer catch them, the debugger will stop at the failing line. This has no impact on the speed of the binary.
+
+
 
 ## Commands
 
