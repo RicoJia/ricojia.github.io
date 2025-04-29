@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Datatypes
 date: '2023-01-05 13:19'
-subtitle: std::optional, structural binding, iostream, namespace, union, std::variant
+subtitle: std::optional, structural binding, iostream, namespace, union, std::variant,  std::type_index, std::any
 header-img: "img/post-bg-alitrip.jpg"
 comments: true
 tags:
@@ -129,3 +129,49 @@ int main()
     return 0;
 }
 ```
+
+## `std::type_index`
+
+The expression `typeid(T)` returns a `const std::type_info&`, which cannot be copied or assigned.
+To store type information in containers or use it as a key (e.g. in `std::unordered_map`), use `std::type_index` from the `<typeindex>` header.
+
+```cpp
+#include <typeindex>
+#include <typeinfo>
+#include <unordered_map>
+
+std::unordered_map<std::type_index, std::string> type_names;
+type_names[typeid(int)] = "int";
+```
+
+🔹 `std::type_index` is copyable and assignable, making it suitable for associative containers.
+🔹 It is only for comparing or storing type_info references — it cannot be used for casting or type deduction.
+
+## `std::any`
+
+Introduced in C++17, `std::any` is a type-erased container that can hold a value of any type, as long as the type is copy-constructible.
+
+```cpp
+#include <any>
+#include <iostream>
+#include <string>
+
+std::any a = 1;
+std::cout << std::any_cast<int>(a) << "\n"; // prints 1
+
+a = std::string("Hello");
+std::cout << std::any_cast<std::string>(a) << "\n"; // prints "Hello"
+```
+
+To retrieve the value, use `std::any_cast<T>(obj)`. If the `type T` does not match the stored type, it throws `std::bad_any_cast`.
+
+```cpp
+try {
+    std::any a = 1;
+    std::any_cast<double>(a); // throws
+} catch (const std::bad_any_cast& e) {
+    std::cerr << "Bad cast: " << e.what() << std::endl;
+}
+```
+🔹 std::any behaves like a regular value: you can assign, move, and copy it.
+🔹 Use it when you need to store values of different types without templates, but still want safe type checking at runtime.
