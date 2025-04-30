@@ -136,7 +136,13 @@ Some characteristics of 3D Lidar points are:
 
 Edge points along their vertical direction can be used for point-line ICP; planar points can be used for point-plaine ICP. 
 
-![Image](https://github.com/user-attachments/assets/daafcfa5-7ad2-4beb-acdd-f896a48840ac) TODO
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/TwPB8rT3/lo.png" height="200" alt=""/>
+    </figure>
+</p>
+</div>
 
 ### LOAM-Like Feature Extraction
 
