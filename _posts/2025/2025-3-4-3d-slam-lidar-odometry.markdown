@@ -212,11 +212,16 @@ However, the original paper has some drawbacks too:
 
 - Most numbers are “magic constants” set in launch file or hard coded
 
-#### Hands-On Take-Aways
+#### Take-Aways From A Hands-On LOAM-Like Odometer
 
 - Voxel filtering is still essential, but please do that when adding keyframes. Otherwise, there would be fewer edge & planar features.
 - Using `last_pose` and `second_last_pose` is better for motion modelling than `last keyframe pose`, and `second last keyframe poses`.
 - **LOAM， A-LOAM, LeGO-LOAM, LIO-SAM assume the existence of scan line ordering in each point cloud.** If such ordering does not exist, e.g., in Hesai AT-128 / Livox mid-360, one should use voxel-based method like NDT / GICP.
 
-
-**There you have it, NDT odometry. Note that due to the lack of loop detection, it's still susceptible to accumulated error.**
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/W4F3SGKy/loam-sputnik.gif" height="300" alt=""/>
+    </figure>
+</p>
+</div>
