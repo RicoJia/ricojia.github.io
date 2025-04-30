@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Common General Sofware Design Pricinples
 date: '2023-12-15 13:19'
-subtitle: Coupling & Cohesion, Indempotency, Rico's Software Development Philosophy
+subtitle: Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy
 comments: true
 tags:
     - C++
@@ -44,6 +44,7 @@ public:
 ## Misc Concepts
 
 - An "IDEMPOTENT" operation is one that has no additional effect if it's called more than once with the same params
+- Occam’s Razor (also spelled Ockham’s Razor) is a heuristic principle attributed to the 14th-century English logician and friar William of Ockham. In its most familiar form, it states: “Entities should not be multiplied beyond necessity.” Put more plainly: when you have competing explanations that equally account for the facts, the simplest one is preferred.
 
 ## General Philosophy
 

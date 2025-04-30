@@ -94,6 +94,7 @@ python3 gprof2dot.py -s -w analysis.txt | dot -Tpng -o profile.png
 
 - [Reference post](https://www.cnblogs.com/wx170119/p/11459995.html)
 
+1. Compile your binary with `-g` to get debug symbols. Debug symbols could increase the size of your binary, but wouldn't cause slowdowns
 2. Second, run
 
 ```bash
