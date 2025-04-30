@@ -11,7 +11,7 @@ tags:
 
 ## Streams
 
-### `iostream`
+### `fstream`
 
 - Open a file, then start appending to the file:
 
@@ -28,6 +28,8 @@ inline std::ostream &operator<<(std::ostream &os, const Sophus::SE3d &pose) {
     return os;
 }
 ```
+
+- In `<cstdio>`, there is `std::remove(file_path)` to remove a file
 
 ### `std::string` and `std::stringstream`
 
@@ -97,3 +99,21 @@ int main()
 - `<<` is pronounced as the "insertion operator". Once you call that, the internal buffer starts from 0 position
 - **`bool done_line = getline(ss2, num, delim)` is the powerful tool that parses a line by delimeters**
 - **`stoi()` is the powerful tool to convert a string into an integer**
+
+Under the hood, `std::stringstream` maintains a string buffer and a read pointer:
+
+```cpp
+#include <iostream>
+#include <sstream>
+#include <iostream>
+
+int main(){
+    std::stringstream ss("LASER, 5.0 55");
+    std::string str;
+    double t;
+    int n;
+    std::cout<<"Before reading, the pointer position: "<<ss.tellg()<<std::endl; // 0 
+    ss >> str >> t >> n;
+    std::cout<<"After reading, the pointer position: "<<ss.tellg()<<std::endl;  // see -1
+}
+```

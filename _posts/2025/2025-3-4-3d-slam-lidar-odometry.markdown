@@ -199,6 +199,8 @@ In the original paper:
 - For each scan line/beam, divide the point cloud into six sectors (each takes 1/6 of start-end index diff), and extract sharp (corner) and flat (plane/surface) features as follows.
 
     - In each sector, sort cloud index according to curvature. The top 2 largest curvature points (if points are not selected and curvature > 0.1) are marked as **sharp**, the top 20 largest curvature points are marked as **less sharp** (including the top 2 sharp points), the top 4 smallest curvature points (with additional condition curvature < 0.1) are **marked as flat**, and all the rest points plus the **top 4 flat points** will be down sampled and marked as less flat.
+        - In real life, the classification of sharpness could indeed increase robustness in some scenarios
+        - LeGO-LOAM, MULLS LOAM have different extractions, but the scan matching processes are the same (ICP)
     - After each feature extraction, there will be a **non-maximum suppression** step to mark neighbor 10 points (+-5) to be already selected (marking will stop at points that are 0.05 squared distance away from currently picked point), so that they will not be picked in the next iteration for feature extraction.
     - A downsample operation (of leaf size 0.2m) is applied to each scan of less flat points, and then all downsampled scans are combined together (into one point cloud) to be published to odometry.
 
@@ -214,6 +216,7 @@ However, the original paper has some drawbacks too:
 
 - Voxel filtering is still essential, but please do that when adding keyframes. Otherwise, there would be fewer edge & planar features.
 - Using `last_pose` and `second_last_pose` is better for motion modelling than `last keyframe pose`, and `second last keyframe poses`.
+- **LOAM， A-LOAM, LeGO-LOAM, LIO-SAM assume the existence of scan line ordering in each point cloud.** If such ordering does not exist, e.g., in Hesai AT-128 / Livox mid-360, one should use voxel-based method like NDT / GICP.
 
 
 **There you have it, NDT odometry. Note that due to the lack of loop detection, it's still susceptible to accumulated error.**
