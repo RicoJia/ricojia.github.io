@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - A Survey On Oil Pipe Inspection Robotics (Revising)
-date: '2024-12-1 13:19'
+date: '2024-12-20 13:19'
 subtitle: 
 header-img: "img/post-bg-os-metro.jpg"
 tags:

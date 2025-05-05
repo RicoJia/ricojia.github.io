@@ -261,6 +261,30 @@ target_link_libraries(my_static_lib PRIVATE PCL g2o)
 
 - **PRIVATE ensures that PCL and g2o are only needed while compiling my_static_lib.a, but the user doesn't need to manually link them.** Now, when the user links my_static_lib.a, it should contain everything needed.
 
+### Binary Bloat
+
+In a ROS2 c++ project, if we use `add_node` on all executables, would that cause binary bloat?
+```c
+function(add_node name)
+  add_executable(${name} src/${name}.cpp)
+  target_link_libraries(${name} card_deck_core::card_deck_core
+                        ${rclcpp_LIBRARIES})
+  ament_target_dependencies(${name} rclcpp card_deck_interface card_deck_core   std_msgs)
+  install(TARGETS ${name} DESTINATION lib/${PROJECT_NAME})
+endfunction()
+
+add_node(demo_dealer)
+add_node(demo_player)
+add_node(num_requester)
+add_node(num_provider)
+```
+
+The answer here is no, because ROS libraries, including `card_deck_core::card_deck_core` are `.so`. So each executable has a small stub to them with small ELF headers + symbol tables.
+
+A static library (.a) is just a collection of compiled object files. 
+
+On the other hand, if these libraries are static libraries, when you link an executable against them, the linker only pulls in the specific `.o` files that satisfy unresolved symbols. Say `demo_dealer` never calls anything in `card_deck_core`, none of its object files are needed—and so none get linked in.
+
 ## Weird Issues
 
 - When `/usr/include/opencv4/opencv2/core/eigen.hpp:259:29: error: expected ‘,’ or ‘...’ before ‘<’ token 259 |Eigen::Matrix<_Tp, 1, Eigen::Dynamic>& dst )`. Solution:

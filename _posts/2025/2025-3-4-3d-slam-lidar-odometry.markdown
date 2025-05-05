@@ -40,7 +40,7 @@ Here, you can [check out my implementation](https://github.com/RicoJia/Mumble-Ro
 <p align="center">
     <figure>
         <img src="https://i.postimg.cc/8cT7R7LN/ndt-sputnik.gif" height="300" alt=""/>
-        <figcaption><a href=""> My NDT LO Result on ULHK Dataset </a></figcaption>
+        <figcaption>NDT LiDAR Odometry Visualization Without Skipping Frames</figcaption>
     </figure>
 </p>
 </div>
@@ -63,6 +63,15 @@ The high level workflow of Incremental NDT is the same as the non-incremental on
 ```
 scan -> NDT ---pose_estimate---> Is_Keyframe? ---yes---> Add_Frame
 ```
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/mgPFccGL/ndt-sputnik-top.gif" height="300" alt=""/>
+        <figcaption>Incremental NDT Visualization Without Skipping Frames</figcaption>
+    </figure>
+</p>
+</div>
 
 The main difference, however, is in `add_frame`:
 1. Given two point clouds: source and target, we can voxelize them. 
