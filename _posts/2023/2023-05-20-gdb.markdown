@@ -7,6 +7,7 @@ comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
     - ROS
+    - ROS2
 ---
 
 ## Introduction
@@ -71,6 +72,21 @@ Some cautions:
     - double (`CV_64F`), do `(gdb) x/4g var`. 4 means the first 4 values, `g` means double precision. 
     - float (`CV_32F`): `(gdb) x/4f var`
     - int: `(gdb) x/4d var`
+
+## With ROS2
+
+```
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug
+gdb --args ./test_direct_3d_ndt_lo --gtest_catch_exceptions=0
+
+# 5 In gdb:
+(gdb) catch throw   # break on any C++ throw
+(gdb) run
+# gdb will now break inside std::_Deque_base<...>::_M_range_check
+# you can then:
+(gdb) bt           # to see the backtrace
+(gdb) info locals  # to inspect variables
+```
 
 
 ## Core Dump

@@ -147,6 +147,15 @@ Trouble shooting
 
 - `sudo tcpdump -ni any tcp port 22` run a packet capture on the server itself.
 
+### Accessing Remote App
+
+- If a flask server runs remotely via SSH, you can access it using port forwarding
+```
+ssh -L 8888:localhost:5000 user@ip
+```
+- so now, `http://localhost:8888` maps to the remote's `localhost:5000`
+
+
 ### Change Port To A Non-Default One
 The default port on Linux is 22. Changing port number to another number will make it slightly more difficult for malicious bots. When changing default port, please go to `NAT/GAMING`, specify `port` in both base port range (port of the server) and the global port range
 

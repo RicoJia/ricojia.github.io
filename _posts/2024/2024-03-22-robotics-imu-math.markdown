@@ -257,9 +257,9 @@ For $a$, we do:
 $$
 \begin{gather*}
 \begin{aligned}
-& g = mean(\tilde{a}) / |mean(\tilde{a})| * 9.8
+& g = -mean(\tilde{a}) / |mean(\tilde{a})| * 9.8
 \\ & 
-b_a = mean(\tilde{a}) - g
+b_a = mean(\tilde{a}) + g
 \end{aligned}
 \end{gather*}
 $$
