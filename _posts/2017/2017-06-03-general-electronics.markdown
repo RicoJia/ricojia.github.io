@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Electronics - General Electronics Notes
-subtitle: Encoders, Motors, Capacitors, Testing
+subtitle: Encoders, Motors, Capacitors, IMU, Testing
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -126,3 +126,79 @@ So it's quick, good test coverage, automated. but it can't test the high level f
 ### Functional Testing
 
 Test the system's overall performance, such as communication, user interfaces, power distribution.
+
+## MEMS IMU
+
+### Accelerometer
+
+When linear acceleration occurs, an inertial mass suspended inside the MEMS structure displaces relative to fixed electrodes. This displacement changes the capacitance between the mass and surrounding plates. By measuring these changes, we can infer the applied linear acceleration.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/MHjLBdQt/q5-9il.gif" height="300" alt=""/>
+        <figcaption><a href="https://makeagif.com/gif/how-mems-accelerometer-gyroscope-magnetometer-work-arduino-tutorial-q5-9il">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+### Gyro
+
+Gyroscopes use the Coriolis effect. The Coriolis force arises in a rotating reference frame and causes moving objects to appear to deviate from a straight-line path. For example, a ball rolling straight in an inertial frame appears to curve when observed from a rotating disk.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/Gh4PFtRp/Coriolis.gif" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
+
+With stationary frame travelling direction of the object `v` and angular velocity `w`, the perceived Coriolis Force is 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& F = 2m \vec{v} \times \vec{w}
+\end{aligned}
+\end{gather*}
+$$
+
+And the Coriolis force is perpendicular to both `v` and `w`
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/YvWy662K/2025-05-09-12-45-47.png" height="200" alt=""/>
+        <figcaption><a href="https://www.youtube.com/watch?v=PK05u9c3yWI">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+
+A MEMS gyroscope often uses a 'tuning fork' design with two proof masses vibrating in opposite directions. Each mass is suspended by springs and forms capacitors with fixed side plates. When the device rotates, Coriolis forces cause the masses to deflect perpendicular to both their vibration and the rotation axis. This results in a measurable change in capacitance, with a net difference:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/GHN5T7Cx/2025-05-09-12-46-04.png" height="200" alt=""/>
+        <figcaption><a href="https://www.youtube.com/watch?v=PK05u9c3yWI">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+which is proportional to angular velocity.
+
+If linear acceleration occurs along the sensing axis, both masses are displaced in the same direction, resulting in opposing changes in capacitance. The net differential change is:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/R0J0SWjj/2025-05-09-12-56-01.png" height="300" alt=""/>
+        <figcaption><a href="https://www.youtube.com/watch?v=PK05u9c3yWI">Source</a></figcaption>
+    </figure>
+</p>
+</div>
+
+allowing the system to distinguish linear acceleration from angular rotation.
