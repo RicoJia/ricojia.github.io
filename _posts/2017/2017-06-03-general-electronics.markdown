@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Electronics - General Electronics Notes
-subtitle: Encoders, Motors, Testing
+subtitle: Encoders, Motors, Capacitors, Testing
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -85,6 +85,27 @@ An absolute encoder has a coded encoder disk. It comprises of a few concentric t
     </figure>
 </p>
 </div>
+
+### Capacitors
+
+- In betwen plates of a capacitor, we need dielectric. It's an insulating material that increases the capacitor's ability to store charge. Dielectrics include: air, vacuum, ceramic, electrolytic, etc. 
+    - In an ideal dielectric there is no current flow. 
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/G3JHT1V5/capacitordiagram.png" height="300" alt=""/>
+        <figcaption><a href="https://www.physics-and-radio-electronics.com/electronic-devices-and-circuits/passive-components/capacitors/capacitorconsutructionandworking.html">Source: physics-and-radio-electronics.com </a></figcaption>
+    </figure>
+</p>
+</div>
+
+- A capacitor gathers charge via displacement current, not conduction current across the plates:
+    1. You connect a voltage source (like a battery) across the plates.
+    2. Electrons accumulate on one plate (negative terminal of the source).
+    3. This creates an electric field through the dielectric.
+    4. That electric field repels electrons from the opposite plate (pulling positive charge toward it).
+    5. No electrons physically cross the dielectric — they just pile up on each side.
 
 
 ### EC (Electrically Commuted Motors) vs DC Motors
