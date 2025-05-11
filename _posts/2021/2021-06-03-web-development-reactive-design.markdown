@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Web Development - Reactive Design
-date: '2021-06-01 13:19'
+date: '2021-06-03 13:19'
 subtitle: React, Flask
 comments: true
 tags:
