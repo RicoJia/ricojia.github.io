@@ -1,15 +1,16 @@
 ---
 layout: post
-title: Robotics - [ROS2 Foundation] Ros2 Executor Callback Model
+title: Robotics - [ROS2 Foundation] Ros2 Rclcpp Executor Callback Model
 date: '2024-11-25 13:19'
-subtitle: Executor, Callbacks, Threading Model, Rate Object
+subtitle: Executor, Callbacks, Threading Model
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
     - ROS2
 comments: true
 ---
-## [Executors](https://docs.ros.org/en/humble/Concepts/Intermediate/About-Executors.html)
+
+## [C++ Executors](https://docs.ros.org/en/humble/Concepts/Intermediate/About-Executors.html)
 
 In ROS2, we can have multiple logical nodes executing their callbacks of timer, subscription, etc. in executors. There are three types of executors: `SingleThreadedExecutor`, `StaticSingleThreadedExecutor` and `MultiThreadedExecutor`
 
