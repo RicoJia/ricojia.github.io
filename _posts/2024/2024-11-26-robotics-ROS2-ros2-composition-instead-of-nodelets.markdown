@@ -155,21 +155,139 @@ install(
 )
 ```
 
-## Intra Process Comm (IPC) Woes
+### Loading & Unloading
 
-**General Rule of thumb: disable IPC on topic publishing / subscribing if they are actually involve inter_process_comm**
+- [Node Composition is only available in C++](https://docs.ros.org/en/humble/The-ROS2-Project/Features.html)
+- To load / unload, there are two ways
+    - Do it on the CLI [(reference)](https://www.youtube.com/watch?v=PD0VJYBkkfQ):
+    ```
+    ros2 run rclcpp_components component_container_mt 
+    ros2 component load /ComponentManager card_deck_game card_deck_game::ComposableFiveCardStudDealer
+    ricojia@system76-pc:~/file_exchange_port$ ros2 component list 
+    /ComponentManager
+        1  /composable_five_card_stud_dealer
 
-### 1. Zero Copy IPC
-In ROS2, there are two flavors of zero-copy: message loaning and intra-process unique-ptr handoff.
+    # Then
+    ros2 component unload /ComponentManager 1
+    ```
+    - Use hidden services: [(reference)](https://design.ros2.org/articles/roslaunch.html)
+        - `~/_container/load_node`
+        - `~/_container/unload_node`
+        - `~/_container/list_nodes`
+
+
+
+### Component Containers are Executors
+
+- component_container runs a `SingleThreadedExecutor`	
+- component_container_mt runs a `MultiThreadedExecutor`	
+- component_container_isolated runs an executor per component (CLI flag chooses single- vs multi-thread)
+
+
+## Intra Process Comm (IPC) And Woes
+
+
+ROS 2’s intra-process transport lets us avoid one copy by handing a `unique_ptr` (or `shared_ptr`) directly from publisher to subscriber—but it still allocates each message once. This is called "zero-copy IPC". In ROS2, there are two flavors of zero-copy: message loaning and intra-process unique-ptr handoff.
 
 - Intra-process unique_ptr hand-off skips DDS serialization and the extra copy `from publisher buffer → RMW buffer → subscriber buffer`, **but it still requires memory allocation for messages**
 - Message loaning on the other hand, uses a pre-allocated buffer that belongs to the middleware's shared memory pool. So no memory allocation for messages.
 
 Currently (Nov 2024), ROS2 Humble middleware, `FastDDS` does not support message loaning. Consider switching to `CycloneDDS` which does support it.
 
+Below, we demonstrate a card-game example where there are a dealer and multiple players. The dealer listens to `/show_hand` and publishes `/winner` as inter-process topics, and publishes onto `/hand` as an intra-process topic.
+
+```cpp
+class ComposableFiveCardStudDealer : public rclcpp::Node {
+  public:
+    ComposableFiveCardStudDealer(rclcpp::NodeOptions options) : Node("composable_five_card_stud_dealer", options.use_intra_process_comms(true))
+    
+
+        // disable intra-process-comm because this is inter-process-comm
+        rclcpp::SubscriptionOptions no_intra_process_sub_opts;
+        no_intra_process_sub_opts.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+        // Subscriber for players showing their hands:
+        show_sub_ = create_subscription<ShowHand>(
+            "show_hand", 10,
+            std::bind(&ComposableFiveCardStudDealer::on_show_hand, this, std::placeholders::_1),
+            no_intra_process_sub_opts);
+        
+        // disable intra-process-comm because this is inter-process-comm
+        rclcpp::PublisherOptionsWithAllocator<std::allocator<void>> no_intra_process_pub_opts;
+        no_intra_process_pub_opts.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+        // Now create the “winner” publisher with transient_local durability:
+        winner_pub_ = this->create_publisher<std_msgs::msg::String>(
+            "winner",
+            rclcpp::QoS(1).reliable().transient_local(),
+            no_intra_process_pub_opts);
+    
+        // TODO: Is this the set up for zero-copy?
+        auto publisher = create_publisher<CardMsg>("/hand", 10);
+        if (publisher.can_loan_messages()) {
+            auto loaned = publisher.borrow_loaned_message();
+            // fill in‐place
+            loaned.get() = to_msg(card);
+            // zero‐copy handoff
+            publisher.publish(std::move(loaned));
+        } else {
+            publisher.publish(to_msg(card));
+        }
+    }
+
+    void ComposableFiveCardStudDealer::on_show_hand(const ShowHand::SharedPtr msg) {
+        // Business Logic Here
+    }
+```
+
+And in player:
+
+```cpp
+class ComposableFiveCardStudPlayer : public rclcpp::Node {
+  public:
+    ComposableFiveCardStudPlayer(
+        rclcpp::NodeOptions options) : Node("composable_five_card_stud_player", options.use_intra_process_comms(true)) {
+        rclcpp::SubscriptionOptions sub_opts;
+        sub_opts.use_intra_process_comm = rclcpp::IntraProcessSetting::Enable;
+
+        // Zero copy messaging with unique ptr to a CardMsg
+        card_sub_ = this->create_subscription<CardMsg>(
+            "/hand",
+            rclcpp::QoS{10},
+            [this](CardMsg::UniquePtr msg)   // <- unique_ptr, no extra copy
+            {
+                std::lock_guard lk(mutex_);
+                card_buffer_.push_back(five_card_stud::from_msg(*msg));
+                if (card_buffer_.size() >= CARD_NUM) {
+                    cv_.notify_one();
+                }
+                RCLCPP_INFO(
+                    this->get_logger(),
+                    "Received card: %s", card_buffer_.back().str().c_str());
+            },
+            sub_opts);
+    }
+};
+```
+
+On an intra-process topic, the publisher holds onto a single shared pointer until all intra-process subscribers consume it. Now the dealer and all three players live in the same component container and you turned on use_intra_process_comms(true) for every node. That replaces normal DDS delivery with the zero-copy “in-process” path.
+
+### 1. Missing Messages
+
+Now, why do we want a mix of inter/intra-process-comm topics? This is because:
+
+- Intra-process transport hands you a single shared pointer and skips serialization, but it never puts the message into the DDS queues. The messages are stored in publisher. If the publisher (or subscriber) is torn down before your callback runs, that lone shared pointer gets destroyed—and your message vanishes. Turning IPC off forces every message through DDS, where your reliability, history, and durability QoS actually buffer and replay data across process boundaries.
+
+- Many QoS features (e.g. transient_local durability, automatic retransmits on reliable) only live in the DDS layer. If you leave IPC enabled, you’ll silently lose those guarantees—even though you thought you’d set your publisher to be transient_local or “reliable.”
+
+Generally, `MultiThreadedExecutor` plays well with intra-process transport:
+    - Zero-copy messaging happens before the `MultiThreadedExecutor` executor touches message
+    - `MultiThreadedExecutor` uses the same `rcl_wait_set_t` as the single-thread flavour, it just unblocks several worker threads to service ready entities concurrently. The intra-process manager still wakes the wait-set via a guard-condition exactly as in the single-thread case, so the transport layer is agnostic to the executor type. [See section "Receiving intra-process messages" in ROS2 intra process communication design doc](https://design.ros2.org/articles/intraprocess_communications.html?utm_source=chatgpt.com)
+
+**So a rule of thumb is: disable IPC on topic publishing / subscribing if they actually involve inter_process_comm, or need to be delivered at destruction**.
+
+
 ### 2. No inter-topic ordering guarantee
 
-Each topic has its own queue; DDS may deliver a later message on Topic B before an earlier message on Topic A. You cannot assume cross-topic arrival order:
+This is a generic topic ordering issue that also applies to DDS. Each topic has its own queue; a later message on Topic B may arrive before an earlier message on Topic A. You cannot assume cross-topic arrival order:
 
 ```
 _on_show_hand()  → stores cards  
@@ -177,9 +295,11 @@ _on_winner()     → _clear_game_state()  ← removes
 ```
 
 - If callbacks run on different threads, you also lose control over which fires first.
-- **DDS discovery can take up to 30 ms**—any messages published before discovery completes will be dropped.
+- In DDS, **discovery can take up to 30 ms**—any messages published before discovery completes will be dropped.
 
-### 3. “Latched” (transient-local) topics
+### 3. “Latched” (transient-local) Topics Does Not Play Well With IPC
+
+[See section "Incomplete Quality of Service support" in ROS2 intra process communication design doc](https://design.ros2.org/articles/intraprocess_communications.html?utm_source=chatgpt.com)
 
 ```cpp
 winner_pub_ = this->create_publisher<std_msgs::msg::String>(

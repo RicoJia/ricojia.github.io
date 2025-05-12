@@ -29,3 +29,8 @@ Gitalk is a free, open-source commenting system that uses GitHub issues for comm
     - `pre-commit run --all-files`
 - Copyright test.
     - Use `ament_copyright --add-missing "Rico Jia" bsd_3clause <DIR_NAME>` to automatically insert a license 
+
+### To Pull From Gitlab Container Registry
+
+- `echo <PERSONAL_TOKEN> | docker login registry.gitlab.com -u "<YOUR_GITLAB_USERNAME>"  --password-stdin`
+- `docker pull registry.gitlab.com/<REPO>/<IMAGE>:<TAG>`

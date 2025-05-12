@@ -8,6 +8,11 @@ tags:
     - Computer Vision
 ---
 
+## Launch an App
+
+- Since Flask 2.2, threading is by default: `app.run(threaded=True)   # default since Flask 2.2`
+    - the `Werkzeug dev server` starts one OS‑level process and spawns a new thread for every concurrent request.
+
 ## Jinja
 
 Jinja is a templating language, not a general-purpose programming language. It lives on the **server inside** Flask (or other Python frameworks) and provides you with:
