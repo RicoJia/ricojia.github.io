@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [ROS2 Foundation] Ros2 Composition Instead Of Nodelets
 date: '2024-11-26 13:19'
-subtitle: Components
+subtitle: Components, Zero-Copy Intra-Processing-Communication (IPC)
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -154,3 +154,48 @@ install(
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 ```
+
+## Intra Process Comm (IPC) Woes
+
+**General Rule of thumb: disable IPC on topic publishing / subscribing if they are actually involve inter_process_comm**
+
+### 1. Zero Copy IPC
+In ROS2, there are two flavors of zero-copy: message loaning and intra-process unique-ptr handoff.
+
+- Intra-process unique_ptr hand-off skips DDS serialization and the extra copy `from publisher buffer → RMW buffer → subscriber buffer`, **but it still requires memory allocation for messages**
+- Message loaning on the other hand, uses a pre-allocated buffer that belongs to the middleware's shared memory pool. So no memory allocation for messages.
+
+Currently (Nov 2024), ROS2 Humble middleware, `FastDDS` does not support message loaning. Consider switching to `CycloneDDS` which does support it.
+
+### 2. No inter-topic ordering guarantee
+
+Each topic has its own queue; DDS may deliver a later message on Topic B before an earlier message on Topic A. You cannot assume cross-topic arrival order:
+
+```
+_on_show_hand()  → stores cards  
+_on_winner()     → _clear_game_state()  ← removes
+```
+
+- If callbacks run on different threads, you also lose control over which fires first.
+- **DDS discovery can take up to 30 ms**—any messages published before discovery completes will be dropped.
+
+### 3. “Latched” (transient-local) topics
+
+```cpp
+winner_pub_ = this->create_publisher<std_msgs::msg::String>(
+    "winner",
+    rclcpp::QoS(1).reliable().transient_local());   //  ⟵ latch + reliable
+```
+
+- `transient_local()`: keeps the last sample alive for late-joining subscribers (“latched” behavior).
+- `reliable()`: adds retransmits on loss (minimal overhead for small messages).
+- Why disable IPC? The intra-process path only supports volatile durability. To combine `transient_local()` with zero-copy, you must turn off intra-process comms on that publisher.
+    ```cpp
+    rclcpp::SubscriptionOptions opts;
+    sub_opts.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+    winner_pub_ = this->create_publisher<std_msgs::msg::String>(
+        "winner",
+        rclcpp::QoS(1).reliable().transient_local(),
+        opts
+    );
+    ```
