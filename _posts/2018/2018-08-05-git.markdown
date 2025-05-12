@@ -2,7 +2,7 @@
 layout: post
 title: Git
 date: '2018-08-01 13:19'
-subtitle: Gitalk
+subtitle: Gitalk, CI/CD
 comments: true
 tags:
     - Linux
@@ -20,3 +20,12 @@ Gitalk is a free, open-source commenting system that uses GitHub issues for comm
         - Authorization Callback URL: Same as your homepage URL (e.g., https://your-website-url.com).
 
 
+## CI/CD Tools
+
+### pre-commit tools
+- A pre-commit hook is simply a Git hook that’s run automatically every time you make a commit
+    - On each git commit it runs this sequence of checks, the “hooks” defined in your `.pre-commit-config.yaml`
+    - `pre-commit install: pre-commit installed at .git/hooks/pre-commit`
+    - `pre-commit run --all-files`
+- Copyright test.
+    - Use `ament_copyright --add-missing "Rico Jia" bsd_3clause <DIR_NAME>` to automatically insert a license 

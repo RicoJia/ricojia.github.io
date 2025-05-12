@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - IMU Pre-integration Optimization Implementation
-date: '2024-03-24 13:19'
+date: '2024-04-01 13:19'
 subtitle: How To Integrate IMU Pre-Integration into G2O with Odometry and GNSS
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
