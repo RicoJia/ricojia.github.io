@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Compilation 4] Name Mangling
 date: '2023-05-07 13:19'
-subtitle: `nm`
+subtitle: nm
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
