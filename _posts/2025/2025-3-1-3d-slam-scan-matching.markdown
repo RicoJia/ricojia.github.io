@@ -213,7 +213,9 @@ We have points in the target cloud `x1, x2...xi` and source cloud `x1', x2' ... 
 
 The mean and covarance matrix of the target cloud are $\mu_t$, $\Sigma_t$
 
-If this assertion can be proven, then NDT optimization would work:
+The main idea of NDT is **"if the true transform `T*` is found, the point distrbution of the source and the target clouds should match at each voxel."**
+
+One necessary condition of the aforementioned optimization procedure to implement the main idea is:
 
 "**Probability Density Function value (PDF) of the source cloud w.r.t the target cloud is maximized when the 'true transform' `T*` is applied**:"
 
@@ -241,7 +243,7 @@ $$
 \end{gather*}
 $$
 
-- So given a candidate pose T, the expected log-likelihood of all the source cloud points are
+- Given a candidate pose T, the expected log-likelihood of all the source cloud points are
 
 $$
 \begin{gather*}
