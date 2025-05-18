@@ -16,7 +16,7 @@ Given two distributions, $p(x)$, and $q(x)$, denotes **how different $p(x)$ is f
 
 $$
 \begin{gather*}
-D_{KL}(p(x) || q(x)) = \sum_X p(x) \frac{p(x)}{q(x)}
+D_{KL}(p(x) || q(x)) = \sum_X p(x) ln(\frac{p(x)}{q(x)})
 \end{gather*}
 $$
 
@@ -26,10 +26,25 @@ $$
 From counting, we find that $q(x_i)=0$ for a certain value $x_i$, technically,
 
 $$
-D_{KL}(p(x) | q(x)) = \sum_X p(x) \frac{p(x)}{0} = \inf
+D_{KL}(p(x) | q(x)) = \sum_X p(x) ln(\frac{p(x)}{0}) = \inf
 $$.
 
 However, this could cause a lot of issues. instead, we can assume $q(x) = \epsilon = 10^{-3}$ in this case to avoid numerical errors
+
+#### KL Divergence Can Never Be Negative
+
+$$
+\begin{aligned}
+D_{\mathrm{KL}}(p(x) \,\|\, q(x)) 
+&= \int p(x) \ln\left( \frac{p(x)}{q(x)} \right) \, dx \\
+&= \int -p(x) \ln\left( \frac{q(x)}{p(x)} \right) \, dx \\
+&\ge -\ln\left( \int p(x) \frac{q(x)}{p(x)} \, dx \right) \quad \text{(Jensen's inequality)} \\
+&= -\ln\left( \int q(x) \, dx \right) \\
+&= -\ln(1) = 0
+\end{aligned}
+$$
+
+- Note: a pdf value at a point is **NOT** a probability. The probability here is 0. The PDF value could be larger or smaller than 1.
 
 #### Special Case: `nn.CrossEntropy()`
 

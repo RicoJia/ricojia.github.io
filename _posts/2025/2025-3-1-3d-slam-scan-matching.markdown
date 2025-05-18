@@ -207,10 +207,111 @@ This is more similar to the 2D version of NDT [2], and it different from the ori
 **Another consideration is that we add a small positive value to the covariance matrix**, because we need to get its inverse. When points happen to be on a line or a plane, elements [on its least principal vectors will become zero.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
 
 
+### Why NDT Works
 
-## Comparison TODO
+We have points in the target cloud `x1, x2...xi` and source cloud `x1', x2' ... xi'`. The goal is to find the transform `T` such that $x1 \approx T x1'$ ...
 
-- PCL is slower, why? We are using spatial hashing to find neighboring cells. PCL NDT uses a KD tree for that. A Kd-tree is built over the centroids of those cells
+The mean and covarance matrix of the target cloud are $\mu_t$, $\Sigma_t$
+
+If this assertion can be proven, then NDT optimization would work:
+
+"**Probability Density Function value (PDF) of the source cloud w.r.t the target cloud is maximized when the 'true transform' `T*` is applied**:"
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \prod_I f((T^{*})^{-1} x_i') 
+\\ & \text{where f(x) is the pdf of the target cloud points} 
+
+\\ & f(x) = \frac{1}{(2\pi)^{d/2} |\Sigma_t|^{1/2}} \exp\left( -\frac{1}{2} (\mathbf{x} - \boldsymbol{\mu}_t)^\top \Sigma_t^{-1} (\mathbf{x} - \boldsymbol{\mu}_t) \right)
+\end{aligned}
+\end{gather*}
+$$
+
+
+Here is the proof:
+
+- The product form above really is the joint PDF of all source cloud points w.r.t the target cloud. It's equivalent to summing the log of it:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu}_t)^\top \Sigma_t^{-1} (\mathbf{x}_i - \boldsymbol{\mu}_t) := ln(f(X))
+\end{aligned}
+\end{gather*}
+$$
+
+- So given a candidate pose T, the expected log-likelihood of all the source cloud points are
+
+$$
+\begin{gather*}
+\begin{aligned}
+& E_T[ln(f(T^{-1}X'))] = \sum_N E_T[ln(f((T^{*})^{-1} x_1'))] + E_T[(T^{*})^{-1} ln(f(x_2'))] + ...
+\end{aligned}
+\end{gather*}
+$$
+
+- **$x_1'$, $x_2'$ are samples from the source cloud, and they are independent from each other.** So they can be thought of as samples drawn from the source cloud distribution $X'$
+
+$$
+\begin{gather*}
+\begin{aligned}
+& E_T[ln(f(T^{-1} x_1'))] = E_T[ln(f(T^{-1} X'))]
+\end{aligned}
+\end{gather*}
+$$
+
+- To calculate the expected log-likelihood, we have a refresher: the expectation of a function $g(X)$ is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& E[g(x)] = \int g(x) p_X(x) dx
+\end{aligned}
+\end{gather*}
+$$
+
+- **So for a point in source cloud $X'$, we need to find the true corresponding pdf value of $ln(f(x_i'))$.** Following the true transform, each point $x_i'$ is mapped to target point $x_{i} = (T^*)^{-1} x_{i}'$. But under the candidate pose T, they are mapoped to $x_{iT} = T^{-1} x_{i}'$. So the true corresponding pdf value of $ln(f(T^{-1}f(\mathbf{x}_i')))$ should be:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& p_X(x) = f\left((T^*)^{-1} \mathbf{x}_i'\right)
+\\ &
+\Rightarrow \mathbb{E}_T\left[\ln(f(\mathbf{X}'))\right] 
+= \mathbb{E}_T\left[\ln\left(f(T^{-1} \mathbf{x}_i')\right)\right] 
+= \int f\left((T^*)^{-1} \mathbf{x}_i'\right) \ln\left(T^{-1}f(\mathbf{x}_i')\right) \, d\mathbf{x}
+
+\\ &
+= f_{T^*}(\mathbf{x}_i) \ln\left( f_T(\mathbf{x}_i) \right) 
+\end{aligned}
+\end{gather*}
+$$
+
+- This form happens to be conveniently represented as
+
+$$
+\begin{gather*}
+\begin{aligned}
+\int f((T^*)^{-1} \mathbf{x}_i') \ln(f(\mathbf{x}_i')) \, d\mathbf{x} 
+&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))] 
+- \int f_{T^*}(\mathbf{x}_i) \ln\left( \frac{f_{T^*}(\mathbf{x}_i)}{f_T(\mathbf{x}_i)} \right) \, d\mathbf{x}_i \\
+&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))] 
+- D_{\mathrm{KL}}(f_{T^*} \,\|\, f_T) \\
+&\text{(This is the KL divergence)}
+\end{aligned}
+\end{gather*}
+$$
+
+- And KL Divergence cannot be negative. [See here for proof](https://ricojia.github.io/2017/01/23/math-distance-metrics/). So, **now we have completed the proof**
+
+Then, the scan matching problem becomes finding the T such that the total Mahalanobis distance of source points w.r.t the target cloud is minimized.
+
+
+
+## Comparison T
+
+- PCL is slower because we are using spatial hashing to find neighboring cells. PCL NDT uses a KD tree for that. A Kd-tree is built over the centroids of those cells
 
     <div style="text-align: center;">
         <p align="center">

@@ -265,6 +265,16 @@ Altogether with translation:
 ground_truth_pose = halo::SE3(Eigen::Quaterniond(qw, qx, qy, qz), halo::Vec3d(x, y, z));
 ```
 
+- Sophus SE3 stores an Eigen Quaternion (4 scalars, 32B) and a vector3d (3 scalars, 24B). Because they are fixed-size obj, they are packed into 16 byte boundaries. So in total, an `sophus::SE3` is 64B. 
+
+```cpp
+class SE3{
+
+    SO3Member so3_; // has QuaternionMember unit_quaternion_; where QuaternionMember is Eigen::Quaternion<Scalar, Options>
+    TranslationMember translation_; // Vector3<Scalar, Options>
+};
+```
+
 ## PCD
 
 `pcd` stands for Point Cloud Data, and it’s the standard file format used by the `Point Cloud Library (PCL)`. It stores 3D points (and `optionally color`, `normals`, `intensity`, etc.).
