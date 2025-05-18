@@ -17,6 +17,8 @@ tags:
 
 Jinja is a templating language, not a general-purpose programming language. It lives on the **server inside** Flask (or other Python frameworks) and provides you with:
 
+{% raw %}
+
 - Template syntax `({{ … }}` for expressions, `{% … %}` for control structures like loops/ifs.
 - Filters and tests to transform or inspect data (e.g. {{ user.name|upper }}, {% if items|length > 0 %}).
 
@@ -30,7 +32,11 @@ Where does JavaScript come in?
 - Client-side dynamics (JavaScript)
     - If you want interactive behavior after the page loads—DOM updates on clicks, **real-time data without full reloads, animations, form validation**—you write JavaScript (vanilla JS or a framework like React/Vue). That JS runs in the browser and can fetch new data (via fetch, WebSockets, SSE, etc.) and manipulate the DOM.
 
+{% endraw %}
+
 Quick Example:
+
+{% raw %}
 
 ```
 <!-- templates/hello.html -->
@@ -52,5 +58,11 @@ Quick Example:
 </html>
 ```
 
+{% endraw %}
+
+{% raw %}
+
 - The `{{ user_name }}` bit is Jinja, resolved by Flask before shipping the HTML.
 - The `<script>` block is pure JavaScript, responsible for client-side interactivity after the page loads.
+
+{% endraw %}
