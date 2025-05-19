@@ -90,3 +90,10 @@ echo "Done Downloading"
 Trap an error:
 - `set -e` will exits the parent shell immediately upon an error
 - `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell
+
+## Commands
+
+### Find
+- find regular files and count their numbers: `find . -type f | wc -l`
+    - `find . -type f ` lists all regular files recursively from the current directory (.)
+    - `wc -l` counts the number of lines 

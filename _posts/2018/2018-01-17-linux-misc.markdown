@@ -145,7 +145,9 @@ Most zip tools have checksum check built in, even though checksum is not part of
     ffmpeg -i cut_output2.mp4 -filter:v "setpts=0.33*PTS" -an cut_output2x.mp4    
     ```
 
-## FireFox & Chrome
+## FireFox & Chrome & PDF Ops
 
 - Firefox browser may have trouble actually saving PDFs. I've had cases where hitting the save button there does not actually save.
     - Chrome is safe
+    - qoppa PDF viewer 2024 is actually great! No watermark, full PDF editor with signature, textbox, etc.
+    - For merging pdfs `pdfunite file1.pdf file2.pdf merged.pdf`

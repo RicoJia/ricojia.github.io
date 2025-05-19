@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - IMU Pre-integration Optimization Implementation
 date: '2024-04-01 13:19'
-subtitle: How To Integrate IMU Pre-Integration into G2O with Odometry and GNSS
+subtitle: IMU Pre-Integration, GNSS, UTM
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -138,3 +138,13 @@ Upon receiving a new GNSS or odom update:
         (current_frame_velocity_estimate - v_linear_odom)`
         ```
 4. Update the current frame
+
+## GNSS
+
+### UTM (Universal Transverse Mercator)
+
+The key idea is to place the globe into a slightly smaller cylinder. The center line will later become the "meridian" of a zone. The projection of a small Latitudinal line will have a bit of distortion there. At the two touching points, (the standard lines), the distortion is zero, then it will increase (until the zone boundaries). Then, we rotate the globe, and repeat again . There are in total 60 zones
+
+[See this video for visualization](https://youtu.be/cfrxauufID4)
+
+
