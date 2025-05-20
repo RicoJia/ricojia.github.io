@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [OOP] Members
 date: '2023-03-06 13:19'
-subtitle: Member Attributes and Methods, Copy, Move
+subtitle: Member Attributes and Methods, Copy, Move, Static Members
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -132,3 +132,24 @@ int main() {
 ```
 
 - Note that static members are either defiend outside the class (pre C++17), usually in a `.cpp` file, or defined as an `inline static` member (C++ 17)
+
+### Can a static member function access private members of another instance?
+
+Yes. **A static member function is still part of the class’s scope, so it has full access** to all private and protected members of any instance of that class. **It simply doesn’t have a `this` pointer** – you must take an object or reference as a parameter:
+
+```cpp
+class KeyFrame {
+public:
+  SE3 getPose() const { return lidar_pose_; }
+  static void copyPose(const KeyFrame &src, KeyFrame &dst) {
+    // direct access to private member
+    dst.lidar_pose_ = src.lidar_pose_;
+  }
+
+private:
+  SE3 lidar_pose_;
+};
+
+```
+
+Here, `copyPose` can read and write `lidar_pose_` on both src and dst even though it’s private.
