@@ -214,6 +214,8 @@ We have points in the target cloud `x1, x2...xi` and source cloud `x1', x2' ... 
 The mean and covarance matrix of the target cloud are $\mu_t$, $\Sigma_t$
 
 The main idea of NDT is **"if the true transform `T*` is found, the point distrbution of the source and the target clouds should match at each voxel."**
+    - We are actually turning the target cloud into a statistical field
+    - The main idea can also be phrased as "How probable is my source cloud if I move it by T?"
 
 One necessary condition of the aforementioned optimization procedure to implement the main idea is:
 
@@ -233,7 +235,7 @@ $$
 
 Here is the proof:
 
-- The product form above really is the joint PDF of all source cloud points w.r.t the target cloud. It's equivalent to summing the log of it:
+- The product form above really is the joint PDF of all source cloud points w.r.t the target cloud. It's equivalent to summing the log of it (a.k.a Mahalanobis Distance):
 
 $$
 \begin{gather*}
@@ -311,7 +313,7 @@ Then, the scan matching problem becomes finding the T such that the total Mahala
 
 
 
-## Comparison T
+## Comparison
 
 - PCL is slower because we are using spatial hashing to find neighboring cells. PCL NDT uses a KD tree for that. A Kd-tree is built over the centroids of those cells
 

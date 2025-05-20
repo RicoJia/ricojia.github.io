@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Distance Metrics
-subtitle: KL Divergence , Chi-Squared Similarity
+subtitle: KL Divergence , Chi-Squared Similarity, Mahalanobis Distance
 date: '2017-01-23 13:19'
 header-img: "img/bg-walle.jpg"
 tags:
@@ -67,6 +67,18 @@ $$
 $$
 
 Where $P_i$, $Q_i$ are bins for distributions $P$, $Q$. Denometer $P_i + Q_i$ brings a normalization effect, which considers different scales of the distributions.
+
+## Mahalanobis Distance
+
+The Mahalanobis distance is a measure of “how far” a point $x$ lies from the mean $\mu$ of a multivariate distribution, taking into account the scale (variance) and correlations of the data. 
+
+$$
+\begin{gather*}
+\begin{aligned}
+& D_M(x) = \sqrt{(x - \mu)^\top \Sigma^{-1} (x - \mu)}
+\end{aligned}
+\end{gather*}
+$$
 
 ### Bhattacharyya Distance
 
