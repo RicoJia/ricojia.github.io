@@ -55,6 +55,12 @@ gcc -g -o myprog myprogram.c
 gdb ./devel/lib/<PACKAGE_NAME>/binary
 ```
 
+- If there are args:
+
+```bash
+gdb --args BINARY --arg1 <val1> --arg2 <val2>
+```
+
 ## GDB Usage
 
 Some common usages include:

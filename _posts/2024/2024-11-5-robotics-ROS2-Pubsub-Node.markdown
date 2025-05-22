@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Basic Pub Sub Node
 date: '2024-11-5 13:19'
-subtitle: ROS2 Installation, Packaging & Build System
+subtitle: ROS2 Installation, Packaging & Build System, Messages
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -180,3 +180,44 @@ colcon build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
 - `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`: Tells CMake to generate a compile_commands.json file in your build directory. This JSON file lists all compiler invocations for your project, which is extremely useful for tools like clangd, code analyzers, and IDEs that need to know your include paths and compiler flags.
 - `--cmake-force-configure` This is not a standard CMake flag; it’s a colcon (ROS 2 build tool) argument. It forces CMake to re-run its configuration step for all packages, even if CMake thinks nothing has changed.
+
+## Custom Messages
+
+You can define constants in a `.msg` for its field values
+
+```
+# my_interface/msg/Status.msg
+
+# constant definitions
+uint8 OK=0
+uint8 ERROR=1
+string  LABEL="status"
+
+# fields
+uint8 code
+string message
+```
+
+In cpp, this becomes:
+
+```cpp
+struct Status
+{
+  using _code_type = uint8_t;
+  static constexpr uint8_t OK    = 0;
+  static constexpr uint8_t ERROR = 1;
+  static constexpr char LABEL[]  = "status";
+
+  _code_type code;
+  std::string message;
+};
+```
+
+There’s an open design effort (and PR #685 in rosidl) to add proper enum support to the underlying IDL, but it isn’t released yet. Until then, you must either wrap or validate in C++ if you want real enforcement. You can do msg.code = 42; and nobody stops you. So we need to define a enum class:
+
+```cpp
+enum class StatusCode : uint8_t {
+  OK    = Status::OK,
+  ERROR = Status::ERROR
+};
+```

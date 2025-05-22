@@ -2,7 +2,7 @@
 layout: post
 title: CMake - Concepts and Options
 date: '2023-10-01 13:19'
-subtitle: CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library
+subtitle: CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library, fPIC
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -316,3 +316,9 @@ On the other hand, if these libraries are static libraries, when you link an exe
 - Install `pip install cmake-format`
 - Configure [`~/.cmake-format.py`](https://github.com/RicoJia/dot_files/blob/main/cmake-format.py)
 - Use: `cmake-format -i CMakeLists.txt`
+
+## fPIC
+
+Position-Independent-Code (PIC) is great for making a library able to live anywhere in memory without modification. It's great for: shared_library, dynamic linking (enables multiple programs to share the same memory space)
+
+- To enable: `set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # Enables -fPIC flag for GCC/Clang` or `-fPIC`

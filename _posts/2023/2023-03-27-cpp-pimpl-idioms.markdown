@@ -55,3 +55,13 @@ void Widget::doSomething() {
   pImpl->doSomethingImpl();
 }
 ```
+
+## Is pimpl worth it??
+
+I forgot the return keywrod. Then I was stuck at the assocaited `abort` for 1h+. So please be aware that pimpl boiler plate could be a source of bugs
+
+```cpp
+NavState IEKFLIO::IEKFLIO::get_current_state() const {
+    impl_->get_current_state();
+}
+`

@@ -160,3 +160,18 @@ nanoflann::KDTreeSingleIndexAdaptor<
 ```
 
 - NanoFLANN [tree search is thread safe](https://github.com/jlblancoc/nanoflann/issues/54)
+
+## Epic Bug 3 - Eigen3("data is not aligned")
+
+[Reference](https://github.com/RainerKuemmerle/g2o/issues/250)
+
+[Chinese blog post]( https://blog.csdn.net/weixin_41353960/article/details/94738106) 
+Setting `set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g ${CMAKE_CXX_FLAGS}")` actually wipes out CMake’s built-in “Release” flags (which are roughly -O3 -DNDEBUG) and replace them with exactly -O3 -g plus whatever happens to be in your global CMAKE_CXX_FLAGS
+
+- CMake’s default release flags include -DNDEBUG, which tells both the C library’s assert() and Eigen’s alignment checks (via EIGEN_NO_DEBUG) to compile out all runtime assertions.
+    - By omitting -DNDEBUG, all of Eigen’s mis-alignment asserts stay active → you hit “data is not aligned” at runtime.
+- If your global CMAKE_CXX_FLAGS had -g, -O0, extra warning flags, etc., now they run in release too.
+    - This both slows compile (duplicated flags to parse) and, worse, kills all optimizations if you didn’t explicitly keep -O3.
+
+Fix: `set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -g")`
+

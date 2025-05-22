@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Activation and Loss Functions
 date: '2022-01-08 13:19'
-subtitle: Sigmoid, ReLU, GELU Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss, Focal Loss
+subtitle: Sigmoid, ReLU, GELU Tanh, Mean Squared Error, Mean Absolute Error, Cross Entropy Loss, Hinge Loss, Huber Loss, IoU Loss, Dice Loss, Focal Loss, Cauchy Robust Kernel
 comments: true
 header-img: "img/home-bg-art.jpg"
 tags:
@@ -340,6 +340,59 @@ def focal_binary_cross_entropy(logits, targets, gamma=1):
 
 focal_binary_cross_entropy(logits, targets)
 ```
+
+## Cauchy Robust Kernel
+
+In typical nonlinear optimization (e.g., SLAM), the squared $L_2$ norm of a residual error $e$ is used as the cost:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& s = e^\top \Omega e
+\end{aligned}
+\end{gather*}
+$$
+
+To reduce the influence of outliers, a robust loss function $\rho(s)$ is used in place of the plain quadratic cost. The $\textbf{Cauchy loss}$ is defined as:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \rho(s) = \delta^2 \ln\left(1 + \frac{s}{\delta^2}\right)
+\end{aligned}
+\end{gather*}
+$$
+
+where $\delta$ is a tuning parameter that determines the scale at which residuals begin to be downweighted.
+
+The derivative of the Cauchy loss with respect to $s$ gives the weight applied to the residual during optimization:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \frac{\partial \rho}{\partial s} = \frac{1}{1 + \frac{s}{\delta^2}}
+\end{aligned}
+\end{gather*}
+$$
+
+This expression shows that for large residuals ($s \gg \delta^2$), the weight decreases, thereby reducing their influence in the optimization process.
+
+
+Unlike the squared $L_2$ loss, which grows quadratically with $s$, the Cauchy loss grows **logarithmically**:
+
+- For small $s$, $\rho(s) \approx s$ (i.e., behaves like L2).
+- For large $s$, $\rho(s)$ grows slowly, and the gradient $\frac{\partial \rho}{\partial s}$ asymptotically approaches zero.
+
+This means the cost function becomes less sensitive to large residuals (outliers), improving robustness in noisy or mismatched data.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/QMWBrtfR/MMVB5.png" height="300" alt=""/>
+        <figcaption><a href="https://math.stackexchange.com/questions/2283165/proper-loss-function-for-this-robust-regression-problem">Source </a></figcaption>
+    </figure>
+</p>
+</div>
 
 ## References
 

@@ -29,6 +29,7 @@ tags:
     - Automatically triggered by: 
         - Pushes to main, feature/*, or merge requests.
         - Scheduled nightly CI jobs.
+    - By default, these jobs are run in parallel
 
 3. Image Deployment
     - After downloading:
