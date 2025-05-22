@@ -319,3 +319,26 @@ winner_pub_ = this->create_publisher<std_msgs::msg::String>(
         opts
     );
     ```
+
+
+## Exception Catching
+
+## When an Exception is Thrown in a ROS 2 Node
+
+### During Construction
+
+1. Your node’s constructor throws (e.g., `throw std::runtime_error(...)`).
+2. `pluginlib` catches the low-level `class_loader::CreateClassException` and **re-throws** it as a `pluginlib::CreateClassException`.
+3. `ComponentManager` has a `try…catch` around `createUniqueInstance()` and **catches the first exception**, beginning teardown.
+4. During cleanup, `pluginlib`'s destructors for half-built objects detect the stored `std::exception_ptr` and call `std::rethrow_exception(eptr)`.
+5. No enclosing `catch` in `ComponentManager` handles this second throw → the C++ runtime calls `std::terminate()`.
+6. The process aborts
+
+### During Runtime
+
+1. A callback (e.g., timer, subscription, service handler) throws an exception.
+2. The exception **propagates out of the callback** into the executor’s `spin()` loop.
+3. `rclcpp` does **not catch** the exception by default → it goes unhandled.
+4. The C++ runtime invokes `std::terminate()` on the uncaught throw.
+5. The process aborts (typically printing the exception type, then receiving SIGABRT).
+6. **All nodes in the container die**, just as in the construction failure case.
