@@ -230,6 +230,18 @@ Comparison with Other Optimizers
 - 🔥 Ceres Solver (Google): Uses multi-threading and automatic differentiation.
 - ⚡ GTSAM (Georgia Tech): Supports multi-threading with Intel TBB and factor graph-based optimization.
 
+### G2O Read And Write
+
+- In g2o, every graph-element (vertices and edges) must know how to serialize (write) itself to a stream (e.g. when you save your graph to a “.g2o” file) and how to deserialize (read) itself back in. BaseVertex declares two pure‐virtual methods:
+
+```cpp
+virtual bool read(std::istream& is) = 0;
+virtual bool write(std::ostream& os) const = 0;
+```
+
+By overriding them in your VertexPose class, you tell g2o exactly how to parse and emit your 6-DOF pose (stored as an SE3) in the standard “QUAT” text format.
+
+
 ## Finally...
 
 I have an implementation of [the `cv::SolvePnP` frontend and g2o backend on github](https://github.com/RicoJia/dream_cartographer/tree/main/rgbd_slam_rico)

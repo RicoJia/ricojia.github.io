@@ -30,3 +30,13 @@ The ROS2 driver for Preact-Mojave [can be found here](https://github.com/preact-
     - Leaf size tuning
         - Beware: lowering the leaf size too much can break alignment.
         - add_scan_leaf_size: 0.1 (default)
+
+- How bad are scan distortions? It could definitely create odometry drift. In the below snapshot, a wall is "curved" instead of being straight.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/xd3m5xLr/2025-05-20-15-48-41.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
