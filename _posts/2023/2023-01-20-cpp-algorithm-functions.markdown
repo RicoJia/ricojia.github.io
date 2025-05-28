@@ -171,6 +171,14 @@ std::transform(arr_1, arr_1+4, arr_2, result, [](int i1, i2){return i1 - i2; });
 
 - `std::transform(It1 it1_begin, It1, it1_end, It2 it2_end, It3 out_begin, [](const Type1& a, const Type2&b){return something})`
 
+3. Sort + Binary search: 
+
+```cpp
+std::sort();
+std::binary_search() -> bool
+```
+
+
 ### `std::accumulate(beg, end, begin_val, lambda_retuning_val)`
 
 1. simple summing

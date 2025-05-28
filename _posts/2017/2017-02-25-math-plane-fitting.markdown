@@ -2,7 +2,7 @@
 layout: post
 title: Math - Linear Fitting
 date: '2017-02-25 13:19'
-subtitle: Plane Fitting, Line Fitting, Isotropic Matrix
+subtitle: Plane Fitting, Line Fitting, Isotropic Matrix, Condition Number of Covariance Matrix
 comments: true
 tags:
     - Math
@@ -288,3 +288,31 @@ The eigen values of the cov matrix is $\sigma^2$
 ### Mahalanobis Distance
 
 For an error vector `e∈R3` under covariance Σ, the Mahalanobis distance is $d = \sqrt{e^T \Sigma^{-1} e}$
+
+## Condition Number of A Plane's Covariance Matrix is $\infty$
+
+Every point on a plane satisfies:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \vec{n}^T(x - \mu) = 0
+\end{aligned}
+\end{gather*}
+$$
+
+So for the covariance matrix $\Sigma$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \Sigma \vec{n} = \frac{1}{n-1} \sum (x - \mu) (x - \mu) ^T  \vec{n}
+\\ &
+= \frac{1}{n-1} \sum (x - \mu) (\vec{n}^T(x - \mu))^T  
+\\ &
+= 0
+\end{aligned}
+\end{gather*}
+$$
+
+So, $\vec{n}$ is an eigen vector of the covariance matrix, with 0 being the eigen value. The other 2 eigen vectors span the plane. The condition number therefore is $\infty$

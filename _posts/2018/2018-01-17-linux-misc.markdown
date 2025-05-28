@@ -150,6 +150,6 @@ Most zip tools have checksum check built in, even though checksum is not part of
 - Firefox browser may have trouble actually saving PDFs. I've had cases where hitting the save button there does not actually save.
     - Chrome is safe
     - qoppa PDF viewer 2024 is actually great! No watermark, full PDF editor with signature, textbox, etc.
-    - ~~For merging pdfs `pdfunite file1.pdf file2.pdf merged.pdf`~~ pdfunite omits some javascript fields. Use `pdftk in1.pdf in2.pdf cat output merged.pdf`
+    - For merging pdfs ~~`pdfunite file1.pdf file2.pdf merged.pdf`~~ pdfunite omits some javascript fields. Use `pdftk in1.pdf in2.pdf cat output merged.pdf`
     - If a pdf is encrypted, one can use the "printer" option to create an unencrypted copy
 

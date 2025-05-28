@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [3D SLAM - 2] Scan Matching Hands-On Notes
 date: '2025-3-3 13:19'
-subtitle: Preact-Mojave
+subtitle: Preact-Mojave, Lidar-Only Front-End
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -40,3 +40,39 @@ The ROS2 driver for Preact-Mojave [can be found here](https://github.com/preact-
     </figure>
 </p>
 </div>
+
+## SLAM Pipeline Issues And Improvements
+
+- `.getFitnessScore()` actually returns the **mean squared distance from each point in the source cloud to its closest point** in the target cloud. By itself, this metric can be misleading—two scans that share only **a large, flat plane** may outperform a correct pair that has **lots of small features** 
+
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/Yj92ZtdG/2025-05-24-17-56-53.png" height="200" alt=""/>
+        <img src="https://i.postimg.cc/nzHhBJSM/2025-05-24-15-13-24.png" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+### Front End Improvements
+
+- Switch to PCL’s NDT implementation.
+- Point filtering
+
+
+### Loop Detection Improvements
+
+- Reject single-plane match by hessian conditioning:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& cond = \frac{\lambda_{max}}{\lambda_{min}}
+\end{aligned}
+\end{gather*}
+$$
+
+The ndt hessian
+
+- Symmetric Fitness Check: Run NDT A->B and B->A
