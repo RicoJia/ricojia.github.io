@@ -97,3 +97,42 @@ Trap an error:
 - find regular files and count their numbers: `find . -type f | wc -l`
     - `find . -type f ` lists all regular files recursively from the current directory (.)
     - `wc -l` counts the number of lines 
+
+### Compound Command?
+
+A “compound command” in Bash is any control‐flow construct that groups multiple simple commands into a single logical unit. Examples of compound commands include:
+
+- Loops: `for …; do …; done`
+- Conditionals: `if …; then …; fi`
+- Grouped commands: `{ …; }` or `( … )`
+- Case statements: `case …; esac`
+
+```bash
+LIST="$(mktemp)"
+# Works
+for f in "$DIR"/*.mp4; do
+  echo "Found: $f" >&2
+  [[ -e "$f" ]] || continue
+  printf "file '%s'\n" "$f"
+done > "$LIST"
+
+# DOESN'T WORK
+for f in "$DIR"/*.mp4; do
+  echo $f
+  # Skip if no matches
+  [[ -e "$f" ]] || continue
+  # FFmpeg concat demuxer wants paths in single quotes
+  printf "file '%s'\n" "$f"
+done > "$LIST"
+```
+
+This is because:
+```bash
+for f in "$DIR"/*.mp4; do
+    ... 
+done > "$LIST"
+```
+
+the` > "$LIST"` redirection is attached to the entire `for …; do …; done` block. All standard‐output (stdout) from anything inside that loop — every `echo`, `printf`, or other command that writes to stdout—gets `sent into "$LIST"`
+
+Every write to the stdout will go to file `$LIST`. You can either redirect it to stderr `>&2`, or check out the file: `cat $LIST`
