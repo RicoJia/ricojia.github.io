@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Electronics - Communication Protocols
-subtitle: Encoding / Decoding, Error Checking (CRC)
+subtitle: Encoding / Decoding, Error Checking (CRC), Base64
 date: '2017-06-01 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -126,7 +126,7 @@ In reality, it's common to use CRC-16 or CRC-32.
 Base 64 is to encode binary data into a text-safe format. Email, JSON, HTTP, XML are all designed to work with text. This is great for avoiding issues caused by
 
 - Line breaks such as  `\r`, `\n`. Such delimeters could prematurely terminate transmission, e.g., JSON.
-    - File systems / databases may reserve `/` for directories, NULL. So really we cna run into misinterpretation issues here.
+    - File systems / databases may reserve `/` for directories, NULL. So really we can run into misinterpretation issues here.
 - Special characters `<`, `>`, could be misinterpreted as commands, codes, etc. E.g., in XML, `&`, `<` must be escaped because they interfere with XML tags
 
 Base 64 replaces binary data with with a safe standardized char set: `a-z`, `A-Z`, `0-9`, `+-/`.

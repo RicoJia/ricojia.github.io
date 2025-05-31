@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [Bugs - 1] SLAM Related "Epic Bugs"
 date: '2025-2-1 13:19'
-subtitle: G2O Optimization Vertex Updates, Compiler-Specific Bugs
+subtitle: G2O Optimization Vertex Updates, Compiler-Specific Bugs, Yaml-cpp
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -175,3 +175,60 @@ Setting `set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g ${CMAKE_CXX_FLAGS}")` actually wipe
 
 Fix: `set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -g")`
 
+## Epic Bug 4 - Yaml-cpp Node Assignment Actually Changes Underlying Object
+
+Issue: If you copy-construct `new_node` from `root`, then assign it to another node, you actually change the what root points to:
+
+``` cpp
+[this, name, &slot](const YAML::Node &root) {
+    YAML::Node new_node = root;  // creates a pointer to the underlying tree.
+    new_node = root["seq"][0];   // This is the counter intuitive part - unlike pointer, this call actually changes the object root points to the subsction
+    ...
+};
+```
+
+This is because: 
+
+- In [the copy constructor](https://github.com/jbeder/yaml-cpp/blob/2f86d13775d119edbb69af52e5f566fd65c6953b/include/yaml-cpp/node/impl.h#L45), we copy the pointer to memory, etc. 
+
+```cpp
+inline Node::Node(const Node&) = default;
+
+
+inline Node::Node(const detail::iterator_value& rhs)
+    : m_isValid(rhs.m_isValid),
+      m_invalidKey(rhs.m_invalidKey),
+      m_pMemory(rhs.m_pMemory),
+      m_pNode(rhs.m_pNode) {}
+
+```
+
+- In [the assignment operator](https://github.com/jbeder/yaml-cpp/blob/2f86d13775d119edbb69af52e5f566fd65c6953b/include/yaml-cpp/node/impl.h#L206), we do `AssignNode`
+
+```cpp
+template <typename T>
+inline Node& Node::operator=(const T& rhs) {
+  Assign(rhs);
+  return *this;
+}
+```
+
+- Which, [in `AssignNode`](https://github.com/jbeder/yaml-cpp/blob/2f86d13775d119edbb69af52e5f566fd65c6953b/include/yaml-cpp/node/impl.h#L256), we are actually **UPDATE** the memory:
+
+```cpp
+inline void Node::AssignNode(const Node& rhs) {
+  if (!m_isValid)
+    throw InvalidNode(m_invalidKey);
+  rhs.EnsureNodeExists();
+
+  if (!m_pNode) {
+    m_pNode = rhs.m_pNode;
+    m_pMemory = rhs.m_pMemory;
+    return;
+  }
+
+  m_pNode->set_ref(*rhs.m_pNode);
+  m_pMemory->merge(*rhs.m_pMemory);
+  m_pNode = rhs.m_pNode;
+}
+```
