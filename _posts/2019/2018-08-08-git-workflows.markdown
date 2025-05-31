@@ -198,6 +198,27 @@ A---B---D---E---C (master) (rebased commits)
 
 I like a linear history. So I do `git rebase origin/master`.
 
+## Be Careful With Checking In Small MRs Off A Large One
+
+- Branch 1 (b1): Contains file1, file2, and file3.
+
+- Branch 2 (b2): Contains file2 and file3 (with modifications).
+
+- Workflow:
+
+    1. Merge b2 into main.
+
+    2. Pull main back into b1, **which causes merge conflicts on file2 and file3.**
+
+- Solution:
+    1. Only alter files in Branch 1. Branch 2 is only used for merging purposes.
+    2. Use Git’s `--ours` strategy to favor the changes from b1 over those in main 
+        ```bash
+        git fetch
+        git merge -X ours main 
+        ```
+        
+
 ## Gitlab SSH Setup
 
 1. At the top left corner, select `subgroup information-> group memebers`
