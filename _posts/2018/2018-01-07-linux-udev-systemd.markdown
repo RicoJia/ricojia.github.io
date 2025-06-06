@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Linux - Udev Rules And Systemd Services
+title: Linux - Udev Rules, Systemd Services, inotify
 date: '2018-01-07 13:19'
-subtitle: Udev Rules Systemd Services
+subtitle: Udev Rules Systemd Services, Inotify
 comments: true
 tags:
     - Linux
@@ -115,3 +115,24 @@ READ_PERIOD = 5 # in milliseconds
 events = poller.poll(READ_PERIOD)
 ...
 ```
+
+## inotify
+
+`inotify` is a **Linux kernel** subsystem that provides file system event monitoring. It allows programs to watch for changes to files and directories—such as **creations, deletions, modifications, or attribute changes** —in real time.
+
+- commonly used by applications like IDEs **(e.g., VS Code)**, file sync tools **(e.g., Dropbox)**, or **build systems (e.g., Webpack)** that need to react quickly to file changes.
+
+```
+sudo sysctl fs.inotify.max_user_watches=524288
+```
+
+    - Temporarily sets the maximum number of file watches a single user can register via inotify to 524288. This change is lost after a reboot.
+- `sudo sh -c 'echo "fs.inotify.max_user_watches=524288" > /etc/sysctl.d/10-inotify-limit.conf'` 
+    - persists the change by writing it to a configuration file under `/etc/sysctl.d/`
+
+- The default limit (8192) can be too small for:
+    - Large codebases with many files and folders.
+    - Modern development environments that rely heavily on file watching (like hot reload in web development).
+
+- If the limit is too low, you might see errors like:
+    - `ENOSPC: System limit for number of file watchers reached`

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Gitlab CI
-date: '2018-08-01 13:19'
+date: '2018-08-10 13:19'
 subtitle: 
 comments: true
 tags:

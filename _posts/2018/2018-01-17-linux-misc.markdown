@@ -2,7 +2,7 @@
 layout: post
 title: Linux Miscellaneous Thingies
 date: '2018-01-17 13:19'
-subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys, UART, Tmux, ffmpeg
+subtitle: Window Focus, Screenshots, File Differences, Formats, Shortkeys, UART, Tmux, ffmpeg, Firefox, Chrome, Power Modes
 comments: true
 tags:
     - Linux
@@ -147,9 +147,41 @@ Most zip tools have checksum check built in, even though checksum is not part of
 
 ## FireFox & Chrome & PDF Ops
 
+- To switch tabs in Firefox, follow [this page](https://support.mozilla.org/en-US/kb/tab-preferences-and-settings)
+
+
 - Firefox browser may have trouble actually saving PDFs. I've had cases where hitting the save button there does not actually save.
     - Chrome is safe
     - qoppa PDF viewer 2024 is actually great! No watermark, full PDF editor with signature, textbox, etc.
     - For merging pdfs ~~`pdfunite file1.pdf file2.pdf merged.pdf`~~ pdfunite omits some javascript fields. Use `pdftk in1.pdf in2.pdf cat output merged.pdf`
     - If a pdf is encrypted, one can use the "printer" option to create an unencrypted copy
 
+## Power Modes
+
+Balanced (or Default):
+
+- Ubuntu dynamically adjusts CPU frequency based on load, but still biases toward saving battery when idle.
+    - A [Hard Disk Drive rotates to access all bits on it](https://www.youtube.com/watch?v=wteUW2sL7bc)
+        - A bit is a small patch on HDD that has a magnetic field alignment
+
+Power Saving:
+
+- Lowers screen brightness more aggressively, spins down disks sooner, and keeps CPU frequencies lower overall.
+- Useful if you’re on battery and want maximum runtime (e.g., traveling, remote work).
+- You’ll notice longer battery life, but heavier tasks (e.g., compiling code, video encoding, gaming) will run noticeably slower.
+
+Performance (or High Performance):
+
+- Keeps CPU frequencies higher, avoids throttling, and keeps sensors/power management features (like autosuspend) more relaxed.
+- Need to be plugged in through power cable because USB-C doesn't have enough current
+
+### CPU Frequency “Governors”
+
+| Governor        | Behavior                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **performance** | Locks CPU to run at the highest frequency available at all times. No scaling down to save power.                                                 |
+| **powersave**   | Locks CPU to run at the lowest frequency available, regardless of load. Maximizes battery life, but slows down CPU-bound tasks.                  |
+| **ondemand**    | (Older default on some releases) Scales CPU up quickly to max when load appears, then scales down aggressively when idle.                        |
+| **schedutil**   | Newer default in Ubuntu 22.04+—integrates CPUfreq scaling decisions with the kernel’s scheduler to react quickly to workload while saving power. |
+
+The ter, `throttling` generally refers to intentionally slowing down a component—usually the CPU or GPU—in order to:

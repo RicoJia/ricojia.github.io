@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Git
-date: '2018-08-01 13:19'
+date: '2018-08-05 13:19'
 subtitle: Gitalk, CI/CD
 comments: true
 tags:

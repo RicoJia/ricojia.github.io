@@ -52,6 +52,8 @@ xhost +local:root
 ```
 
 - Note that this command cannot be run in a script because running a script opens up a new shell. It can be sourced, though (source executes the command in the current shell).
+    - Allow the container access to your X server so GUI applications may be run from within the container.
+
 
 Alternatively,
 

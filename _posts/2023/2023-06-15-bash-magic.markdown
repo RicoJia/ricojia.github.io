@@ -136,3 +136,7 @@ done > "$LIST"
 the` > "$LIST"` redirection is attached to the entire `for …; do …; done` block. All standard‐output (stdout) from anything inside that loop — every `echo`, `printf`, or other command that writes to stdout—gets `sent into "$LIST"`
 
 Every write to the stdout will go to file `$LIST`. You can either redirect it to stderr `>&2`, or check out the file: `cat $LIST`
+
+### `tee`
+
+`tee` writes to standard input and one more file. 
