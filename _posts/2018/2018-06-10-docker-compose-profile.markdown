@@ -69,7 +69,7 @@ services:
     some_included_profile_that_is_not_defined_in_this_yml
     ```
 
-- To inspect the final compose file in a single "flattened" doc, after yaml anchors `(&common)`, `extends:` blocks, environment variables, profiles and volume definitions have been resolved
+- To inspect the final compose file in a single "flattened" doc, after yaml anchors `(&common)`, `extends:` blocks, environment variables, profiles and volume definitions have been resolved: `docker compose --profile <PROFILE> config`
     - Yaml anchors vs expanded fields:
         - In a source template, you define **a reusable anchor block**
             ```
