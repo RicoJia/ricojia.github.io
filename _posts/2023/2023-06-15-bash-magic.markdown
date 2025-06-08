@@ -98,6 +98,9 @@ Trap an error:
     - `find . -type f ` lists all regular files recursively from the current directory (.)
     - `wc -l` counts the number of lines 
 
+### Tree:
+    - `tree -L 2`: limits the search depth to 2
+
 ### Compound Command?
 
 A “compound command” in Bash is any control‐flow construct that groups multiple simple commands into a single logical unit. Examples of compound commands include:
