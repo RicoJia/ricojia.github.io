@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Electronics - Communication Protocols
-subtitle: Encoding / Decoding, Error Checking (CRC), Base64
+subtitle: Encoding / Decoding, Error Checking (CRC), Base64, EtherCAT
 date: '2017-06-01 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -136,4 +136,30 @@ So a sample workflow is:
 ```
 Binary file (e.g., an image) is encoded as Base64. -> Transmitted over a protocol like email or API -> Decoded back into the original binary format by the receiver.
 ```
+
+## EtherCAT
+
+![](https://i.postimg.cc/SN7dDqsn/4kXDUB.gif)
+
+Principle: the EtherCAT protocol works like a train. In the vanilla loop topology as shown, 
+1. The master assembles data for each slave device into a single message, like a train
+2. The first slave receives it at Ethernet port 1, and:
+    - Copies the data matching its address, and 
+    - Updates: it writes its own input/process‑data (sensor readings, status bits, etc.) into the slot of the frame that is reserved for it.
+    - Increments work counter
+3. Passes the message out from Ethernet port 2 to slave 2
+4. Repeat the same process
+
+In the OSI model, this is a level 3 (network) protocol:
+- Physical
+- Datalink 
+- Network
+
+Implementation:
+
+- Additionally, there is a "Distributed Clock" (DC) mode. In that mode, the first DC device injects timestamps of message reception and departure. This helps the master to calculate "network delay", and keep everyone phased locked. 
+- In the EtherCAT protocol, the main segments are still following the CAN protocol
+- In total, 65536 devices are supported. 
+- The master logic is software only
+- The whole operation takes about 300ns, while TCP/IP takes 20ms. 
 

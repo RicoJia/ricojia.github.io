@@ -221,3 +221,8 @@ enum class StatusCode : uint8_t {
   ERROR = Status::ERROR
 };
 ```
+
+## Built-in Example
+
+- `ros2 pkg prefix demo_nodes_cpp`
+    -  To inspect a package's path, do `ros2 pkg prefix <PKG_NAME>`
