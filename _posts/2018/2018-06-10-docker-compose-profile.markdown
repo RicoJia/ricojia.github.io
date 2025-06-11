@@ -43,7 +43,7 @@ services:
 
 ### Listing Profiles
 
-- List profiles with : `docker compose config --profiles`
+- List static profiles (but not the real active ones) with : `docker compose config --profiles`
 
     ```
     adminer
@@ -88,6 +88,10 @@ services:
         ```
 
     - That tells Compose “go look in ../../common/extensions.yml, find the devcontainer-bridge-subsea service, and merge its settings into this service.”
+
+- To check a specific profile:
+  - `docker compose --profile topside config`
+  - `docker compose --profile topside config --services`: to list out all services
 
 ## Multi-Container Workflow
 

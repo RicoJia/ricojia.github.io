@@ -40,7 +40,7 @@ Bash has 1D indexed array (the common array we normally see), and associative ar
 
 #### Bash Array
 
-An indexed array is "common". However, it doesn't guarantee that items are stored contiguously. 
+An indexed array is "common". However, it doesn't guarantee that items are stored contiguously.
 
 ```bash
 #!/bin/bash
@@ -88,18 +88,25 @@ echo "Done Downloading"
 ## Error Handling
 
 Trap an error:
+
 - `set -e` will exits the parent shell immediately upon an error
 - `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell
 
 ## Commands
 
 ### Find
-- find regular files and count their numbers: `find . -type f | wc -l`
-    - `find . -type f ` lists all regular files recursively from the current directory (.)
-    - `wc -l` counts the number of lines 
 
-### Tree:
+- find regular files and count their numbers: `find . -type f | wc -l`
+  - `find . -type f` lists all regular files recursively from the current directory (.)
+  - `wc -l` counts the number of lines
+
+### Tree
+
     - `tree -L 2`: limits the search depth to 2
+
+### Grep
+
+- `grep -B 5 "Something"`: grep the next 5 lines of each instance
 
 ### Compound Command?
 
@@ -130,16 +137,17 @@ done > "$LIST"
 ```
 
 This is because:
+
 ```bash
 for f in "$DIR"/*.mp4; do
     ... 
 done > "$LIST"
 ```
 
-the` > "$LIST"` redirection is attached to the entire `for …; do …; done` block. All standard‐output (stdout) from anything inside that loop — every `echo`, `printf`, or other command that writes to stdout—gets `sent into "$LIST"`
+the`> "$LIST"` redirection is attached to the entire `for …; do …; done` block. All standard‐output (stdout) from anything inside that loop — every `echo`, `printf`, or other command that writes to stdout—gets `sent into "$LIST"`
 
 Every write to the stdout will go to file `$LIST`. You can either redirect it to stderr `>&2`, or check out the file: `cat $LIST`
 
 ### `tee`
 
-`tee` writes to standard input and one more file. 
+`tee` writes to standard input and one more file.
