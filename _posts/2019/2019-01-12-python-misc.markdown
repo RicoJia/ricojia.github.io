@@ -2,7 +2,7 @@
 layout: post
 title: Python - Python Misc, os, shutil
 date: '2019-01-03 13:19'
-subtitle: Sys, Print, Argparse Path-Related Utils
+subtitle: Sys, Print, Argparse Path-Related Utils, HDF5
 comments: true
 header-img: "img/post-bg-2015.jpg"
 tags:
@@ -85,3 +85,14 @@ for i in range(k):
 else:
     print("hello")
 ```
+
+### HDF5
+
+- open-source file for **store large amount of data**
+    - largely used in numpy community
+    - Can handle many different datatypes in multiple data blocks, with metadata
+    - We can access them in data blocks
+    - numpy array holds the data, and directly to and from the data.
+    - used as ML model weights
+- To use HDF5, numpy needs to be imported.
+
