@@ -2,7 +2,7 @@
 layout: post
 title: Linux - Provisioning of My Machine
 date: '2018-01-23 13:19'
-subtitle: 
+subtitle: fzf
 comments: true
 tags:
     - Linux
@@ -38,6 +38,8 @@ git clone https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 ```
 
+    - `alt-c`: **built-in goto**, very useful
+    - `ctrl-t`: copies file names over
+    - `ctrl-r`: reverse history
+
 - Navi: [Interactive command line cheat sheet tool](https://github.com/denisidoro/navi/releases/latest)
-
-

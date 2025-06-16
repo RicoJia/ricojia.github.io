@@ -31,6 +31,13 @@ sudo usermod -aG docker $USER
 
 - Adding $USER to the group `docker`. `-a` means add, `-G` means group. By default, running `docker` requires sudo priviledges. The `docker` group controls which users can interact with docker,
 
+### Get into Running Container
+
+```
+docker exec -it <CONTAINER> bash
+ctrl-d
+```
+
 ### Stopped Docker Containers
 
 ```bash
@@ -111,6 +118,7 @@ However, if you want to delete a series of images that are built on top of each 
         ```
 
 ### Buildx
+
 `docker buildx` is an extended builder for Docker that enables multi-platform builds, caching improvements, and advanced build features. It is an alternative to `docker build` and is particularly useful for cross-architecture builds (e.g., building an ARM image on an x86 host).
 
 ```bash
@@ -125,9 +133,8 @@ docker buildx build --platform linux/amd64,linux/arm64 -t myimage:latest .
 ```
 
 - Builds Happen in an Isolated Context
-    - Docker builds are performed in a temporary containerized environment.
-    - If the build is interrupted, that container disappears, but the previous stable image remains intact.
-
+  - Docker builds are performed in a temporary containerized environment.
+  - If the build is interrupted, that container disappears, but the previous stable image remains intact.
 
 ## Misc Commands
 
