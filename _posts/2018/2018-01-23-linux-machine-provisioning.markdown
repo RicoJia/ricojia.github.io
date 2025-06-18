@@ -43,3 +43,5 @@ git clone https://github.com/junegunn/fzf.git ~/.fzf
     - `ctrl-r`: reverse history
 
 - Navi: [Interactive command line cheat sheet tool](https://github.com/denisidoro/navi/releases/latest)
+  - bring up navi (TODO: need configuration)
+    - type something + `ctrl-g`
