@@ -80,7 +80,7 @@ colcon mixin update
 3. To check:
 
 ```bash
-colcon mixin list
+colcon mixin show
 ```
 
 4. Use mixins:
