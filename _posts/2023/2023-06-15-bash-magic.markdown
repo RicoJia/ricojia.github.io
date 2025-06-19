@@ -151,3 +151,13 @@ Every write to the stdout will go to file `$LIST`. You can either redirect it to
 ### `tee`
 
 `tee` writes to standard input and one more file.
+
+### Bind
+
+- Create a custom keyboard shortcut that triggers a command in shell: (in this case, `navi`)
+
+```
+bind -x '"\C-f": navi'
+```
+
+

@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Service
 date: '2024-11-22 13:19'
-subtitle: How to Bring Up a Service 
+subtitle: How to Bring Up a Service, Common ROS2 Services
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -149,3 +149,7 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
+## Common Services
+
+- `qos_overrides.<topic or entity>.<publisher|subscription>.<qos_policy>`: this is a service that one could call to override things
