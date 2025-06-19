@@ -11,6 +11,16 @@ tags:
 
 ## Builtins
 
+### Test
+
+- `[[ -n STRING ]]` - returns true when STRING is not empty
+- `[[ -z STRING ]]` - returns true when STRING is empty
+    - equivalent to `[[ ! -n STRING ]]`
+- `[[ -d FILE ]]` - returns true when FILE exists and is a directory
+
+### Regex
+- "$" asserts "end of line", so it makes sure the regex contains strings end in a certain pattern: `grep -E '\.(md|markdown)$'`
+
 ### Declare
 
 The `declare` builtin is used to explictly declare variables

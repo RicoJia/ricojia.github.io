@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - ROS2 Gazebo Differential Drive Onboard
-date: '2024-11-5 13:19'
+date: '2024-11-7 13:19'
 subtitle: ROS2, Gazebo
 header-img: "img/post-bg-os-metro.jpg"
 tags:
@@ -51,7 +51,8 @@ def generate_launch_description():
         )
     ])
 ```
-- 
+
+-
 
 ### Add An Arg In Launch File
 
