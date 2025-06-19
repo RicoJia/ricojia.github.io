@@ -50,8 +50,7 @@ ros2 run demo_nodes_cpp listener
 - Create a package `ros2 pkg create --build-type ament_python --dependencies rclpy std_msgs`
   - `--build-type` specifies that this is a python pkg.
   - `ros2 pkg create my_mixed_pkg --build-type ament_cmake --dependencies rclcpp rclpy std_msgs` is the command for creating cmake and python package.
-  - Package naming: in ros2, please use `_` instead of `-`, like ` py_package_1` instead of ` py-package-1`
-
+  - Package naming: in ros2, please use `_` instead of `-`, like `py_package_1` instead of `py-package-1`
 
 - File Directory
 
@@ -146,7 +145,6 @@ ros2 run dummy_test demo
 
     - `--symlink-install` allows in-place modifications in `colcon build --packages-select dummy_test --symlink-install`
 
-
 ## Packaging & Build System
 
 - In ROS2, cpp files require `CMakeLists.txt`, python files require `setup.cfg` and `setup.py`:
@@ -173,10 +171,10 @@ colcon build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 ```
 
 - `-DCMAKE_BUILD_TYPE=RelWithDebInfo`: This sets the CMake variable CMAKE_BUILD_TYPE to RelWithDebInfo, meaning “Release with Debug Info.”. Despite the existence of the debugging symbols, below can still happen with optimization:
-    - Lines can be merged or removed
-    - Variables can vanish
-    - Stepping can feel “jumpy”
-    - use a pure Debug build (no optimization) or something like -Og (for GCC) or -O1 -g (for Clang) for real debug build
+  - Lines can be merged or removed
+  - Variables can vanish
+  - Stepping can feel “jumpy”
+  - use a pure Debug build (no optimization) or something like -Og (for GCC) or -O1 -g (for Clang) for real debug build
 
 - `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`: Tells CMake to generate a compile_commands.json file in your build directory. This JSON file lists all compiler invocations for your project, which is extremely useful for tools like clangd, code analyzers, and IDEs that need to know your include paths and compiler flags.
 - `--cmake-force-configure` This is not a standard CMake flag; it’s a colcon (ROS 2 build tool) argument. It forces CMake to re-run its configuration step for all packages, even if CMake thinks nothing has changed.
@@ -222,7 +220,17 @@ enum class StatusCode : uint8_t {
 };
 ```
 
+### Latched Topic
+
+One can check a latched topic using: `ros2 topic info /TOPIC --verbose`
+
+```
+Durability: TRANSIENT_LOCAL
+```
+
+- If durability were `VOLATILE`, this topic is not latched
+
 ## Built-in Example
 
 - `ros2 pkg prefix demo_nodes_cpp`
-    -  To inspect a package's path, do `ros2 pkg prefix <PKG_NAME>`
+  - To inspect a package's path, do `ros2 pkg prefix <PKG_NAME>`

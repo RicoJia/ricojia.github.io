@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Electronics - General Electronics Notes
-subtitle: Encoders, Motors, Capacitors, IMU, Testing
+subtitle: Encoders, Motors, Capacitors, IMU, Testing, Telecommunication
 date: '2017-06-03 13:19'
 header-img: "img/bg-material.jpg"
 tags:
@@ -20,7 +20,7 @@ EEPROM (Electrically Erasable Programmable Read-Only Memory) is a type of non-vo
 
 ### Quadrature Encoders
 
-Quadrature means the design where two waves (square wave, sine wave, etc.) are 90 deg out of phase. In a quadrature encoder, two light sources are placed in slightly different positions, so their waves are 90 deg out of phase. With this design, we can tell the direction of rotation, and the number of ticks a motor has rotated. 
+Quadrature means the design where two waves (square wave, sine wave, etc.) are 90 deg out of phase. In a quadrature encoder, two light sources are placed in slightly different positions, so their waves are 90 deg out of phase. With this design, we can tell the direction of rotation, and the number of ticks a motor has rotated.
 
 <div style="text-align: center;">
 <p align="center">
@@ -31,7 +31,7 @@ Quadrature means the design where two waves (square wave, sine wave, etc.) are 9
 </p>
 </div>
 
-The two light sources produce a waveform: 
+The two light sources produce a waveform:
 
 <div style="text-align: center;">
 <p align="center">
@@ -88,8 +88,8 @@ An absolute encoder has a coded encoder disk. It comprises of a few concentric t
 
 ### Capacitors
 
-- In betwen plates of a capacitor, we need dielectric. It's an insulating material that increases the capacitor's ability to store charge. Dielectrics include: air, vacuum, ceramic, electrolytic, etc. 
-    - In an ideal dielectric there is no current flow. 
+- In betwen plates of a capacitor, we need dielectric. It's an insulating material that increases the capacitor's ability to store charge. Dielectrics include: air, vacuum, ceramic, electrolytic, etc.
+  - In an ideal dielectric there is no current flow.
 
 <div style="text-align: center;">
 <p align="center">
@@ -107,7 +107,6 @@ An absolute encoder has a coded encoder disk. It comprises of a few concentric t
     4. That electric field repels electrons from the opposite plate (pulling positive charge toward it).
     5. No electrons physically cross the dielectric — they just pile up on each side.
 
-
 ### EC (Electrically Commuted Motors) vs DC Motors
 
 TODO
@@ -121,7 +120,7 @@ ICT is a type of testing performed directly on PCB to check each component for o
 - Build a "bed-of-nails" fixture that includes test points, probes
 - The fixture measures resitance, voltage, capacitance
 
-So it's quick, good test coverage, automated. but it can't test the high level features. 
+So it's quick, good test coverage, automated. but it can't test the high level features.
 
 ### Functional Testing
 
@@ -155,7 +154,7 @@ Gyroscopes use the Coriolis effect. The Coriolis force arises in a rotating refe
 </p>
 </div>
 
-With stationary frame travelling direction of the object `v` and angular velocity `w`, the perceived Coriolis Force is 
+With stationary frame travelling direction of the object `v` and angular velocity `w`, the perceived Coriolis Force is
 
 $$
 \begin{gather*}
@@ -175,7 +174,6 @@ And the Coriolis force is perpendicular to both `v` and `w`
     </figure>
 </p>
 </div>
-
 
 A MEMS gyroscope often uses a 'tuning fork' design with two proof masses vibrating in opposite directions. Each mass is suspended by springs and forms capacitors with fixed side plates. When the device rotates, Coriolis forces cause the masses to deflect perpendicular to both their vibration and the rotation axis. This results in a measurable change in capacitance, with a net difference:
 
@@ -202,3 +200,9 @@ If linear acceleration occurs along the sensing axis, both masses are displaced 
 </div>
 
 allowing the system to distinguish linear acceleration from angular rotation.
+
+## Telecommunication
+
+### Acoustic Modem
+
+An acoustic model converts `digital -> acoustic signal -> demodulate signal`
