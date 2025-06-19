@@ -2,7 +2,7 @@
 layout: post
 title: Robotics General Design Notes 
 date: '2024-11-11 13:19'
-subtitle: What's New In ROS2
+subtitle: What's New In ROS2, Affordance
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -24,9 +24,9 @@ comments: true
 
 - Use consistent, simple notations
 - Use modern C++ (>C++17)
-    - ROS2 humble's default cpp standard is cpp 17. What if I want to have code in cpp 20?
-        - Generally, it is okay to use newer C++ versions as long as their features and flags do not end in public APIs.
-        - I.e. using modules would not be possible, but e.g. some stdlib goodies would be okay to use if they are only used in the .cpp files.
+  - ROS2 humble's default cpp standard is cpp 17. What if I want to have code in cpp 20?
+    - Generally, it is okay to use newer C++ versions as long as their features and flags do not end in public APIs.
+    - I.e. using modules would not be possible, but e.g. some stdlib goodies would be okay to use if they are only used in the .cpp files.
 - Use unit test and module tests
 
 ## Safety Critical Nodes Should Be Long Running
@@ -84,21 +84,20 @@ comments: true
 
 - Traceable Logging System
 
-    - Prometheus, collectd->influxdb->Grafana (trace), time series 
-        - Victoria Metrics
-        - https://discourse.ros.org/t/how-do-you-mitigate-robot-bugs-and-issues-related-to-system-resources/15682/4
-        - A trace tree, or distributed tracing in microservices
-            - opentracing? + yegger?
-        - Datadog / elk
+  - Prometheus, collectd->influxdb->Grafana (trace), time series
+    - Victoria Metrics
+    - <https://discourse.ros.org/t/how-do-you-mitigate-robot-bugs-and-issues-related-to-system-resources/15682/4>
+    - A trace tree, or distributed tracing in microservices
+      - opentracing? + yegger?
+    - Datadog / elk
 
 - Warnings might be helpful for when nodes go down
 
 ## Logging
 
-
 ## ROS2 Specific Designs
 
-- It's good to have a struct for ROS message equivalents. Say we want to calculate IMU information. We can have 1 `IMUData` to represent it, and at the ROS Node level, we publish it using a ROS message. Similarly, once we receive an IMU message, we immediately convert it to `IMUData`. This way, we can modify internal states in `IMUData` without touching the ROS message (if unecessary). 
+- It's good to have a struct for ROS message equivalents. Say we want to calculate IMU information. We can have 1 `IMUData` to represent it, and at the ROS Node level, we publish it using a ROS message. Similarly, once we receive an IMU message, we immediately convert it to `IMUData`. This way, we can modify internal states in `IMUData` without touching the ROS message (if unecessary).
 
 ## The "Soft" Architectures
 
@@ -122,6 +121,15 @@ LLM should be encouraged, **especially for boring boiler plates** of ROS2 or man
   - "we don't yuck others' yum"
 - Let's help each other to achieve our common success
   - Decently-prepared brainstorms should be encouraged
+
+## Affordance
+
+Affordance源自心理学和认知科学的术语，最早由心理学家James J. Gibson提出，用于描述环境所允许个人能实现的功能. affordance被迁移到机器人学科，强调的是智能体通过感知外界输入，以决定对物体有哪些可以被执行的操作, basically it means "can be used for".
+
+- “A wad of paper affords tossing.”纸团可以被扔
+- “A wastebasket affords receiving tossed objects.”废纸篓可以接受扔来的东西
+- “Buttons drawn as 3D shapes appear to “stick out” and hence afford pushing.”按钮被画成3D突起以被按压
+  - In the SayCan paper: affordances refer to possible actions that can be executed, which is conceptually similar to inferring preconditions in planning – what actions are feasible in a certain situation
 
 ## References
 
