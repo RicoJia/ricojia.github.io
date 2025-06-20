@@ -22,11 +22,21 @@ tags:
 
     1. First boot stopped in BusyBox with `ALERT! UUID=255a5309-… does not exist`
     2. `initramfs` could not see the NVMe root partition.
-        - TODO: what is initramfs
+        - `initramfs` is "initial RAM-file-system". It runs as the very first userspace code that the kernel starts—before your real root disk is mounted.
+        - It's a tiny, compressed cpio archive (usually /boot/initrd.img-…) unpacked directly into RAM. It contains a minimal Linux userland (BusyBox), essential kernel modules, and scripts in /init.
+        - Functionalities:
+            - Loads drivers for storage, USB, encryption, LVM, etc.
+            - Locates and mounts the real root filesystem by UUID/label.
+            - Switches the kernel’s root from the RAM disk to your SSD/NVMe.
+            - Hands control to `/sbin/init (systemd)`.
+        - How `initramfs` is built:
+            - `update-initramfs` gathers drivers listed in `/etc/initramfs-tools/modules`, plus what `mkinitramfs` can auto-detect, then packs them into one file per installed kernel.
 
 2. Solution:
     1. Booted Live-USB, ran `blkid`, confirmed `root = /dev/nvme0n1p2` with correct UUID.
-    2. Ran `fsck.ext4 -yf /dev/nvme0n1p2`. TODO what does it do?
+    2. Ran `fsck.ext4 -yf /dev/nvme0n1p2`.
+        - `fsck` = File System Check.
+        - `ext4` partitions the helper binary is `fsck.ext4`
     3. Chrooted into the install and forced modules into `initramfs`:
 
         ```
@@ -58,7 +68,7 @@ tags:
         1. Purged every old NVIDIA package & module (`apt purge '^nvidia-.*', modprobe -r …`)
         2. Re-installed one clean version (`sudo ubuntu-drivers autoinstall` → driver 570).
         3. Enrolled MOK for Secure Boot.
-            TODO?
+            - MOK (Machine Owner Key) is a personal signing key you enroll so Secure Boot will allow third-party kernel modules like the NVIDIA driver.
         4. One can use `nvidia-smi` to verify that the nvidia driver is successfully installed
 
 6. With LightDM in place the greeter appeared, but logging in looped straight back because of stale caches / permissions in $HOME.
