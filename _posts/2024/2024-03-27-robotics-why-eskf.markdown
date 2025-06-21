@@ -9,26 +9,38 @@ tags:
     - Robotics
 ---
 
+## TODO: to organize
+
+-Why ESKF:
+    - R is hard to express. You'd have to use a rotational vector. But how would you take derivatives w.r.t R?
+        - Where do you take that derivative?
+    - You have 7 significant bits for accuracy, considering positions come from UTM? If state variables are large, those small updates are omitted?
+    - How do you apply SE(3) addition
+
+- ESKF:
+  - Sets tangent space states as its states.
+  - update the final state with its posteriors.
+
 ## ESKF Handles Rotations on SO(3) Better
 
 Key issue: Rotations lie on the special orthogonal group SO(3), which is a nonlinear manifold (not a simple vector space like position). A standard EKF typically performs state updates in a “vector space” manner: it linearizes around the current state and then does `state←state+Δx`. But for 3D rotations, you can’t simply “add” the rotation increment `Δθ` directly to the existing orientation representation if you want to stay on SO(3).
 
 - Vanilla EKF approach:
-    - If you use a quaternion or rotation matrix as your rotation representation, then you have to define the addition of Δx. A naive approach might be:
+  - If you use a quaternion or rotation matrix as your rotation representation, then you have to define the addition of Δx. A naive approach might be:
 
     ```
     q_new=q_old+Δθ
     ```
-    
-    - But quaternion addition is not the correct way to update orientation. You would need to an exponential map that properly keeps you on the manifold.
+
+  - But quaternion addition is not the correct way to update orientation. You would need to an exponential map that properly keeps you on the manifold.
 
 - ESKF approach:
-    -  If we update our system using error-states, we are able to get a linearize rotation error-state `δθ` on the tangent space of the SO(3) manifold. Here's how:
+  - If we update our system using error-states, we are able to get a linearize rotation error-state `δθ` on the tangent space of the SO(3) manifold. Here's how:
         $$
         \begin{gather*}
         \begin{aligned}
         & R_{new} := R \delta R = R Exp(\delta \theta)
-        \\ & 
+        \\ &
         \Rightarrow
         R_{new}' = R' Exp(\delta \theta) + R Exp(\delta \theta)'
         \\ &
@@ -36,7 +48,7 @@ Key issue: Rotations lie on the special orthogonal group SO(3), which is a nonli
         \end{aligned}
         \end{gather*}
         $$
-    - This leads to a linear update of $(\delta \theta^{\land})' \approx ...$. Though we still need to apply BCH and Taylor expansion to achieve this linear update, during an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map. **By doing this, you ensure the orientation remains on SO(3) after an update**, and the linearization is better-conditioned because **you are linearizing around a small error state rather than the full orientation.**
+  - This leads to a linear update of $(\delta \theta^{\land})' \approx ...$. Though we still need to apply BCH and Taylor expansion to achieve this linear update, during an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map. **By doing this, you ensure the orientation remains on SO(3) after an update**, and the linearization is better-conditioned because **you are linearizing around a small error state rather than the full orientation.**
 
 ### Could we define a “generic addition” for EKF?
 
@@ -53,10 +65,8 @@ $$
 $$
 
 - $F_t$ is the Jacobian of the motion model and is linearzed $x_t$. $x_t$ could be relatively large.
-    - If you are using Euler Angles, when the rotation angle is large, there could be singularities around gimbal lock values. E.g, `pitch = ±90∘`
-    - Even if you are not using Euler Angles and are using quaternion or world frame rotation vector instead, at certain large values, the first order Jacobian may not model the system well using linearization. **So, linearization around $\delta x$ in ESKF is around 0 and generally have better accuracies**
-
-
+  - If you are using Euler Angles, when the rotation angle is large, there could be singularities around gimbal lock values. E.g, `pitch = ±90∘`
+  - Even if you are not using Euler Angles and are using quaternion or world frame rotation vector instead, at certain large values, the first order Jacobian may not model the system well using linearization. **So, linearization around $\delta x$ in ESKF is around 0 and generally have better accuracies**
 
 ## ESKF Can Work With Higher Floating Point Precision
 
@@ -74,9 +84,9 @@ $$
 \frac{c_y - y}{d^2} & \frac{x - c_x}{d^2} & -1
 \end{bmatrix}
 
-\\ 
+\\
 & S = H P_{t+1}^{*} H^\top + R
-\\ & 
+\\ &
 K = P_{t+1}^{*} H^\top S^{-1}
 \end{aligned}
 \end{gather*}
@@ -85,7 +95,6 @@ $$
 Along this process we operate on `10^6m` position state variables. Any associated operations, such as motion model prediction, would not be able to achieve centimeter accuracy. So **throughout EKF, we need `FP64`**
 
 - On the other hand, in ESKF, we operate on the error $\delta x$, which stays close to 0. All the intermediate steps just require `FP32` to achieve centimeter level accuracy. Of course, at the end, we still need to add the small update back to the large coordinates in `FP64`, but it's fairly minimal.
-
 
 ## Questions
 
@@ -131,10 +140,9 @@ Where $G w_k$ is noise. **$\delta x_{k, true}$ is 0 after the reset from the las
 
 #### Answer
 
-No. Predictions $F \delta x_{k, pred}$ are always 0, as expected. $K * (z \ominus h(x_{k, pred}))$ would yield non-zero results there, due to Kalman gain being non-zero in those observations. 
+No. Predictions $F \delta x_{k, pred}$ are always 0, as expected. $K * (z \ominus h(x_{k, pred}))$ would yield non-zero results there, due to Kalman gain being non-zero in those observations.
 
-
-### Consequently, It Is Imporant To...
+### Consequently, It Is Imporant To
 
 - It is important to use `FP64` for ESKF update
 - Run the filter at a high enough frequency so that each discrete step is small
