@@ -9,18 +9,6 @@ tags:
     - Robotics
 ---
 
-## TODO: to organize
-
--Why ESKF:
-    - R is hard to express. You'd have to use a rotational vector. But how would you take derivatives w.r.t R?
-        - Where do you take that derivative?
-    - You have 7 significant bits for accuracy, considering positions come from UTM? If state variables are large, those small updates are omitted?
-    - How do you apply SE(3) addition
-
-- ESKF:
-  - Sets tangent space states as its states.
-  - update the final state with its posteriors.
-
 ## ESKF Handles Rotations on SO(3) Better
 
 Key issue: Rotations lie on the special orthogonal group SO(3), which is a nonlinear manifold (not a simple vector space like position). A standard EKF typically performs state updates in a “vector space” manner: it linearizes around the current state and then does `state←state+Δx`. But for 3D rotations, you can’t simply “add” the rotation increment `Δθ` directly to the existing orientation representation if you want to stay on SO(3).
