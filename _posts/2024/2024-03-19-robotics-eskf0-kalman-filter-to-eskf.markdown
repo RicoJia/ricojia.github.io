@@ -239,7 +239,7 @@ $$
 \begin{aligned}
 \dot{\mathbf{p}} &= \mathbf{v} \\
 \dot{\mathbf{v}} &= R(\mathbf{q})\left(\tilde{\mathbf{a}} - \mathbf{b}_a - \mathbf{n}_a\right) + \mathbf{g} \\
-\dot{\mathbf{q}} &= \tfrac{1}{2}\Gamma(\mathbf{q})\left(\tilde{\bm{\omega}} - \mathbf{b}_g - \mathbf{n}_\omega\right) \\
+\dot{\mathbf{q}} &= \tfrac{1}{2}\Gamma(\mathbf{q})\left(\tilde{\mathbf{\omega}} - \mathbf{b}_g - \mathbf{n}_\omega\right) \\
 \dot{\mathbf{b}}_a &= \mathbf{n}_{ba} \\
 \dot{\mathbf{b}}_g &= \mathbf{n}_{bg}
 \end{aligned}
