@@ -108,3 +108,174 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+## [2] What Does An Extended Kalman Filter Do?
+
+A system is non-linear when its state is a non-linear result of control signals , or when observations is a non-linear transform of the current state. (Its noise can still be Gaussian, mutually independent)
+
+$$
+\begin{gather*}
+\begin{aligned}
+\mathbf x_k &= f\bigl(\mathbf x_{k-1},\,\mathbf u_k\bigr) \, + \, \mathbf w_k, &\quad \mathbf w_k &\sim \mathcal N(\mathbf 0,\,\mathbf Q_k) \\
+\mathbf z_k &= h\bigl(\mathbf x_k\bigr) \, + \, \mathbf v_k, &\quad \mathbf v_k &\sim \mathcal N(\mathbf 0,\,\mathbf R_k)
+\end{aligned}
+\end{gather*}
+$$
+
+However, if the non‑linearity is mild we can linearise the models around the current mean estimate. Then we are able to calculate the Kalman gain, and use that to apply a correction with an observation onto our prediction. Here is how:
+
+1. Make prediction using the non-linear model:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\hat{\mathbf x}k^- = f\bigl(\hat{\mathbf x}{k-1},,\mathbf u_k\bigr)
+\end{aligned}
+\end{gather*}
+$$
+
+2. The equivalent linearized non-linear model is:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \begin{aligned}
+f(\mathbf x_{k-1},\mathbf u_k) &\approx f(\hat{\mathbf x}_{k-1},\mathbf u_k)
+                  + \mathbf F_k\,\bigl(\mathbf x_{k-1} - \hat{\mathbf x}_{k-1}\bigr), \\
+h(\mathbf x_k) &\approx h(\hat{\mathbf x}_k^-)
+                  + \mathbf H_k\,\bigl(\mathbf x_k - \hat{\mathbf x}_k^-\bigr),
+\end{aligned}
+\end{aligned}
+\end{gather*}
+$$
+
+- where $F_k$ and $H_k$ are Jacobian matrices:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\mathbf F_k \triangleq \left.\frac{\partial f}{\partial \mathbf x}\right|_{\hat{\mathbf x}_{k-1},\,\mathbf u_k},
+\qquad
+\mathbf H_k \triangleq \left.\frac{\partial h}{\partial \mathbf x}\right|_{\hat{\mathbf x}_k^-}.
+\end{aligned}
+\end{gather*}
+$$
+
+3. After this linearisation step the model looks linear–Gaussian, so we can reuse the Kalman machinery with $\mathbf F_k$ and $\mathbf H_k$ playing the roles of $\mathbf A$ and $\mathbf C$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\text{Prior covariance update: } \mathbf P_k^- = \mathbf F_k,\mathbf P_{k-1},\mathbf F_k^\top + \mathbf Q_k
+
+\\
+\text{Kalman Gain: } \mathbf K_k = \mathbf P_k^-,\mathbf H_k^\top\bigl(\mathbf H_k,\mathbf P_k^-,\mathbf H_k^\top + \mathbf R_k\bigr)^{-1}
+\end{aligned}
+
+\\
+\text{Innovation: } \tilde{\mathbf y}_k = \mathbf z_k - h\bigl(\hat{\mathbf x}_k^-\bigr)
+
+\\
+\text{Correction: } \hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k\tilde{\mathbf y}_k
+\end{gather*}
+
+\\
+\text{Posterior covariance update: } \mathbf P_k = (\mathbf I-\mathbf K_k\mathbf H_k),\mathbf P_k^-,(\mathbf I-\mathbf K_k\mathbf H_k)^\top + \mathbf K_k\mathbf R_k\mathbf K_k^\top
+$$
+
+This set up is called "the extended Kalman Filter" (EKF)
+
+## [3] Example: EKF For Robot Pose Estimation With GPS (Or USBL) and IMU Signal
+
+Below is the motion model of a robot. `x` is the state vector, $p$ is the Cartesian position `x,y,z`, $v$ is the linear velocity, $q$ is the quaternion of the robot orientation. $b_a$ and $b_g$ are biases of the IMU acceleration and gyro
+
+$$
+\begin{gather*}
+\begin{aligned}
+\mathbf{x} =
+\begin{bmatrix}
+\mathbf{p} \\
+\mathbf{v} \\
+\mathbf{q} \\
+\mathbf{b}_a \\
+\mathbf{b}_g
+\end{bmatrix}
+\in \mathbb{R}^{16}
+\end{aligned}
+\end{gather*}
+$$
+
+IMU measurements are linear acceleration $\tilde{\mathbf{a}}$ in `a/m^2`, and angular velocity:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\tilde{\mathbf{a}}, \; \tilde{\bm{\omega}} \in \mathbb{R}^3
+\end{aligned}
+\end{gather*}
+$$
+
+Process noise vector:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\mathbf{w} =
+\begin{bmatrix}
+\mathbf{n}_a \\
+\mathbf{n}_\omega \\
+\mathbf{n}_{ba} \\
+\mathbf{n}_{bg}
+\end{bmatrix}
+\sim \mathcal{N}(0, Q_c)
+\end{aligned}
+\end{gather*}
+$$
+
+Continuous-time dynamics:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\dot{\mathbf{p}} &= \mathbf{v} \\
+\dot{\mathbf{v}} &= R(\mathbf{q})\left(\tilde{\mathbf{a}} - \mathbf{b}_a - \mathbf{n}_a\right) + \mathbf{g} \\
+\dot{\mathbf{q}} &= \tfrac{1}{2}\Gamma(\mathbf{q})\left(\tilde{\bm{\omega}} - \mathbf{b}_g - \mathbf{n}_\omega\right) \\
+\dot{\mathbf{b}}_a &= \mathbf{n}_{ba} \\
+\dot{\mathbf{b}}_g &= \mathbf{n}_{bg}
+\end{aligned}
+\end{gather*}
+$$
+
+Where $\Gamma(\mathbf{q})$ is a 4x3 matrix:
+
+$$
+\begin{gather*}
+\begin{aligned}
+[\mathbf{x}]_\times =
+\begin{bmatrix}
+0 & -x_3 & x_2 \\
+x_3 & 0 & -x_1 \\
+-x_2 & x_1 & 0
+\end{bmatrix}
+\qquad
+\Gamma(\mathbf{q}) =
+\begin{bmatrix}
+-\mathbf{q}_v^\top \\
+q_0 I_3 + [\mathbf{q}_v]_\times
+\end{bmatrix}
+\end{aligned}
+\end{gather*}
+$$
+
+Now, we can start developing a linearized model of the control and observation model $F_k$, and $G_k$, either using auto-diff, or deriving an analytic form by ignoring higher order terms
+
+## [4] Why EKF Is Not The Best And Use ESKF Instead
+
+### TODO
+
+- How to get the derivative of rotation is a problem - people always fall back to Euler Angle or quaternion. However, this way we cannot use SO(3) updates.
+- Meanwhile, the world frame may use GPS / UTM.
+  - Limitation of GPS include:
+    - Lat/long usually requires TODO number of effective digits (TODO)?
+    - UTM is better, but the integer part is still large. THat could lead to 大数吃小数(english)?
+    - Non-linearity. 1 deg longitude at northpole is 0m, but at the equator it's hundreds of miles
