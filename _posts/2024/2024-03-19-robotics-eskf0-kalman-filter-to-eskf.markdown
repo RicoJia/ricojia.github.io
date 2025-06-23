@@ -271,11 +271,26 @@ Now, we can start developing a linearized model of the control and observation m
 
 ## [4] Why EKF Is Not The Best And Use ESKF Instead
 
-### TODO
+### Reason 1 - Rotation Update Is Not Natively On the SO(3) Manifold
 
-- How to get the derivative of rotation is a problem - people always fall back to Euler Angle or quaternion. However, this way we cannot use SO(3) updates.
-- Meanwhile, the world frame may use GPS / UTM.
-  - Limitation of GPS include:
-    - Lat/long usually requires TODO number of effective digits (TODO)?
-    - UTM is better, but the integer part is still large. THat could lead to 大数吃小数(english)?
-    - Non-linearity. 1 deg longitude at northpole is 0m, but at the equator it's hundreds of miles
+Traditional Extended Kalman Filters (EKF) keep the system orientation (expressed in quaternion) directly in the state vector. The update on rotation however, is still done first by
+
+$$
+\begin{gather*}
+\begin{aligned}
+& q = q + K(q)?
+\end{aligned}
+\end{gather*}
+$$
+
+followed by normalizing the quaternion. Because of the extra normalization step, errors could accumulate over time.
+
+ESKF keeps "correction-to-current-estimate" terms as its states. The last step - the update step, rotation is instead updated by $R = R (K * \delta R)$, so no extra normalization is needed.
+
+## Reason 2 - Loss of Significance
+
+EKF uses raw position and orientation as state vectors. These values can vary, in the magnitudes of $10^2$ or more. The linearity of the control and observation models could vary drastically in this large range, too.
+
+ESKF on the other hand, does not suffer this issue because its states ("correction-to-current-estimate" terms) are close to 0.
+
+Interested in reading more about ESKF? [Please check out this article](https://ricojia.github.io/2024/03/24/robotics-full-eskf/)!
