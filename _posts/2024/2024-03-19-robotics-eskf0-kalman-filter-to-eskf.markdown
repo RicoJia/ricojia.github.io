@@ -293,4 +293,4 @@ EKF uses raw position and orientation as state vectors. These values can vary, i
 
 ESKF on the other hand, does not suffer this issue because its states ("correction-to-current-estimate" terms) are close to 0.
 
-Interested in reading more about ESKF? [Please check out this article](https://ricojia.github.io/2024/03/24/robotics-full-eskf/)!
+## Interested in reading more about ESKF? [Please check out this article](https://ricojia.github.io/2024/03/24/robotics-full-eskf/)!
