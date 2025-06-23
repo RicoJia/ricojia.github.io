@@ -269,7 +269,7 @@ $$
 
 Now, we can start developing a linearized model of the control and observation model $F_k$, and $G_k$, either using auto-diff, or deriving an analytic form by ignoring higher order terms
 
-## [4] Why EKF Is Not The Best And Use ESKF Instead
+## [4] Why EKF Is Not The Best And ESKF Is Widely Used Instead
 
 ### Reason 1 - Rotation Update Is Not Natively On the SO(3) Manifold
 
