@@ -177,10 +177,10 @@ $$
 
 \\
 \text{Correction: } \hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k\tilde{\mathbf y}_k
-\end{gather*}
 
 \\
 \text{Posterior covariance update: } \mathbf P_k = (\mathbf I-\mathbf K_k\mathbf H_k),\mathbf P_k^-,(\mathbf I-\mathbf K_k\mathbf H_k)^\top + \mathbf K_k\mathbf R_k\mathbf K_k^\top
+\end{gather*}
 $$
 
 This set up is called "the extended Kalman Filter" (EKF)
@@ -210,7 +210,7 @@ IMU measurements are linear acceleration $\tilde{\mathbf{a}}$ in `a/m^2`, and an
 $$
 \begin{gather*}
 \begin{aligned}
-\tilde{\mathbf{a}}, \; \tilde{\bm{\omega}} \in \mathbb{R}^3
+\tilde{\mathbf{a}}, \; \tilde{\mathbf{\omega}} \in \mathbb{R}^3
 \end{aligned}
 \end{gather*}
 $$
@@ -278,14 +278,17 @@ Traditional Extended Kalman Filters (EKF) keep the system orientation (expre
 $$
 \begin{gather*}
 \begin{aligned}
-& q = q + K(q)?
+\boldsymbol{\delta\theta} &= K\,\mathbf{r} \\[6pt]
+\delta q &\approx \begin{bmatrix} 1 \\[4pt] \tfrac{1}{2} \boldsymbol{\delta\theta} \end{bmatrix} \\[6pt]
+q^{+} &= \delta q \otimes q^{-} \\[6pt]
+q^{+} &\leftarrow \dfrac{q^{+}}{\lVert q^{+} \rVert} \quad \text{(normalization)}
 \end{aligned}
 \end{gather*}
 $$
 
 followed by normalizing the quaternion. Because of the extra normalization step, errors could accumulate over time.
 
-ESKF keeps "correction-to-current-estimate" terms as its states. The last step - the update step, rotation is instead updated by $R = R (K * \delta R)$, so no extra normalization is needed.
+ESKF keeps "correction-to-current-estimate" terms (or nominal quaternion) as its states. The correction is in $R^3$, but there's an extra step: the nominal quaternion is updated multiplicatively outside the Kalman machinery. That eliminates the need for ad-hoc normalization and maintains consistency
 
 ## Reason 2 - Loss of Significance
 
@@ -293,4 +296,4 @@ EKF uses raw position and orientation as state vectors. These values can vary, i
 
 ESKF on the other hand, does not suffer this issue because its states ("correction-to-current-estimate" terms) are close to 0.
 
-## Interested in reading more about ESKF? [Please check out this article](https://ricojia.github.io/2024/03/24/robotics-full-eskf/)!
+## Interested in reading more about ESKF? [Please check out this article](https://ricojia.github.io/2024/03/24/robotics-full-eskf/)
