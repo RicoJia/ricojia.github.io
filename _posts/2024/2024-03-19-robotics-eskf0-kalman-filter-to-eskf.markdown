@@ -81,7 +81,7 @@ $$
 $$
 \begin{gather*}
 \begin{aligned}
-& \mathbf P_k = (\mathbf I-\mathbf K_k\mathbf C)\,\mathbf P_k^-\,(\mathbf I-\mathbf K_k\mathbf C)^\top + \mathbf K_k\mathbf R\,\mathbf K_k^\top.  \tag{★}
+& \mathbf P_k = (\mathbf I-\mathbf K_k\mathbf C)\,\mathbf P_k^-\,(\mathbf I-\mathbf K_k\mathbf C)^\top + \mathbf K_k\mathbf R\,\mathbf K_k^\top.  \text{(★)}
 \end{aligned}
 \end{gather*}
 $$
@@ -92,7 +92,7 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial\,\operatorname{tr}(\mathbf P_k)}{\partial\,\mathbf K_k}=0 \;\Longrightarrow\;
-\boxed{\;\mathbf K_k = \mathbf P_k^-\,\mathbf C^\top\,(\mathbf C\,\mathbf P_k^-\,\mathbf C^\top + \mathbf R)^{-1}\;}.  \tag{Kalman Gain}
+\boxed{\;\mathbf K_k = \mathbf P_k^-\,\mathbf C^\top\,(\mathbf C\,\mathbf P_k^-\,\mathbf C^\top + \mathbf R)^{-1}\;}.  \text{(Kalman Gain)}
 \end{aligned}
 \end{gather*}
 $$
