@@ -13,15 +13,13 @@ tags:
 
 Debugger;
 
-- F11: step into; 
+- F11: step into;
 - Shift f11: step out
 - F5 continue
 - F10: step over
 - ctrl-shift-y to open debug console
 
-
-
-##  Set Up VSCode For ROS2 Development In Docker
+## Set Up VSCode For ROS2 Development In Docker
 
 [Reference](https://www.youtube.com/watch?v=j28aUHbT_c4) This feature really is an UI of running gdb on ROS2 projects.
 
@@ -31,6 +29,7 @@ Debugger;
 3. Install `C/C++`, `CMake Tools` in the running container
 
 4. Make sure to set the workspace folder correctly `"workspaceFolder": "/home/mumble_robot"`, in [devcontainer.json](https://code.visualstudio.com/remote/advancedcontainers/change-default-source-mount)
+
     ```json
     {
         "extensions": [
@@ -45,10 +44,12 @@ Debugger;
         ],
         "workspaceFolder": "/home/mumble_robot"
     }
-    ``` 
+    ```
+
     - Press `Ctrl+Shift+P` (or Cmd+Shift+P on macOS) to open the Command Palette, then type and select “Dev Containers: Open Dev Container Configuration File”. This command will open your devcontainer.json directly.
 
-1. Create `${"workspaceFolder"}/.vscode`, then add `launch.json` 
+1. Create `${"workspaceFolder"}/.vscode`, then add `launch.json`
+
 ```json
 {
   "version": "0.2.0",
@@ -119,9 +120,18 @@ Debugger;
     ]
 }
 ```
+
     - **REMEMBER to set path to your executable**
 6. Set break points in a file, then hit `<F5>` to start the debug program. (the triangular button for debugging did not work)
 
+## ROS2 Launch File
+
+How to set up vscode debugging with ROS2 Launchfile:
+
+1. Install C/C++ and [the ROS plugin](https://marketplace.visualstudio.com/items?itemName=ms-iot.vscode-ros)
+2. Follow the ROS plugin page to add a `launch.json` in the root directory (in our case, `~/toolkitt/src/.vscode`)
+3. Set a breakpoint in your cpp/python file
+4. Hit `<F5>`. The program would pause at the breakpoint
 
 ## Remote SSH Configuration
 
@@ -136,7 +146,6 @@ Host <HOSTNAME>
 
 - To enable Python module clicking, go to extensions -> click `"install on <HOST>"` on python extension (10-15MB, typically less than 1-2%)
 
-
-## Latex Support 
+## Latex Support
 
 - $\| x \|$ works with Jekyll. Without escape, it won't
