@@ -105,7 +105,7 @@ A 2D sonar scannar sends a vertical planar sound wave around 360 degrees (horizo
 ### How 3D Sonar Imaging Works
 
 
-This is a very helpful document on learning about [the SeaBeam instruments Sonar Imaging Camera](https://lismap.uconn.edu/wp-content/uploads/sites/2333/2018/11/SeaBeamMultibeamTheoryOperation.pdf)
+Here is a very helpful document on learning about [the SeaBeam instruments Sonar Imaging Camera](https://lismap.uconn.edu/wp-content/uploads/sites/2333/2018/11/SeaBeamMultibeamTheoryOperation.pdf)
 
 Below is a classic "Mills-cross" setup
 
