@@ -107,11 +107,11 @@ A 2D sonar scannar sends a vertical planar sound wave around 360 degrees (horizo
 
 Here is a very helpful document on learning about [the SeaBeam instruments Sonar Imaging Camera](https://lismap.uconn.edu/wp-content/uploads/sites/2333/2018/11/SeaBeamMultibeamTheoryOperation.pdf)
 
-Below is a classic "Mills-cross" setup
+**A classic "Mills-cross" setup**
 
-1. Under the hull is a transducer array—hundreds-to-thousands of ceramic (piezo) elements laid out in a line (or sometimes two lines). The transducer creates a ping
+1. Under the hull there is a transducer array—hundreds-to-thousands of ceramic (piezo) elements laid out in a line (or sometimes two lines). The transducer creates a ping
     ![](https://i.postimg.cc/KYgp7CG9/Screenshot-from-2025-06-23-21-20-57.png)
-2. Each ping goes a projector, which carefully applies delays (or phase shifts) to every element so the individual wavelets add up in a chosen direction and cancel elsewhere. (Constructive and Deconstructive Interference, Similar to Phase Array Radar). So this looks like a fan pattern
+2. Each ping goes to a projector array, which carefully applies delays (or phase shifts) to every element so the individual wavelets add up in a chosen direction and cancel elsewhere. (Constructive and Deconstructive Interference, Similar to Phase Array Radar). The output wave looks like a fan:
 
     ![](https://i.postimg.cc/SsFTgVjm/Screenshot-from-2025-06-23-21-21-03.png)
 
@@ -125,7 +125,7 @@ Below is a classic "Mills-cross" setup
 
         ![](https://i.postimg.cc/Kjm92znV/Screenshot-from-2025-06-23-22-14-25.png)
 
-### Math for solving for distances: TODO
+### Math for Beam Forming: TODO
 
 
 Leading players:
