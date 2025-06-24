@@ -21,7 +21,7 @@ American Society for Testing and Materials (ASTM) and American Society of Mechan
 - Radiographic Testing (RT)
 - Visual Inspection (VT)
 - Near-surface Eddy-Current-Testing ([ASTM E2884-22](https://www.astm.org/e2884-22.html))
-  - [A quick tutorial on eddy current is here](../2017/2017-06-01-electronics-eddy-current.markdown)
+  - [A quick tutorial on eddy current is here](https://ricojia.github.io/2017/06/01/electronics-eddy-current/)
 
 Different liquids could cause different types of corrosions:
 
