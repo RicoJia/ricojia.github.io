@@ -68,9 +68,9 @@ Explaining why relatively low precision and recall happens is not easy, as ML sy
 
 ## Sonar Imaging
 
-Sonar imaging cameras are able to create a 2D map or 3D point cloud.
+Sonar imaging cameras are able to create a 2D occupancy map or 3D point cloud.
 
-A 2D sonar imaging camera sends a vertical planar sound wave around 360 degrees (horizontal). It also has 1 receiver that receives the signal. If there is an obstacle, we will get a ping. It's possible that at one fixed angle, we get multiple pings. That could be due to:
+A 2D sonar scannar sends a vertical planar sound wave around 360 degrees (horizontal). It also has 1 receiver that receives the signal. If there is an obstacle, we will get a ping. It's possible that at one fixed angle, we get multiple pings. That could be due to:
 
 - Multiple objects being detected
 - Multipath reflection taking place. This is the case where the sound wave gets reflected back to the receiver, but at a later time
@@ -93,4 +93,41 @@ A 2D sonar imaging camera sends a vertical planar sound wave around 360 degrees 
 </p>
 </div>
 
-### 3D Sonar Imaging TODO
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/BQ2m48Mv/2d-sonar-scan.jpg" height="300" alt=""/>
+        <figcaption>2D Sonar Scan</figcaption>
+    </figure>
+</p>
+</div>
+
+### How 3D Sonar Imaging Works
+
+
+This is a very helpful document on learning about [the SeaBeam instruments Sonar Imaging Camera](https://lismap.uconn.edu/wp-content/uploads/sites/2333/2018/11/SeaBeamMultibeamTheoryOperation.pdf)
+
+Below is a classic "Mills-cross" setup
+
+1. Under the hull is a transducer array—hundreds-to-thousands of ceramic (piezo) elements laid out in a line (or sometimes two lines). The transducer creates a ping
+    ![](https://i.postimg.cc/KYgp7CG9/Screenshot-from-2025-06-23-21-20-57.png)
+2. Each ping goes a projector, which carefully applies delays (or phase shifts) to every element so the individual wavelets add up in a chosen direction and cancel elsewhere. (Constructive and Deconstructive Interference, Similar to Phase Array Radar). So this looks like a fan pattern
+
+    ![](https://i.postimg.cc/SsFTgVjm/Screenshot-from-2025-06-23-21-21-03.png)
+
+3. A receiver (hydrophone) array 
+    1.  After the ping, each patch of the sea bed sends back a plane-wave (to very good approximation). Each receiver receives them and could form their own waveform: $A(t)$ (amplitude), and $\phi(t)$ (phase)
+        - The receive array is at most a few metres long; the covered seabed distance (swath) is hundreds of metres away.
+        - We assume the distance from the camera to sea bed is much longer than the receiver array size (far-field condition): `Range >> L^2/lambda`. A single echo from the seabed will have an arbitrary angle of incidence $\theta$ on to receiver 3, 2, 1. It will first reach 3, then travel by $d sin\theta$ to 2, then $d sin\theta$ to 1. 
+            ![](https://i.postimg.cc/85Ry9WrM/Screenshot-from-2025-06-23-22-14-44.png)
+        - **the spherical wavefront that leaves any single patch is practically planar by the time it spans the array.** Therefore, 
+    2. So effectively, we can work out the **beams** to each patch of the seabed, based on the received waveforms at each receiver
+
+        ![](https://i.postimg.cc/Kjm92znV/Screenshot-from-2025-06-23-22-14-25.png)
+
+### Math for solving for distances: TODO
+
+
+Leading players:
+
+- Micron 
