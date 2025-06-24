@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - A Survey On Oil Pipe Inspection Robotics (Revising)
 date: '2024-12-20 13:19'
-subtitle: 
+subtitle: Sonar Imaging
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -56,13 +56,41 @@ Explaining why relatively low precision and recall happens is not easy, as ML sy
 ### Gas Meter
 
 - What is LEL in Gas meter? (Lower Explosive Limit)
-    - Calibration: to set a baseline of "good air". But when you calibrate it in an H2S rich environment, it's not good
-    - "Unknown gas 100" can be resolved by powercycling
-    - Some gas meters have two modes: slow and fast
-    - "Zero-air" mode means clean air. If a flammable gas is detected, it can trigger an alarm.
-
+  - Calibration: to set a baseline of "good air". But when you calibrate it in an H2S rich environment, it's not good
+  - "Unknown gas 100" can be resolved by powercycling
+  - Some gas meters have two modes: slow and fast
+  - "Zero-air" mode means clean air. If a flammable gas is detected, it can trigger an alarm.
 
 ## Inspection with 3D LiDAR Examples
 
 - [Construction inspection using quadruped](https://www.youtube.com/watch?v=Eyl6II_tB3k)
 - [3D Factory Mapping using Livox Mid-360](https://www.bilibili.com/video/BV1zb411Z731/?spm_id_from=333.337.search-card.all.click&vd_source=ae0bfd67b026e62fbc37ca190dfd1839)
+
+## Sonar Imaging
+
+Sonar imaging cameras are able to create a 2D map or 3D point cloud.
+
+A 2D sonar imaging camera sends a vertical planar sound wave around 360 degrees (horizontal). It also has 1 receiver that receives the signal. If there is an obstacle, we will get a ping. It's possible that at one fixed angle, we get multiple pings. That could be due to:
+
+- Multiple objects being detected
+- Multipath reflection taking place. This is the case where the sound wave gets reflected back to the receiver, but at a later time
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/5yq2NNZC/sonar-imaging.png" height="200" alt=""/>
+        <figcaption>Sonar Imaging</figcaption>
+    </figure>
+</p>
+</div>
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/1tR8nFrK/multipath.jpg" height="200" alt=""/>
+        <figcaption>Multipath-Reflection</figcaption>
+    </figure>
+</p>
+</div>
+
+### 3D Sonar Imaging TODO
