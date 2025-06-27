@@ -1,7 +1,7 @@
 ---
 layout: post
-title: C++ - [Concurrency 1] Various Concurrent Methods
-date: '2023-02-19 13:19'
+title: C++ - [Concurrency 4] Various Concurrent Methods
+date: '2023-06-04 13:19'
 subtitle: Asynchonous Programming, Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD, SSE2
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"

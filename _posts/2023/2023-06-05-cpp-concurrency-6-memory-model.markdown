@@ -1,7 +1,7 @@
 ---
 layout: post
-title: C++ - [Concurrency 3] Memory Model
-date: '2023-02-21 13:19'
+title: C++ - [Concurrency 6] Memory Model
+date: '2023-06-06 13:19'
 subtitle: 
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
