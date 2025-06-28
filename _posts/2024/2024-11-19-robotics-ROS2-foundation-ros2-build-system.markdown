@@ -11,12 +11,13 @@ tags:
 comments: true
 ---
 
-## Build Tool 
+## Build Tool
 
 A build tool operates on **a set of packages**
-1. determines the dependency graph 
+
+1. determines the dependency graph
 2. invokes the specific build system for each package in topological order.
-3. for a specific package, knows how to setup the environment for it, invokes the build, and sets up the environment to use the built package. 
+3. for a specific package, knows how to setup the environment for it, invokes the build, and sets up the environment to use the built package.
 
 The build system operates on a single package: `CMake`, `Make`, `Python setuptools`. `catkin` and `ament_cmake` are based on `CMake`
 
@@ -29,12 +30,13 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
 
 [Reference](https://roboticsbackend.com/ros2-package-for-both-python-and-cpp-nodes/)
 
-1. We’ll create a ROS2 Cpp package, which contains a package.xml and CMakeLists.txt. 
+1. We’ll create a ROS2 Cpp package, which contains a package.xml and CMakeLists.txt.
 
     ```bash
-    $ cd ~/ros2_ws/src/
-    $ ros2 pkg create my_cpp_py_pkg --build-type ament_cmake
+    cd ~/ros2_ws/src/
+    ros2 pkg create my_cpp_py_pkg --build-type ament_cmake
     ```
+
     - See:
 
         ```
@@ -129,9 +131,10 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
 An interface package defines ROS2 messages, services, and common utilities for other ROS2 packages. To create Python utilities, once a Python package is built and installed, and the workspace is sourced, its Python modules in `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` are automatically added to the Python path. What we need are as follow:
 
 - Make sure the python package files are here:
-    - Empty `MY_INTERFACE/MY_INTERFACE/__init__.py`
-    - Module file: `MY_INTERFACE/MY_INTERFACE/My_Module`
+  - Empty `MY_INTERFACE/MY_INTERFACE/__init__.py`
+  - Module file: `MY_INTERFACE/MY_INTERFACE/My_Module`
 - Add `MY_INTERFACE/setup.py`:
+
     ```python
     from setuptools import setup, find_packages
 
@@ -153,7 +156,9 @@ An interface package defines ROS2 messages, services, and common utilities for o
         },
     ) 
     ```
+
 - `CMakeLists.txt`
+
     ```c
     install(
         DIRECTORY mumble_interfaces/
@@ -163,13 +168,28 @@ An interface package defines ROS2 messages, services, and common utilities for o
     ament_package()
     ```
 
-    - The destination `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` **is carefully chosen**, because that's where generated srv, msg files go. Why? Because when there are packages with the same name at two different locations, Python will look into one, and throw a `file-not-found` error if files are not there.
-    - We are NOT using `ament_python_install_package` because it's meant for pure Python packages. We need to manually install `MY_INTERFACE` in `install/MY_INTERFACE/lib/python3.10/site-packages`
+  - The destination `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` **is carefully chosen**, because that's where generated srv, msg files go. Why? Because when there are packages with the same name at two different locations, Python will look into one, and throw a `file-not-found` error if files are not there.
+  - We are NOT using `ament_python_install_package` because it's meant for pure Python packages. We need to manually install `MY_INTERFACE` in `install/MY_INTERFACE/lib/python3.10/site-packages`
 
 - User Code:
 
 ```python
 from MY_INTERFACE import MyFunc
 ```
+
     - Or one can use: `python3 -c import MY_INTERFACE.My_Module` in the same console, because after sourcing `install/setup.bash`, the installed file is added to the Python Path. 
     - One can check the python path with: `python3 -c "import sys; print(sys.path)"` or `echo $PYTHONPATH`
+
+## `colcon build`
+
+### `--symlink-install`
+
+- Without `--symlink-install`: copies artifacts into `install/`.
+- With the flag: replaces many of those copies with symlinks for quicker iteration.
+
+| Mode                    | What goes into `install/…`                                                                                                             | Practical consequences                                                                                                            |                                                                                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Default (no flag)**   | A *copy* of every file produced by each package’s normal **install** step (executables, `.so` libraries, Python packages, resources…). | Safe and self-contained, but every rebuild recopies files; editing a Python script in `src/` has **no effect** until you rebuild. |                                                                                                                                                |
+| **`--symlink-install`** | Wherever possible, **symbolic links** that point back into the build or source trees instead of copies.                                | Much faster iteration during development: change a Python file, re-source \`setup.\[bash                                          | zsh]`, and run again—no rebuild needed. Not all artifacts can be symlinked (e.g. versioned`.so\` chains that CMake creates are still copied). |
+
+Note, symlinks are NOT what `ldd` gives - **ldd resolves all shared library dependencies of an executable**, while the symlinks
