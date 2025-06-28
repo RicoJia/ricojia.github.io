@@ -2,7 +2,7 @@
 layout: post
 title: Linux - Filesystem
 date: '2018-01-10 13:19'
-subtitle: inode, soft (sym)link
+subtitle: inode, soft (sym)link, FIFO
 comments: true
 tags:
     - Linux
@@ -83,4 +83,12 @@ You keep your photo library on the USB drive but want **a convenient alias in yo
 ln -s /media/usbdrive/Photos/2024/Vacation ~/Pictures/Vacation2024
 ```
 
-Note that hard links cannot be created cross file-system boundaries
+**Note that hard links cannot be created cross file-system boundaries**
+
+## FIFO (a.k.a Named Pipe For Its Behavior)
+
+A **FIFO special file** is a rendez-vous point in the filesystem that **lets two or more processes exchange a byte stream**, **first-in/first-out**, just like the anonymous pipe you get from pipe().
+
+- You create one with `mkfifo mypipe`.
+- The directory entry **holds no data**; the kernel moves the bytes directly between processes once both ends are open.
+- Because it lives in the directory tree, unrelated processes can open it by name (unlike an anonymous pipe).
