@@ -2,7 +2,7 @@
 layout: post
 title: Linux - Filesystem
 date: '2018-01-10 13:19'
-subtitle: inode, soft (sym)link, FIFO
+subtitle: inode, soft/symbolic link, FIFO
 comments: true
 tags:
     - Linux
@@ -33,9 +33,9 @@ Inside the filesystem, a directory is just **a table** with rows (or **directory
 
 This way you can have many hard links (filenames TODO?) all referring to the same directory inode. Also, this means renaming a file does not change the file's data, only the directory data?
 
-## Soft and Hardlinks
+## Soft and Hard Links
 
-### Softlink
+### Soft Link
 
 Symlinks are a.k.a softlinks. They are a separate inode whose data is a **text path** to the target. Deleting or moving the target leaves the link dangling. It can be:
 
@@ -44,7 +44,7 @@ Symlinks are a.k.a softlinks. They are a separate inode whose data is a **text p
 - `ls -l` shows `lrwxrwxrwx 1 … -> target`
 - Create a symlink: `ln -s /path/tofile linkname`
 
-### Hardlink
+### Hard Link
 
 Because any directory entry can point to any inode on the same filesystem, you can create more than one entry that references the exact same inode number. Such an entry is a "hardlink"
 

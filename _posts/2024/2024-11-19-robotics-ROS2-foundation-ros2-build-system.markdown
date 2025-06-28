@@ -192,4 +192,10 @@ from MY_INTERFACE import MyFunc
 | **Default (no flag)**   | A *copy* of every file produced by each package’s normal **install** step (executables, `.so` libraries, Python packages, resources…). | Safe and self-contained, but every rebuild recopies files; editing a Python script in `src/` has **no effect** until you rebuild. |                                                                                                                                                |
 | **`--symlink-install`** | Wherever possible, **symbolic links** that point back into the build or source trees instead of copies.                                | Much faster iteration during development: change a Python file, re-source \`setup.\[bash                                          | zsh]`, and run again—no rebuild needed. Not all artifacts can be symlinked (e.g. versioned`.so\` chains that CMake creates are still copied). |
 
-Note, symlinks are NOT what `ldd` gives - **ldd resolves all shared library dependencies of an executable**, while the symlinks
+More specifically, without `--symlink-install`, these files are copied:
+
+- Build tree of each package, e.g. `${WS}/build/my_pkg/lib/libmy.so ${WS}/install/my_pkg/lib/libmy.so` - Compiled binaries and shared objects produced by CMake/ament
+- Source tree for Python packages, e.g. `${WS}/src/my_py_pkg/my_py_pkg/*.py` (after `setup.py` install runs inside the build step) `${WS}/install/my_py_pkg/lib/python3.x/site-packages/my_py_pkg/*.py` Python modules, entry-point scripts
+- Resource files declared with install(DIRECTORY …) or ament_index_register_resource, e.g., Launch files, URDFs, icons, etc.
+
+**Note, symlinks are NOT what `ldd` gives - **ldd resolves all shared library dependencies of an executable**, [while a symlink is a separate inode whose data is the path to a another inode](https://ricojia.github.io/2018/01/10/linux-filesystems/)**
