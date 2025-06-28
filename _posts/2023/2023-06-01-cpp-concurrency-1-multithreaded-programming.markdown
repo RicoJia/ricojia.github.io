@@ -134,8 +134,6 @@ int main()
 }
 ```
 
-
-
 Some subtleties about `std::thread` include:
 
 - When the `std::thread` constructor is called it **decay-copies** every argument into an **internal tuple** so the new thread has **its own copy**.
