@@ -1,8 +1,8 @@
 ---
 layout: post
-title: C++ - Useful Macros
+title: C++ - Macros
 date: '2023-01-13 13:19'
-subtitle: Why do we still need macros for C++? Please click in and take a look!
+subtitle: Why Macros, Compiler Args
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -44,4 +44,19 @@ CV_IMPL void cvFindExtrinsicCameraParams2(...){
 This is effectively `extern "C" void cvFindExtrinsicCameraParams2(...){}` and `void cvFindExtrinsicCameraParams2(...){}`.
 
 - `extern "C"` is a "linkage specifier". In C++, function names are mangled so they will be unique in the object code. E.g., `foo()` could become `_fooid1()`. This is also the underlying mechanism for function overloading. However, C does not have function overloading. So, when linking C code in C++, we need to make sure names of function symbols are unique, and exclude name mangling.
+
+## Compiler Args
+
+Life cycle of adding a compiler arg:
+1.  “turn on” a preprocessor‐symbol by passing `-D<NAME>` to the compiler.
+2. In the top-level CMake:
+```c
+add_compile_definitions(PRINT_DEBUG_MSGS)
+```
+3. In source code:
+```
+#ifdef PRINT_DEBUG_MSGS (or #if defined(PRINT_DEBUG_MSGS))
+```
+    - If this is not defined, it won't be compiled
+
 
