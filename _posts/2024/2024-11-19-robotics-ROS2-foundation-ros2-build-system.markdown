@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [ROS2 Foundation 3] ROS2 Build System
 date: '2024-11-19 13:19'
-subtitle: Various Things to Note For Building Dockerized ROS2 App
+subtitle: colcon-build, interface package, dpkg, rosdep
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -26,7 +26,7 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
 - `find_package` helps the graph. `FindFoo.cmake` or `FindFoo.cmake` for the dependency must be in a prefix that CMake searches implicitly, like `/usr`, or a location provided through env vars `CMAKE_PREFIX_PATH`, or `CMAKE_MODULE_PATHCMAKE_MODULE_PATH`
 - Install a shared_lib in a non-default location, that location needs to be in `LD_LIBRARY_PATH`.
 
-## ROS 2 Cpp And Python Package
+### ROS 2 Cpp And Python Package
 
 [Reference](https://roboticsbackend.com/ros2-package-for-both-python-and-cpp-nodes/)
 
@@ -126,6 +126,84 @@ The build system operates on a single package: `CMake`, `Make`, `Python setuptoo
     ament_package()
     ```
 
+## Packaging & Build System
+
+- In ROS2, cpp files require `CMakeLists.txt`, python files require `setup.cfg` and `setup.py`:
+
+```
+cpp_package_1/
+    CMakeLists.txt
+    include/cpp_package_1/
+    package.xml
+    src/
+
+py_package_1/
+    package.xml
+    resource/py_package_1
+    setup.cfg
+    setup.py
+    py_package_1/
+```
+
+- With Colcon, I like:
+
+```
+colcon build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1 --packages-select dummy_test --cmake-force-configure
+```
+
+- `-DCMAKE_BUILD_TYPE=RelWithDebInfo`: This sets the CMake variable CMAKE_BUILD_TYPE to RelWithDebInfo, meaning “Release with Debug Info.”. Despite the existence of the debugging symbols, below can still happen with optimization:
+  - Lines can be merged or removed
+  - Variables can vanish
+  - Stepping can feel “jumpy”
+  - use a pure Debug build (no optimization) or something like -Og (for GCC) or -O1 -g (for Clang) for real debug build
+
+- `-DCMAKE_EXPORT_COMPILE_COMMANDS=1`: Tells CMake to generate a compile_commands.json file in your build directory. This JSON file lists all compiler invocations for your project, which is extremely useful for tools like clangd, code analyzers, and IDEs that need to know your include paths and compiler flags.
+- `--cmake-force-configure` This is not a standard CMake flag; it’s a colcon (ROS 2 build tool) argument. It forces CMake to re-run its configuration step for all packages, even if CMake thinks nothing has changed.
+
+### `rosdep`
+
+[rosdep page](https://docs.ros.org/en/humble/Tutorials/Intermediate/Rosdep.html)
+
+`rosdep` will:
+
+1. check for `package.xml` files in its path or for a specific package and find the rosdep keys stored within.
+    - The dependencies in the package.xml file are generally referred to as “rosdep keys”.
+    - Build tags
+        - `<depend>` are dependencies that should be provided at both build time and run time for your package.
+            - For C++ packages, if in doubt, use this tag.
+            - Pure Python packages generally don’t have a build phase, so should never use this and should use `<exec_depend>` instead.
+        - `<exec_depend>` declares dependencies for shared libraries, executables, Python modules, launch scripts and other files required when running your package.
+
+2. Query keys in a central index to find the appropriate ROS packages
+    - Retrieving the central index on to your local machine (`/etc/ros/rosdep/sources.list.d/20-default.list`) so that it doesn’t have to access the network every time it runs
+3. Install the ROS packages
+
+### Finding A Package Depedency and Version
+
+If I have installed `behaviortree_cpp` in the `/opt` space, and I want to inspect its version,
+
+1. `dpkg -l | grep behaviortree`
+
+```
+ii  ros-humble-behaviortree-cpp                        4.7.1-1jammy.20250513.175053            amd64        This package provides the Behavior Trees core library.
+ii  ros-humble-behaviortree-cpp-v3                     3.8.7-1jammy.20250429.201614            amd64        This package provides the Behavior Trees core library.
+```
+
+2. `ros2 pkg behaviortree_cpp`: the path to ros-installed binary
+
+```
+└─  $ ros2 pkg prefix behaviortree_cpp
+/root/my_ws/install/behaviortree_cpp
+
+cd /root/my_ws/install/behaviortree_cpp/lib
+dpkg -l | grep behaviortree_cpp
+ii  ros-humble-behaviortree-cpp                        4.7.1-1jammy.20250513.175053            amd64        This package provides the Behavior Trees core library.
+ii  ros-humble-behaviortree-cpp-v3                     3.8.7-1jammy.20250429.201614            amd64        This package provides the Behavior Trees core library.
+```
+
+- The binary is in the `/lib` directory
+- To see `package.xml`, etc, go to `cd /root/my_ws/install/behaviortree_cpp/share`. This can be checked using `ros2 pkg prefix behaviortree_cpp --share`
+
 ## C++ & Python Interface Packages
 
 An interface package defines ROS2 messages, services, and common utilities for other ROS2 packages. To create Python utilities, once a Python package is built and installed, and the workspace is sourced, its Python modules in `install/MY_INTERFACE/local/lib/python3.10/dist-packages/MY_INTERFACE` are automatically added to the Python path. What we need are as follow:
@@ -199,3 +277,10 @@ More specifically, without `--symlink-install`, these files are copied:
 - Resource files declared with install(DIRECTORY …) or ament_index_register_resource, e.g., Launch files, URDFs, icons, etc.
 
 **Note, symlinks are NOT what `ldd` gives - **ldd resolves all shared library dependencies of an executable**, [while a symlink is a separate inode whose data is the path to a another inode](https://ricojia.github.io/2018/01/10/linux-filesystems/)**
+
+### When to Rebuild?
+
+Sometimes, My ros2 binary didnt seem updated: when I updated a file in behavior_executor
+
+- Solution1: `rm -rf install/<BINARY>`. Afterwards, --cmake-clean-cache starts working, without it is also fine
+- I could build in `~/toolkitt_ws/src` (not in `~/toolkitt_ws`)

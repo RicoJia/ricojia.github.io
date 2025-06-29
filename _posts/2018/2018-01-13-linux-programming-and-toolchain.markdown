@@ -26,7 +26,7 @@ ELF is both the link-time and runtime container, it covers static executables, p
 
 ### ldd - Inspect Shared-Library Dependencies
 
-`ldd some_executable` asks the dynamic linker to resolve each shared object name, and prints `libsomething.so.1 => /actual/path/libsomething.so.1 (0xaddress)`
+`ldd some_executable` asks the dynamic linker to resolve each shared object name (they are loaded during runtime), and prints `libsomething.so.1 => /actual/path/libsomething.so.1 (0xaddress)`
 
 ```bash
 └─  $ ldd ./lib/libbehavior_executor.so

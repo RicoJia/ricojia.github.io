@@ -29,6 +29,24 @@ tags:
     sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi`
     ```
 
+## Programming
+
+### Linters
+
+Here are the linters I generally use:
+
+| Language   | Version | Linters/Analyzers               |
+| ---------- | ------- | ------------------------------- |
+| C++        | C++17   | cppcheck, cpplint, clang format |
+| C          | C11     | cppcheck, cpplint, clang format |
+| CMake      | 3.28.1  | lint\_cmake                     |
+| Python     | 3.10.12 | flake8, pep257, pylint, mypy    |
+| JavaScript | 14.x    | ESLint                          |
+| Rust       | 1.72.1  | cargo test, cargo clippy        |
+| Dockerfile | 25.0.2  | hadolint                        |
+| XML        | –       | xmllint                         |
+| YAML       | –       | yamllint                        |
+
 ## Optional
 
 - fzf: Command line fuzzy finder
