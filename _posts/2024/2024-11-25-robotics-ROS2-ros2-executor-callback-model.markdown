@@ -104,7 +104,7 @@ In ROS2, callback groups are a synchronization mechanism for managing concurrent
     - Prevents its callbacks from being executed in parallel, so that callbacks in the group were executed by a SingleThreadedExecutor.
         - Imagine in a MultiThreadedExecutor, we would need a lock for functions in this group to make them serialized.
     - A node’s default callback group is MEC
-- Reentrant callback group: 
+- Reentrant callback group allows the same subscription / service to run multiple invocations in parallel.: 
     - "Callbacks in this group promise to be thread-safe, so run them however you like." 
     - So this allows the executor to schedule and execute the group’s callbacks without restrictions.
 
