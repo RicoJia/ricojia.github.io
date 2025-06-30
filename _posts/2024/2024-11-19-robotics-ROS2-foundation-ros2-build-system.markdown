@@ -282,8 +282,12 @@ More specifically, without `--symlink-install`, these files are copied:
 
 Scenario 1: Sometimes, My ros2 binary didnt seem updated: when I updated a file in behavior_executor
 
-- Solution1: `rm -rf install/<BINARY>`. Afterwards, --cmake-clean-cache starts working, without it is also fine
-- I could build in `~/toolkitt_ws/src` (not in `~/toolkitt_ws`)
+- Solution1: `rm -rf build/<BINARY> install/<BINARY>`. Afterwards, --cmake-clean-cache starts working, without it is also fine
+  - One caveat is, I could build in `~/MY_WS/src` (not in `~/MY_WS`). This means you might see a successful build, without actually building in the right place
+- Solution2:  `--cmake-clean-first`
+  - This flag tells colcon to run the CMake “clean” target before building each CMake‐based package. In practice:
+    - Without `--cmake-clean-first`, colcon will do an incremental build: it only rebuilds targets whose inputs (source, CMakeLists, headers) have changed, and it won’t clear out old artifacts.
+  - However, note: It **doesn’t purge the CMake cache**. If you need CMake to re-run the configure step (e.g. you changed `find_package` flags or `toolchain settings`), you’ll also want: `--cmake-force-configure`
 
 Scenario 2: How to build a package from source:
 

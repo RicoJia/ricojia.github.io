@@ -44,8 +44,13 @@ One can check failed checks only (`report fail`): `ros2 doctor -rf`. [Reference]
 
 In ROS 2 design, it's generally good to keep in mind what `QoS` we might need for each topic
 
-- `ros2 topic echo /your_topic --qos-reliability best_effort`
+- `ros2 topic echo /your_topic --qos-reliability=best_effort`
   - Messages might be dropped if the subscriber cannot keep up or if the network connection is unreliable.
+- Can use `ros2 node info /wayfinder/head_stereo_camera/depth_left_camera` to see which nodes are publishing / subscribing via this topic
+- Checking pub-sub **qos**: `ros2 topic info TOPIC --verbose`
+
+- `ros2 topic hz` currentlty doesn't have a `qos` option
+- Useful: `ros2 topic echo /diagnostics`: monitors if there are dropped frames, overheating, etc. Any node can publish to `/diagnostics` . (Hardware drivers, software nodes, etc.)
 
 ### Multicast
 

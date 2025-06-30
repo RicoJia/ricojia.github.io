@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [ROS2 Foundation] Ros2 Miscellaneous Thingies
 date: '2024-11-30 13:19'
-subtitle: Name Spacing, Weird Issues
+subtitle: Name Spacing, Weird Issues 
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
