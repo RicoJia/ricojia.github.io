@@ -52,6 +52,12 @@ In ROS 2 design, it's generally good to keep in mind what `QoS` we might need fo
 - `ros2 topic hz` currentlty doesn't have a `qos` option
 - Useful: `ros2 topic echo /diagnostics`: monitors if there are dropped frames, overheating, etc. Any node can publish to `/diagnostics` . (Hardware drivers, software nodes, etc.)
 
+- [QoS](https://docs.ros.org/en/rolling/Concepts/Intermediate/About-Quality-of-Service-Settings.html):
+    - In order to make the transition from ROS 1 to ROS 2 easier, exercising a similar network behavior is desirable. By default, publishers and subscriptions in ROS 2 have “keep last” for history with a queue size of 10, “reliable” for reliability, “volatile” for durability, and “system default” for liveliness. Deadline, lifespan, and lease durations are also all set to “default”.
+    - `best_effort` = UDP, `Reliable` = TCP
+
+
+
 ### Multicast
 
 This command is a diagnostic tool that's often used in ROS 2 for discovery and communication between nodes
