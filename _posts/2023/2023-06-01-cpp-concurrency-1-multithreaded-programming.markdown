@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Concurrency 1] Multithreaded Programming
 date: '2023-06-01 13:19'
-subtitle: `std::thread`, mutex, atomic_variables
+subtitle: `std::thread`, mutex, atomic_variables, Threading-Monitoring
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -26,7 +26,6 @@ std::atomic   // lock-free atomics, fences, memory-order flags
 - These components originated from **Boost’s experimental threads library**; Boost later aligned with the ISO STL.
 - RAII underpins safe resource management across threads.
 - A well-defined memory model plus low-level atomic primitives enables predictable synchronization.
-
 
 The difference between **synchronity**, **single-threaded asynchrony**, and **multithreading**
 
@@ -54,8 +53,8 @@ Multi-core systems still rely on **context switches** to juggle **more runnable 
 
 Rule of thumb: **Don’t default to multiprocess or multithread—measure** which model yields net benefit for your workload.
 
-
 ### Invariant
+>
 > An invariant is a statement that must always be true for a data structure (before & after each operation).
 
 In the context of multithreading, one example is to insert into a lock-free list. Some invariants are:
@@ -63,12 +62,12 @@ In the context of multithreading, one example is to insert into a lock-free list
 - Read `prev` and `next` pointers that must still satisfy `prev->next == next`.
 
 - Attempt `CAS(prev->next, next, newNode)`.
-    - If another thread changed `prev->next`, the invariant you relied on is gone → retry.
-    - On success, fix `newNode->next` and ensure `next->prev` eventually points back.
+  - If another thread changed `prev->next`, the invariant you relied on is gone → retry.
+  - On success, fix `newNode->next` and ensure `next->prev` eventually points back.
 
 ## Race Condition
 
-Definition – The final value (or overall outcome) could be different depending on the relative timing / ordering of two or more threads that access the same data. 
+Definition – The final value (or overall outcome) could be different depending on the relative timing / ordering of two or more threads that access the same data.
 
 Race conditions are likely NOT replicable under **a debugger**, or adding log statements. In those cases, debugging points or the additional log statements could mess up the timing required for the race conditions to happen. So they are also called a **Heisenbug**.
 
@@ -78,7 +77,7 @@ Mitigation checklist
 - Keep mutex-protected data private; **expose safe accessors** instead of **raw addresses.**
 - Use `std::atomic` or `higher-level concurrent containers` when the cost of a lock is too high.
 
-To overcaome the race condition, 
+To overcaome the race condition,
 
 | Technique                     | How it works                                                                                                                                                                              | Strengths                                                                      | Weaknesses                                                                                        |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
@@ -137,27 +136,24 @@ int main()
 Some subtleties about `std::thread` include:
 
 - When the `std::thread` constructor is called it **decay-copies** every argument into an **internal tuple** so the new thread has **its own copy**.
-    - “Decay-copy” means: **strip references, cv-qualifiers, and array/function types**, then copy or move the resulting value.
-    - This is why raw reference wouldn't work, and `std::ref` is used.
+  - “Decay-copy” means: **strip references, cv-qualifiers, and array/function types**, then copy or move the resulting value.
+  - This is why raw reference wouldn't work, and `std::ref` is used.
 
+## Threading-Monitoring
 
+The easiest way to show the current number of threads of a process is:
 
+```
+ps -o nlwp <PID>
 
+NLWP
+   5
+```
 
+- LWP is "Light Weight Processes", which are essentially threads in the linux land. "N" is "number".
 
+Alternatively, one can use `htop -H` (to show threads).
 
+![](https://i.postimg.cc/JhS89Fq3/Screenshot-from-2025-06-30-10-26-28.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- PID here is actually the thread ID
