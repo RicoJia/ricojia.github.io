@@ -280,7 +280,19 @@ More specifically, without `--symlink-install`, these files are copied:
 
 ### When to Rebuild?
 
-Sometimes, My ros2 binary didnt seem updated: when I updated a file in behavior_executor
+Scenario 1: Sometimes, My ros2 binary didnt seem updated: when I updated a file in behavior_executor
 
 - Solution1: `rm -rf install/<BINARY>`. Afterwards, --cmake-clean-cache starts working, without it is also fine
 - I could build in `~/toolkitt_ws/src` (not in `~/toolkitt_ws`)
+
+Scenario 2: How to build a package from source:
+
+- Clone it
+- Build the package ONLY with `--symlink-install`
+- Optional: Can mv the package binary you are trying to replace. E.g,
+
+    ```
+    sudo mv /opt/ros/humble/lib/libbehaviortree_cpp.so
+    ```
+
+- Source the setup.bash, then run it/ `colcon build --packages-select capacity_manager behavior_executor  behaviortree_cpp   --cmake-clean-first --allow-overriding behaviortree_cpp`

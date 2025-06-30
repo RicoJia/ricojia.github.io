@@ -30,7 +30,7 @@ class VertexVelocity : public g2o::BaseVertex<3, Vec3d> {
 
 ## Public, Protected and Private Inheritance
 
-C++ gives the user control for accessing parent classe's data. E.g., 
+C++ gives the user control for accessing parent classe's data. E.g.,
 
 ```cpp
 class B{
@@ -51,6 +51,7 @@ int get_c() const {return c;}   // bad, private members in B are never accessibl
 ```
 
 There are 3 types of inheritance. From parent class to child class, access mapping is as follows:
+
 - public: `public -> public`, `protected -> protected`
 - protected : `public -> protected`, `protected -> protected`
 - private: `public -> private`, `protected -> private`
@@ -120,14 +121,14 @@ int main() {
 }
 ```
 
-Because this way, the Vtable is able to include the proper destructors. 
+Because this way, the Vtable is able to include the proper destructors.
 
 ```bash
 [&~Base::Base]
 [&~Derived::Derived]
 ```
 
-If the base class doesn't have a virtual dtor: 
+If the base class doesn't have a virtual dtor:
 
 ```cpp
 #include <iostream>
@@ -156,7 +157,7 @@ int main() {
 ### Quirks
 
 - **Virtual functions cannot be called in ctor or dtor**
-    - This is because in construction or destruction, **when calling a virtual function, C++ does NOT use dynamic dispatch there**, and will only use the definition from the class where the constructor is defined. This is to **prevent calling a virtual function that touches uninitialized data.** See below example
+  - This is because in construction or destruction, **when calling a virtual function, C++ does NOT use dynamic dispatch there**, and will only use the definition from the class where the constructor is defined. This is to **prevent calling a virtual function that touches uninitialized data.** See below example
 
 ```cpp
 #include <iostream>
@@ -200,15 +201,21 @@ int main() {
 }
 ```
 
+- The specifier `final` can be used here to indicate that no child class can further overrding this function:
+
+```cpp
+virtual void foo() override final; 
+```
+
+    - `final`, and `override` should be in `.hpp`. Not in `.cpp`.
 
 ## Virtual Inheritance
 
-The Dreadful Diamond on Derivation Problem
+The Dreadful Diamond on Derivation (DDD) Problem
 
 TODO
 
 ## References
 
 1. Stack Overflow explanation on Virtual inheritance: stackoverflow.com/a/21607/5652483
-2. Wikipedia on Dynamic Dispatch: https://en.wikipedia.org/wiki/Dynamic_dispatch
-
+2. Wikipedia on Dynamic Dispatch: <https://en.wikipedia.org/wiki/Dynamic_dispatch>
