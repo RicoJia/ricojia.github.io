@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Behavior Tree Cpp
 date: '2024-12-05 13:19'
-subtitle: 
+subtitle: TransformListener
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -10,6 +10,13 @@ tags:
 comments: true
 ---
 
+## Basic Constructs
+
+- BT ports: BehaviorTree-CPP needs a compile-time contract for every node type, a list of ports (name + type + optional default + description).
+  - e.g., `BT::InputPort<std::string>("twist_topic")`
+  - - When the XML loader meets a tag such as: `<Action ID="FixedStandoffOrbit" point_cloud_topic="/points" …/>`
+  - If the name exists and the string in XML can be converted to the declared C++ type (double, int, bool, std::string, custom structs…), the attribute becomes the runtime value of that port.
+  - Inside your node you call `getInput<T>("port_name")`. That function pulls the string from the blackboard, converts it to T and returns it as a `BT::Expected<T>` (so you can handle missing / malformed data).
 
 ## Nodes
 

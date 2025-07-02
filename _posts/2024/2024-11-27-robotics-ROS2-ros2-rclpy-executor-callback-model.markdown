@@ -37,13 +37,77 @@ class MultiThreadedExecutor(Executor):
                 self._futures.remove(future)
                 future.result()
 ```
+
     - Note that if there's no `timeout_sec` specified, the `executor` could block indefinitely until a future becomes ready.
 
 - Callbacks that spend most time C extensions, such as those in `rclpy._rclpy` bindings, `NumPy`, `OpenCV`, can overlap and really run in parallel on different OS threads.
-- Both `rclpy.executors.MultiThreadedExecutor` and `rclcpp::executors::MultiThreadedExecutor` sit on top of the common C layer (rcl) and wait on the same DDS wait-sets. 
-    - The C++ version does its scheduling and callback invocation in C++ threads with no GIL
-    - Python implementation will time-slice under the GIL and does not use multiple cores.
+- Both `rclpy.executors.MultiThreadedExecutor` and `rclcpp::executors::MultiThreadedExecutor` sit on top of the common C layer (rcl) and wait on the same DDS wait-sets.
+  - The C++ version does its scheduling and callback invocation in C++ threads with no GIL
+  - Python implementation will time-slice under the GIL and does not use multiple cores.
 
+### Conceptual Lifecycle Of Implementation
+
+```python
+class ThreadPoolExecutor:
+    init(num_threads):
+        self.queue          = BlockingQueue()
+        self.cond           = Condition()      # wraps an internal mutex
+        self.shutdown_flag  = false
+        self.workers        = [Thread(target=self.worker)
+                               for _ in 0 .. num_threads-1]
+        for t in self.workers: t.start()
+
+    function submit(fn, *args) -> Future:
+        fut = Future()
+        task = (fn, args, fut)
+        with self.cond:                 # acquire mutex
+            self.queue.push(task)
+            self.cond.notify()          # wake one worker
+        return fut
+
+    function worker():
+        while true:
+            with self.cond:
+                while self.queue.empty() and not self.shutdown_flag:
+                    self.cond.wait()    # sleep atomically unlocking mutex
+                if self.shutdown_flag and self.queue.empty():
+                    break               # graceful exit
+                task = self.queue.pop()
+            fn, args, fut = task
+            try:
+                result = fn(*args)
+                fut.set_result(result)
+            except Exception as e:
+                fut.set_exception(e)
+
+    function shutdown(wait=true):
+        with self.cond:
+            self.shutdown_flag = true
+            self.cond.notify_all()      # wake everyone
+        if wait:
+            for t in self.workers:
+                t.join()
+
+// Usage
+pool = ThreadPoolExecutor(8)
+f1 = pool.submit(download_file, "https://example.com/a")
+f2 = pool.submit(crunch_numbers, huge_dataset)
+# do other work ...
+
+print("bytes:", f1.result())   # blocks until done
+pool.shutdown()
+```
+
+- `wait-set` is a variable in each work thread
+
+```python
+for ( ;; ) {                     // inside each worker thread
+  rclcpp::WaitSet ws;            // constructed anew every loop
+  fill_wait_set(ws);             // attach handles for this spin cycle
+  ws.wait(timeout);              // blocks in rmw_wait()
+  execute_ready_callbacks(ws);   // runs whatever is ready
+}                                 // ws destructs here, rmw_wait_set_fini()
+```
 
 ### Threading Model (Subscriber, Service, etc.)
 
@@ -135,10 +199,9 @@ The direct cause comes from Python’s generator machinery: you’ve got two thr
     ```
 
 - Under the hood, `spin()` calls `spin_once()`, but `spin_until_future_complete` will also invoke `spin_once()` on that same executor generator.
-    - `SingleThreadedExecutor` is implemented around a Python generator (_wait_for_ready_callbacks)
-    - `self.executor.spin_until_future_complete()` tries to re‑enter the same generator. Python generators are not re‑entrant, so the interpreter raises `ValueError: generator already executing`.
-    - `MultiThreadedExecutor` doesn’t use that generator; it waits in C and dispatches callbacks through a thread‑pool, so the re‑entrancy never occurs—hence “it works with MultiThreadedExecutor.”
-
+  - `SingleThreadedExecutor` is implemented around a Python generator (_wait_for_ready_callbacks)
+  - `self.executor.spin_until_future_complete()` tries to re‑enter the same generator. Python generators are not re‑entrant, so the interpreter raises `ValueError: generator already executing`.
+  - `MultiThreadedExecutor` doesn’t use that generator; it waits in C and dispatches callbacks through a thread‑pool, so the re‑entrancy never occurs—hence “it works with MultiThreadedExecutor.”
 
 ### `resp = fut.result()` returns None
 
@@ -147,7 +210,7 @@ The direct cause comes from Python’s generator machinery: you’ve got two thr
 - fut = client.call_async(req) merely enqueues the request and returns a Future. That Future is populated only when the executor takes the response from DDS and runs the client’s response-handler callback.
 
 [The rclpy docs spell the solution out: “Execute work until the future is complete.” You must either call rclpy.spin_until_future_complete() or keep an executor spinning concurrently.](https://docs.ros2.org/foxy/api/rclpy/api/init_shutdown.html?utm_source=chatgpt.com)
-    - [ GitHub issue #1141 shows the exact symptom—Future is always None until an executor spins.](https://github.com/ros2/rclpy/issues/1141?utm_source=chatgpt.com)
+    - [GitHub issue #1141 shows the exact symptom—Future is always None until an executor spins.](https://github.com/ros2/rclpy/issues/1141?utm_source=chatgpt.com)
 
 E.g., Use a MultiThreadedExecutor executor (recommended)
 
