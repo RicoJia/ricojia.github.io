@@ -358,24 +358,24 @@ To reduce the influence of outliers, a robust loss function $\rho(s)$ is used in
 $$
 \begin{gather*}
 \begin{aligned}
-& \rho(s) = \delta^2 \ln\left(1 + \frac{s}{\delta^2}\right)
+& \rho(e) = \delta^2 \ln\left(1 + \frac{e}{\delta^2}\right)
 \end{aligned}
 \end{gather*}
 $$
 
 where $\delta$ is a tuning parameter that determines the scale at which residuals begin to be downweighted.
 
-The derivative of the Cauchy loss with respect to $s$ gives the weight applied to the residual during optimization:
+The derivative of the Cauchy loss with respect to $e$ gives the weight applied to the residual during optimization:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& \frac{\partial \rho}{\partial s} = \frac{1}{1 + \frac{s}{\delta^2}}
+& \frac{\partial \rho}{\partial e} = \frac{1}{1 + \frac{e}{\delta^2}}
 \end{aligned}
 \end{gather*}
 $$
 
-This expression shows that for large residuals ($s \gg \delta^2$), the weight decreases, thereby reducing their influence in the optimization process.
+This expression shows that for **large residuals e.g., a wrong observation edge** ($s \gg \delta^2$), the weight decreases, thereby reducing their influence in the optimization process.
 
 
 Unlike the squared $L_2$ loss, which grows quadratically with $s$, the Cauchy loss grows **logarithmically**:
@@ -385,11 +385,12 @@ Unlike the squared $L_2$ loss, which grows quadratically with $s$, the Cauchy lo
 
 This means the cost function becomes less sensitive to large residuals (outliers), improving robustness in noisy or mismatched data.
 
+
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://i.postimg.cc/QMWBrtfR/MMVB5.png" height="300" alt=""/>
-        <figcaption><a href="https://math.stackexchange.com/questions/2283165/proper-loss-function-for-this-robust-regression-problem">Source </a></figcaption>
+        <img src="https://i.postimg.cc/7h869vpH/losses.png" height="300" alt=""/>
+        <figcaption><a href="https://zhuanlan.zhihu.com/p/720569926">Source </a></figcaption>
     </figure>
 </p>
 </div>
