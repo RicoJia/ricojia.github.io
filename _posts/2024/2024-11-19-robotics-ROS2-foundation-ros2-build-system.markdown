@@ -300,3 +300,47 @@ Scenario 2: How to build a package from source:
     ```
 
 - Source the setup.bash, then run it/ `colcon build --packages-select capacity_manager behavior_executor  behaviortree_cpp   --cmake-clean-first --allow-overriding behaviortree_cpp`
+
+## Use Cases
+
+
+### 1. Install Test Data For Sharing
+
+When we have test data that could be used across multiple packages, we can put the test data in one package, install it as a soft link, then in code we find it programmatically. Below is how:
+
+1. Add the following to your `MY_PKG` package’s CMakeLists.txt to install the `test_data` directory so other packages can find it:
+
+```cmake
+# Install our test data for downstream packages
+install(
+  DIRECTORY test_data
+  DESTINATION share/${PROJECT_NAME}/
+)
+```
+
+2. Declare a Dependency on ament_cmake. In the consuming package’s CMakeLists.txt, make sure you find and link against ament_cmake:
+
+```cmake
+find_package(ament_cmake REQUIRED)
+
+# … later, for each target that needs test data:
+ament_target_dependencies(<your_target> ament_cmake)
+```
+
+3. Locate the Test Data at Runtime. In your test code, use the ROS 2 index API to get the share directory of common, then build the path to your file:
+
+```cpp
+#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <filesystem>
+#include <string>
+
+std::string common_share =
+  ament_index_cpp::get_package_share_directory("MY_PKG");
+
+// Append the test_data subdirectory and filename
+std::filesystem::path data_dir = common_share;
+data_dir /= "test_data";  // or "data" if you renamed it
+```
+
+
+

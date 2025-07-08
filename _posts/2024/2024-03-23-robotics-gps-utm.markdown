@@ -25,6 +25,8 @@ A GPS module's performance is affected by:
 
 A consumer grade GPS is 10m accuracy 95% of the time
 
+0 deg meridian is a line that runs through Greenwich. 180 deg meridian is a line runs from North to the south pole. (It goes through Chukotka)
+
 ## RTK GPS
 
 RTK (Realtime-Kinematics) GPS needs an extra ground station that sends correction data to itself. The general workflow is:
