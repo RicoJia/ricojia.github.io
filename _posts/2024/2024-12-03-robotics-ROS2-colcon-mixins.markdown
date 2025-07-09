@@ -12,7 +12,7 @@ comments: true
 
 ## Introduction
 
-[Colcon Mixins](https://github.com/colcon/colcon-mixin-repository) can be used to apply a group of arguments under onw name. Example:
+[Colcon Mixins](https://github.com/colcon/colcon-mixin-repository) can be used to apply a group of arguments under one name. Example:
 
 ```
 colcon build --mixin debug clang
