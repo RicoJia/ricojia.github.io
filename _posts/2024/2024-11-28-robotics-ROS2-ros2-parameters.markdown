@@ -52,9 +52,10 @@ Each parameter has **a key, value, and a descriptor**.
                 use_sim_time
             ```
 
-- Get
-  - `param_value = self.get_parameter_or(param_name, None)`
-  - For parameters that can't be known ahead of time, they can be instantiated as  `allow_undeclared_parameters = True`
+2. Get
+
+- `param_value = self.get_parameter_or(param_name, None)`
+- For parameters that can't be known ahead of time, they can be instantiated as  `allow_undeclared_parameters = True`
 
         ```python
         class MyNode(Node):
@@ -68,9 +69,12 @@ Each parameter has **a key, value, and a descriptor**.
             node.get_dynamic_param('undeclared_param')  # Should print a warning and return None
         ```
 
-  - In CLI:
-    - `ros2 param get <node_name> <parameter_name>`
-    - View all params of a node, and they can be saved into an yaml:
+- In CLI:
+  - `ros2 param get <node_name> <parameter_name>`
+    - `ros2 param list`: a CLI python helper that pings a running node to retrive their parameters. It calls `list_parameter` service of each node.
+    - So there could be a an exception like `Exception while calling service of node 'my_node': None` where the node is busy
+
+  - View all params of a node, and they can be saved into an yaml:
 
             ```
             ros2 param dump <node_name>

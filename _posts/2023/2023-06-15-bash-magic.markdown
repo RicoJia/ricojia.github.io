@@ -15,10 +15,11 @@ tags:
 
 - `[[ -n STRING ]]` - returns true when STRING is not empty
 - `[[ -z STRING ]]` - returns true when STRING is empty
-    - equivalent to `[[ ! -n STRING ]]`
+  - equivalent to `[[ ! -n STRING ]]`
 - `[[ -d FILE ]]` - returns true when FILE exists and is a directory
 
 ### Regex
+
 - "$" asserts "end of line", so it makes sure the regex contains strings end in a certain pattern: `grep -E '\.(md|markdown)$'`
 
 ### Declare
@@ -35,9 +36,7 @@ var="456"   # see "var: readonly variable"
 - `declare -a indexed_array`
 - `declare -A associative_array`
 - `declare -i integer_value`
-
 - `declare -x exported_var="exported var"` can also define and export a variable
-
 - It can also print all variable (custom & environment variables) values. `declare -p`
 
 Though a most variables (except for arrays) can be defined directly `VAR=123`, I found `declare` more "type-safe".
@@ -97,7 +96,13 @@ echo "Done Downloading"
 
 ## Error Handling
 
-Trap an error:
+### `set -euo pipefail`
+
+- `-e (errexit)`: Exit immediately if any command returns a non-zero status (except in certain contexts like && )
+- `-u (nounset) Treat unset variables as an error and exit.`
+- `-o pipefail (same as -e -o pipefail, often written -eo pipefail)`: In a pipeline (cmd1 | cmd2) return the exit status of the first failed command instead of the last one.
+
+### Trap an error
 
 - `set -e` will exits the parent shell immediately upon an error
 - `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell
@@ -169,5 +174,3 @@ Every write to the stdout will go to file `$LIST`. You can either redirect it to
 ```
 bind -x '"\C-f": navi'
 ```
-
-

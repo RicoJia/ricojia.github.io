@@ -44,6 +44,7 @@ If you are not sure who have the merge privileges,
     - By default, these jobs are run in parallel
 
 3. Image Deployment
+    - Download the image `docker pull registry.gitlab.com/ricojia1:VERSION`
     - After downloading:
 
         ```
