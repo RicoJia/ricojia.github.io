@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Matrix Derivatives 
-date: '2017-01-20 13:19'
+date: '2017-01-10 13:19'
 subtitle: Jacobian and Hessian, Vector-Vector Derivative
 comments: true
 tags:
