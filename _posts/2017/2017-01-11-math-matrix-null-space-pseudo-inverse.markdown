@@ -71,7 +71,7 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
     $$
     A^T\bigl(\mathbf{b} - A\hat{\mathbf{x}}\bigr)=\mathbf{0}.
     $$
-- Rearranging yields the normal equations:
+- Rearranging yields the normal equations}:
     $$
     A^T A\,\hat{\mathbf{x}} = A^T \mathbf{b}.
     $$
@@ -193,14 +193,50 @@ acts as a pseudoinverse of $ A $, producing the unique solution in the row space
 
 ### Pseudo Inverse Using SVD
 
-Any matrix can be decomposed into A = U sigma V. Where Sigma = [diag(sigma_1, sigma_2 ... sigma_r) , 0]
+Let $ A \in \mathbb{R}^{m \times n} $ be a matrix of rank $ r $. Its singular value decomposition (SVD) is
+$$
+A = U \Sigma V^\top
+$$
 
-A: mxn with rank r, U mxm, Sigma mxn, U nxn
+where:
 
-The pseudo inverse: A^T = V^dagger Sigma ^dagger U^dagger satisfies all 4 conditions of the Moore-Penrose Pseudo Inverse:
-...
+- $ U \in \mathbb{R}^{m \times m} $ is orthogonal: $ U^\top U = I $,
+- $ V \in \mathbb{R}^{n \times n} $ is orthogonal: $ V^\top V = I $,
+- $ \Sigma \in \mathbb{R}^{m \times n} $ is diagonal (or block-diagonal) with singular values $ \sigma_1, \dots, \sigma_r > 0 $.
 
-Because U and V are orthogonal, U^T = U^dagger, V^T = V^dagger. 
-Sigma^dagger = [diag(1\sigma) ... 0]
+Explicitly,
+$$
+\Sigma = 
+\begin{bmatrix}
+\operatorname{diag}(\sigma_1, \dots, \sigma_r) & 0 \\
+0 & 0
+\end{bmatrix}.
+$$
+
+The Moore–Penrose pseudoinverse is given by:
+$$
+A^\dagger = V \Sigma^\dagger U^\top
+$$
+where
+$$
+\Sigma^\dagger = 
+\begin{bmatrix}
+\operatorname{diag}\left(\frac{1}{\sigma_1}, \dots, \frac{1}{\sigma_r}\right) & 0 \\
+0 & 0
+\end{bmatrix}.
+$$
+
+Since $ U $ and $ V $ are orthogonal, we have:
+$$
+U^\top = U^{-1}, \quad V^\top = V^{-1}.
+$$
+
+The pseudoinverse $ A^\dagger $ satisfies:
+
+- $ A A^\dagger A = A $
+- $ A^\dagger A A^\dagger = A^\dagger $
+- $ (A A^\dagger)^\top = A A^\dagger $
+- $ (A^\dagger A)^\top = A^\dagger A $
+
 
 
