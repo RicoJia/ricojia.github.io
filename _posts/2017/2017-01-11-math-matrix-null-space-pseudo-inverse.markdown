@@ -71,11 +71,11 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
     $$
     A^T\bigl(\mathbf{b} - A\hat{\mathbf{x}}\bigr)=\mathbf{0}.
     $$
-- Rearranging yields the \emph{normal equations}:
+- Rearranging yields the normal equations:
     $$
     A^T A\,\hat{\mathbf{x}} = A^T \mathbf{b}.
     $$
-- If $A$ has **full column rank** $rank(A)=n, then $A^TA$ is positive definite and invertible, one can prove this by proving "A^TA" and $A$ have the same solutions.
+- If $A$ has **full column rank** $rank(A)=n$, then $A^TA$ is positive definite and invertible, one can prove this by proving "A^TA" and $A$ have the same solutions.
     - $A^TA$ and $A$ have the same column rank
 - So
     $$
@@ -84,7 +84,7 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
     \mathbf{p} = A \hat{\mathbf{x}} =  A(A^T A)^{-1} A^Tb
     $$
     - We define projection matrix as $A(A^T A)^{-1} A^T$. It projects b onto the column space of A.
-- Otherwise $A^TA$ is only positive $\emph{semi}$-definite (singular), and one typically uses the Moore–Penrose pseudoinverse:
+- Otherwise $A^TA$ is only positive **semi**-definite (singular), and one typically uses the Moore–Penrose pseudoinverse:
     $$
     \hat{\mathbf{x}} = A^+ \mathbf{b}.
     $$
@@ -190,3 +190,17 @@ $$
 A^\dagger = G^\top (G G^\top)^{-1} (F^\top F)^{-1} F^\top
 $$
 acts as a pseudoinverse of $ A $, producing the unique solution in the row space such that $ A \mathbf{x}_t $ projects $ \mathbf{b} $ onto $ \operatorname{Col}(A) $.
+
+### Pseudo Inverse Using SVD
+
+Any matrix can be decomposed into A = U sigma V. Where Sigma = [diag(sigma_1, sigma_2 ... sigma_r) , 0]
+
+A: mxn with rank r, U mxm, Sigma mxn, U nxn
+
+The pseudo inverse: A^T = V^dagger Sigma ^dagger U^dagger satisfies all 4 conditions of the Moore-Penrose Pseudo Inverse:
+...
+
+Because U and V are orthogonal, U^T = U^dagger, V^T = V^dagger. 
+Sigma^dagger = [diag(1\sigma) ... 0]
+
+
