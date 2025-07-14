@@ -85,7 +85,7 @@ RTK (Realtime-Kinematics) GPS needs an extra ground station that sends correctio
 3. The base station broadcasts a satellite message. A nearby RTK-GPS rover (<10km>) hears it, and calculate correction factors
     - It's called RTK because correction factors are calculated as the model moves ("kinematics")
 
-### Correction Factor
+### Correction Factors
 
 #### Modelling
 
