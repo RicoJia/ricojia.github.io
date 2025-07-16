@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Various Useful Forms Of Matrix Multiplication
-subtitle: Inner & outer Product, Correlation Matrix, Matrix Inverse etc.
+subtitle: Inner & outer Product, Correlation Matrix, Matrix Inverse, Nilpotentency
 date: '2017-01-03 13:19'
 header-img: "img/post-bg-2015.jpg"
 tags:
@@ -125,4 +125,12 @@ $$
 & (A B)^{-1} = B^{-1} A^{-1}
 \end{aligned}
 \end{gather*}
+$$
+
+## Nilpotency
+
+In linear algebra, nilpotency refers to a property of matrices in a ring—where repeated application (such as multiplication) eventually yields zero:
+
+$$
+A^k = 0
 $$
