@@ -301,8 +301,25 @@ Scenario 2: How to build a package from source:
 
 - Source the setup.bash, then run it/ `colcon build --packages-select capacity_manager behavior_executor  behaviortree_cpp   --cmake-clean-first --allow-overriding behaviortree_cpp`
 
-## Use Cases
+### Copy to `./install`
 
+- What would be copied to `/install`? Only the one you specify to copy there.
+  - Does this mean for every python file, we need to copy? Yes, in `setup.py`
+  - what to do with urdf, xacro, launchfile, worldfiles?
+    - These are “package resources” that live under `share/` once installed. In your CMakeLists.txt, you typically do:
+
+            ```
+            # install the URDF/XACRO directory
+            install(
+              DIRECTORY urdf
+              DESTINATION share/${PROJECT_NAME}/
+            )
+            ```
+
+      - So any edit in these files would require a rebuild
+  - When running into problems with `colcon build --symlink-install`, try sourcing there.
+
+## Use Cases
 
 ### 1. Install Test Data For Sharing
 
@@ -341,6 +358,3 @@ std::string common_share =
 std::filesystem::path data_dir = common_share;
 data_dir /= "test_data";  // or "data" if you renamed it
 ```
-
-
-
