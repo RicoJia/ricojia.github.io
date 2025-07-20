@@ -145,6 +145,51 @@ ros2 run dummy_test demo
 
     - `--symlink-install` allows in-place modifications in `colcon build --packages-select dummy_test --symlink-install`
 
+## Create a RclCPP Package for Publisher and Subscriber
+
+```cpp
+
+#include <memory>
+#include <string>
+
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
+class Listener : public rclcpp::Node
+{
+public:
+  Listener()
+  : Node("listener")
+  {
+    sub_ = this->create_subscription<std_msgs::msg::String>(
+      "chatter", 10,
+      [this](std_msgs::msg::String::UniquePtr msg) {
+        RCLCPP_INFO(this->get_logger(),
+                    "I heard: '%s'", msg->data.c_str());
+      });
+  }
+
+private:
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+};
+
+int main(int argc, char * argv[])
+{
+  // same SIGINT handler setup as the publisher
+  rclcpp::init(argc, argv);
+
+  auto node = std::make_shared<Listener>();
+
+  rclcpp::spin(node);
+
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+- `rclcpp::init(argc, argv);` only flips the bool rclcpp::ok() reads. It does not kill the process. In the case of the publisher, `rclcpp::spin()` already recognizes that. 
+    
+
 ## Custom Messages
 
 You can define constants in a `.msg` for its field values
