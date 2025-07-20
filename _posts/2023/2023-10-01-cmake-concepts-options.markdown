@@ -2,7 +2,7 @@
 layout: post
 title: CMake - Concepts and Options
 date: '2023-10-01 13:19'
-subtitle: CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library, fPIC
+subtitle: CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library, fPIC, CMake Syntax
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -16,7 +16,7 @@ CMake is a "write-only" language 😉, because it was only meant to be written, 
 
 - The syntax is not quite a real scripting language
 - CMake uses a lot of macros (`target_include_directories, PUBLIC, INTERFACE`).
-- Debugging is hard - error messages are bad; 
+- Debugging is hard - error messages are bad;
 - Scoping rules are not always intuitive:
 
     ```c
@@ -28,22 +28,27 @@ CMake is a "write-only" language 😉, because it was only meant to be written, 
     my_func()
     message("Outside ${MY_VAR}")
     ```
-    - In this example, we see "local", which is a actually a **new local variable** created
-    - This is unlike Bash or Python where global variable are by default accessed
-    - To access the parent scope:
+
+  - In this example, we see "local", which is a actually a **new local variable** created
+  - This is unlike Bash or Python where global variable are by default accessed
+  - To access the parent scope:
+
         ```c
         function(my_func)
             set(MY_VAR "updated globally" PARENT_SCOPE)
         endfunction()
         ```
 
-- Major version upgrades 
-    - Pre CMake 3.x to CMake 3.x - make commands "target" specific:
+- Major version upgrades
+  - Pre CMake 3.x to CMake 3.x - make commands "target" specific:
+
         ```
         include_directories -> target_include_directories
         link_directories(${SOME_LIB_DIR}) -> target_link_directories
         ```
-    - CMake: 3.13:
+
+  - CMake: 3.13:
+
         ```
         target_link_options(my_app PRIVATE "-Wl,--no-as-needed")
         ```
@@ -135,7 +140,7 @@ It is generally possible to use different C++ standards within the same project.
   - line numbers
   - data types
 
-`set(CMAKE_BUILD_TYPE Release)` not only exclude debug symbols, but will also turn on optimization, and disable assertions. This would include `-O3`. 
+`set(CMAKE_BUILD_TYPE Release)` not only exclude debug symbols, but will also turn on optimization, and disable assertions. This would include `-O3`.
 
 A snippet I use is:
 
@@ -151,13 +156,12 @@ endif()
 # If there are any `gtest`
 add_test(NAME ${name} COMMAND ${name} --gtest_catch_exceptions=0)
 ```
+
 - To trigger this debug mode: `cmake -DCMAKE_BUILD_TYPE=Debug <PATH>`, or `colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug`
 - `-O0` disables all optimizations, so the ordering of instructions will stay close to the program. This makes stepping through the binary in `gdb` much easier
 - `-ggdb` roughly similar to `-g`, but added enhanced line-number tables. It also embed type info, and symbols so you can inspect variables, view stack frames, etc.
 - `-pg` is to link in hooks for `gprof`, so there will be counters, and call-graph probes into every function. When you run the resulting binary, a `gmon.out` will be saved. The `gmon.out` file can be used to generate a human-readable report.
 - `--gtest_catch_exceptions=0`: without this line, `GTest` catches all crashes in a `try-catch` clause and immediately fail. With this line, we no-longer catch them, the debugger will stop at the failing line. This has no impact on the speed of the binary.
-
-
 
 ## Commands
 
@@ -168,14 +172,14 @@ add_test(NAME ${name} COMMAND ${name} --gtest_catch_exceptions=0)
 ### Advanced Options
 
 - `ccache` is a compiler cache that caches previous compilations and detecting if the same compilation needs to be done again. It's meant for C/C++ projects.
-    - How it works: 
+  - How it works:
         1. Caching: Ccache stores the output of compiler runs (object files) in a cache
         2. Ccache analyzes compilation parameters and source code content to determine if a cached version exists
         3. When you compile code that has already been compiled **with the same flags and source code**, ccache can retrieve the cached output instead of running the compiler again
-    - Why it's useful:
-        - ccache can help in situations where build systems might not be able to detect identical recompilations, such as when file timestamps are not reliable or when different workspaces are involved,
+  - Why it's useful:
+    - ccache can help in situations where build systems might not be able to detect identical recompilations, such as when file timestamps are not reliable or when different workspaces are involved,
   - How to use it
-        - ccache supports C, C++, Objective-C, and Objective-C++. 
+        - ccache supports C, C++, Objective-C, and Objective-C++.
     - Standalone: `ccache gcc -o myprogram myprogram.c`
     - Cmake:
 
@@ -226,8 +230,7 @@ Then, in a consuming project, you would link to them as:
 target_link_libraries(MyApp PRIVATE MyLib::core MyLib::stuff ...)
 ```
 
-
-## Header-Only Library vs Static Library 
+## Header-Only Library vs Static Library
 
 ### Header-Only Library
 
@@ -253,7 +256,7 @@ target_link_libraries(my_project PRIVATE my_header_lib PCL g2o)
 
 In a static library, all the **necessary object files (.o)** from the source files are compiled and packed into the .a file. When you link against the static library, these compiled objects are copied directly into the final executable. This means that all functions and symbols defined in the static library are available at runtime without requiring separate shared library files (.so or .dll).
 
-To compile all necessary dependencies in the library, we need to: 
+To compile all necessary dependencies in the library, we need to:
 
 ```c
 target_link_libraries(my_static_lib PRIVATE PCL g2o)
@@ -264,6 +267,7 @@ target_link_libraries(my_static_lib PRIVATE PCL g2o)
 ### Binary Bloat
 
 In a ROS2 c++ project, if we use `add_node` on all executables, would that cause binary bloat?
+
 ```c
 function(add_node name)
   add_executable(${name} src/${name}.cpp)
@@ -281,7 +285,7 @@ add_node(num_provider)
 
 The answer here is no, because ROS libraries, including `card_deck_core::card_deck_core` are `.so`. So each executable has a small stub to them with small ELF headers + symbol tables.
 
-A static library (.a) is just a collection of compiled object files. 
+A static library (.a) is just a collection of compiled object files.
 
 On the other hand, if these libraries are static libraries, when you link an executable against them, the linker only pulls in the specific `.o` files that satisfy unresolved symbols. Say `demo_dealer` never calls anything in `card_deck_core`, none of its object files are needed—and so none get linked in.
 
@@ -322,3 +326,17 @@ On the other hand, if these libraries are static libraries, when you link an exe
 Position-Independent-Code (PIC) is great for making a library able to live anywhere in memory without modification. It's great for: shared_library, dynamic linking (enables multiple programs to share the same memory space)
 
 - To enable: `set(CMAKE_POSITION_INDEPENDENT_CODE ON)  # Enables -fPIC flag for GCC/Clang` or `-fPIC`
+
+## CMake Syntax
+
+- Define a compiler arg:
+  - In CMakeLists.txt:
+
+        ```c
+        option(PRINT_DEBUG_MSGS "Enable debug‐print messages" OFF)
+        target_compile_definitions(MY_EXECUTABLE PUBLIC 
+            PRINT_DEBUG_MSGS=$<BOOL:${PRINT_DEBUG_MSGS}>)
+        ```
+
+  - In colcon: `colcon build --cmake-args -DPRINT_DEBUG_MSGS=ON`
+  - In Cpp, if the flag was NOT defined in CMake, its default is automatically 0. So `#if PRINT_DEBUG_MSGS ... #endif`  is fine

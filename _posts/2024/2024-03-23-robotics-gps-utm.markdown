@@ -10,12 +10,21 @@ tags:
 
 There are two types of GNSS:
 
-- Traditional single-point GPS: 10m accuracy, usually found in phones
-- RTK (Real-Time-Kinematics) GPS. centimeter accuracy. It talks to a base station. Each module gives its `(x, y)`.
+- Traditional single-point GPS: 10m accuracy, usually found in phones.
+  - Lat-long is a.k.a geographic coordinate system
+- Differential GPS (DGPS). One example is RTK (Real-Time-Kinematics) GPS. centimeter accuracy. It talks to a base station. Each module gives its `(x, y)`.
+  - Single RTK unit with **two antenna ports** is a common solution. You buy a dual-antenna RTK receiver module (it has two coax inputs) and mount your two GNSS patch antennas with a known baseline separation. The receiver itself measures the relative phase delay between the two antennas on the same clock, so it can instantly compute a very accurate heading (carrier-phase differential) down to centimeter-level baselines.
+    - Both antennas see the same satellite signals on the same carrier frequency.
+    - The receiver measures the phase delay between antenna A and antenna B for each satellite.
+    - Baseline length must be known - the vendor asks for it as an initial value to solve for the Phase count. Without it phase count would converge more slowly. That phase delay can be turned into a vector direction in space—i.e. the heading of the baseline.
+  - If you use two separate RTK receivers (each with its own antenna) instead, you'd have to:
+    - Synchronize both receivers to the same timebase (so you’re comparing measurements from the exact same epochs),
+    - Calibrate their inter-antenna vector in post (each has its own small internal antenna offset and antenna-phase center)
+  - Coordinate system: we use east-north-sky. But some manufacturers of the GPS may use north-east-earth
 
 ## GPS
 
-A GPS needs to talk to at least 4 satellites to run a trillateration process to determine its current pose. Process: TODO
+A GPS needs to talk to at least 4 satellites to run a trillateration process to determine its current pose.
 
 A GPS module's performance is affected by:
 
@@ -26,6 +35,10 @@ A GPS module's performance is affected by:
 A consumer grade GPS is 10m accuracy 95% of the time
 
 0 deg meridian is a line that runs through Greenwich. 180 deg meridian is a line runs from North to the south pole. $It goes through Chukotka$
+
+Fix: is the process navigation satellites -> position, velocity, time.
+
+- ROS2's `sensor_msgs::NavSatFix` has no heading field. **The best way to pass GPS messages around is to create your own message type**
 
 ### How GPS Trilateration Works
 

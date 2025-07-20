@@ -60,6 +60,7 @@ There are multiple middlewares because you might have considerations such as lic
 
 - `Fast DDS`(by eProsima) whose wire protocol is `Fast RTPS`. Package: `rmw_fastrtps_cpp`
   - ROS2 Humble's default
+  - Check `echo $RMW_IMPLEMENTATION`.
 - `Cyclone DDS` (Eclipse): slightly lighter weight, but less configurable than Fast RTPS. Can be explicitly installed by: `sudo apt install ros-humble-rmw-cyclonedds-cpp`. Package: `rmw_cyclonedds_cpp`
   - ROS2 Galactic's default
 - `ConnextDDS` (RTI). Package: `rmw_connext_cpp`

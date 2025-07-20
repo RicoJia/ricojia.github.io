@@ -135,7 +135,7 @@ enable_testing()
 ```
 
 - `add_test()` does NOT create the test executable, it simply registers the exectuble as a test.
-- `Threads::Threads` must be added to the above gtest. Otherwise, the gtest will fail silently, which is really annoying!!)
+- `Threads::Threads` must be added to the above gtest. Otherwise, the gtest will fail silently, which is really annoying!!
 
 ## Gtest For ROS
 
@@ -187,3 +187,7 @@ int main(int argc, char **argv){
     return RUN_ALL_TESTS();
 }
 ```
+
+### Running Gtest
+
+- Add this to run a specific test: `--gtest_filter=TEST_SUITE.Test_CASE`
