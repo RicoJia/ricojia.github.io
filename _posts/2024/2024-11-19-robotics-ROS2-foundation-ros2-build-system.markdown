@@ -260,6 +260,38 @@ from MY_INTERFACE import MyFunc
 
 ## `colcon build`
 
+### Isolation Mode
+
+Contrary to ROS1, by default, colcon builds a workspace in **isolated mode**. That means each package is installed into its own prefix under `install/<package_name>`, and only that prefix **has its own setup scripts**:
+
+```
+install/
+├── COLCON_IGNORE
+├── foo/
+│   ├── lib/…
+│   └── share/…
+├── bar/
+│   ├── lib/…
+│   └── share/…
+└── …              ← no top-level setup.bash here
+```
+
+In this layout, no `install/setup.bash` is generated; only each package’s `install/<pkg>/share/<pkg>/local_setup.bash` exists. Until you source one of those per-package scripts, your shell’s `AMENT_PREFIX_PATH` doesn’t include that prefix, so ros2 won’t know about the package
+
+The workspace layout ( isolated vs merged ) is independent of `--packages-select`. `--packages-select` only decides which packages get built; it doesn’t change where colcon puts the install artefacts.
+
+**What's important is that we need to export the artifacts in `package.xml`**. Otherwise, sourcing `install/setup.bash` wouldn't work:
+
+```html
+<export>
+    <build_type>ament_cmake</build_type>
+</export>
+```
+
+### `--packages-select`
+
+This argument allows us to build selected packages.
+
 ### `--symlink-install`
 
 - Without `--symlink-install`: copies artifacts into `install/`.
