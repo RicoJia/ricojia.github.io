@@ -192,3 +192,49 @@ protected:
 ```
 
 3. Run test with: `./test_integrate_imu --ros-args -p visualize:=true`
+
+## Parameter Callback
+
+In ROS 2, a parameter callback is a user-provided function that the middleware will invoke whenever someone tries to change one of your node’s parameters. It gives you a chance to:
+
+- Validate the new value (e.g. range check, type check).
+- Accept or reject the change (by returning success or failure).
+- Modify the value before it’s actually set.
+
+Under the hood:
+
+```
+ros2 param set /my_node my_param 42
+```
+
+The client issues a request to `/my_node/set_parameters`. Before the node actually writes `my_param = 42` into its local storage, it:
+
+1. Runs all of your registered parameter callbacks in the order they were added.
+2. Collects each callback’s rcl_interfaces::msg::SetParametersResult (in C++) or SetParametersResult (in Python).
+3. If any callback vetoes (i.e. returns successful = false), the entire parameter update is rejected and none of the new values take effect.
+4. Otherwise, the new values are committed and—only then—the node may publish a ParameterEvent for everyone listening.
+
+```cpp
+callback_handle_ =
+    this->add_on_set_parameters_callback(
+    std::bind(&MyNode::validate_params, this, std::placeholders::_1));
+
+rcl_interfaces::msg::SetParametersResult
+validate_params(const std::vector<rclcpp::Parameter> & params) {
+rcl_interfaces::msg::SetParametersResult result;
+result.successful = true;  // default: allow
+for (auto &p : params) {
+    if (p.get_name() == "my_param") {
+    int v = p.as_int();
+    if (v < 0 || v > 100) {
+        result.successful = false;
+        result.reason = "my_param must be in [0..100]";
+    }
+    }
+}
+return result;
+}
+
+// Keep the handle alive so the callback stays registered:
+OnSetParametersCallbackHandle::SharedPtr callback_handle_;
+```

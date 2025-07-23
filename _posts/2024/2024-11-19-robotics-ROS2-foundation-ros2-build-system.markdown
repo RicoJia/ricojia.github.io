@@ -276,17 +276,17 @@ install/
 └── …              ← no top-level setup.bash here
 ```
 
-In this layout, no `install/setup.bash` is generated; only each package’s `install/<pkg>/share/<pkg>/local_setup.bash` exists. Until you source one of those per-package scripts, your shell’s `AMENT_PREFIX_PATH` doesn’t include that prefix, so ros2 won’t know about the package
-
-The workspace layout ( isolated vs merged ) is independent of `--packages-select`. `--packages-select` only decides which packages get built; it doesn’t change where colcon puts the install artefacts.
-
-**What's important is that we need to export the artifacts in `package.xml`**. Otherwise, sourcing `install/setup.bash` wouldn't work:
+**What's important is that we need to export the artifacts in `package.xml`** even for cpp. Otherwise, sourcing `install/setup.bash` wouldn't work:
 
 ```html
 <export>
     <build_type>ament_cmake</build_type>
 </export>
 ```
+
+In this layout, each package’s `install/<pkg>/share/<pkg>/local_setup.bash` exists. Until you source one of those per-package scripts, your shell’s `AMENT_PREFIX_PATH` doesn’t include that prefix, so ros2 won’t know about the package
+
+The workspace layout ( isolated vs merged ) is independent of `--packages-select`. `--packages-select` only decides which packages get built; it doesn’t change where colcon puts the install artefacts.
 
 ### `--packages-select`
 
