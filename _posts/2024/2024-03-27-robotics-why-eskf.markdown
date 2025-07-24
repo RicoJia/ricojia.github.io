@@ -135,3 +135,31 @@ No. Predictions $F \delta x_{k, pred}$ are always 0, as expected. $K * (z \ominu
 - It is important to use `FP64` for ESKF update
 - Run the filter at a high enough frequency so that each discrete step is small
 - Be careful with angle wraps for $[0, 2 \pi]$
+
+## Why Does ESKF Work?
+
+The first question is, why can the error state, the difference between the real value and the state estimate be put into an EKF framework?
+
+ESKF does its predict with IMU multiple times, then update with a GPS observation. The gap between observations is significant enough for the IMU measurements to accumulate drift. But the most foundation is that error state can be written as a linear system of itself:
+
+$$
+\begin{gather*}
+& \delta p' = \delta v
+\\ &
+\delta v' = - R(\tilde{a} - b_a)^{\land}\delta \theta - R\delta b_a - \eta_a + \delta g
+\\ &
+(\delta \theta)' \approx -(\tilde{w} - b_{g})^{\land} \delta \theta - \delta b_g - \eta_g
+\\ &
+\delta b_g' = \eta_{bg}
+\\ &
+\delta b_a' = \eta_{ba}
+\\ &
+\delta g = 0
+
+\tag{2}
+\end{gather*}
+$$
+
+Then, we can discretize this continuous system. 
+
+At the end, $\delta x$ gets reset to 0. What does that really mean? This means the distribution of $\delta x$ is shifted to 0. We do that because we think the last estimate is ground truth. The covariance of rotation needs to be adjusted as well, but it's small. So, ESKF is effectively applying `K*innovation` to the full state prediction.
