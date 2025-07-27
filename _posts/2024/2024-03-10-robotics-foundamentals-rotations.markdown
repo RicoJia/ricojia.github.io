@@ -2,7 +2,7 @@
 layout: post
 title: Robotics Fundamentals - Rotations
 date: '2024-03-10 13:19'
-subtitle: Representation of Rotations, Gimbal Lock
+subtitle: Representation of Rotations, Gimbal Lock, Properties
 comments: true
 tags:
     - Robotics
@@ -35,7 +35,6 @@ $$
 $$
 
 **Representation 3** [SO(3)](../2017/2017-02-19-lie-group.markdown)
-
 
 ### Order is important
 
@@ -132,14 +131,94 @@ R(t) = R(t_0)exp(w^{\land}(t - t_0)) = R(t_0) exp(w^{\land} \Delta t)
 \end{gather*}
 $$
 
-## Rotation and Skew Matrices in 2D:
+## Rotation and Skew Matrices in 2D
+
+### Basic Stuff
+
+#### Taylor Expansion
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Exp[\theta^{\land}] = I + \theta^{\land} + \frac{1}{2!} (\theta^{\land}) ^ 2 + \frac{1}{3!} (\theta^{\land}) ^ 3
+\end{aligned}
+\end{gather*}
+$$
+
+#### Poisson Equation
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R^T R = I \Rightarrow \frac{d R^T R}{dt} = 0
+\\ &
+= (R^T)' R + R' R^T = 0
+\end{aligned}
+\end{gather*}
+$$
+
+If we define
+
+$$
+\begin{gather*}
+\begin{aligned}
+& w^{\land} = R^T R'
+\end{aligned}
+\end{gather*}
+$$
+
+We get
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R' = R w^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+Instantaneous angular velocity is
+
+$$
+\begin{gather*}
+\begin{aligned}
+& w = \vec{n} \theta
+\end{aligned}
+\end{gather*}
+$$
+
+Actually, we still need to establish the relationship between $w$ (instantaneous angular velocity) and rotation vector $\phi$:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& Rw^{\land} = R' = lim_{\Delta t \rightarrow 0}\frac{R(t + \Delta t) - R}{\Delta t}
+\\ &
+\approx lim_{\Delta t \rightarrow 0} \frac{R(t) Exp[J_r \Delta \phi] - R(t)}{\Delta t}
+\\ &
+= R(J_r \phi')^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
+The above shows when an instantaneous rotation happens, its rotation vector change is not the instantaneous angular velocity, but:
+
+$$
+\begin{gather*}
+\begin{aligned}
+& w = J_r \phi'
+\end{aligned}
+\end{gather*}
+$$
+
+### An Important Accompanying Property for SLAM
 
 In 2D, skew matrix is simply:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& w^{\land} = 
+& w^{\land} =
 \begin{bmatrix}
 0 & -a  \\
 a & 0
@@ -153,7 +232,7 @@ Rotation matrix is:
 $$
 \begin{gather*}
 \begin{aligned}
-& R = 
+& R =
 \begin{bmatrix}
 cos \theta & -sin \theta \\
 sin \theta & cos \theta
@@ -162,7 +241,7 @@ sin \theta & cos \theta
 \end{gather*}
 $$
 
-- One Key property that doesn't hold true in 2D is this: 
+- One Key property that doesn't hold true in 2D is this:
 
 $$
 \begin{gather*}
@@ -173,3 +252,13 @@ $$
 $$
 
 But in 2D, one can easily find that: $\phi^{\land} R = R \phi^{\land}$
+
+### Commutative Property Of Cross Product
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \theta^{\land} v = - v^{\land} \theta
+\end{aligned}
+\end{gather*}
+$$

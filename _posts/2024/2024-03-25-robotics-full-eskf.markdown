@@ -74,7 +74,9 @@ g = 0
 \end{gather*}
 $$
 
-Where the IMU measurements $\tilde{a}$, $\tilde{w}$ are control inputs $u_k$. Later, we can incorporate GPS readings as observations. Note that because this formulatin has $R^T(\tilde{a} - b_a - \eta_a)$ and $R[\tilde{w} - b_g - \eta_g]^{\land}$, **we can't write the above in the form of** `x' = Ax + Bu` yet. Currently it's still
+Where the IMU measurements $\tilde{a}$, $\tilde{w}$ are control inputs $u_k$. Later, we can incorporate GPS readings as observations. Note that because this formulation has $R^T(\tilde{a} - b_a - \eta_a)$ and $R[\tilde{w} - b_g - \eta_g]^{\land}$, **we can't write the above in the form of** `x' = Ax + Bu` yet. Currently it's still
+
+- `ba' = η` is the zero-mean white gaussian process. it models the bias as a random walk. In discrete time, It's simply subject to a gaussian noise `b_{a, k+1} = b_{a,k} + \eta_k * dt`.
 
 $$
 \begin{gather*}
@@ -393,7 +395,7 @@ We can know:
 $$
 \begin{gather*}
 \begin{aligned}
-& \frac{\partial h}{\partial x} |_{x=x_{k+1}} = \frac{\partial h}{\partial x_t} \frac{\partial x_t}{\partial \delta x}_{x=x_{k+1}}
+& \frac{\partial h}{\partial x} |*{x=x*{k+1}} = \frac{\partial h}{\partial x_t} \frac{\partial x_t}{\partial \delta x}*{x=x*{k+1}}
 \end{aligned}
 \end{gather*}
 $$
@@ -472,7 +474,7 @@ $$
 
 See? TODO (I'm not sure the above is true)
 
-This makes things easier, because this means our observation gives a direct observation of $\theta$. we can directly get: 
+This makes things easier, because this means our observation gives a direct observation of $\theta$. we can directly get:
 
 $$
 \begin{gather*}
@@ -502,7 +504,7 @@ $$
 \end{gather*}
 $$
 
-So: 
+So:
 
 $$
 \begin{gather*}
@@ -560,7 +562,7 @@ Since we have applied a correction, we can go ahead and reset $\delta x = 0$
 
 **However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $\delta x_{k}$, there's still an remeniscent error $\delta x^+$
 
-The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled. 
+The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled.
 
 So, if we define:
 
