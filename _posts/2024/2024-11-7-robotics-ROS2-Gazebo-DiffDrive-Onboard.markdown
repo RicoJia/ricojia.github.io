@@ -69,3 +69,12 @@ def generate_launch_description():
     ld.add_action(no_rviz_arg)
     ld.add_action(rviz_node)
 ```
+
+## Gazebo Tricks To Make Simulation Run Faster
+
+How to make gazebo sim faster:
+
+- Realtime factor: 0.0: so the clocks can run as fast as possible
+- max_iterations: 120
+- rviz2: rviz trick: ogre visualizer for clicking + F
+  - sonar is at the back of the vehicle
