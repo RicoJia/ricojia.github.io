@@ -174,7 +174,7 @@ install(
         - `~/_container/load_node`
         - `~/_container/unload_node`
         - `~/_container/list_nodes`
-
+  - `Component_manager` won't reset index after unloading a component. So one must increase index for `unload <index>`  
 
 
 ### Component Containers are Executors
