@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Friends
 date: '2023-02-28 13:19'
-subtitle: Friend Class, Friend Function, Inner Class
+subtitle: Friend Class, Friend Function, Inner Class, Forward Declaration
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -55,6 +55,38 @@ class Core {
     - If Core has a friend class, **its derived classes do not automatically inherit this friendship**, unless explicitly declared.
 - Friendship is Not Transitive:
     - A friend of a friend does not gain access. E.g., if Class A grants Class B access, Class B cannot pass this privilege to Class C.
+
+### Forward Declaration
+
+In reality, it's a common scenario where a friend and its friended classes live in two hpp files. In that case, we need to forward declare the friend class in the header file of the friended classes.
+
+```cpp
+// A.hpp  
+#pragma once
+
+// forward declaration only
+class ESKF;
+
+class IMUIntegrator
+{
+  // now you can friend it without pulling in the full definition
+  friend class ESKF;
+
+public:
+  IMUIntegrator();
+  void integrate();
+
+protected:
+  double dt_;
+  // …
+};
+
+// B.hpp
+#include "A.hpp"
+class ESKF{
+    
+}
+```
 
 ## Inner (Nested) Classes
 
