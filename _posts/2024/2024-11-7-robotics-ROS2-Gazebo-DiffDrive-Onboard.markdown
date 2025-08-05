@@ -52,8 +52,6 @@ def generate_launch_description():
     ])
 ```
 
--
-
 ### Add An Arg In Launch File
 
 ```python
