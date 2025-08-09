@@ -85,7 +85,7 @@ $$
 $$
 \begin{gather*}
 \begin{aligned}
-& \Delta R_{ij} := R_i^T R_j \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
+& \Delta R_{ij} := R_i^T R_j = \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k} - \eta_{gd, k})\Delta t))
 \\ &
 \approx R_i^T R_j  \prod_{k=i}^{j-1} (Exp((\tilde{w_k} - b_{g,k})\Delta t)  Exp( -J_l^{-1} \eta_{gd, k} )\Delta t)
 \end{aligned}
@@ -496,7 +496,7 @@ The last step makes use of the fact that when angles are small, Jacobian $J \app
 $$
 \begin{gather*}
 \begin{aligned}
-& \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} =  -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t 
+& \frac{\partial \tilde{\Delta R_{i,j}}}{\partial b_{g,i}} =  -\sum_{k=i}^{j-1} \Delta \tilde{R}_{k+1,j}^\top J_{r,k} \Delta t
 
 \\ &
 = - \sum_{k=i}^{j-2} \Delta \tilde{R}_{k+1,j}^{\top} J_{r,k} \Delta t - \Delta \tilde{R}_{j,j}^{\top} J_{r,j-1} \Delta t,

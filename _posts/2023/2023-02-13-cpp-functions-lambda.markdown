@@ -31,11 +31,11 @@ std::transform(arr, arr+n, arr, increment(a));      //equivalent to calling incr
 std::make_heap(arr, arr+n, greaters());         //calls constructor first, then inside the function, it will call the overloaded().
 ```
 
-## Lambda 
+## Lambda
 
 ### Lambda Basics
 
-Lambda functions are introduced when? 
+Lambda functions are introduced when?
 
 Generic lambda (cpp14+) can take in an arbitrary type, with `auto`
 
@@ -65,7 +65,7 @@ add(1, std::string("123"));  // Works fine!
 
 ### Lambda Capture with Initializer (C++ 14)
 
-`[idx = 0]` is the initializer value in for each. 
+`[idx = 0]` is the initializer value in for each.
 
 ```cpp
 #include <stdio.h>
@@ -80,8 +80,8 @@ int main()
 }
 ```
 
-- what type is idx? 
-    - Here **type is deduced**, and `idx` is `int`. we can do: `[idx = 3.14]` (float), `[idx = std::string("hello")]` (a string)
+- what type is idx?
+  - Here **type is deduced**, and `idx` is `int`. we can do: `[idx = 3.14]` (float), `[idx = std::string("hello")]` (a string)
 - By default, lambda capture is **const**. We need **mutable** to make sure we can modify the vector
 - We can pass a reference **int& i** into the lambda
 - `std::for_each` is in `<algorithm>`
@@ -96,14 +96,13 @@ auto my_lambda = [callback = std::move(callback), serialization = rclcpp::Serial
     callback(ros_msg);
 };
 ```
-- Why move callback? 
-    - avoids copying a heavy callback function. 
+
+- Why move callback?
+  - avoids copying a heavy callback function.
 - why `mutable`?
-    - By default, lambdas guarantees captured variables to be constant. here, the internal state of serialization might change. Without mutable, you will see: `error: assignment of member in read-only object`
-- You can assign new variables in the capture list? (like callback) 
-    - Yes, in C++ 14, this is called "init capture"
-
-
+  - By default, lambdas guarantees captured variables to be constant. here, the internal state of serialization might change. Without mutable, you will see: `error: assignment of member in read-only object`
+- You can assign new variables in the capture list? (like callback)
+  - Yes, in C++ 14, this is called "init capture"
 
 ### Full Template Lambda (C++20)
 
@@ -121,7 +120,7 @@ int main() {
 
 - Like a regular lambda, we can invoke an instance of the template lambda with the synthesized `operator()`.
 
-One limitation of the template lambda is that it can only be stored as a template parameter `template <typename Func>`, not as `std::function<int(double, double)>`: 
+One limitation of the template lambda is that it can only be stored as a template parameter `template <typename Func>`, not as `std::function<int(double, double)>`:
 
 ```cpp
 // Works:
@@ -174,6 +173,13 @@ int main() {
 
 - `[&]() { lambda(grid0, matches); }` is a smart way to bind different types of grid with the lambda function. This is an `inline, parameter less` function
 
+### Init Capture
+
+```cpp
+[weak_gc = std::weak_ptr<rclcpp::GuardCondition>{shutdown_guard_condition_}]() {
+    auto strong_gc = weak_gc.lock();
+}
+```
 
 ## Function Pointer
 

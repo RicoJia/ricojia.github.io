@@ -31,12 +31,11 @@ void foo(){
 
 - Here, we get `duration_X` in double. By default, `std::chrono::duration<TYPE>` returns a **long int**
 - If we accidentally called `start-end`, we see negative time value.
-- Notice that below seconds, we have `std::nano`, etc. Above seconds, we use `std::ratio`. 
-
+- Notice that below seconds, we have `std::nano`, etc. Above seconds, we use `std::ratio`.
 
 ### Time Conversion To `ns, us, s, hour`
 
-**Use `std::duration_cast`**. It will return **a `long int`.** 
+**Use `std::duration_cast`**. It will return **a `long int`.**
 
 ```cpp
 void print_in_different_units( std::chrono::duration<double, std::milli> duration){
@@ -49,3 +48,6 @@ void print_in_different_units( std::chrono::duration<double, std::milli> duratio
     std::cout << "Took " << ns << " ns\n";
 }
 ```
+
+- Or, use `chrono_literals`
+  - It's better to use `using namespace std::chrono_literals;`, then `timer_ = create_wall_timer(10ms, std::bind(&VectorProducer::control_cycle, this));`

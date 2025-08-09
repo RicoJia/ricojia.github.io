@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [ROS2 Foundation] Ros2 Miscellaneous Thingies
 date: '2024-11-30 13:19'
-subtitle: Name Spacing, Weird Issues 
+subtitle: Name Spacing, Macros, Weird Issues 
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -57,6 +57,11 @@ int main(int argc, char ** argv)
 - `std::make_shared<rclcpp::Node>(DEFAULT_NAME, opts)` will automatically change the name of the node
 - `node->get_name()` will reflect the change
 - Then you can call it with `ros2 run card_deck_game five_card_stud_player --ros-args --remap __node:=<unique_name>`
+
+## ROS2 Macros
+
+- Syntactic sugar `RCLCPP_SMART_PTR_DEFINITIONS(VectorProducer)` creates smart pointer type aliases for your class. It allows you to:
+  - `SharedPtr`, `ConstSharedPtr`, `UniquePtr`, and `ConstUniquePtr` for the `VectorProducer` class.
 
 ## Weird Issues
 
