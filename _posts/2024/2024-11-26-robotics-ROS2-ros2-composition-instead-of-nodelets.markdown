@@ -16,8 +16,8 @@ The basic idea of ROS2 composition is to have a unified API in place of ROS1 nod
 
 For example, in a SLAM system, we can have two component `FrontEnd` and `BackEnd`. We can dynamically load them into the same `SLAM` process and achieve zero-copy IPC (on the RMW/DDS middleware layer)
 
-1. These two components are built into shared libraries. 
-2. They subclass `rclcpp::Node`, and can launch their own topics, timers, etc. 
+1. These two components are built into shared libraries.
+2. They subclass `rclcpp::Node`, and can launch their own topics, timers, etc.
 3. Then, they are registered using a macro (from the package rclcpp_components) so they are discoverable for runtime-loading.
 
 ## Basic Structure
@@ -95,6 +95,7 @@ install(
 
 ament_package()
 ```
+
     - `rclcpp_components_register_nodes` must appear after add_library and ament_target_dependencies.
     - You only register each class once, even if you have multiple RCLCPP_COMPONENTS_REGISTER_NODE lines (one per class).
 
@@ -159,7 +160,8 @@ install(
 
 - [Node Composition is only available in C++](https://docs.ros.org/en/humble/The-ROS2-Project/Features.html)
 - To load / unload, there are two ways
-    - Do it on the CLI [(reference)](https://www.youtube.com/watch?v=PD0VJYBkkfQ):
+  - Do it on the CLI [(reference)](https://www.youtube.com/watch?v=PD0VJYBkkfQ):
+
     ```
     ros2 run rclcpp_components component_container_mt 
     ros2 component load /ComponentManager card_deck_game card_deck_game::ComposableFiveCardStudDealer
@@ -170,22 +172,31 @@ install(
     # Then
     ros2 component unload /ComponentManager 1
     ```
-    - Use hidden services: [(reference)](https://design.ros2.org/articles/roslaunch.html)
-        - `~/_container/load_node`
-        - `~/_container/unload_node`
-        - `~/_container/list_nodes`
-  - `Component_manager` won't reset index after unloading a component. So one must increase index for `unload <index>`  
 
+  - Use hidden services: [(reference)](https://design.ros2.org/articles/roslaunch.html)
+    - `~/_container/load_node`
+    - `~/_container/unload_node`
+    - `~/_container/list_nodes`
+  - `Component_manager` **won't reset index after unloading a component. So one must increase index for `unload <index>`**
 
+- [QUIRK] If component container does not show the new components, try below:
+  - `ros2 node list`
+    - You might see a list of ghost entries, because ctrl-c stops the container process, but it does not instantly erase all DDS participants from the ROS2 graph. By default, Cyclone DDS waits for the participant's lease to expire (a few secs).
+  - Do these to remove the ghost DDS participants:
+
+        ```
+        pkill -f component_container_mt
+        ros2 daemon stop
+        ros2 daemon start
+        ```
+  
 ### Component Containers are Executors
 
-- component_container runs a `SingleThreadedExecutor`	
-- component_container_mt runs a `MultiThreadedExecutor`	
+- component_container runs a `SingleThreadedExecutor` 
+- component_container_mt runs a `MultiThreadedExecutor` 
 - component_container_isolated runs an executor per component (CLI flag chooses single- vs multi-thread)
 
-
 ## Intra Process Comm (IPC) And Woes
-
 
 ROS 2’s intra-process transport lets us avoid one copy by handing a `unique_ptr` (or `shared_ptr`) directly from publisher to subscriber—but it still allocates each message once. This is called "zero-copy IPC". In ROS2, there are two flavors of zero-copy: message loaning and intra-process unique-ptr handoff.
 
@@ -284,7 +295,6 @@ Generally, `MultiThreadedExecutor` plays well with intra-process transport:
 
 **So a rule of thumb is: disable IPC on topic publishing / subscribing if they actually involve inter_process_comm, or need to be delivered at destruction**.
 
-
 ### 2. No inter-topic ordering guarantee
 
 This is a generic topic ordering issue that also applies to DDS. Each topic has its own queue; a later message on Topic B may arrive before an earlier message on Topic A. You cannot assume cross-topic arrival order:
@@ -310,6 +320,7 @@ winner_pub_ = this->create_publisher<std_msgs::msg::String>(
 - `transient_local()`: keeps the last sample alive for late-joining subscribers (“latched” behavior).
 - `reliable()`: adds retransmits on loss (minimal overhead for small messages).
 - Why disable IPC? The intra-process path only supports volatile durability. To combine `transient_local()` with zero-copy, you must turn off intra-process comms on that publisher.
+
     ```cpp
     rclcpp::SubscriptionOptions opts;
     sub_opts.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
@@ -319,7 +330,6 @@ winner_pub_ = this->create_publisher<std_msgs::msg::String>(
         opts
     );
     ```
-
 
 ## Exception Catching
 
