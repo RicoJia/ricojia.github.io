@@ -258,9 +258,7 @@ from MY_INTERFACE import MyFunc
     - Or one can use: `python3 -c import MY_INTERFACE.My_Module` in the same console, because after sourcing `install/setup.bash`, the installed file is added to the Python Path. 
     - One can check the python path with: `python3 -c "import sys; print(sys.path)"` or `echo $PYTHONPATH`
 
-## `colcon build`
-
-### Isolation Mode
+### Quirk - Why Can't I See My Package In `ros2 run`?
 
 Contrary to ROS1, by default, colcon builds a workspace in **isolated mode**. That means each package is installed into its own prefix under `install/<package_name>`, and only that prefix **has its own setup scripts**:
 
@@ -276,7 +274,7 @@ install/
 └── …              ← no top-level setup.bash here
 ```
 
-**What's important is that we need to export the artifacts in `package.xml`** even for cpp. Otherwise, sourcing `install/setup.bash` wouldn't work:
+**What's important is that we need to export the artifacts in `package.xml`** even for cpp.
 
 ```html
 <export>
@@ -284,9 +282,11 @@ install/
 </export>
 ```
 
-In this layout, each package’s `install/<pkg>/share/<pkg>/local_setup.bash` exists. Until you source one of those per-package scripts, your shell’s `AMENT_PREFIX_PATH` doesn’t include that prefix, so ros2 won’t know about the package
+In this layout, each package’s `install/<pkg>/share/<pkg>/local_setup.bash` exists. **Until you source one of those per-package scripts, your shell’s `AMENT_PREFIX_PATH` doesn’t include that prefix, so ros2 won’t know about the package**
 
 The workspace layout ( isolated vs merged ) is independent of `--packages-select`. `--packages-select` only decides which packages get built; it doesn’t change where colcon puts the install artefacts.
+
+## `colcon build`
 
 ### `--packages-select`
 
