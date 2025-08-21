@@ -331,3 +331,49 @@ R_0 \, \operatorname{Exp}(X) \, R_0^{-1}
 $$
 
 QED.
+
+## First Order BCH Approximation For Small Angles
+
+For a small angle $w$, its `SO(3)` is approximately
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \operatorname{Exp}(\varepsilon^\wedge) = I + \varepsilon^\wedge + o(\|\varepsilon\|^2).
+\end{aligned}
+\end{gather*}
+$$
+
+For the product of exp of k small angles, that'd be:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\prod_{k=1}^{n}\bigl(I + X_k + o(\varepsilon^2)\bigr)
+= I + \sum_{k=1}^{n} X_k + o(\varepsilon^2).
+\end{aligned}
+\end{gather*}
+$$
+
+But in the meantime,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& \operatorname{Exp} \!\Bigl(\sum_{k=1}^{n} X_k\Bigr)
+& = I + \sum_{k=1}^{n} X_k + o(\varepsilon^2).
+\end{aligned}
+\end{gather*}
+$$
+
+So
+
+$$
+\begin{gather*}
+\begin{aligned}
+&  \prod_{k=1}^{n} \operatorname{Exp}(\varepsilon^\wedge_k) =
+
+\operatorname{Exp} \!\Bigl(\sum_{k=1}^{n} \varepsilon^\wedge_k  \Bigr)
+\end{aligned}
+\end{gather*}
+$$
