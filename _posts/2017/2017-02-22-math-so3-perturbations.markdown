@@ -44,7 +44,6 @@ $R_{wc1}R_{c1c2}$ is called a "right perturbation". This is **more common** sinc
 </p>
 </div>
 
-
 ### Perturbations Can Not Be Added On `so(3)` Or `SO(3)`
 
 One question is can skew matrices `so(3)` be added?
@@ -184,7 +183,7 @@ $$
 \\ &
 = J_r^{-1}(A) \Delta B + A
 \\ &
-J_r(-\theta) = J_l(\theta) 
+J_r(-\theta) = J_l(\theta)
 \end{aligned}
 \end{gather*}
 $$
@@ -202,7 +201,17 @@ $$
 $$
 \begin{gather*}
 \begin{aligned}
-& exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B) ^{\land}) exp(B^{\land})
+& exp((\Delta B + B)^{\land}) = exp((J_l^{-1}(B) \Delta B)) exp(B)
+\end{aligned}
+\end{gather*}
+$$
+
+Or for right perturbations
+
+$$
+\begin{gather*}
+\begin{aligned}
+& exp((\Delta B + B)^{\land}) = exp(B) exp((J_r^{-1}(B) \Delta B))
 \end{aligned}
 \end{gather*}
 $$

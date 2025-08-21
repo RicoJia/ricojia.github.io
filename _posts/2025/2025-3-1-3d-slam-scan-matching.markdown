@@ -3,7 +3,7 @@ layout: post
 title: Robotics - [3D SLAM - 1] Scan Matching
 date: '2025-3-1 13:19'
 subtitle: 3D Point-Point ICP, 3D Point-Plane ICP, NDT
-header-img: "img/post-bg-os-metro.jpg"
+header-img: "img/post-bg-o.jpg"
 tags:
     - Robotics
     - SLAM
@@ -47,7 +47,7 @@ $$
 ### Notes
 
 - Iterative Method is not a must. Unlike the above point association -> pose estimate -> ... iteration, recent scan matching methods solve point association and pose estimate together. TODO?
-    - Iterative methods are relatively simpler, though. **It works as long as the cost landscape is decreasing from the current estimate to the global minimum.**
+  - Iterative methods are relatively simpler, though. **It works as long as the cost landscape is decreasing from the current estimate to the global minimum.**
 
 ## Point-Plane ICP
 
@@ -73,11 +73,12 @@ pt_plane_icp(pose_estimate, source_scan, target_scan):
 ```
 
 The Point-Plane ICP is different from Point-Point ICP in:
+
 - We are trying to fit a plane instead of using point-point match
 - In real life, we need a distance threshold for filtering out distance outliers.
 
-
 Also note that:
+
 - A plane is $n^T x + d = 0$. The plane coefficient we get are $n, d$
 - The signed distance between a point and a plane is:
 
@@ -95,7 +96,7 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial e_i}{\partial R} = -n^T R q^\land
-\\ & 
+\\ &
 \frac{\partial e_i}{\partial t} = n^T
 \end{aligned}
 \end{gather*}
@@ -103,7 +104,7 @@ $$
 
 ## Point-Line ICP
 
-The point-line ICP is mostly similar to the point-plane ICP, except that we need to adjust the error and Jacobians. 
+The point-line ICP is mostly similar to the point-plane ICP, except that we need to adjust the error and Jacobians.
 
 A line is:
 
@@ -115,7 +116,7 @@ $$
 \end{gather*}
 $$
 
-We choose the error as the signed distance between a point and it is : 
+We choose the error as the signed distance between a point and it is :
 
 $$
 \begin{gather*}
@@ -133,7 +134,7 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial e}{\partial R} = - \vec{r} ^\land R p_t^{\land}
-\\ 
+\\
 & \frac{\partial e}{\partial t} = \vec{r} ^\land
 \end{aligned}
 \end{gather*}
@@ -157,11 +158,11 @@ $$
     1. Transform to map frame using current pose estimate: $p_t = Rp_t + t$
     2. Voxle Lookup. Find the voxel containing $pt$ in the target map. Retrieve $\mu$ and $\Sigma$ of that voxel.
     3. Error and cost function:
-        1. Assuming correct alignment, the transformed point should follow the distribution of the voxel: 
+        1. Assuming correct alignment, the transformed point should follow the distribution of the voxel:
 
             $$
             e_i =  Rp_t + t - \mu
-            \\ 
+            \\
             \text{error}_i = e_i^T \Sigma^{-1} e_i
             $$
 
@@ -185,7 +186,7 @@ $$
     \begin{gather*}
     \begin{aligned}
     & (R,t) = \text{argmin}_{R,t} [\sum e_i^t \Sigma^{-1} e_i]
-    \\ & 
+    \\ &
     = \text{argmax}_{R,t} [\sum log(P(R q_i + t))]
     \end{aligned}
     \end{gather*}
@@ -195,17 +196,17 @@ $$
     - $\Chi^2 = \sum_i e_i^T info e_i$
     - $dx = H^{-1} b$
 
-When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching. 
+When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching.
 
 **Advantages and Weaknesses:**
-- NDT is very concise, and it does not need to consider plane, or line like ICP. It has become a widely-used **baseline** scan matching method. 
+
+- NDT is very concise, and it does not need to consider plane, or line like ICP. It has become a widely-used **baseline** scan matching method.
 - In general, it's much faster than ICP methods, and its performance is a little worse than pt-plane ICP, but better than pt-pt ICP and is similar to pt-line ICP.
 - However, like many other scan-matching method, NDT is prone to bad pose intialization. Also, voxel size could be a sensitive parameter.
 
-This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common. 
+This is more similar to the 2D version of NDT [2], and it different from the original paper [1]. But the underlying core is the same: in 2009, SE(3) manifold optimization was not popular, therefore the original paper used sin and cos to represent the derivative of the cost function. In reality, modifications / simplifications like this are common.
 
 **Another consideration is that we add a small positive value to the covariance matrix**, because we need to get its inverse. When points happen to be on a line or a plane, elements [on its least principal vectors will become zero.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
-
 
 ### Why NDT Works
 
@@ -224,14 +225,13 @@ One necessary condition of the aforementioned optimization procedure to implemen
 $$
 \begin{gather*}
 \begin{aligned}
-& \prod_I f((T^{*})^{-1} x_i') 
-\\ & \text{where f(x) is the pdf of the target cloud points} 
+& \prod_I f((T^{*})^{-1} x_i')
+\\ & \text{where f(x) is the pdf of the target cloud points}
 
 \\ & f(x) = \frac{1}{(2\pi)^{d/2} |\Sigma_t|^{1/2}} \exp\left( -\frac{1}{2} (\mathbf{x} - \boldsymbol{\mu}_t)^\top \Sigma_t^{-1} (\mathbf{x} - \boldsymbol{\mu}_t) \right)
 \end{aligned}
 \end{gather*}
 $$
-
 
 Here is the proof:
 
@@ -282,12 +282,12 @@ $$
 \begin{aligned}
 & p_X(x) = f\left((T^*)^{-1} \mathbf{x}_i'\right)
 \\ &
-\Rightarrow \mathbb{E}_T\left[\ln(f(\mathbf{X}'))\right] 
-= \mathbb{E}_T\left[\ln\left(f(T^{-1} \mathbf{x}_i')\right)\right] 
+\Rightarrow \mathbb{E}_T\left[\ln(f(\mathbf{X}'))\right]
+= \mathbb{E}_T\left[\ln\left(f(T^{-1} \mathbf{x}_i')\right)\right]
 = \int f\left((T^*)^{-1} \mathbf{x}_i'\right) \ln\left(T^{-1}f(\mathbf{x}_i')\right) \, d\mathbf{x}
 
 \\ &
-= f_{T^*}(\mathbf{x}_i) \ln\left( f_T(\mathbf{x}_i) \right) 
+= f_{T^*}(\mathbf{x}_i) \ln\left( f_T(\mathbf{x}_i) \right)
 \end{aligned}
 \end{gather*}
 $$
@@ -297,10 +297,10 @@ $$
 $$
 \begin{gather*}
 \begin{aligned}
-\int f((T^*)^{-1} \mathbf{x}_i') \ln(f(\mathbf{x}_i')) \, d\mathbf{x} 
-&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))] 
+\int f((T^*)^{-1} \mathbf{x}_i') \ln(f(\mathbf{x}_i')) \, d\mathbf{x}
+&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))]
 - \int f_{T^*}(\mathbf{x}_i) \ln\left( \frac{f_{T^*}(\mathbf{x}_i)}{f_T(\mathbf{x}_i)} \right) \, d\mathbf{x}_i \\
-&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))] 
+&= \mathbb{E}_{T^*}[\ln(f(\mathbf{X}'))]
 - D_{\mathrm{KL}}(f_{T^*} \,\|\, f_T) \\
 &\text{(This is the KL divergence)}
 \end{aligned}
@@ -310,8 +310,6 @@ $$
 - And KL Divergence cannot be negative. [See here for proof](https://ricojia.github.io/2017/01/23/math-distance-metrics/). So, **now we have completed the proof**
 
 Then, the scan matching problem becomes finding the T such that the total Mahalanobis distance of source points w.r.t the target cloud is minimized.
-
-
 
 ## Comparison
 

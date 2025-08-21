@@ -251,6 +251,16 @@ $$
 \end{gather*}
 $$
 
+- And equivalently,
+
+$$
+\begin{gather*}
+\begin{aligned}
+& R^T \phi^{\land} R = (R^T \phi)^{\land}
+\end{aligned}
+\end{gather*}
+$$
+
 But in 2D, one can easily find that: $\phi^{\land} R = R \phi^{\land}$
 
 ### Commutative Property Of Cross Product
@@ -262,3 +272,62 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
+### Adjoint Action
+
+For $R_0,R_1\in SO(3)$,
+
+$$
+\begin{gather*}
+\begin{aligned}
+\operatorname{Ad}_{R_0}(R_1) \;\triangleq\; R_0\,R_1\,R_0^{-1}.
+\end{aligned}
+\end{gather*}
+$$
+
+**Claim (equivariance of the exponential)**: For any $X\in \mathfrak{so}(3)$,
+
+$$
+\begin{aligned}
+R_0 \, \operatorname{Exp}(X) \, R_0^{-1}
+&= \operatorname{Exp}\!\big(\operatorname{Ad}_{R_0} X\big)
+\quad \text{(definition of the adjoint action)} \\[6pt]
+&= \operatorname{Exp}\!\big(R_0 X R_0^{-1}\big)
+\quad \text{(adjoint action for $SO(3)$ is conjugation)}.
+\end{aligned}
+
+$$
+
+In particular with $X=\widehat{w}$ for $w\in\mathbb{R}^3$,
+
+$$
+\begin{aligned}
+R_0\,\operatorname{Exp}(\widehat{w})\,R_0^{-1}
+& = \operatorname{Exp}\!\big(R_0\,\widehat{w}\,R_0^{-1}\big)    \\
+& = \operatorname{Exp}\!\big((R_0 w)^{\wedge}\big),
+\end{aligned}
+$$
+
+#### Proof
+
+For matrices, since $R_0\,\widehat{w}\,R_0^{-1} = (R_0 w)^{\wedge}$, we get
+
+$$
+\begin{aligned}
+R_0 \, \operatorname{Exp}(X) \, R_0^{-1}
+&= R_0 \left( \sum_{k=0}^{\infty} \frac{1}{k!} X^k \right) R_0^{-1}
+\quad \text{(series expansion of the exponential)} \\[6pt]
+&= \sum_{k=0}^{\infty} \frac{1}{k!} \, R_0 X^k R_0^{-1}
+\quad \text{(linearity of $R_0$ and $R_0^{-1}$)} \\[6pt]
+&= \sum_{k=0}^{\infty} \frac{1}{k!} \, (R_0 X R_0^{-1})^k
+\quad \text{(conjugation property)} \\[6pt]
+&= \operatorname{Exp}\!\big( R_0 X R_0^{-1} \big)
+\quad \text{(rebuild exponential from series)} \\[6pt]
+&= \operatorname{Exp}\!\big( R_0 (w)^{\wedge} R_0^{-1} \big)
+\quad \text{(substitute $X = (w)^{\wedge}$)} \\[6pt]
+&= \operatorname{Exp}\!\big( (R_0 w)^{\wedge} \big)
+\quad \text{(rotation acts on vector $w$)}.
+\end{aligned}
+$$
+
+QED.

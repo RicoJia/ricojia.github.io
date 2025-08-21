@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Robotics - ROS2 Tests
+title: Robotics - ROS2 Colcon Mixins
 date: '2024-11-30 13:19'
-subtitle: colcon test
+subtitle: 
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -10,50 +10,81 @@ tags:
 comments: true
 ---
 
+## Introduction
 
-## Use cases
+[Colcon Mixins](https://github.com/colcon/colcon-mixin-repository) can be used to apply a group of arguments under one name. Example:
 
-### Passing ROS Arguments to ROS2 Test Executables
-
-When writing integration tests in ROS2, you may need to pass command-line parameters `(--ros-args -p <param>:=<value>)` to your test binaries. By default, GTest’s main() intercepts all arguments, so ROS2 parameters aren’t automatically applied. Follow these steps to forward ROS arguments into your tests:
-
-1. Provide a Custom `main()`. Override GTest’s default entry point and initialize both GTest and rclcpp with the original arguments:
-
-```cpp
-#include <gtest/gtest.h>
-#include <rclcpp/rclcpp.hpp>
-#include <vector>
-#include <string>
-
-// Store all of main()’s argv into a global for later
-static std::vector<std::string> g_test_args;
-
-int main(int argc, char** argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  g_test_args.assign(argv, argv + argc);
-  rclcpp::init(argc, argv);
-  int ret = RUN_ALL_TESTS();
-  rclcpp::shutdown();
-  return ret;
-}
+```
+colcon build --mixin debug clang
 ```
 
-2. Forward Arguments in Your Test Fixture. In your fixture’s `SetUp()`, pass the captured arguments into `NodeOptions` so your node picks up any `--ros-args` parameters:
+This might apply a group of flags related to debug builds, such as:
 
-```cpp
-void SetUp() override {
-  rclcpp::NodeOptions options;
-  options.arguments(g_test_args);
-  options.parameter_overrides({
-    ... 
-  });
-  node_ = std::make_shared<rclcpp::Node>("test_node", options);
-
-  // Declare and retrieve your own parameter
-  node_->declare_parameter("visualize", false);
-  node_->get_parameter("visualize", visualize_);
-}
+```
+--cmake-args -DCMAKE_BUILD_TYPE=Debug
 ```
 
-3. Run Your Test with ROS Args. Finally, invoke your test binary with: `./test_integrate_imu --ros-args -p visualize:=true`
+- Note: mixins are applied in the order listed. If two mixins set the same option, the later one can override the earlier one.
+
+**To download**:
+
+```
+sudo apt install python3-colcon-mixin
+```
+
+## How To Use Mixins
+
+1. Define yaml file for mixins:
+
+    - File structure:
+
+        ```
+        my_mixins/
+        ├── index.yaml
+        ├── debug.yaml
+        └── clang.yaml
+        ```
+
+    - `index.yaml`
+
+        ```yaml
+        build:
+        debug: debug.yaml
+        clang: clang.yaml
+        ```
+
+    - `debug.yaml`:
+
+        ```yaml
+        arguments:
+            cmake-args:
+                - -DCMAKE_BUILD_TYPE=Debug
+        ```
+
+    - `clang.yaml`
+
+        ```yaml
+        arguments:
+            cmake-args:
+                - -DCMAKE_C_COMPILER=clang
+                - -DCMAKE_CXX_COMPILER=clang++
+        ```
+
+2. Register the mixins:
+
+```bash
+colcon mixin add my_mixins /path/to/my_mixins/index.yaml
+colcon mixin update
+```
+
+3. To check:
+
+```bash
+colcon mixin show
+```
+
+4. Use mixins:
+
+```bash
+colcon build --mixin debug clang
+```

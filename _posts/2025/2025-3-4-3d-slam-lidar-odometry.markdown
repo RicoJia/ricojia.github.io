@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Robotics - [3D SLAM - 2] Lidar Odometry
+title: Robotics - [3D SLAM - 3] Lidar Odometry
 date: '2025-3-4 13:19'
 subtitle: Direct Lidar Odometry, NDT, Incremental NDT, Indirect Lidar Odometry
-header-img: "img/post-bg-os-metro.jpg"
+header-img: "img/post-bg-o.jpg"
 tags:
     - Robotics
     - SLAM
@@ -50,11 +50,11 @@ Here, you can [check out my implementation](https://github.com/RicoJia/Mumble-Ro
 - ✅ Always voxel-filter input scans in pre-processing — it massively reduces noise and speeds things up.
 - 📌 Only keyframes are used to build the target map. Non-keyframes still contribute to visualization but don’t clutter the optimization.
 - 🧩 For sparse data, you have two options for Nearby6 voxel association:
-    - 🔺 Aggregate all voxel errors (can explode to 10⁷+ for large clouds!)
-    - ✅ Use only the best voxel — leads to more stable optimization
+  - 🔺 Aggregate all voxel errors (can explode to 10⁷+ for large clouds!)
+  - ✅ Use only the best voxel — leads to more stable optimization
 - 🐛 PCL versions matter:
-    - PCL 1.12 has a `spinOnce()` bug. PCL 1.13 is stable but slow
-    - PCL 1.14 is much better
+  - PCL 1.12 has a `spinOnce()` bug. PCL 1.13 is stable but slow
+  - PCL 1.14 is much better
 
 ## Incrememental NDT Odometry
 
@@ -74,7 +74,8 @@ scan -> NDT ---pose_estimate---> Is_Keyframe? ---yes---> Add_Frame
 </div>
 
 The main difference, however, is in `add_frame`:
-1. Given two point clouds: source and target, we can voxelize them. 
+
+1. Given two point clouds: source and target, we can voxelize them.
 2. For the same voxel location in source and target:
     1. Count the number of points in the voxel of source and target: `m`, `n`
     2. We can calculate mean and variances of them: $\mu_a$, $\mu_b$, $\Sigma_a$,$\Sigma_b$
@@ -108,11 +109,9 @@ The main difference, however, is in `add_frame`:
     \end{gather*}
     $$
 
-3. Also, if we want to discard voxels if there have been too many old ones, we can implement an Least-Recently-Used (LRU) cache of voxels. 
+3. Also, if we want to discard voxels if there have been too many old ones, we can implement an Least-Recently-Used (LRU) cache of voxels.
 
 - If there are too many points in a specific voxels, we can choose not to update it anymore.
-
-
 
 ### Summary of Vanilla and Incremental NDT Odometry
 
@@ -120,17 +119,18 @@ Similarities:
 
 - We don't store points into point cloud permanently. We just store voxels and their stats
 
-How do we update voxels? 
+How do we update voxels?
+
 - NDT3D needs a grid_: `unordered_map<key, idx>`. This means:
     1. We need to reconstruct the grid cells from scratch.
     2. We need keyframes which allows us to selectively add ponitclouds
-- NDT3D_inc needs an LRU cache: `std::list<data>`, `unordered_map<itr>`. We don't need to generate grid cell 
+- NDT3D_inc needs an LRU cache: `std::list<data>`, `unordered_map<itr>`. We don't need to generate grid cell
 
 ## Indirect Lidar Odometry
 
 Indirect Lidar Odomety is to select "feature points" that can be used for matching. There are 2 types: **planar** and **edge feature** points. This was inspired by LOAM (lidar-odometry-and-mapping), and is adopted by subsequent versions (LeGO-LOAM, ALOAM, FLOAM). Indirect Lidar Odometry is the foundation of LIO as well. Common features include: PFH, FPFH, machine-learned-features. Point Cloud Features can be used for database indexing, comparison, compression.
 
-LeGO-LOAM uses distance image to extract ground plane, edge and planar points; mulls uses PCA to extract plane, vertical, cylindircal, horizontal features. 
+LeGO-LOAM uses distance image to extract ground plane, edge and planar points; mulls uses PCA to extract plane, vertical, cylindircal, horizontal features.
 
 After feature detection, we can do scan-matching using ICP or NDT
 
@@ -138,12 +138,11 @@ Some characteristics of 3D Lidar points are:
 
 - They are not as dense as the RGB-D point cloud. Instead they have clear **line characteristics**.
 
-
 - Should be lightweight. Not much CPU/GPU is used
-    - So people in industry LO systems use simple features instead of complex ones, learned by machine learning systems.
+  - So people in industry LO systems use simple features instead of complex ones, learned by machine learning systems.
 - Computation should not be split - some on CPU, some on GPU.
 
-Edge points along their vertical direction can be used for point-line ICP; planar points can be used for point-plaine ICP. 
+Edge points along their vertical direction can be used for point-line ICP; planar points can be used for point-plaine ICP.
 
 <div style="text-align: center;">
 <p align="center">
@@ -155,13 +154,13 @@ Edge points along their vertical direction can be used for point-line ICP; plana
 
 ### LOAM-Like Feature Extraction
 
-Feature-based LO have better general usability than point-point ICP or point-plane ICP. In the autonomous vehicle industry, LOAM, LeGO-LOAM, ALOAM, FLOAM are common solutions. They are the foundation of many LIO systems, but due to the complexity of LOAM's code, here we have a simplified version. 
+Feature-based LO have better general usability than point-point ICP or point-plane ICP. In the autonomous vehicle industry, LOAM, LeGO-LOAM, ALOAM, FLOAM are common solutions. They are the foundation of many LIO systems, but due to the complexity of LOAM's code, here we have a simplified version.
 
-For any LOAM system, we mostly care about "what features shall we extract"? Common features include PFH, FPFH, and many other deeply-learned features. In the industry, people currently use simple, hand-crafted features. This is because we don't want to take up too much CPU/GPU resources. 
+For any LOAM system, we mostly care about "what features shall we extract"? Common features include PFH, FPFH, and many other deeply-learned features. In the industry, people currently use simple, hand-crafted features. This is because we don't want to take up too much CPU/GPU resources.
 
-A simple hand-crafted feature extraction method is based on **LiDAR scan lines**. Each line has a timestamp, which makes our nearest-neighbor-search much easier. In LOAM, we extract planar and edge points. Such a concept can be used in 2D Scan-Matching as well. In 3D, LeGO-LOAM extracts ground, planar, and edge points using distance image? MULLS (Multi‐metric Linear Least‐Square, 2021) classfies points into semantic/geometric groups (ground, facade, pillars, beams, etc.) via dual‐threshold ground filtering and PCA. Of course, RGBD SLAM / Solid-State LiDAR SLAM methods do not have scan lines. So we cannot use such methods here. 
+A simple hand-crafted feature extraction method is based on **LiDAR scan lines**. Each line has a timestamp, which makes our nearest-neighbor-search much easier. In LOAM, we extract planar and edge points. Such a concept can be used in 2D Scan-Matching as well. In 3D, LeGO-LOAM extracts ground, planar, and edge points using distance image? MULLS (Multi‐metric Linear Least‐Square, 2021) classfies points into semantic/geometric groups (ground, facade, pillars, beams, etc.) via dual‐threshold ground filtering and PCA. Of course, RGBD SLAM / Solid-State LiDAR SLAM methods do not have scan lines. So we cannot use such methods here.
 
-This line of thoughts can be applied in 2D lidars as well. 
+This line of thoughts can be applied in 2D lidars as well.
 
 ```python
 - extract_feature
@@ -213,11 +212,11 @@ In the original paper:
 
 - For each scan line/beam, divide the point cloud into six sectors (each takes 1/6 of start-end index diff), and extract sharp (corner) and flat (plane/surface) features as follows.
 
-    - In each sector, sort cloud index according to curvature. The top 2 largest curvature points (if points are not selected and curvature > 0.1) are marked as **sharp**, the top 20 largest curvature points are marked as **less sharp** (including the top 2 sharp points), the top 4 smallest curvature points (with additional condition curvature < 0.1) are **marked as flat**, and all the rest points plus the **top 4 flat points** will be down sampled and marked as less flat.
-        - In real life, the classification of sharpness could indeed increase robustness in some scenarios
-        - LeGO-LOAM, MULLS LOAM have different extractions, but the scan matching processes are the same (ICP)
-    - After each feature extraction, there will be a **non-maximum suppression** step to mark neighbor 10 points (+-5) to be already selected (marking will stop at points that are 0.05 squared distance away from currently picked point), so that they will not be picked in the next iteration for feature extraction.
-    - A downsample operation (of leaf size 0.2m) is applied to each scan of less flat points, and then all downsampled scans are combined together (into one point cloud) to be published to odometry.
+  - In each sector, sort cloud index according to curvature. The top 2 largest curvature points (if points are not selected and curvature > 0.1) are marked as **sharp**, the top 20 largest curvature points are marked as **less sharp** (including the top 2 sharp points), the top 4 smallest curvature points (with additional condition curvature < 0.1) are **marked as flat**, and all the rest points plus the **top 4 flat points** will be down sampled and marked as less flat.
+    - In real life, the classification of sharpness could indeed increase robustness in some scenarios
+    - LeGO-LOAM, MULLS LOAM have different extractions, but the scan matching processes are the same (ICP)
+  - After each feature extraction, there will be a **non-maximum suppression** step to mark neighbor 10 points (+-5) to be already selected (marking will stop at points that are 0.05 squared distance away from currently picked point), so that they will not be picked in the next iteration for feature extraction.
+  - A downsample operation (of leaf size 0.2m) is applied to each scan of less flat points, and then all downsampled scans are combined together (into one point cloud) to be published to odometry.
 
 - For example for VLP-16 LiDAR, there could be 384 flat feature points and 192 sharp feature points extracted in a point cloud frame (if all meet the 0.1 curvature threshold).
 

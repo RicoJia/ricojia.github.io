@@ -1,0 +1,44 @@
+---
+layout: post
+title: Robotics - [3D SLAM - 4] Iterative Extended Kalman Filter
+date: '2025-3-8 13:19'
+subtitle: 
+header-img: "img/post-bg-o.jpg"
+tags:
+    - Robotics
+    - SLAM
+comments: true
+---
+
+Prediction:
+xk = xk_1 + F_k (x_k-1 - x_k)
+
+Observation:
+h(x_k) = h(x_k-1) + H_x (xk-xk-1)
+innovation = z - h(x_k)
+
+My understanding is in innovation, we do it iteratively.
+
+x = get_kf_pose
+kf.update:
+    for i in range(3):
+        H, hr = ndt.get_jacobian_and_residual()     // NDT align and gives H and hr.
+        J = tangent_space_projection(R_, P_)
+        P = J *cov* J.T       // use the cov_ before prediction
+
+        K = (H^T... + P_k.inverse())
+        Q_k
+        dx;
+        update()
+    cov = Q_k... P_k    // so we update cov al-together
+    
+
+A-posteriori is the probability of states given observations. P (x_k | z_k). Likelighood is to verify the chance of an assumption being right. "what's the chance of a coin is fair, given that I've observed 3 heads out of 5 flips?" L(X)
+
+maximize a-posteriori,
+
+Tightly Coupled Measurement:
+
+- IMU, GPS, Lidar. ??
+- what is it?
+- why does it happen

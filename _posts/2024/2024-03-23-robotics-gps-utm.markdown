@@ -40,6 +40,18 @@ Fix: is the process navigation satellites -> position, velocity, time.
 
 - ROS2's `sensor_msgs::NavSatFix` has no heading field. **The best way to pass GPS messages around is to create your own message type**
 
+### RTK GPS Modes
+
+RTK refers to 载波相位差.
+
+- Single point:
+  - No base station is connected.
+- floating point rtk:
+  - Uses GPS -> base station, but phase number is unresolved and is represented as floating point? Its accuracy is ~0.5m. It's an intermediate solution between single and fixed point
+- Fixed point RTK
+  - Need at least 5 satellites
+  - accuracy is <0.1m
+
 ### How GPS Trilateration Works
 
 Given:
