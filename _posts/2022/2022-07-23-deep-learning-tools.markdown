@@ -116,6 +116,64 @@ word_to_vec_map_unit_vectors = {
   - `KiB`: kibibyte = 1024 bytes, `MiB`: Mebibyte = 1024 KiB,
   - `GiB` = 1024 MiB`PiB`, `TiB`: 1024 GiB, Pebibyte = 1024 TiB
 
+### tqdm For Multiple Processes
+
+tqdm bars by default only work with a single process. If we want to spawn multiple processes, one universal set up could be:
+
+```python
+from multiprocessing import Manager, Process
+
+def worker(mcap_file: str, prog, total_msg: int):
+    with open(mcap_file, "rb") as f:
+        print(f"Processing {mcap_file}")
+        for msg in get_msg():
+            process_msg(msg)
+            count += 1
+            if count % 1000 == 0:
+                prog[mcap_file] = count
+        prog[mcap_file] = count
+
+with Manager() as manager:
+    mcap_paths = ["data1.mcap", "data2.mcap"]
+    prog = manager.dict()
+    total_msgs = {}
+    for mcap_file in mcap_paths:
+        total_msgs[mcap_file] = get_num_msgs(mcap_file)
+    procs = []
+    for mcap_file in mcap_paths:
+        prog[mcap_file] = 0
+        proc = Process(
+            target=worker, args=(mcap_file, prog, total_msgs[mcap_file])
+        )
+        proc.start()
+        procs.append(proc)
+
+    bars = {
+        mcap_file: tqdm(
+            total=total_msgs[mcap_file],
+            position=i,
+            leave=True,
+        )
+        for (i, mcap_file) in enumerate(mcap_paths)
+    }
+
+    try:
+        alive = True
+        while alive:
+            alive = any(proc.is_alive() for proc in procs)
+            for p in mcap_paths:
+                new_count = prog.get(p, bars[p].n)
+                if new_count > bars[p].n:
+                    bars[p].update(new_count - bars[p].n)
+            sleep(0.5)
+    finally:
+        for pr in procs:
+            pr.join()
+        for bar in bars.values():
+            bar.close()
+
+```
+
 ## FiftyOne
 
 - Running inferencing on GCP, $0.05/image,
