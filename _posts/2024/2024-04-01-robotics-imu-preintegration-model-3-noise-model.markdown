@@ -11,6 +11,8 @@ tags:
 
 ## Pre-integration Model
 
+In Graph Optimization using IMU pre-integration, $b_g$ and $b_a$ are factors under optimization. We have derived the Jacobians of pre-integrated intermediate values w.r.t these factors, but we still need an information matrix. The noise characteristics can serve that role.
+
 ### Rotation Model
 
 Using the BCH approximation:

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - IMU Pre-integration Model
+title: Robotics - [IMU Pre-integration Model 1] Definitions Of Pre-Integration Options
 date: '2024-03-28 13:19'
 subtitle: Pre-Integration Model Definitions
 comments: true
@@ -42,7 +42,7 @@ $$
 - Rotation is following the right perturbation model $R_1 = R_0 \Delta R$ because angular velocity $w$ is observed in frame `0`. In other words, $\Delta R = R_{0,1}$
 - This is "direct integration". One can see that the integration terms have $R_j$, which is a state at a specific time. This is why we "need to recalculate" state variables
 
-Pre-integration is a standard method that's used in tightly-coupled LIO and VIO systems. We can easily find intermidate state variables (pre-integration factors) that do not rely on state variables? (TODO, and review below as well)
+Pre-integration is a standard method that's used in tightly-coupled LIO and VIO systems. We can easily find intermidate state variables.
 
 1. Pre-integrate all measurements into compact pre-integration factors.
 2. On each optimizer iteration, upon receving an update, apply the linearized updates to state variables.
