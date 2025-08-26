@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Basic Pub Sub Node
 date: '2024-11-5 13:19'
-subtitle: ROS2 Installation, Packaging & Build System, Messages
+subtitle: ROS2 Installation, Packaging & Build System, Messages, Node
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -187,8 +187,9 @@ int main(int argc, char * argv[])
 }
 ```
 
-- `rclcpp::init(argc, argv);` only flips the bool rclcpp::ok() reads. It does not kill the process. In the case of the publisher, `rclcpp::spin()` already recognizes that. 
-    
+- `rclcpp::init(argc, argv);` only flips the bool rclcpp::ok() reads. It does not kill the process. In the case of the publisher, `rclcpp::spin()` already recognizes that.
+- In most cases, nodes are better to be `std::shared_ptr`. This is because of `executor_.add_node(run_imu_node_);`
+- If you have a multi-level node architecture, it's a good practice to declare parameters on the highest level and the lower level nodes can get custom parameters passed into them
 
 ## Custom Messages
 

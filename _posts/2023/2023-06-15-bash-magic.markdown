@@ -174,3 +174,11 @@ Every write to the stdout will go to file `$LIST`. You can either redirect it to
 ```
 bind -x '"\C-f": navi'
 ```
+
+### Command
+
+`command -v lcov`: `command -v` checks if this is a command is an executable;
+
+```bash
+if command -v lcov > /dev/null  # makes it go to null
+```

@@ -2,7 +2,7 @@
 layout: post
 title: Math - SO(3) Perturbations
 date: '2017-02-22 13:19'
-subtitle: Left Perturbation, Right Perturbation, BCH Formula
+subtitle: Left Perturbation, Right Perturbation, BCH Formula, Left Jacobian, Right Jacobian
 comments: true
 tags:
     - Math
