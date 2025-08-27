@@ -199,12 +199,24 @@ In Eigen, expressions like:
 getter(item) - mean
 ```
 
-may not be immediately evaluated due to lazy evaluation. Since getter(item) returns an Eigen expression, the subtraction might not execute as expected, potentially leading to unexpected behavior—such as returning a zero vector instead of the intended result.
+may not be immediately evaluated due to lazy evaluation. `getter(item)-mean` is an `Eigen::CwiseBinaryOp` expression object that just stores references to `sum and getter(item)`. The subtraction might not execute as expected, potentially leading to unexpected behavior—such as returning a zero vector instead of the intended result.
 
 The fix is:
 
 ```cpp
 (getter(item)- mean).eval() 
+```
+
+Even this **does not** work:
+
+```cpp
+mean = std::accumulate(
+    data.begin(), data.end(),
+    VectorType::Zero().eval(),            // init value, a *concrete vector*
+    [&getter](const VectorType &sum, const auto &item) {
+        return sum + getter(item);        // <-- returns a *lazy expression*
+    }
+).eval() / static_cast<double>(N);
 ```
 
 [Reference](https://github.com/gaoxiang12/slam_in_autonomous_driving/pull/191)
@@ -230,9 +242,9 @@ std::cout << "Before resize:\n" << mat << "\n\n";
 mat.resize(2, 2);  // resize to the same size!
 ```
 
-### What does `EIGEN_MAKE_ALIGNED_OPERATOR_NEW` do exactly? 
+### What does `EIGEN_MAKE_ALIGNED_OPERATOR_NEW` do exactly?
 
-- Eigen vectorizable types (e.g. Vector4d, Quaterniond, small fixed‐size Matrix<…>) carry an alignment requirement (usually 16 bytes, sometimes 32 on AVX machines). 
+- Eigen vectorizable types (e.g. Vector4d, Quaterniond, small fixed‐size Matrix<…>) carry an alignment requirement (usually 16 bytes, sometimes 32 on AVX machines).
 
     ```cpp
     template<typename Scalar, int Rows, int Cols /*…*/>
@@ -245,7 +257,9 @@ mat.resize(2, 2);  // resize to the same size!
     };
     using Vector4d = Matrix<double,4,1>;
     ```
-    - In compile time, Vector4d expands to
+
+  - In compile time, Vector4d expands to
+
         ```cpp
         struct alignas(16) Vector4d {
             double data[4];
@@ -254,13 +268,14 @@ mat.resize(2, 2);  // resize to the same size!
         ```
 
 - The standard `::operator new` on some platforms (or older compilers) doesn’t promise alignments above what the C++ ABI requires (often only 8 or maybe 16 bytes).
-    - In C++ (since C++11), there’s a special POD type called `std::max_align_t` (in `<cstddef>`) whose sole purpose is to have an alignment requirement at least as big as that of any scalar (fundamental) type on your platform
-    - opeator new `void *operator new(std::size_t);` must return memory that is suitably aligned for any object whose alignment requirement does NOT exceed `alignof(std::max_align_t)`
-    - On many platforms, `std::max_align_t = 16`
+  - In C++ (since C++11), there’s a special POD type called `std::max_align_t` (in `<cstddef>`) whose sole purpose is to have an alignment requirement at least as big as that of any scalar (fundamental) type on your platform
+  - opeator new `void *operator new(std::size_t);` must return memory that is suitably aligned for any object whose alignment requirement does NOT exceed `alignof(std::max_align_t)`
+  - On many platforms, `std::max_align_t = 16`
 
-- Macro `EIGEN_MAKE_ALIGNED_OPERATOR_NEW` will yield memory that is actually aligned to EIGEN_MAX_ALIGN_BYTES (16, 32, etc). 
+- Macro `EIGEN_MAKE_ALIGNED_OPERATOR_NEW` will yield memory that is actually aligned to EIGEN_MAX_ALIGN_BYTES (16, 32, etc).
 
-    - But when using `operator new`, or STL containers (which calls operator new in  `T* allocate(std::size_t n) {}`), we need to use the Macro to override the global new / delete for your class. It injects below definitions of into your class, and makes each call go through Eigen’s aligned‐allocation routines (EIGEN_ALIGNED_MALLOC / EIGEN_ALIGNED_FREE).
+  - But when using `operator new`, or STL containers (which calls operator new in  `T* allocate(std::size_t n) {}`), we need to use the Macro to override the global new / delete for your class. It injects below definitions of into your class, and makes each call go through Eigen’s aligned‐allocation routines (EIGEN_ALIGNED_MALLOC / EIGEN_ALIGNED_FREE).
+
         ```cpp
         void* operator new(std::size_t size);
         void  operator delete(void* ptr);
@@ -269,6 +284,7 @@ mat.resize(2, 2);  // resize to the same size!
         ```
 
 - **Therefore, EVERY TIME your class contains fixed-size Eigen, add EIGEN_MAKE_ALIGNED_OPERATOR_NEW to your class/struct**
+
     ```cpp
     struct Pose {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
@@ -277,8 +293,6 @@ mat.resize(2, 2);  // resize to the same size!
         Eigen::Vector3d trans;  // 3 doubles
     };
     ```
-
-
 
 ## Sophus
 
@@ -300,7 +314,7 @@ z = cos(θ) + i·sin(θ)
 z₁ · z₂ = cos(θ₁ + θ₂) + i·sin(θ₁ + θ₂)
 ```
 
-- This can avoid numerical instability near +-pi. 
+- This can avoid numerical instability near +-pi.
 
 To construct a rotation: we need to use `Eigen::Quaterniond`
 
@@ -314,7 +328,7 @@ Altogether with translation:
 ground_truth_pose = halo::SE3(Eigen::Quaterniond(qw, qx, qy, qz), halo::Vec3d(x, y, z));
 ```
 
-- Sophus SE3 stores an Eigen Quaternion (4 scalars, 32B) and a vector3d (3 scalars, 24B). Because they are fixed-size obj, they are packed into 16 byte boundaries. So in total, an `sophus::SE3` is 64B. 
+- Sophus SE3 stores an Eigen Quaternion (4 scalars, 32B) and a vector3d (3 scalars, 24B). Because they are fixed-size obj, they are packed into 16 byte boundaries. So in total, an `sophus::SE3` is 64B.
 
 ```cpp
 class SE3{

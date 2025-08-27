@@ -76,3 +76,7 @@ How to make gazebo sim faster:
 - max_iterations: 120
 - rviz2: rviz trick: ogre visualizer for clicking + F
   - sonar is at the back of the vehicle
+
+## Convetions
+
+[The Gazebo-classic convention for rpy is ZYX](https://playerstage.sourceforge.net/doc/Gazebo-manual-0.8.0-pre1-html/config_syntax.html)
