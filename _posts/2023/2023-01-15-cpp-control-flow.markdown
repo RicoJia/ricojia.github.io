@@ -53,7 +53,11 @@ case 0:{
 }
 ```
 
-[Reference](https://stackoverflow.com/a/92730) 
+[Reference](https://stackoverflow.com/a/92730)
+
+### Other Notes On `switch-case`
+
+- `switch-case` only works with integer types.
 
 ## Range [C++ 20]
 
@@ -153,6 +157,7 @@ auto result = nums
 ## `if with initializer` (C++ 17)
 
 {% raw %}
+
 ```cpp
 #include <iostream>
 #include <unordered_map>
@@ -167,4 +172,5 @@ int main() {
     }
 }
 ```
+
 {% endraw %}
