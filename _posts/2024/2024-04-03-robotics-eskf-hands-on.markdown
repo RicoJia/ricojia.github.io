@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Robotics - IMU Hands-On
+title: Robotics - General ESKF Hands-on Test Notes
 date: '2024-04-03 13:19'
 subtitle: 
 comments: true
@@ -8,6 +8,11 @@ header-img: "img/post-bg-unix-linux.jpg"
 tags:
     - Robotics
 ---
+
+## Primers
+
+- Did you turn on the message debugging flag, or are you compiling with `PRINT_DEBUG_MSGS`?
+- Are you sure you are launching the right test?
 
 ## IMU tools
 
@@ -32,3 +37,17 @@ Accelerometer bias
     - Exhibit bias-random-walk (BRW) that grows proportionally to √t.
     - Often follow a 1/f noise spectrum rather than pure white noise.
   - Tactical in-run bias stability is on the order of micro-g, but bias repeatability is typically larger—see Advanced Navigation’s IMU introduction for details.
+
+## GPS Debugging Notes
+
+- When GPS heading is invalid, are you omitting GPS messages?
+  - One may choose not to omit GPS. We could just set their ESKF jacobians to 0.
+- GPS needs IMU to be initialized
+- IMU integration needs the first GPS to be found
+
+## Data synchronization
+
+- Do you get messages exactly the same timing?
+- Are data synchronization, like the GPS and IMU Data sync correct?
+- When GPS starts becoming valid, do you choose the pose there to be your initial pose?
+  - Initial velocity is from the IMU. They are not directly corrected by GPS. So wrong initial velocity could make IMU spin a lot while its cartesian pose is around the GPS point
