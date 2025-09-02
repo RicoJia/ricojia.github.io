@@ -182,3 +182,7 @@ bind -x '"\C-f": navi'
 ```bash
 if command -v lcov > /dev/null  # makes it go to null
 ```
+
+## File Management
+
+`umask 077` #  permissions mask that ensures any new files you create in that shell session are readable and writable only by you, and not accessible to group members or others.

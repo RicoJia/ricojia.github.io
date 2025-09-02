@@ -145,6 +145,10 @@ ros2 run dummy_test demo
 
     - `--symlink-install` allows in-place modifications in `colcon build --packages-select dummy_test --symlink-install`
 
+Notes:
+
+- You must install python as a program for ros2 run. Otherwise it won't be found
+
 ## Create a RclCPP Package for Publisher and Subscriber
 
 ```cpp
@@ -208,7 +212,7 @@ uint8 code
 string message
 ```
 
-In cpp, this becomes:
+In `.hpp`, this becomes:
 
 ```cpp
 struct Status
@@ -231,6 +235,8 @@ enum class StatusCode : uint8_t {
   ERROR = Status::ERROR
 };
 ```
+
+- ros1 and ros2 `.msg` are similar, except that some default messages change namespaces: `time -> builtin_interface/time`
 
 ### Latched Topic
 
