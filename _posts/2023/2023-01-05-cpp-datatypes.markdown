@@ -59,11 +59,40 @@ int main(){
 
 ## Namespace
 
+Global namespace
+
+In C++, C functions actually live in two namespaces: global and std. E.g., both functions exist:
+
+```cpp
+int ::tolower(int);     // global
+int std::tolower(int);  // std namespace
+```
+
+`::func` refers to the function defined in the global namespace.One example is in `<cctype>`, there's `int tolower( int ch )` In `<locale>`, there's `template<class CharT>
+CharT tolower(CharT ch, const std::locale& loc)`. During a function call, it's easy to disambiguate the two. However, when passing a function pointer, the compiler cannot disambiguate. We can specify `::tolower` so the plain C function pointer is passed in.
+
+```cpp
+#include <cctype>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string s = "HELLO";
+
+    // Ambiguous: is this std::tolower (std::tolower(str[i],loc)) or std::tolower(int)? 
+    // transform(s.begin(), s.end(), s.begin(), tolower); 
+
+    // Explicitly says: "use the global C one"
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+```
+
 - `::testing::InitGoogleTest(&argc, argv);`: defensive way to avoid accidental namespacing issue. This is to call the gtest module
 - Variable name: `_` in C++ is just another variable, not a wildcard.
 
-
 ## Structural Binding
+
 TODO
 
 ## `iostream`
@@ -76,10 +105,9 @@ c means "character-based stream" in `cin`, `cout`.
 
 - `clog`: Similar to cerr in that it’s used for logging messages, but unlike cerr, clog is buffered. This means it collects log messages in a buffer and flushes them less frequently, which can improve performance.
 
-Because clog is buffered, **it can be more efficient for logging non-critical messages** since it reduces the number of flush operations. Downside: if your program crashes before the buffer is flushed, some log messages might be lost. 
+Because clog is buffered, **it can be more efficient for logging non-critical messages** since it reduces the number of flush operations. Downside: if your program crashes before the buffer is flushed, some log messages might be lost.
 
 There is clog as well. `clog` is faster because it stores output to file / screen in a buffer, once the buffer is full, the buffer flushes. In contrast, `cout` flushes immediately. `clog` is most useful in writing non-essential logs that could be lost upon system crashes.
-
 
 ## `union` and `std::variant`
 
@@ -101,7 +129,7 @@ int main()
 }
 ```
 
-`std::variant` is a type-safe tagged union. 
+`std::variant` is a type-safe tagged union.
 
 - To initialize, state the variant can only be monostate: `std::variant<std::monostate, bool, int> var`
 - `var.index()` gives the current active value
@@ -173,5 +201,6 @@ try {
     std::cerr << "Bad cast: " << e.what() << std::endl;
 }
 ```
+
 🔹 std::any behaves like a regular value: you can assign, move, and copy it.
 🔹 Use it when you need to store values of different types without templates, but still want safe type checking at runtime.
