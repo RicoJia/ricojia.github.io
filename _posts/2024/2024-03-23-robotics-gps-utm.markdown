@@ -226,11 +226,47 @@ could be assigned to the north pole, but in the meantime, large changes in the l
 
 ## UTM Coordinates
 
-The Universal Transverse Mercator (UTM) coordinate system can better handle the significant digits issue better. Singularity issue? Its workflow is:
+The Universal Transverse Mercator (UTM) coordinate system can better handle the significant digits issue better.`mercator` is a projection method that projects a globe onto a cylinder
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/j2s3frp6/sphericalmercator.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+UTM uses the Transverse Mercator projection. It’s not the “normal” Mercator <div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/qvTVLgy0/transverse-aspect.jpg" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
+
+Latitude limits: 80 ° S to 84 ° N. The UTM system is defined only between 80 ° S and 84 ° N (not exactly ± 80 °). Beyond those latitudes the Universal Polar Stereographic (UPS) system is used instead.
+
+Each zone’s central meridian is assigned a “false easting” of 500 000 m so that all easting values within the zone are positive. That does not mean the zone is 1 000 000 m wide—actually at the equator 6 ° ≃ 667 000 m, and the easting values of each cell typically starts from 166 000 m to 834 000 m depending on the exact longitude.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/pLdqQHrk/Screenshot-from-2025-05-12-16-05-57.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+Along the central meridian the projection scale is 0.9996 (so distances there are 0.04 % too small), and it increases toward the zone edges (up to about 1.0004). That scale factor is dimensionless (it multiplies lengths), not “0.9996 m per meter.”
+
+Easting and northing in metres A UTM coordinate is simply “Easting, Northing” in metres from the false-origin (500 000 m E at the central meridian; 0 m N at the equator in the northern hemisphere, 10 000 000 m N at the equator in the southern).
+
+
+### Workflow
 
 - Projects the globe onto a map
 - Segment the map into 60 parts (longitude) and 20 parts (latitude).
-  - So each zone is 6 deg longitudinally, 8 deg latitudinally.
+  - Each zone is 6 deg longitudinally, 8 deg latitudinally. They are numbered eastward from 180 ° W
+    - Each zone spans 6 ° of longitude. Zone 1 runs from 180 ° W to 174 ° W, zone 2 from 174 ° W to 168 ° W
   - The 20 latitudes are represented by a letter in `C to X`, exluding `I` and `O`
     - Zone `33T` represents zone `33` in the T latitudinal region
 - Each zone has a coordinate frame `x = left = east,  y=up=norh`
