@@ -33,11 +33,11 @@ CMake is a "write-only" language 😉, because it was only meant to be written, 
   - This is unlike Bash or Python where global variable are by default accessed
   - To access the parent scope:
 
-        ```c
-        function(my_func)
-            set(MY_VAR "updated globally" PARENT_SCOPE)
-        endfunction()
-        ```
+    ```c
+    function(my_func)
+        set(MY_VAR "updated globally" PARENT_SCOPE)
+    endfunction()
+    ```
 
 - Major version upgrades
   - Pre CMake 3.x to CMake 3.x - make commands "target" specific:
@@ -97,6 +97,24 @@ find_package(PACKAGE REQUIRED)
 ```
 
 - Requires `.cmake` files. If you have a static library, do not use find_package.
+
+### Privacy
+
+```c
+target_include_directories(<tgt>
+  <PRIVATE|PUBLIC|INTERFACE>
+    path/to/headers
+)
+```
+
+The keyword controls who gets that include-path as a "usage requirement.”
+
+- PRIVATE means: "only when compiling this target."
+
+- INTERFACE means: "only when compiling consumers of this target.”
+
+- PUBLIC means: "both when compiling this target and when compiling any target that links to it.”
+
 
 ### Interface Library
 
@@ -205,7 +223,7 @@ add_test(NAME ${name} COMMAND ${name} --gtest_catch_exceptions=0)
 
 ## Namespace
 
-In CMake, a “namespace” is a way to qualify target names, helping to avoid collisions and clarify ownership—especially when your project or its dependencies might use generic names. For example, in `MyLib`, to create core:
+In CMake, a "namespace” is a way to qualify target names, helping to avoid collisions and clarify ownership—especially when your project or its dependencies might use generic names. For example, in `MyLib`, to create core:
 
 ```c
 add_library(MyLib_core SHARED ${MyLib_CORE_SOURCES})
