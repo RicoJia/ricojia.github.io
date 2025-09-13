@@ -145,3 +145,7 @@ Note that each row in A is a normalized point `p` in X. So $Av$ is the **project
        </figure>
     </p>
 </div>
+
+## PCA
+
+If a group of points form a plane, then its normal vector is the principal vector of the covariacne matrix. Other components, correspond to other columns of the covariance matrix? will be zero.
