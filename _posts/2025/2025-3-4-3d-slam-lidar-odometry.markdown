@@ -126,6 +126,8 @@ How do we update voxels?
     2. We need keyframes which allows us to selectively add ponitclouds
 - NDT3D_inc needs an LRU cache: `std::list<data>`, `unordered_map<itr>`. We don't need to generate grid cell
 
+In general, ICP is more accurate than NDT (incremental & vanilla).
+
 ## Indirect Lidar Odometry
 
 Indirect Lidar Odomety is to select "feature points" that can be used for matching. There are 2 types: **planar** and **edge feature** points. This was inspired by LOAM (lidar-odometry-and-mapping), and is adopted by subsequent versions (LeGO-LOAM, ALOAM, FLOAM). Indirect Lidar Odometry is the foundation of LIO as well. Common features include: PFH, FPFH, machine-learned-features. Point Cloud Features can be used for database indexing, comparison, compression.
