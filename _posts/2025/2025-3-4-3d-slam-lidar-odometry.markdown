@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [3D SLAM - 3] Lidar Odometry
 date: '2025-3-4 13:19'
-subtitle: Direct Lidar Odometry, NDT, Incremental NDT, Indirect Lidar Odometry
+subtitle: Direct Lidar Odometry, NDT, Incremental NDT, Indirect Lidar Odometry, LOAM
 header-img: "img/post-bg-o.jpg"
 tags:
     - Robotics
@@ -239,3 +239,15 @@ However, the original paper has some drawbacks too:
     </figure>
 </p>
 </div>
+
+## Pros & Cons
+
+Pros:
+
+- High frequency, low accuracy lidar odometry
+- Low frequency mapping with backend optimization.
+
+Cons:
+
+- Accuracy is still relatively low.
+- Cannot be used on solid state lidars, which do not carry line information

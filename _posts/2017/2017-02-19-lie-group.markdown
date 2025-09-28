@@ -10,7 +10,7 @@ tags:
 
 ## Group Definition
 
-Group (Group) is an algebraic structure consisting of **a set** and **an operation**. Denote the set as `A`, and the operation as `⋅`. Then, the group can be written as `G=(A,⋅)`. 
+Group (Group) is an algebraic structure consisting of **a set** and **an operation**. Denote the set as `A`, and the operation as `⋅`. Then, the group can be written as `G=(A,⋅)`.
 
 - Closure (封闭性): `∀a1,a2∈A, a1​⋅a2​∈A`.
 - Associativity （结合律）: `∀a1,a2,a3∈A, (a1⋅a2)⋅a3=a1⋅(a2⋅a3)`
@@ -21,13 +21,13 @@ If you speak mandarin, this rule is shortened to "封结幺逆", which rhymes wi
 
 Some commonly seen groups include:
 
-- The integers under addition (Z,+Z,+), 
+- The integers under addition (Z,+Z,+),
 - Rational numbers under multiplication (excluding 0)
 - General Linear Group `GL(n)`: The group of `n×n` invertible matrices under matrix multiplication.
 - Special Orthogonal Group `SO(n)`: The group of rotation matrices, where `SO(2)` and `SO(3)` are the most common.
 - Special Euclidean Group `SE(n)`: The group of transformations in n-dimensional space, such as `SE(2)` and `SE(3)`.
 
-Abstract groups can be discrete (like integers) or continuous (like real numbers). `SO(n)` and `SE(n)` are continuous. 
+Abstract groups can be discrete (like integers) or continuous (like real numbers). `SO(n)` and `SE(n)` are continuous.
 
 ## Lie Group, Lie Algebra and Manifold Definition
 
@@ -50,8 +50,28 @@ In the context of `SO(3)`, the lie algebra `so(3)` describes the algebra of infi
 
 ### Manifold
 
-A manifold is a shape that's locally euclidean and globally connected. Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.  **A Lie group has to be a smooth manifold, meaning it's differentiable.**
-    - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
+Manifold is a topological space which is locally Euclidean and globally connected.
+
+- Topology means "a collection of open subsets"
+- Each point on the manifold has a neighborhood that is homeomorphic (topologically equivalent) to an open subset of a Euclidean space $\mathbb{R}^n$.
+
+Examples:
+
+- Manifold embedded in $\mathbb{R}^n$ Example: if we want to find a manifold where all its points are on the 2D unit circle:
+  - (1,0) or (0,1) are on the manifold. But apparently not all points on the XY plane are on the circle.
+  - Polar cordinates $(r=1, \, \theta)$ describe the 1D manifold where all its points are continuous and generates the circle. The unit circle is said to be a "projection" of the 1D manifold onto the R2
+  - Following the same principle, a 3D sphere is a projection of the 2D manifold (theta, psi).
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://i.postimg.cc/13xjkNsF/Screenshot-from-2025-09-13-16-56-55.png" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+- Integers are not a Lie Group because they are discrete. But real numbers form a consecutive Lie Group.
+  - Elements in a Lie group can transition to each other through multiplication, inverse, and identity.
 
 <div style="text-align: center;">
     <p align="center">
@@ -64,8 +84,7 @@ A manifold is a shape that's locally euclidean and globally connected. Integers 
 
 - All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
 - **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
-
-A sphere is a manifold. Any two points on a sphere cannot produce another point on the sphere. However, at any point on the sphere, there's a tangent plane where any two points there could add up to a point on the same plane (using the local coordinates there). Then, using some mapping, point addition result on the tangent plane can be projected onto the sphere. We describe that addition as:
+- A sphere is a manifold. Any two points on a sphere cannot produce another point on the sphere. However, at any point on the sphere, there's a tangent plane where any two points there could add up to a point on the same plane (using the local coordinates there). Then, using some mapping, point addition result on the tangent plane can be projected onto the sphere. We describe that addition as:
 
 $$
 \begin{gather*}
@@ -75,9 +94,9 @@ $$
 \end{gather*}
 $$
 
-Where `x`, `y` are points on the manifold, $\delta$ is a point on the tangent plane
+- Where `x`, `y` are points on the manifold, $\delta$ is a point on the tangent plane
 
-Reference: https://zhuanlan.zhihu.com/p/545370811
+Reference: <https://zhuanlan.zhihu.com/p/545370811>
 <div style="text-align: center;">
 <p align="center">
     <figure>
@@ -238,7 +257,6 @@ $$
 
 [Reference](https://jiangren.work/2019/08/09/SLAM%E5%9F%BA%E7%A1%803-%E6%9D%8E%E7%BE%A4%E5%92%8C%E6%9D%8E%E4%BB%A3%E6%95%B0/)
 
-
 ## Properties (伴随性质)
 
 ### 1. $ \phi^{\land} R = R (R^T \phi)^{\land}$
@@ -265,7 +283,7 @@ $$
 \end{gather*}
 $$
 
-So on the right, 
+So on the right,
 
 $$
 \begin{gather*}
@@ -312,11 +330,11 @@ $$
 \begin{aligned}
 & \frac{\partial Ra}{\partial R} = \frac{\partial Ra}{\partial w}
 = lim_{\phi \rightarrow 0}\frac{(R Exp(\phi ^\land) a - Ra)}{\phi}
-\\ & 
+\\ &
 \approx \frac{R(I +\phi ^\land ) a - Ra}{\phi}
-\\ & 
+\\ &
 = \frac{R\phi ^\land  a }{\phi}
-\\ & 
+\\ &
 = \frac{-R a^\land \phi }{\phi} = -Ra^\land
 \end{aligned}
 \end{gather*}
