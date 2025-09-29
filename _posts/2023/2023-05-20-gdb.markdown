@@ -205,6 +205,7 @@ clean:
         rm -f llcpp
 ```
 
-Now open display and create a data pane, by clicking on each node, one can see:
+Now create a break point, open display and create a data pane, by clicking on each node, one can see:
 
-<img width="1030" height="216" alt="Image" src="https://github.com/user-attachments/assets/1e6041d9-48b8-449c-af45-1394f32b6b68" />
+![image](https://github.com/user-attachments/assets/1e6041d9-48b8-449c-af45-1394f32b6b68)
+
