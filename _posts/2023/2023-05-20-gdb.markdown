@@ -144,7 +144,7 @@ Assume we have multiple C++ nodes that crash after running a long time (so they 
 
 ## DDD
 
-DDD is a wrapper around gdb that provides a way to check data structures graphically. In the below example, we can see value of each node by clicking on each one of them:
+DDD is a wrapper around gdb that provides a way to check data structures **graphically** (which is better than VSCode). In the below example, we can see value of each node by clicking on each one of them:
 
 ```cpp
 #include <iostream>
