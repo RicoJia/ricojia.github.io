@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ROS - GDB
+title: GDB, DDD (Data Display Debugger)
 date: '2023-05-20 13:19'
 subtitle: GDB for ROS, Core Dump
 comments: true
@@ -26,13 +26,14 @@ int i = 1;
 
 Debugging symbols do not impact the binary execution logic. It's purely informational and consumed by gdb. The binary filesize though would increase.
 
-### Compilation 
+### Compilation
 
 - In `CMakeLists.txt`
 
 ```cmake
 set(CMAKE_BUILD_TYPE Debug)
 ```
+
     - Or alternatively, `catkin_make -DCMAKE_BUILD_TYPE=Debug`
 
 - In `gcc`:
@@ -66,7 +67,7 @@ gdb --args BINARY --arg1 <val1> --arg2 <val2>
 Some common usages include:
 
 - `b <FILE_NAME>:<LINE_NUM>` set a breakpoint
-- `r`: run 
+- `r`: run
 - `c`: continue
 - `p <var_name>`: print a variable name
 - `info breakpoints`: check which breakpoints are available
@@ -74,10 +75,10 @@ Some common usages include:
 
 Some cautions:
 
-- When debug printing an element in a `cv::Mat`, we need to specify its data type. To print it as a: 
-    - double (`CV_64F`), do `(gdb) x/4g var`. 4 means the first 4 values, `g` means double precision. 
-    - float (`CV_32F`): `(gdb) x/4f var`
-    - int: `(gdb) x/4d var`
+- When debug printing an element in a `cv::Mat`, we need to specify its data type. To print it as a:
+  - double (`CV_64F`), do `(gdb) x/4g var`. 4 means the first 4 values, `g` means double precision.
+  - float (`CV_32F`): `(gdb) x/4f var`
+  - int: `(gdb) x/4d var`
 
 ## With ROS2
 
@@ -94,7 +95,6 @@ gdb --args ./test_direct_3d_ndt_lo --gtest_catch_exceptions=0
 (gdb) info locals  # to inspect variables
 ```
 
-
 ## Core Dump
 
 Assume we have multiple C++ nodes that crash after running a long time (so they are hard to reproduce). What would be a good way to start debugging?
@@ -106,16 +106,21 @@ Assume we have multiple C++ nodes that crash after running a long time (so they 
 - How to get it working:
     1. `ulimit -c unlimited`
     2. Adjust kernel settings to store it in /tmp:
+
         ```
         cat /proc/sys/kernel/core_pattern
         ```
+
     3. To change it: `sudo sysctl -w kernel.core_pattern=/tmp/core.%e.%p.%h.%t`
     4. `/etc/systemd/system.conf`
+
         ```cpp
         DefaultLimitCORE=infinity
         ```
+
     5. `sudo systemctl daemon-reload`
     6. Create a crash program:
+
         ```cpp
         #include <stdio.h>
         int main() {
@@ -125,11 +130,81 @@ Assume we have multiple C++ nodes that crash after running a long time (so they 
             return 0;
         }
         ```
+
     7. Compile the executable with **debugging symbols**:
+
         ```cpp
         gcc -o0 crash_example crash_example.c
         ```
+
     8. Temporarily Enable Core Dumps: `ulimit -c unlimited`
     9. Verify that the current core dump file name pattern with: `cat /proc/sys/kernel/core_pattern`
     10. Run the program: `./crash_example`
     11. Launch gdb: `gdb ./crash_example /tmp/core.<executable_name>.<pid>.<hostname>.<timestamp>`: and run `bt` at gdb. There will be backtrace saved
+
+## DDD
+
+DDD is a wrapper around gdb that provides a way to check data structures graphically. In the below example, we can see value of each node by clicking on each one of them:
+
+```cpp
+#include <iostream>
+
+struct Node {
+    int value;
+    Node* next;
+    Node(int v, Node* n = nullptr) : value(v), next(n) {}
+};
+
+Node* push_front(Node* head, int value) {
+    return new Node(value, head);
+}
+
+int sum_list(Node* head) {
+    int sum = 0;
+    for (Node* p = head; p != nullptr; p = p->next)
+        sum += p->value;
+    return sum;
+}
+
+void free_list(Node* head) {
+    while (head) {
+        Node* tmp = head->next;
+        delete head;
+        head = tmp;
+    }
+}
+
+int main() {
+    Node* head = nullptr;
+    head = push_front(head, 30);
+    head = push_front(head, 20);
+    head = push_front(head, 10);  // List: 10 -> 20 -> 30 -> NULL
+
+    std::cout << "sum=" << sum_list(head) << "\n";
+
+    // Good place for a breakpoint in DDD:
+    Node* list_head_for_debug = head;
+
+    free_list(head);
+    return 0;
+}
+```
+
+Makefile:
+
+```make
+CXX = g++
+CXXFLAGS = -g -O0 -Wall -Wextra -std=c++11
+
+all: llcpp
+
+llcpp: example.cpp
+        $(CXX) $(CXXFLAGS) -o llcpp example.cpp
+
+clean:
+        rm -f llcpp
+```
+
+Now open display and create a data pane, by clicking on each node, one can see:
+
+<img width="1030" height="216" alt="Image" src="https://github.com/user-attachments/assets/1e6041d9-48b8-449c-af45-1394f32b6b68" />

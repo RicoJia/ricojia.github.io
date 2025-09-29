@@ -14,13 +14,14 @@ tags:
 In C++, a name is dependent if its meaning or type, value, or definition lookup depends on, a template param `T`. Some examples include:
 
 - `std::vector<T>`: name `std::vector` is not dependent. `std::vector<T>` is dependent
-- `std::vector<T>::iterator `(type of `::iterator` depends on T)
+- `std::vector<T>::iterator`(type of `::iterator` depends on T)
 - `t.do_something()` (member lookup depends on T)
 - `sizeof(T)` (value depends on T)
 
 Also, In C++, template code is compiled in two stages:
+
 1. parsing and template definition: the compiler checks syntax and all non-dependent names directly
-2. instantiation: after a set of template args have been provided, 
+2. instantiation: after a set of template args have been provided,
     - All dependent names are looked up
     - Overloaded resolution is performed, template code are generated
 
@@ -67,12 +68,13 @@ int main()
 }
 ```
 
-So in the example above, 
+So in the example above,
+
 - Inside `call_foo_func` the expression t.do_something() is dependent; once `call_foo_func` is instantiated with `Foo<int>` the usual overload resolution chooses the regular member function. There's no ambiguity in parsing.
-- `template <typename T> struct Foo` is a class template, `Bar::do_something<T>` is a member template of Bar. 
-    - There's an ambiguity in interpreting `<`
-    - Therefore, we need to disambiguate by specifying `template` in 't.template do_something<int>();'. 
-        - Otherwise, in parsing, `do_something<int>()` could be interpreted as "member attribute do_something is smaller than int" , which raises a parsing error. 
+- `template <typename T> struct Foo` is a class template, `Bar::do_something<T>` is a member template of Bar.
+  - There's an ambiguity in interpreting `<`
+  - Therefore, we need to disambiguate by specifying `template` in 't.template do_something<int>();'.
+    - Otherwise, in parsing, `do_something<int>()` could be interpreted as "member attribute do_something is smaller than int" , which raises a parsing error.
 
 ## Disambiguate Type With Typename
 
@@ -88,7 +90,6 @@ void call_func(T t){
 Do you see why `std::vector<T>::iterator` needs to be disambiguated? Because `iterator` could be also interpreted a static variable:
 
 ```cpp
-template <typename T>
 struct Weird {
     static int iterator;           // could exist!
     using iterator_type = int;
@@ -103,7 +104,7 @@ std::unordered_map<Key, typename std::list<std::pair<Key, Value>>::iterator> itr
 
 One example that doesn't need `typename`: if the parser sees `<` with no problem, it knows `>` must come:
 
-```cpp 
+```cpp
 template <typename Key, typename Value>
 class LRUHashMap{
 std::list<std::pair<Key, Value>> cache_;
