@@ -207,5 +207,5 @@ clean:
 
 Now create a break point, open display and create a data pane, by clicking on each node, one can see:
 
-![image](https://github.com/user-attachments/assets/1e6041d9-48b8-449c-af45-1394f32b6b68)
+![image](https://i.postimg.cc/bNK8N4t8/Screenshot-from-2025-09-28-19-23-07.png)
 
