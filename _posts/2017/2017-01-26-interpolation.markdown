@@ -2,7 +2,7 @@
 layout: post
 title: Math - Interpoloation
 date: '2017-01-26 13:19'
-subtitle: Linear, Cubic, Bicubic Splines
+subtitle: Linear, Cubic, Bicubic Splines, Slerp
 comments: true
 tags:
     - Math
@@ -131,4 +131,28 @@ If we plot the kernel functions:
 </p>
 </div>
 
+## Slerp (Spherical Linear Interpolation)
 
+A geodesic is the **locally shortest path between two points** constrained to lie on a surface (or more generally, a manifold).
+
+Slerp interpolates smoothly between two unit quaternions q0 q1 , tracing the geodesic on the 4D unit sphere (valid quaternions that represent rotations) at constant angular velocity.
+
+
+$$
+\theta = \arccos \bigl( \langle q_0, q_1 \rangle \bigr),
+$$
+
+The angle between them on $(S^3)$. Then
+
+$$
+q(t) =
+\frac{\sin\bigl((1-t)\theta\bigr)}{\sin \theta}\, q_0 \;+\;
+\frac{\sin(t\theta)}{\sin \theta}\, q_1,
+\quad t \in [0,1].
+$$
+
+If you think of $q_0, q_1$ as rotation matrices $(R_0, R_1 \in SO(3))$,
+then slerp is equivalent to
+$$
+R(t) = R_0 \exp\!\Bigl( t \,\log\!\bigl(R_0^\top R_1\bigr) \Bigr).
+$$
