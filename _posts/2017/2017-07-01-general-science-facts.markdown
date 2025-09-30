@@ -10,7 +10,6 @@ tags:
 
 ## Adiabatic Cooling
 
-
 In an adiabatic process, the system does not gain or lose heat (Q=0Q=0), meaning that all changes in internal energy come from work done by or on the gas. For an ideal gas, the internal energy is directly related to temperature, so any expansion or compression must affect temperature. One might wonder why temperature must change especially in the presence of Ideal Gas Law. Well. that's what adiabatic process is about:
 
 $$
@@ -23,9 +22,9 @@ $$
 
 $γ$ is the adiabatic index. A practical example of this is air rising in the atmosphere. As air rises, it expands due to decreasing atmospheric pressure. Since this expansion happens quickly and heat exchange with the surroundings is minimal, it is approximately adiabatic. As the volume increases, temperature drops, leading to condensation and cloud formation. This cooling effect is a fundamental principle behind weather patterns and cloud dynamics.
 
-## Centripetal force vs centrifugal:
+## Centripetal force vs centrifugal
 
-- Centropetal: $mv^2 / r$. Imagine you are holding onto a merry-go-round. From the world frame, (inertial frame), you need a centropetal force. But In the merry-go-round frame (which is non-inertial), you are static. So in the merry-go-round frame, you need to **fictionally add** a force pointing outward to balance that out. 
+- Centropetal: $mv^2 / r$. Imagine you are holding onto a merry-go-round. From the world frame, (inertial frame), you need a centropetal force. But In the merry-go-round frame (which is non-inertial), you are static. So in the merry-go-round frame, you need to **fictionally add** a force pointing outward to balance that out.
 - So to stay static in the merry-go-round frame, you experience a "force" that pushes you away. You hold on tight, so you get a force to pull you inward (the centripedal force).
 
 <div style="text-align: center;">
@@ -36,6 +35,10 @@ $γ$ is the adiabatic index. A practical example of this is air rising in the at
 </p>
 </div>
 
-
-
 - But when you suddenly let go, the centripedal force suddenly drops to 0. You will fly radially outward and tagentially.
+
+## Miscellaneous Nuggets of Facts
+
+- Is this true? "not all usb-c cables are data cables". Yes, usb-c is just a shape. Some of them are charge-only. Also, What is DP? (display port)
+- What is MTU? It's "maximum transmission unit" in bytes
+- What is a fathom? A traditional unit to measure depth in nautical context. 1 fathom = 6 ft
