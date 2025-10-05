@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Computer Vision - Image Downsampling
-date: '2021-01-24 13:19'
-subtitle: Bicubic, Bilinear, Nearest Neighbor Interpolation, Ringing Effect
+title: Computer Vision - Ray Tracing, Ray Casting, Gaussian Splatting
+date: '2021-01-27 13:19'
+subtitle: 
 comments: true
 tags:
     - Computer Vision
@@ -10,120 +10,33 @@ tags:
 
 ## Introduction
 
-**What is image downsampling?**: Image Downsampling is to reduce spatial resolution and make an image smaller.
+In the 16th century one innovative artist, Albrecht Düre created a “Perspective Machine” to help artists draw perspectives accurately. He did this by creating a screened 2D frame, between the artist and the drawing subject. The artist would then establish a line of sight from the artist’s eye through the 2D screen to any part of the drawing subject. In front of him was his drawing paper with a matching grid. (From [Bob Duffy](https://medium.com/sideofcyber/side-of-ray-tracing-c4721bf9bba8))
 
-**Why performing interpolation during downsampling?**: image downsampling essentially is to map larger areas of pixels onto smaller areas. Therefore, one pixel in the smaller image is determined by multiple pixels on the original image. Interpolation helps us find one value out of multiple pixels.
+![img](https://i.postimg.cc/gcDCsp4C/Screenshot-from-2025-10-05-07-41-49.png)
 
-Image binning: Pixel binning is to combine adjacenet pixels into a super pixel. This can be done on the hardware level on CMOS (Complementary-Metal-Oxide-Semiconductor)or CCD (charge-coupled-devices) image sensors, or on the software level. For example, in 2x2 binning, an array of 4 pixels becomes a single larger pixel, reducing the number of pixels 1/4. So it's a special form of downsampling.
+This technique for rendering an image by tracing the path of light through cells of a 2D image plane is called ray casting or ray tracing, and it’s how today’s advanced computer graphics got its start. (From [Bob Duffy](https://medium.com/sideofcyber/side-of-ray-tracing-c4721bf9bba8))
 
-- Applications
-  - Deep-Sky Imaging: Enhances the detection of faint celestial objects by improving SNR.
-  - Wide-Field Surveys: Balances resolution and sensitivity for large area coverage.
+![img](https://i.postimg.cc/ZnVX5P0s/Screenshot-from-2025-10-05-07-32-21.png)
 
-## Methods and Their Pros & Cons
+This is mimicking the physics of optics but in reverse. In our world, light rays start from the environment, bounce of objects, then land in our eye. For rendering, we project rays in reverse, because we only need the rays that land in the camera. (From [Bob Duffy](https://medium.com/sideofcyber/side-of-ray-tracing-c4721bf9bba8)). This allows us simulate how light travels in the physical world. Due to reflection and refraction, we can even paths of simulate secondary and tertirary beams
 
-- `cv::INTER_NEAREST`: nearest neighbor interpolation. This assigns the value of the nearest pixel to the pixel in the resized image. However, in high frequency areas (e.g., lots of edges), we might introduce aliasing due to not meeting the Nyquist Condition.
-- `cv::INTER_AREA`: Calculate the **average** of nxn pixel blocks
-- `cv::INTER_LINEAR`: Bilinear Interpolation: doing linear interpolation along X and Y directions, hence "bilinear" interpoliation. To explain the process, consider the example where we want to find the pixel value of `(2.2, 3.4)` on the original image.
-    1. Choose image patch `I(2,3)=11`, `I(2,4)=12`, `I=(3,3)=13`, `I(3,4)=14`. `I()` means pixel value at each point
-    2. Linear interpolation along X axos at `y=3`: `x = 11 + (2.2-2) / (3-2) * (13 - 11) = 11.4`
-    3. Linear interpolation along X axos at `y=4`: `x = 12 + (2.2-2) / (3-2) * (14 - 12) = 12.4`
-    4. Linear interpolation along Y axos at `x=2.3`: `y = 11.4 + (3.4 - 3) / (4-3) * (12.4 - 11.4) = 12.2`
-- `cv::INTER_CUBIC`: Bicubic Interpolation (1981) [1] In OpenCV, interpolation is actually done in a simpler way than [the spline method](../2017/2017-01-26-interpolation.markdown). It skips estimating spline parameters, and use a standard bicubic kernel on the pixels directly. With `t=-1, 0, 1, 2`, the bicubic kernel function is ([reference](https://github.com/rootpine/Bicubic-interpolation/blob/master/bicubic.py)):
+The issue about ray tracing is it's too slow. Most 3D applications run at about 24–60FPS. A technique called rasterization is invented: an object is decomposed into triangles that intersect together.
 
-$$
-\begin{cases}
-(a + 2)|t|^3 - (a + 3)|t|^2 + 1, & \text{if } |t| \leq 1 \\
-a|t|^3 - 5a|t|^2 + 8a|t| - 4a, & \text{if } 1 < |t| < 2 \\
-0, & \text{if } |t| \geq 2
-\end{cases}
-$$
+![img](https://i.postimg.cc/sf0024ck/rasterization-vs-raytracing-l.jpg)
 
-Here, f means the values of pixels. x1, x2, x3, x4 are the distance of x direction from new pixel to near 16 pixels. y1, ... are the distance of y direction. Then apply the kernel:
+The rasterization pipeline is in short as follows ([A good video that explains the rasterization pipeline](https://youtu.be/brDJVEPOeY8)):
 
-$$
-dst(x, y) =
-\begin{pmatrix}
-u(x_1) & u(x_2) & u(x_3) & u(x_4)
-\end{pmatrix}
-\begin{pmatrix}
-f_{11} & f_{12} & f_{13} & f_{14} \\
-f_{21} & f_{22} & f_{23} & f_{24} \\
-f_{31} & f_{32} & f_{33} & f_{34} \\
-f_{41} & f_{42} & f_{43} & f_{44}
-\end{pmatrix}
-\begin{pmatrix}
-u(y_1) \\
-u(y_2) \\
-u(y_3) \\
-u(y_4)
-\end{pmatrix}
-$$
+1. Inputs: vertices (3D points) + triangle connectivity (triangle list). Optional: surface normals, UVs (2D position on the texture image for representing texture)
+2. Vertex shading:
+    1. Coordinate transformation: Model → World → View (camera extrinsics) → Projection (camera intrinsics/perspective), this is called "clip space" (x, y, z, w). Clipping against view frustum happens here.
+3. Tesselation (optional): . It subdivides patches based on tessellation control/evaluation shaders;
+4. (Optional) Geometry shader: can add/remove/modify primitives.
+5. Primitive assembly: uses your triangle list/strip indices to form triangles.
+6. After projection you do perspective divide (to Normalized Device Coordinates, NDC) → viewport transform (to screen pixels).
+7. Rasterization: coverage test converts each triangle to fragments (candidate pixels); Rasterization turns triangles into pixels (fragments) and uses depth to resolve visibility
 
-- `INTER_LANCZOS4`: Lanczos interpolation: sinusoid (1988) [2]
+One issue with rasterization is it does not reproduce the shading effect very well. (Source: [Simon Kang](https://medium.com/@simon.kong95/what-you-need-to-know-about-ray-tracing-and-rasterization-b7a4b1489215)) For real-time ray tracing in video games, you’ll need advanced hardware. For gamers wanting that extra dose of reality, it may be a worthy investment.
 
-**So here is a short summary:**
+![img](https://i.postimg.cc/1X1J1vPf/Screenshot-from-2025-10-05-07-59-47.png)
 
-| Method | Pros | Cons |
-| ------ | ---- | ---- |
-| Nearest neighbor | Fast | Jagged quality, aliasing |
-| Inter-area | Smooth, no jaggedness | Not suitable for image upscaling |
-| Bilinear Interlation | Decent quality, good for general purpose uses | Slight blurring, fewer sharp edges |
-| Bicubic | Better quality | A bit slower than bilinear, might have ringing effect |
-| Lanczos | Best quality, sharpness, minimal aliasing, used in FFmpeg| Slowest, potential ringing |
-
-### 2D Cubic Interpolation (Catmull–Rom):
-
-1. Find a row neighborhood 1x4 around the given point `(x,y)`
-2. Given the intensity values at those 4 points, and a fraction $t$:
-
-$$
-\begin{gather*}
-\begin{aligned}
-& f(t) = 0.5 \left( 
-    2p_1 +
-    (-p_0 + p_2)t +
-    (2p_0 - 5p_1 + 4p_2 - p_3)t^2 +
-    (-p_0 + 3p_1 - 3p_2 + p_3)t^3
-\right)
-\end{aligned}
-\end{gather*}
-$$
-
-3. Repeat 1 and 2 for 4 neighboring rows. 
-4. Interpolate them along y axis:
-
-$$
-\begin{gather*}
-\begin{aligned}
-& I(x, y) = 0.5 \left( 
-    2g_0 +
-    (-g_{-1} + g_1)s +
-    (2g_{-1} - 5g_0 + 4g_1 - g_2)s^2 +
-    (-g_{-1} + 3g_0 - 3g_1 + g_2)s^3
-\right)
-\end{aligned}
-\end{gather*}
-$$
-
-For the 1D case, as t changes, the interpolated value really depicts the transition of weights on each of the 4 points.
-
-- While t=0, it's $p_1$. while t=1, it's $p_2$
-- Derivative at `t=0` is $f'(0) = 0.5(p_2 - p_0)$
-
-
-## Ring Effect
-
-Lanczos filter might introduce ringing artifacts.
-
-Without ringing
-![Ringing_artifact_example_-_original](https://github.com/user-attachments/assets/0ea4ebc9-fac5-40db-9651-6d5b0bdedd54)
-
-With ringing:
-![Ringing_artifact_example](https://github.com/user-attachments/assets/c094954a-2511-48b4-9f6c-cd87031ffae6)
-
-## Reference
-
-[1] R. Keys, "Cubic convolution interpolation for digital image processing," in IEEE Transactions on Acoustics, Speech, and Signal Processing, vol. 29, no. 6, pp. 1153-1160, December 1981. URL: <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1163711&isnumber=26156>
-
-[2]  Lanczos, Cornelius (1988). Applied analysis. New York: Dover Publications. pp. 219–221. ISBN 0-486-65656-X. OCLC 17650089.
+Unlike Ray Tracing which simulates reflections and refractions, (volumetric) ray casting simply shoots one beam through a 3D volume. The goal is to accumulate color and opacity at each pixel. Surface Ray casting just shoots one beam and determines and returns if there's hit /no hit from the surface volume (collision detection)
