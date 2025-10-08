@@ -2,13 +2,12 @@
 layout: post
 title: C++ - Datatypes
 date: '2023-01-05 13:19'
-subtitle: std::optional, structural binding, iostream, namespace, union, std::variant,  std::type_index, std::any
+subtitle: std::optional, structural binding, iostream, namespace, union, std::variant,  std::type_index, std::any, ptrdiff_t
 header-img: "img/post-bg-alitrip.jpg"
 comments: true
 tags:
     - C++
 ---
-
 
 ## POD Types
 
@@ -202,5 +201,17 @@ try {
 }
 ```
 
-🔹 std::any behaves like a regular value: you can assign, move, and copy it.
-🔹 Use it when you need to store values of different types without templates, but still want safe type checking at runtime.
+- std::any behaves like a regular value: you can assign, move, and copy it.
+- Use it when you need to store values of different types without templates, but still want safe type checking at runtime.
+
+## `std::ptrdiff_t`
+
+`std::ptrdiff_t` is a signed type.
+
+```cpp
+#include <stdlib.h>
+
+int buff[4];
+std::ptrdiff_t diff = (&buff[3]) - buff;     // diff = 3
+diff = buff - (&buff[3]);       // diff = -3
+```
