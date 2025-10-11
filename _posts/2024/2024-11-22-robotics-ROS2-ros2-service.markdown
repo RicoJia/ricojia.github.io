@@ -12,15 +12,15 @@ comments: true
 
 ## Set up a ROS2 Service File
 
-ROS2's ament build system does not support generating `msg` and `srv` files in pure python packages. So it's a common practice to define an interface package that could be imported into pure Python Packages. [See ROS2 interfaces](https://docs.ros.org/en/foxy/Concepts/About-ROS-Interfaces.html) 
+ROS2's ament build system does not support generating `msg` and `srv` files in pure python packages. So it's a common practice to define an interface package that could be imported into pure Python Packages. [See ROS2 interfaces](https://docs.ros.org/en/foxy/Concepts/About-ROS-Interfaces.html)
 
-1. Create a `cmake` package as an interface. 
-    
+1. Create a `cmake` package as an interface.
+
     ```cmake
     ros2 pkg create --build-type ament_cmake mumble_interfaces
     ```
 
-1. Place your srv file and `srv` there. 
+1. Place your srv file and `srv` there.
 
     ```yaml
     # Request
@@ -76,7 +76,7 @@ ROS2's ament build system does not support generating `msg` and `srv` files in p
 
 ## Create a Service Server in Python
 
-By default, **a ros2 service call back is not running on a separate thread.** 
+By default, **a ros2 service call back is not running on a separate thread.**
 
 - If we are using a single function:
 
@@ -149,6 +149,14 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
+- What if there are "ghost services":
+
+    ```
+    ros2 daemon stop
+    ros2 daemon start
+    ros2 service list
+    ```
 
 ## Common Services
 
