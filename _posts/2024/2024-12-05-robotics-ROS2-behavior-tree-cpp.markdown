@@ -27,6 +27,10 @@ comments: true
 
 - Fallback: the behavior_cpp selector
 
+## Tricks
+
+DSL: A statement like `<Script code=success:=false; count:=count+1"/>` executes atomically during the tick: it resets the boolean flag spiral_failed and increments the integer counter count
+
 ## Quirks & Known Bugs
 
 ### Do NOT put a tf_listener in `init()` (Till ROS Humble)
