@@ -191,6 +191,16 @@ std::cout << "p1: " << p1.format(eigen_1_line_fmt) << std::endl;
 
 ## Attention! Quirks of Eigen
 
+### Writable Vectors Can Be Written Directly As A Copy
+
+```cpp
+for (auto r : normalized_mat.rowwise()){
+    r -= medians;
+}
+```
+- [colwise() or rowwise() are writable vector, +=, -= are valid operations](https://libeigen.gitlab.io/eigen/docs-nightly/classEigen_1_1DenseBase.html#a6daa3a3156ca0e0722bf78638e1c7f28)
+
+
 ### Lazy Evaluation Could Cause Issues in Eigen (Version 3.4.0)
 
 In Eigen, expressions like:
