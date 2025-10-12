@@ -14,7 +14,7 @@ tags:
 Default Initialization is **when a variable is initialized without explicit value**. They could be in an uninitialized state and accessing them could be an undefined behavior.
 
 - POD types like `int`, `float` are initialized to an **intermediate value**. Accessing them without initialization is an undefined behavior,
-    - Default initialization guarantees to initialize POD data, **but not array data**
+  - Default initialization guarantees to initialize POD data, **but not array data**
 - User defined types should either **have no constructor provided, or have a default constructor present.**
 
 ```cpp
@@ -58,9 +58,45 @@ struct A{
 // A a{.k = 1, .j = 2}; // this won't work
 A a{.j = 1, .k = 2};
 ```
+
 - Your struct must have public fields.
 - Safer: avoids bugs from wrong field order.
 
+### Initialization With Default Argument
+
+C++ allows default args to be specified either in declaration or definition, but not both.
+
+- Most common convention is to add default args in the header file. This is mostly for readability and linkage hygiene.
+- Make sure that you have only one declaration has the default. OTherwise you get a redefinition error
+
+Yet there's a corner case where on some compilers, nested structures may not be complete yet when adding it as a default argumenbt to class constructor:
+
+```cpp
+class PCLNDT3D {
+public:
+    struct Options {
+        size_t max_iterations = 30;
+    };
+    explicit PCLNDT3D(const Options &opts = {});
+};
+
+// error: default member initializer for ‘halo::PCLNDT3D::Options::max_iterations’ required before the end of its enclosing class 24 | explicit PCLNDT3D(const Options &opts = Options{});
+```
+
+- To fix this issue, do
+
+```cpp
+class PCLNDT3D {
+public:
+    struct Options {
+        size_t max_iterations = 30;
+    };
+
+    explicit PCLNDT3D(const Options &opts);
+};
+
+PCLNDT3D::PCLNDT3D(const Options &opts = {}) : options_(opts) {
+```
 
 ## Memory Order of Class Members
 
@@ -81,6 +117,7 @@ struct Example {
 ## Ctor for Inheritance
 
 - Python would allow a child class without a ctor if parent has a ctor with args. C++ wouldn't. **we need to define a ctor for the child class too**
+
     ```python
     class Parent:
         def __init__(self, x):
@@ -126,6 +163,7 @@ Parse the class body linearly from top to bottom
 2. Nested structs/classes
 3. Function declarations
     - This includes ctor. For this example:
+
         ```cpp
         class Foo{
             public:
@@ -136,12 +174,11 @@ Parse the class body linearly from top to bottom
         };
         ```
 
-
-
 ### 2 - Runtime Construction
 
 1. In the order of declaration (top to bottom): Base class ctor, then derived classes are run.  
     - The order of class variable initialization is determined by **the declaration order**, not the order in initializers. [Reference](https://wiki.sei.cmu.edu/confluence/display/cplusplus/OOP53-CPP.+Write+constructor+member+initializers+in+the+canonical+order)
+
         ```cpp
         class MyClass{
             /*
@@ -156,5 +193,6 @@ Parse the class body linearly from top to bottom
                 unsigned long previous_time_;
         };
         ```
+
     - `current_status_` is declared first, so it's constructed first, though  `previous_time_` appears first in the initializer list
     - **[Extra Note]**: We need to make sure the vairable order is consisntent in both the initializer list and the variable definition. One common warning we see is `warning: <VAR> will be initialized after [-Wreorder]`
