@@ -20,6 +20,8 @@ At various points of my career in robotics, computer vision, and machine learnin
 
 ## Singular Value Decomposition Intuition
 
+Definition: singular values are $\sqrt{eig(A^T A)}$.
+
 Let A be an `m x n` matrix. The goal is to decompose A into $A = U\Sigma V^T$, where U is `mxm`, and m > n
 
 - $U$ is m x m orthonormal matrix, **aka left singular vectors.**
@@ -85,6 +87,22 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
   - Eventually, this will become: $\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$ (the sum of outer products). Each term increasingly improves the estimate of SVD
 - Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $A$. So, the returned values are: $U$ as mxn, $\Sigma$ as nxn, and $V$ as nxn, are returned
   - Many times, people would return the first $r$ columns and rows of $U$ and $V^T$
+
+[Wikipedia gives a very good example of how this works](https://en.wikipedia.org/wiki/Singular_value_decomposition#)
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/xd51bfnX/Singular-Value-Decomposition-svg.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+Geometrically, if we multiply a random vector in the unit circle (top left) by M, the vector would be mapped to another vector in the M ellipse (top right). SVD allows us to visualize how exactly this mapping is done:
+
+1. map to another orthonormal basis ($V^T x$)
+2. Stretch to an ellipse ($\Sigma V^T x$)
+3. map to another orthonormal basis ($U \Sigma V^T x$), rotation.
 
 ### Applications
 

@@ -20,7 +20,6 @@ $$
 \end{align*}
 $$
 
-
 2. Proving $\|A\|_F^2 = \mathrm{tr}(A^\top A)$
 
 $$
@@ -30,6 +29,19 @@ $$
 \end{align*}
 $$
 
+### Von-Neumann's Trace Inequality
+
+In 1937, Von-Neumann proved if A, B are complex nxn matrices with singular values
+
+```
+a_1 > a_2 > ... a_n, b_1 > b_2 > ... b_n
+```
+
+Then
+
+$$
+|tr(AB)| <= \sum_i (a_i b_i)>
+$$
 
 ## Frobenius Norm
 
@@ -82,3 +94,17 @@ $$
 \end{align*}
 $$
 
+```cpp
+Eigen::Matrix3d nearestRotation(const Eigen::Matrix3d& R) {
+    Eigen::JacobiSVD<Eigen::Matrix3d> svd(R, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::Matrix3d U = svd.matrixU();
+    Eigen::Matrix3d Vt = svd.matrixV().transpose();
+    Eigen::Matrix3d R_ortho = U * Vt;
+    if (R_ortho.determinant() < 0.0) {
+        Eigen::Matrix3d S = Eigen::Matrix3d::Identity();
+        S(2,2) = -1.0;
+        R_ortho = U * S * Vt;
+    }
+    return R_ortho;
+}
+```
