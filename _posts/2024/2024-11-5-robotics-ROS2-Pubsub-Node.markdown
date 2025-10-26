@@ -44,6 +44,8 @@ ros2 run demo_nodes_cpp talker
 ros2 run demo_nodes_cpp listener
 ```
 
+- If you want o pass in a custom arg, do `--ros-args -p`: `ros2 run demo_nodes_cpp talker --ros-args -p mode:=<MODE_VALUE>`
+
 ## Create a Python Package For Publisher & Subscriber
 
 - `mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src`

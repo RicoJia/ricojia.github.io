@@ -124,6 +124,43 @@ Debugger;
     - **REMEMBER to set path to your executable**
 6. Set break points in a file, then hit `<F5>` to start the debug program. (the triangular button for debugging did not work)
 
+## More ROS Path Resolution
+
+Issue with the above method is: ROS environment seems not being passed into it successfully. Like, path resolution to /install would fail.
+
+- If you run into such a case, you can switch to gdb
+
+    ```
+    gdb --args <PATH_TO_MY_BINARY> \
+        --ros-args -r__ns:=/commander -r __node:=foo \
+        --params-file My_PARAM.yaml \
+        --log-level debug
+    ```
+
+- use "lc" to force executing bash command/
+  - Example launch.json configuration using `lc`:
+
+        ```json
+        {
+            "version": "0.2.0",
+            "configurations": [
+                {
+                    "name": "Run with lc (source setup.bash)",
+                    "type": "cppdbg",
+                    "request": "launch",
+                    "program": "/bin/bash",
+                    "args": ["-c", "lc 'source /my_ws/install/setup.bash && ./my_ws/install/node.../lib/capacity_manager/capacity_manager_node --ros-args -r __ns:=/commander --log-level debug --params-file my_yaml.yaml'"],
+                    "stopAtEntry": false,
+                    "cwd": "/ws",
+                    "environment": [],
+                    "MIMode": "gdb",
+                    "miDebuggerPath": "/usr/bin/gdb",
+                    "externalConsole": false
+                }
+            ]
+        }
+        ```
+
 ## ROS2 Launch File
 
 How to set up vscode debugging with ROS2 Launchfile:

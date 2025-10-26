@@ -143,6 +143,23 @@ auto run_imu_node =
   std::make_shared<RunImuNode>(options);
 ```
 
+3. **Overriding parameters can be done in ros launch level**
+
+```
+launch file:
+    my_ws:
+        ros__parameters:
+            execute_service: ~/execute
+#cpp
+rcl_interfaces::msg::ParameterDescriptor execute_service_desc;
+execute_service_desc.name = ros_toolbox::create_parameter_name(node_, "execute_service");
+execute_service_desc.type = rclcpp::ParameterType::PARAMETER_STRING;
+execute_service_desc.description = "Service name to execute capacities on.";
+std::string execute_service = node_->declare_parameter(execute_service_desc.name, "~/capacity/execute", execute_service_desc);
+```
+
+In this example, the capacity name will ultimately become `~/execute`, instead of `~/capacity/execute`
+
 ### Passing `--ros-args -p <ARG>` to a ROS 2 GTest
 
 You can make your test binary accept ROS 2 parameters (e.g. `visualize`) without touching your node by:
