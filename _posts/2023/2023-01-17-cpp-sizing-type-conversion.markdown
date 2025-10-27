@@ -2,7 +2,7 @@
 layout: post
 title: C++ - Sizing and Type Conversion
 date: '2023-01-17 13:19'
-subtitle: Memory Alignment, Sizeof, Integral Promotion
+subtitle: Memory Alignment, Sizeof, Integral Promotion, decay_t
 comments: true
 header-img: "img/post-bg-alitrip.jpg"
 tags:
@@ -137,4 +137,27 @@ int main() {
 - Note that val++ is an increment operator, not an arithmetic expression like val + 1. So its type is stil `uchar`
 
 
-    
+### `decay_t`
+
+`std::decay_t<T>` (from `<type_traits>`): it strips references and top-level cv-qualifiers, and it turns arrays or functions into the corresponding pointers so that the deduced type behaves like a plain value.
+
+```cpp
+#include <type_traits>
+#include <iostream>
+
+template <typename T>
+void inspect(T&& value) {
+    using Decayed = std::decay_t<T>;
+    std::cout << std::is_same<Decayed, int*>::value << "\n";  // prints 1
+}
+
+int main() {
+    int data[4]{};
+    inspect(data);  // decay turns int[4] into int*
+}
+```
+
+- Strips references
+- Removes top-level cv-qualifiers (const/volatile)
+- Applies array-to-pointer decay `(T[N] → T*)`
+- Applies function-to-pointer decay `(R(Args...) → R(*)(Args...))`
