@@ -1,0 +1,64 @@
+---
+layout: post
+title: Computer Vision - 3D Gaussian Splatting
+date: '2025-08-01 13:19'
+subtitle: 
+header-img: "img/post-bg-walle.jpg"
+tags:
+    - Robotics
+    - Control Systems
+comments: true
+---
+
+3D Gaussian Splatting (3DGS) renders scenes in real time by replacing **expensive ray marching with a dense cloud of Gaussian blobs**. Each blob is projected onto the image plane (a “splat”) and blended with the rest, producing soft lighting with raster-like speed.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/bvVGx4gs/3dgs1.jpg" height="300" alt=""/>
+        <figcaption><a href="https://www.mdpi.com/2072-4292/17/10/1801">Source: MDPI</a></figcaption>
+    </figure>
+</p>
+</div>
+
+## How 3DGS Represents a Scene
+
+- **Gaussian primitives:** Each blob tracks position, shape, color, opacity, and a small view-dependent term so the set of blobs approximates local surfaces.
+- **Anisotropy:** Full covariance matrices let blobs stretch along edges or flatten onto walls instead of staying spherical.
+- **Blended depth:** Overlapping blobs blend with alpha compositing, so the renderer never picks a single “winning” surface.
+
+## Rendering Pipeline in Practice
+
+1. Cull blobs outside the camera frustum.
+2. Project the survivors to screen space and compute a 2D footprint.
+3. Accumulate color and opacity per tile on the GPU.
+4. Blend front-to-back to get the final pixel color.
+
+## How the Gaussians Are Learned
+
+- **Initialization:** Start from a sparse point cloud; turn each point into one or more tiny Gaussians.
+- **Training:** Render, compare to reference images, and backprop through the splatting shader to update position, shape, and color.
+- **Adaptation:** Split blobs where error is high and prune low-impact blobs to keep the model light.
+
+## Why People Are Excited
+
+- **Fast:** Real-time playback (30–100 FPS) on consumer GPUs without ray marching.
+- **Small:** Hundreds of thousands of blobs cover a large room with less memory than dense voxel grids.
+- **Friendly to engines:** The splatting math mirrors raster pipelines, so hybrids with meshes are already appearing.
+- **Stable:** Smooth kernels reduce the floaters and ringing that plague other point-based renders.
+
+## Current Limitations and Open Questions
+
+- **Mostly static:** Handling moving objects still needs extra motion models.
+- **Memory cost:** Covariance and spherical harmonic data add up; compression is active research.
+- **Global scenes:** Large outdoor captures require smart culling and level of detail.
+- **Baked lighting:** Relighting is tricky because the blobs store appearance from the capture.
+
+## Getting Started
+
+- **Paper:** *3D Gaussian Splatting for Real-Time Radiance Field Rendering* (Kerbl et al., SIGGRAPH 2023).
+- **Video:** [Gaussian Diffusion (Bilibili)](https://www.bilibili.com/video/BV1MP411D7cY/?spm_id_from=333.337.search-card.all.click&vd_source=ae0bfd67b026e62fbc37ca190dfd1839).
+- **Repos:** Try `gsplat`, NVIDIA’s `gaussian-splatting`, or the Unity/Unreal ports.
+- **Practice:** Train on a small indoor set, then inspect the exported `.ply` in Meshlab to see how the blob cloud evolves.
+
+Think of each splat as a snowball hitting the screen: enough of them land in the right place, and you get a sharp, photorealistic view—minus the wait for ray marching.

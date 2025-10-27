@@ -71,11 +71,11 @@ Alignment and Padding:
 - For example, in the struct above, a (4 bytes) might leave a 4-byte padding before b (8 bytes) to align b on an 8-byte boundary.
 - Inheritance: for classes with inheritance, memory layout may include hidden padding or vtable pointers (if virtual functions are used). For non-inherited plain structs, the layout is straightforward.
 
-
 ### Miscellaneous Size Issues
 
--  Does static constexpr Change the Object's Size?
-    - No. `static constexpr` variables belong to the class itself, not part of the instance. E.g, 
+- Does static constexpr Change the Object's Size?
+  - No. `static constexpr` variables belong to the class itself, not part of the instance. E.g,
+
         ```cpp
         struct Example {
             static constexpr int static_var = 42;  // Shared by all objects, not part of any instance
@@ -83,22 +83,22 @@ Alignment and Padding:
         };  // 4bytes, only for a
         ```
 
-- `sizeof(object_or_type)` returns the number of bytes a type or object consumes. 
+- `sizeof(object_or_type)` returns the number of bytes a type or object consumes.
 
 ## Type Conversion
 
 ### `reinterpret_cast` vs `static_cast`
 
 - `reinterpret_cast<char*>(unsigned_char_ptr)` vs `static_cast<char*>(unsigned_char_ptr)` (which doesn't work)
-    - `static_cast` converts types where conversion is well defined. But it does NOT support conversions between unrelated pointer types. `char*` vs `unsigned char*`
-    - Low-Level Pointer Conversion: reinterpret_cast allows arbitrary type conversion between pointer types, essentially bypassing type safety. **USE WITH CAUTION**
+  - `static_cast` converts types where conversion is well defined. But it does NOT support conversions between unrelated pointer types. `char*` vs `unsigned char*`
+  - Low-Level Pointer Conversion: reinterpret_cast allows arbitrary type conversion between pointer types, essentially bypassing type safety. **USE WITH CAUTION**
 
 ### [Case Study] Mixing size_t and int: Potential Pitfalls and Best Practices
 
 In C++, mixing `size_t` (typically an unsigned 64-bit integer) with `int` (usually a signed 32-bit integer) can lead to unexpected behavior due to implicit type conversions. Key Issues:
 
 - Negative int converts to a large size_t:
-    - If a negative int is implicitly converted to size_t, it wraps around to a very large positive value.
+  - If a negative int is implicitly converted to size_t, it wraps around to a very large positive value.
 
 ```
 size_t s = -1;  // -1 becomes 18446744073709551615 (UINT64_MAX on a 64-bit system)
@@ -116,7 +116,7 @@ ssize_t index = -1;  // Safe, avoids unsigned wrapping issues
 
 ## Integral Promotion Rule
 
-**REMEMBER: **  The literal 1 is an int by default, not an unsigned char. When you use arithmetic operators (like +), operands of smaller integer types (such as unsigned char) are promoted to int.
+**REMEMBER:**  The literal 1 is an int by default, not an unsigned char. When you use arithmetic operators (like +), operands of smaller integer types (such as unsigned char) are promoted to int.
 
 ```cpp
 #include <iostream>
@@ -135,7 +135,6 @@ int main() {
 ```
 
 - Note that val++ is an increment operator, not an arithmetic expression like val + 1. So its type is stil `uchar`
-
 
 ### `decay_t`
 
