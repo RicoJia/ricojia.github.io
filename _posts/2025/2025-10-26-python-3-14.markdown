@@ -1,0 +1,57 @@
+---
+layout: post
+title: Python - Python 3.14
+date: '2025-10-26 13:19'
+subtitle: 
+header-img: "img/post-bg-o.jpg"
+tags:
+    - Python
+comments: true
+---
+Python 3.14 is shaping up to be the most ambitious release since type hints landed, with concurrency and ergonomics getting the spotlight.
+
+- **Free-threaded CPython**
+  - Ships both the traditional GIL build and a free-threaded build derived from Sam Gross’s PEP 703 work.
+  - Free-threaded runtime stays within ~5–10% of the GIL build on single-threaded benchmarks while enabling true parallelism on CPU-heavy workloads.
+  - Tier-2 JIT support expands to macOS and Windows, so laptop devs get the same performance experiments Linux enjoyed in 3.13.
+- **Multiple interpreters**
+  - High-level APIs now expose the sub-interpreter infrastructure introduced in 3.13, no custom C glue required.
+  - Each interpreter remains isolated—objects must be copied—but that isolation is perfect for plugin hosts and multi-tenant services.
+  - Tooling like IDEs and test runners can spin up clean interpreters quickly without process churn.
+- **Deferred annotations**
+  - Lazy evaluation is now the default, so type expressions resolve only when needed.
+  - Most projects can drop `from __future__ import annotations`, stringified hints, and awkward forward declarations.
+  - Previously, cross-module references forced defensive imports and `TYPE_CHECKING` guards:
+
+    ```python
+    # module_a.py
+    from typing import TYPE_CHECKING
+    if TYPE_CHECKING:
+        from module_b import ModuleB
+
+    class ModuleA:
+        def __init__(self, peer: "ModuleB") -> None:
+            self.peer = peer
+
+    # module_b.py
+    from typing import TYPE_CHECKING
+    if TYPE_CHECKING:
+        from module_a import ModuleA
+
+    class ModuleB:
+        def __init__(self, peer: "ModuleA") -> None:
+            self.peer = peer
+    ```
+
+    Now both modules can import each other normally and annotate with real names because the interpreter defers resolution.
+  - Type checkers gain a consistent representation of annotations, smoothing type analysis across codebases.
+- **Attachable debugger**
+  - `python -m pdb --attach <pid>` establishes an interactive session with a live process using newly exposed interpreter hooks.
+  - Incident response gets easier: attach, inspect, detach—no redeploy or risky platform-specific tricks.
+  - Editor debug adapters can rely on the same mechanism, reducing crashy attach sequences.
+- **Quality-of-life polish**
+  - `except ValueError, KeyError:` no longer needs grouping parentheses when catching multiple exceptions.
+  - The REPL finally includes built-in syntax highlighting for faster read/execute feedback.
+  - Documentation updates clarify module lifecycle and reference counting in the free-threaded world, easing the learning curve.
+
+Start testing the alphas now if you run Python in production—the new threading and tooling rails reward early adopters.
