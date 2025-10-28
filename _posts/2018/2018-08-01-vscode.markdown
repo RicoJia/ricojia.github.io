@@ -163,12 +163,77 @@ Issue with the above method is: ROS environment seems not being passed into it s
 
 ## ROS2 Launch File
 
-How to set up vscode debugging with ROS2 Launchfile:
+In a (roslaunch data structure) `Node` or `ComposableNodeContainer`, add the property `prefix`. It is an array with one string, containing space-separated commands.
 
-1. Install C/C++ and [the ROS plugin](https://marketplace.visualstudio.com/items?itemName=ms-iot.vscode-ros)
-2. Follow the ROS plugin page to add a `launch.json` in the root directory (in our case, `~/toolkitt/src/.vscode`)
-3. Set a breakpoint in your cpp/python file
-4. Hit `<F5>`. The program would pause at the breakpoint
+Launch GDB and run program. This will "attach" to the terminal but output won't really be very usable.
+
+Example: `['gdb -ex=r --args']`
+
+Example with basic Node launch:
+
+```python
+ld = LaunchDescription([
+ launch_ros.actions.Node(
+     package='demo_nodes_cpp',
+     output='screen',
+     prefix=['gdb -ex=r --args']
+ )
+])
+```
+
+### GDB Server
+
+Launch GDB server and block execution until a client connects. Example: `['gdbserver localhost:9000']`
+Example with composable nodes:
+
+```python
+ComposableNodeContainer(
+            name='my_node_container',
+            namespace='my_namespace',
+            package='rclcpp_components',
+            executable='component_container_mt',
+            output='screen',
+            prefix=['gdbserver localhost:9000'],
+            composable_node_descriptions=[
+                ComposableNode(
+                    name='my_first_node',
+                    package='my_package',
+                    namespace='my_namespace/sub',
+                    plugin='my_ns::MyClass',
+                )
+            ]
+        )
+```
+
+VSCode launch configuration to connect to above:
+
+```json
+{
+    "name": "Attach 9000",
+    "type": "cppdbg",
+    "request": "launch",
+    "program": "/opt/ros/humble/lib/rclcpp_components/component_container_mt",
+    "args": [],
+    "stopAtEntry": false,
+    "cwd": "${fileDirname}",
+    "environment": [],
+    "externalConsole": false,
+    "MIMode": "gdb",
+    "miDebuggerServerAddress": "localhost:9000",
+    "setupCommands": [
+        {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+        },
+        {
+            "description": "Set Disassembly Flavor to Intel",
+            "text": "-gdb-set disassembly-flavor intel",
+            "ignoreFailures": true
+        }
+    ]
+}
+```
 
 ## Remote SSH Configuration
 
