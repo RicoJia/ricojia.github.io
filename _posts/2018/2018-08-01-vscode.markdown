@@ -193,7 +193,7 @@ ComposableNodeContainer(
             package='rclcpp_components',
             executable='component_container_mt',
             output='screen',
-            prefix=['gdbserver localhost:9000'],
+            prefix=['gdbserver --once localhost:9000'],
             composable_node_descriptions=[
                 ComposableNode(
                     name='my_first_node',
