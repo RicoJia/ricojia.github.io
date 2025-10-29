@@ -209,27 +209,33 @@ VSCode launch configuration to connect to above:
 
 ```json
 {
-    "name": "Attach 9000",
-    "type": "cppdbg",
-    "request": "launch",
-    "program": "/opt/ros/humble/lib/rclcpp_components/component_container_mt",
-    "args": [],
-    "stopAtEntry": false,
-    "cwd": "${fileDirname}",
-    "environment": [],
-    "externalConsole": false,
-    "MIMode": "gdb",
-    "miDebuggerServerAddress": "localhost:9000",
-    "setupCommands": [
+    "version": "0.2.0",
+    "configurations": [
         {
-            "description": "Enable pretty-printing for gdb",
-            "text": "-enable-pretty-printing",
-            "ignoreFailures": true
-        },
-        {
-            "description": "Set Disassembly Flavor to Intel",
-            "text": "-gdb-set disassembly-flavor intel",
-            "ignoreFailures": true
+            "name": "Attach to capacity_manager (gdbserver:9000)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/toolkitt_ws/install/capacity_manager/lib/capacity_manager/capacity_manager_node",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerServerAddress": "localhost:9000",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }
