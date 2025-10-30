@@ -149,7 +149,7 @@ Issue with the above method is: ROS environment seems not being passed into it s
                     "type": "cppdbg",
                     "request": "launch",
                     "program": "/bin/bash",
-                    "args": ["-c", "lc 'source /my_ws/install/setup.bash && ./my_ws/install/node.../lib/capacity_manager/capacity_manager_node --ros-args -r __ns:=/commander --log-level debug --params-file my_yaml.yaml'"],
+                    "args": ["-c", "lc 'source /my_ws/install/setup.bash && ./my_ws/install/node.../lib/my_pub/my_pub_node --ros-args -r __ns:=/commander --log-level debug --params-file my_yaml.yaml'"],
                     "stopAtEntry": false,
                     "cwd": "/ws",
                     "environment": [],
@@ -212,10 +212,10 @@ VSCode launch configuration to connect to above:
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to capacity_manager (gdbserver:9000)",
+            "name": "Attach to my_pub (gdbserver:9000)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/root/toolkitt_ws/install/capacity_manager/lib/capacity_manager/capacity_manager_node",
+            "program": "ws/install/my_pub/lib/my_pub/my_pub_node",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
