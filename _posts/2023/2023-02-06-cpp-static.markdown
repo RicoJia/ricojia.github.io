@@ -9,7 +9,7 @@ tags:
     - C++
 ---
 
-As a very high level summary, the keyword `static` has two uses: 
+As a very high level summary, the keyword `static` has two uses:
 
 - File scope static variables and functions can be only accessed within the current translation unit (i.e., the `cpp` source file)
 - Class static variables and functions belong to the class and do not need to be accessed through any class object.
@@ -35,9 +35,15 @@ num_dec_inside_function();  // another num: 3
 
 [Please see my article on C++ linkage.](./2023-01-30-cpp-linkage.markdown)
 
+One special case when the static variable is in an `hpp` file:
+
+```cpp
+static int foo;     // each translation unit will get its own copy of the variable
+```
+
 ### Static Member Variable Within A Class
 
-Static member variable is similar to Python's class variable. That is, the variable can be variable without instantiating a object of the class. 
+Static member variable is similar to Python's class variable. That is, the variable can be variable without instantiating a object of the class.
 
 ```cpp
 class Foo{

@@ -172,7 +172,13 @@ colcon build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=1
         - `<depend>` are dependencies that should be provided at both build time and run time for your package.
             - For C++ packages, if in doubt, use this tag.
             - Pure Python packages generally don’t have a build phase, so should never use this and should use `<exec_depend>` instead.
-        - `<exec_depend>` declares dependencies for shared libraries, executables, Python modules, launch scripts and other files required when running your package.
+
+        - `<buildtool_depend>` - needed to perform the build toolchain itself (ament_cmake, etc.)
+        - `<build_depend>` - needed in order to compile your package (e.g. linking)
+        - `<test_depend>` - built only when running tests
+        - `<exec_depend>` - only needed for running your package, but is not compiled. Some example cases are: launch files,  dependency declaration for shared libraries, executables and Python modules
+
+    - The confusing  part is, when you have package A that launches a launchfile in B, `colcon build --packages-select A` will NOT start building B
 
 2. Query keys in a central index to find the appropriate ROS packages
     - Retrieving the central index on to your local machine (`/etc/ros/rosdep/sources.list.d/20-default.list`) so that it doesn’t have to access the network every time it runs
