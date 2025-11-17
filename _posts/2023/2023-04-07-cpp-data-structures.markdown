@@ -54,6 +54,24 @@ int main() {
 ```
 
 - `top()` is O(1), `pop()` is O(log(N))
-- A heap requires `operator<`. when `p1 < p2`, the heap is a **max heap**, that is, the top is the maximum value. 
+- A heap requires `operator<`. when `p1 < p2`, the heap is a **max heap**, that is, the top is the maximum value.
 
+- `std::for_each`:
 
+```cpp
+std::vector<int> seq(0, 10);
+std::for_each(seq.begin(), seq.end(), [idx = 0u](size_t& i) mutable {i = idx++;})
+```
+
+- `0u` instead of `0` is used so the initializer is deduced into size_t, otherwise, it's int
+- Need `mutable`, because lambda's `operator()` by default is a const:
+
+    ```
+    struct Lambda{
+        int idx;
+        // Wrong - need mutable
+        void operator() const{
+            i = idx++;
+        }
+    };
+    ```
