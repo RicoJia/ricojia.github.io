@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - ROS2 Gazebo Differential Drive Onboard
 date: '2024-11-7 13:19'
-subtitle: ROS2, Gazebo
+subtitle: ROS2, Gazebo, Rviz
 header-img: "img/post-bg-os-metro.jpg"
 tags:
     - Robotics
@@ -80,3 +80,9 @@ How to make gazebo sim faster:
 ## Convetions
 
 [The Gazebo-classic convention for rpy is ZYX](https://playerstage.sourceforge.net/doc/Gazebo-manual-0.8.0-pre1-html/config_syntax.html)
+
+
+## Rviz
+
+- rviz has containers, which is good for organizations
+
