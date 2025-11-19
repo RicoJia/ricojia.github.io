@@ -92,3 +92,8 @@ A **FIFO special file** is a rendez-vous point in the filesystem that **lets two
 - You create one with `mkfifo mypipe`.
 - The directory entry **holds no data**; the kernel moves the bytes directly between processes once both ends are open.
 - Because it lives in the directory tree, unrelated processes can open it by name (unlike an anonymous pipe).
+
+## Copying
+
+- `rsync -vva --info=progress2 <FROM> <TO>`
+
