@@ -19,65 +19,103 @@ git config --global user.name "Your Name"
 git config --global user.email "your_email@example.com"
 ```
 
+---
+
 ## Regular Git Workflow
 
 - Store changes of one file to stash: `git stash push FILEPATH`
 
-## Github Test Workflow
 
-Test Workflow is done through Github Actions. Here we are going to create a workflow on Github's default runner
+Here is the cleaned-up, properly formatted **raw Markdown** (no code fences around the whole thing—**this is the final raw markdown**):
 
-- Create a `.github/workflows/test.yml`
-- Add a custom docker file `Docker_test_container`  in the root directory
-- In the `Actions` Tab on your repo's panel, you can check test runs
-- For a full example, please see here: TODO
+---
 
-Note: `pre-commit` can be used to run tests even before commiting.
+## GitHub Test Workflow
 
-1. `pip install pre-commit`
-1. Create a .pre-commit-config.yaml file in your project’s root directory with the following content:
+Test workflow is done through GitHub Actions. Here we are going to create a workflow on GitHub's default runner.
 
-```markdown
-repos:
-- repo: https://github.com/psf/black
-    rev: 23.1.0  # Use the latest version of black
-    hooks:
-    - id: black
+### Steps
+
+* Create a `.github/workflows/test.yml`
+* Add a custom Docker file `Docker_test_container` in the root directory
+* In the **Actions** tab on your repo's panel, you can check test runs
+* For a full example, please see here: **TODO**
+
+**Note:** `pre-commit` can be used to run tests even before committing.
+
+---
+
+### 1. Install `pre-commit`
+
+```bash
+pip install pre-commit
 ```
 
-1. Run the following command to install the pre-commit hooks, so black will run automatically before commit and fix formatting issues:
+### 2. Create a `.pre-commit-config.yaml` file in your project’s root directory:
+
+```yaml
+repos:
+  - repo: https://github.com/psf/black
+    rev: 23.1.0  # Use the latest version of black
+    hooks:
+      - id: black
+```
+
+### 3. Install the pre-commit hooks
 
 ```bash
 pre-commit install
 ```
 
-To enforce that tests pass before allowing a pull request to be merged, you can enable branch protection rules:
+---
 
-- `Settings` -> `Branches` -> `Branch protection rules` -> `Add rule`.
-  - In the "Branch name pattern" field, enter master (or the name of the branch you want to protect).
-  - Check the option "Require status checks to pass before merging."
-    - You can set other rules such as "require approvals"
+## Enforce Tests Before Merging (Branch Protection Rules)
 
-From the list of available checks, select the one that corresponds to your GitHub Actions test (usually named after your workflow file, such as Run Tests).
+To ensure tests pass before a pull request can be merged:
 
-Additionally, we can add a status badge, which **dynamically updates** based on the current status of your workflow:
+* Go to:
+  **Settings → Branches → Branch protection rules → Add rule**
 
-- Go to `Actions`
-- Click on the workflow that you want to create a badge for (e.g., Run Tests)
-- Near the top right corner of the workflow's page, you'll see a ... (three dots) button. Click it. Click on Create status badge.
-- GitHub will generate a Markdown snippet for your badge.  It will look something like this:
+  * In **Branch name pattern**, enter `master` (or the protected branch name)
+  * Check **Require status checks to pass before merging**
+  * Optionally enable additional rules (e.g., *Require approvals*)
+
+From the list of available checks, select the GitHub Actions workflow (usually named after your workflow file, such as **Run Tests**).
+
+---
+
+## Add a Status Badge
+
+You can add a status badge that **automatically updates** based on your workflow status:
+
+1. Go to **Actions**
+2. Click on the workflow (e.g., *Run Tests*)
+3. Click the **...** (three dots) button → **Create status badge**
+4. GitHub will generate a Markdown snippet, such as:
 
 ```markdown
 ![example workflow](https://github.com/YOUR-USERNAME/YOUR-REPO/actions/workflows/test.yml/badge.svg)
 ```
 
-- Copy the Markdown snippet and open your repository's README.md file.
+5. Copy it into your `README.md`:
 
 ```markdown
 # My Project
 ![Run Tests](https://github.com/YOUR-USERNAME/YOUR-REPO/actions/workflows/test.yml/badge.svg)
+
 This is my project description...
 ```
+
+---
+
+## Compare Branches
+
+To compare branches:
+
+* **GitLab**: Use the right-hand side panel for *Compare Revisions*
+
+---
+
 
 ## Set Up Github Pypi Workflow
 
@@ -132,9 +170,13 @@ This will trigger the publish workflow and automatically push the package to PyP
 - Build the package using build and twine.
 - Publish the package to PyPI.
 
-## Combine A Divergence Between Remote And Local Repos
+Here is the **cleaned, formatted, and tidy raw Markdown** for all sections you provided.
 
-When there is a divergence between the remote and the local repos, `git pull` won't work. Instead it will show:
+---
+
+## Combine a Divergence Between Remote and Local Repos
+
+When there is a divergence between the remote and local repositories, a simple `git pull` will fail with:
 
 ```bash
 You have diverging branches and need to specify how to reconcile them. Before performing the next pull operation, you can suppress this message by running one of the following commands:
@@ -143,96 +185,163 @@ git config pull.rebase true   # Rebase
 git config pull.ff only       # Fast-forward only
 ```
 
-To confirm that there's a divergence, we can:
+### Confirming the Divergence
 
-1. `git log master..origin/master --oneline` to see the different commits on **remote** since the last common commit. I see
+1. View commits on **remote** since the last common base:
 
-```bash
-463955d (origin/master, origin/HEAD) more
-f746488 more
-ed0b487 more
-```
+   ```bash
+   git log master..origin/master --oneline
+   ```
 
-2. `git log origin/master..master --oneline` to see different commits on **local** since the last common commit. I see
+   Example:
 
-```bash
-02af0d4 (HEAD -> master) more
-ba2bb33 more
-```
+   ```bash
+   463955d (origin/master, origin/HEAD) more
+   f746488 more
+   ed0b487 more
+   ```
 
-- Locally, this can be confirmed by `git log`. We can even have a more visual representation: `git log --graph --oneline --decorate master origin/master`
+2. View commits on **local** since the last common base:
 
-```bash
-* 02af0d4 (HEAD -> master) more
-* ba2bb33 more
-| * 463955d (origin/master, origin/HEAD) more
-| * f746488 more
-| * ed0b487 more
-|/  
-* 89696f2 more
-```
+   ```bash
+   git log origin/master..master --oneline
+   ```
 
-3. To fix, there are 3 options:
+   Example:
 
-- `git config pull.rebase false` merge the remote branch into the local branch in a new commit.
+   ```bash
+   02af0d4 (HEAD -> master) more
+   ba2bb33 more
+   ```
+
+3. Visualize both histories together:
+
+   ```bash
+   git log --graph --oneline --decorate master origin/master
+   ```
+
+   Example:
+
+   ```bash
+   * 02af0d4 (HEAD -> master) more
+   * ba2bb33 more
+   | * 463955d (origin/master, origin/HEAD) more
+   | * f746488 more
+   | * ed0b487 more
+   |/  
+   * 89696f2 more
+   ```
+
+### How to Fix the Divergence
+
+There are three options:
+
+#### **1. Merge (default)**
+
+`git config pull.rebase false`
+This merges the remote branch into the local one and creates a merge commit.
 
 ```
 A---B---C (master)
      \
       D---E (origin/master)
 =>
-A---B---C---F (master) (merge commit)
+A---B---C---F (master)
      \     /
       D---E (origin/master)
 ```
 
-- `git config pull.rebase true` appends the local branch to the remote branch (a.k.a "rebase").
+#### **2. Rebase**
+
+`git config pull.rebase true`
+This replays local commits on top of the remote branch.
 
 ```
 A---B---C (master)
      \
       D---E (origin/master)
 =>
-A---B---D---E---C (master) (rebased commits)
+A---B---D---E---C (master)
 ```
 
-I like a linear history. So I do `git rebase origin/master`.
+If you prefer a linear history (like I do), run:
 
-## Be Careful With Checking In Small MRs Off A Large One
+```bash
+git rebase origin/master
+```
 
-- Branch 1 (b1): Contains file1, file2, and file3.
+---
 
-- Branch 2 (b2): Contains file2 and file3 (with modifications).
+## Be Careful When Checking In Small MRs Based on a Large MR
 
-- Workflow:
+**Scenario:**
 
-    1. Merge b2 into main.
+* **Branch 1 (b1):** Has `file1`, `file2`, and `file3`.
+* **Branch 2 (b2):** Has changes only to `file2` and `file3`.
 
-    2. Pull main back into b1, **which causes merge conflicts on file2 and file3.**
+**Workflow:**
 
-- Solution:
-    1. Only alter files in Branch 1. Branch 2 is only used for merging purposes.
-    2. Use Git’s `--ours` strategy to favor the changes from b1 over those in main 
-        ```bash
-        git fetch
-        git merge -X ours main 
-        ```
-        
+1. Merge **b2** into `main`.
+2. Pull `main` back into **b1** → merge conflicts occur on `file2` and `file3`.
 
-## Gitlab SSH Setup
+**Solution:**
 
-1. At the top left corner, select `subgroup information-> group memebers`
-  - Look for your username in the Project Members list. Make sure you have developer access
-2. Follow this link to:
+1. Only edit files in **b1**. Use b2 solely for merging purposes.
+2. Use Git’s `--ours` strategy to favor **b1** changes during merge:
 
-  - Generate ssh key
-  - Add SSH Key to ssh-agent
-  - Add SSH key to Gitlab
+   ```bash
+   git fetch
+   git merge -X ours main
+   ```
 
-3. Verify connection to Gitlab using `ssh -T git@gitlab.<COMPANY>.com`
+---
 
-  - use `ssh-add -l` to see if you have added ssh key
-  - `ssh-add ~/.ssh/id_ed25519` must come after `eval $(ssh-agent -s)`
+## GitLab SSH Setup
 
-4. If having trouble using SSH to download a repo:
-  - Have a verbose command to `ssh -v git@gitlab.<COMPANY>.com`
+1. In GitLab, navigate to:
+   **Subgroup information → Group members**
+
+   * Find your username in the Project Members list
+   * Ensure you have **Developer** access
+
+2. Follow GitLab documentation to:
+
+   * Generate an SSH key
+   * Add the SSH key to `ssh-agent`
+   * Add the SSH key to GitLab
+
+3. Verify your SSH connection:
+
+   ```bash
+   ssh -T git@gitlab.<COMPANY>.com
+   ```
+
+   Helpful checks:
+
+   * List loaded keys:
+
+     ```bash
+     ssh-add -l
+     ```
+
+   * Add key (must be done *after* starting the agent):
+
+     ```bash
+     eval $(ssh-agent -s)
+     ssh-add ~/.ssh/id_ed25519
+     ```
+
+4. If you still have trouble cloning or pulling via SSH:
+
+   ```bash
+   ssh -v git@gitlab.<COMPANY>.com
+   ```
+
+   (Verbose output helps identify issues.)
+
+---
+
+If you'd like, I can combine everything into a single README or cheat-sheet page.
+
+
+
