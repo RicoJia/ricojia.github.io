@@ -54,6 +54,7 @@ class Foo{
             std::cout<<"i: "<<i<<std::endl;
             ++i;
         }
+        static inline int j = 13;
 };
 
 // This is how to initialize static member variable
@@ -73,6 +74,7 @@ int main(){
 - Static members must be defined outside of the class in the same namescope
 - If the static member variable is defined in hpp, then every instance will get the same value. Otherwise, it should be defined in the **source file**.
 - Regular member functions can access a static member variable with the scope specifier `::`.
+- in C++ 17, in-place static variable declaration was introduced. You need keyword `inline` for that
 
 ## Static Function
 
