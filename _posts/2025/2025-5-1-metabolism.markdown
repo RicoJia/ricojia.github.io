@@ -3,7 +3,7 @@ layout: post
 title: Fitness - Eat, Move, and Burn Smarter
 date: '2025-5-1 13:19'
 subtitle: 
-header-img: "img/post-bg-o.jpg"
+header-img: "img/post-bg-kuaidi.jpg"
 tags:
     - Robotics
     - SLAM
