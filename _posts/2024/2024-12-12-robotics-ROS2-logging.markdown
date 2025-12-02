@@ -41,3 +41,6 @@ So you can call them during runtime:
 
 4. Or, `ros2 run pkg node --ros-args --log-level my_node:=DEBUG`
     - I was having issues with doing this in gtest though.
+
+5. `ros2 run my_pkg my_node --ros-args --log-level debug` 
+
