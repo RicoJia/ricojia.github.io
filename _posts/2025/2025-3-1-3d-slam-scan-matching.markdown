@@ -19,6 +19,15 @@ When we run scan matching, we usually have two point clouds:
 
 Our goal is to find a rigid transform $(R, \mathbf{t})$ that best aligns the source to the target.
 
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/h4XYwHX0/An-advantage-point-to-plane-over-point-to-point-method.png" height="200" alt=""/>
+        <figcaption><a href="https://www.researchgate.net/publication/267784785/figure/fig1/AS:392052463423500@1470483999736/An-advantage-point-to-plane-over-point-to-point-method.png">The Scan Matching Problem and Strategies</a></figcaption>
+    </figure>
+</p>
+</div>
+
 ## Point-Point ICP
 
 If the two clouds are perfectly aligned, each transformed source point $R\mathbf{p}_i + \mathbf{t}$ would land exactly on its counterpart $\mathbf{q}_i$.
