@@ -10,11 +10,62 @@ tags:
 catalog: true
 ---
 
-```
---> Gain (Rx/Time Varying Gain) --> Detection
+## Sonar Imaging Pipeline
+
+```mermaid
+flowchart LR
+    Tx[Transmit ping] --> Echo[Received echoes]
+    Echo --> Beamforming[Beamforming]
+    Beamforming --> Gain["Gain (Rx + Time Varying Gain)"]
+    Gain --> Detection["Detection (FAT / MAX + threshold)"]
 ```
 
+[A nice introduction to the concept of beam-forming](https://youtu.be/A1n5Hhwtz78?si=hDX73qqMht9DPb0D)
+
 ## Beam Forming
+
+If you have multiple attenae, say each attena is attached to a fixed delay, then the waves from the attenae will have different phases. If these delays are fine-tuned, these waves will amplify each other at a certain angle, and will attentuate at other angles
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/HsRPm6MW/What-is-second-generation-beamforming-Figure-1.gif" height="300" alt=""/>
+        <figcaption><a href="https://www.eeworldonline.com/what-is-second-generation-beamforming/">beam forming attenuation and ? </a></figcaption>
+    </figure>
+</p>
+</div>
+
+The magnitudes of the waveform at each angle is illustrated as follows
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/zGdQMqkw/9ad645f2-c982-4d45-b1c5-70b55bc9aa7f.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+```python
+c = 1500.0
+f = 30000
+wave_length = c / f
+wave_number = 2 * np.pi / wave_length
+num_elements = 8
+element_spacing = wave_length / 2
+steer_angle = 30  # degrees
+
+def get_array_factor(theta_arr, intended_steer_angle):
+    theta_rad = np.deg2rad(theta_arr)
+    steer_rad = np.deg2rad(intended_steer_angle)
+    n = np.arange(num_elements).reshape(-1, 1)
+    phase = (np.sin(theta_rad) - np.sin(steer_rad)) * wave_number * element_spacing * n
+    array_factor_magnitudes = np.abs(np.sum(np.exp(1j * phase), axis=0))
+    return array_factor_magnitudes / np.max(array_factor_magnitudes)
+
+theta_arr = np.linspace(-90, 90, 721)
+array_factors = get_array_factor(theta_arr, steer_angle)
+array_factors_db = 20 * np.log10(array_factors + 1e-12)
+```
 
 ## Amplification
 
