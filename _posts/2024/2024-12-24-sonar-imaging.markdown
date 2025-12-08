@@ -12,13 +12,14 @@ catalog: true
 
 ## Sonar Imaging Pipeline
 
-```mermaid
-flowchart LR
-    Tx[Transmit ping] --> Echo[Received echoes]
-    Echo --> Beamforming[Beamforming]
-    Beamforming --> Gain["Gain (Rx + Time Varying Gain)"]
-    Gain --> Detection["Detection (FAT / MAX + threshold)"]
-```
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/K8NKhHKn/Screenshot-from-2025-12-07-22-19-36.png" height="300" alt=""/>
+        <figcaption><a href="">Source: </a></figcaption>
+    </figure>
+</p>
+</div>
 
 [A nice introduction to the concept of beam-forming](https://youtu.be/A1n5Hhwtz78?si=hDX73qqMht9DPb0D)
 
