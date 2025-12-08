@@ -16,12 +16,11 @@ catalog: true
 <p align="center">
     <figure>
         <img src="https://i.postimg.cc/K8NKhHKn/Screenshot-from-2025-12-07-22-19-36.png" height="300" alt=""/>
-        <figcaption><a href="">Source: </a></figcaption>
     </figure>
 </p>
 </div>
 
-[A nice introduction to the concept of beam-forming](https://youtu.be/A1n5Hhwtz78?si=hDX73qqMht9DPb0D)
+[Here is a nice introduction to the concept of beam-forming](https://youtu.be/A1n5Hhwtz78?si=hDX73qqMht9DPb0D)
 
 ## Beam Forming
 
@@ -31,7 +30,7 @@ If you have multiple attenae, say each attena is attached to a fixed delay, then
 <p align="center">
     <figure>
         <img src="https://i.postimg.cc/HsRPm6MW/What-is-second-generation-beamforming-Figure-1.gif" height="300" alt=""/>
-        <figcaption><a href="https://www.eeworldonline.com/what-is-second-generation-beamforming/">beam forming attenuation and ? </a></figcaption>
+        <figcaption><a href="https://www.eeworldonline.com/what-is-second-generation-beamforming/">wave intensity at different angles</a></figcaption>
     </figure>
 </p>
 </div>
