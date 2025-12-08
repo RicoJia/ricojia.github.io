@@ -10,44 +10,198 @@ tags:
 comments: true
 ---
 
+## The Scan Matching Problem
+
+When we run scan matching, we usually have two point clouds:
+
+- a source scan $S_1 = \{\mathbf{p}_1, \ldots, \mathbf{p}_n\}$ (the new measurement), and
+- a target scan $S_2 = \{\mathbf{q}_1, \ldots, \mathbf{q}_m\}$ (a previous scan or a global map).
+
+Our goal is to find a rigid transform $(R, \mathbf{t})$ that best aligns the source to the target.
+
 ## Point-Point ICP
 
-If we write out our state vector as `[theta, translation]`, the pseudo code for point-point ICP is:
+If the two clouds are perfectly aligned, each transformed source point $R\mathbf{p}_i + \mathbf{t}$ would land exactly on its counterpart $\mathbf{q}_i$.
 
-```
-pt_pt_icp(pose_estimate, source_scan, target_scan):
+In practice there's noise and partial overlap, so we instead minimize the sum of squared distances between matched points.
+
+For a pair of matched points $(\mathbf{p}_i, \mathbf{q}_i)$, define the residual
+
+$$
+\mathbf{e}_i = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t}.
+$$
+
+Stacking all correspondences gives us a cost
+
+$$
+J(R, \mathbf{t}) = \sum_{i} \|\mathbf{e}_i\|^2 = \sum_{i} \|\mathbf{q}_i - R\mathbf{p}_i - \mathbf{t}\|^2.
+$$
+
+The Iterative Closest Point (ICP) algorithm is a classic way to minimize this cost when we don’t know the correspondences in advance.
+
+### Classic Point-to-Point ICP Loop
+
+The vanilla point-to-point ICP algorithm alternates between two subproblems:
+
+- Find correspondences (given the current pose).
+- Estimate pose (given the current correspondences).
+
+You repeat this until convergence.
+
+If we write the state vector as
+
+$$
+\mathbf{x} = [\boldsymbol{\theta}, \mathbf{t}]
+$$
+
+where $\boldsymbol{\theta}$ is a minimal representation of the rotation (e.g., axis-angle or small roll–pitch–yaw),
+
+The key trick is the linearization. Around the current estimate $(R, \mathbf{t})$, we approximate how the residuals change with a small pose increment $d\mathbf{x}$. For point-to-point ICP, the Jacobians for each correspondence are:
+
+$$
+\mathbf{e}(R, \mathbf{t}) = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t} \quad \Rightarrow \quad \frac{\partial \mathbf{e}}{\partial \mathbf{t}} = -I_{3 \times 3}.
+$$
+
+For rotation, we apply a small perturbation $(\delta\boldsymbol{\theta}, \delta\mathbf{t})$ to the current pose:
+
+$$
+R' = R \exp([\delta\boldsymbol{\theta}]^\wedge), \quad \mathbf{t}' = \mathbf{t} + \delta\mathbf{t},
+$$
+
+where $[\cdot]^\wedge$ is the hat operator, giving the skew-symmetric matrix:
+
+$$
+[\mathbf{p}_i]^\wedge = \begin{bmatrix} 0 & -p_{i,z} & p_{i,y} \\ p_{i,z} & 0 & -p_{i,x} \\ -p_{i,y} & p_{i,x} & 0 \end{bmatrix},
+$$
+
+and $[\mathbf{p}_i]^\wedge \delta\boldsymbol{\theta} = \mathbf{p}_i \times \delta\boldsymbol{\theta}$.
+
+For small $\delta\boldsymbol{\theta}$, $\exp([\delta\boldsymbol{\theta}]^\wedge) \approx I + [\delta\boldsymbol{\theta}]^\wedge$.
+
+Starting from the perturbed residual with small perturbation (δθ, δ**t**):
+
+$$R' = R \exp([\delta\boldsymbol{\theta}]^\wedge), \quad \mathbf{t}' = \mathbf{t} + \delta\mathbf{t}$$
+
+We get:
+
+$$e' \approx \mathbf{q}_i - R(I + [\delta\boldsymbol{\theta}]^\wedge)\mathbf{p}_i - \mathbf{t} - \delta\mathbf{t}$$
+
+$$= \mathbf{q}_i - R\mathbf{p}_i - R[\delta\boldsymbol{\theta}]^\wedge \mathbf{p}_i - \mathbf{t} - \delta\mathbf{t}$$
+
+Factor out the original residual e₀ = **q**ᵢ - R**p**ᵢ - **t** to get:
+
+$$e' \approx e_0 - R[\delta\boldsymbol{\theta}]^\wedge \mathbf{p}_i - \delta\mathbf{t}$$
+
+Using the cross-product antisymmetry identity:
+
+$$[\delta\boldsymbol{\theta}]^\wedge \mathbf{p}_i = \delta\boldsymbol{\theta} \times \mathbf{p}_i = -\mathbf{p}_i \times \delta\boldsymbol{\theta} = -[\mathbf{p}_i]^\wedge \delta\boldsymbol{\theta}$$
+
+We get:
+
+$$e' \approx e_0 + R[\mathbf{p}_i]^\wedge \delta\boldsymbol{\theta} - \delta\mathbf{t}$$
+
+**From this linearization, the Jacobians are:**
+
+$$\frac{\partial e}{\partial \delta\boldsymbol{\theta}} \approx R[\mathbf{p}_i]^\wedge, \quad \frac{\partial e}{\partial \delta\mathbf{t}} = -I$$
+
+### From per-point Jacobians to the global least-squares system
+
+For each correspondence $(\mathbf{p}_i, \mathbf{q}_i)$, we have a residual:
+
+$$\mathbf{e}_i = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t} \in \mathbb{R}^3$$
+
+and its linearization with respect to the pose increment:
+
+$$\delta\mathbf{x} = \begin{bmatrix} \delta\boldsymbol{\theta} \\ \delta\mathbf{t} \end{bmatrix} \in \mathbb{R}^6$$
+
+is:
+
+$$\delta\mathbf{e}_i \approx J_i \, \delta\mathbf{x}, \quad J_i = \begin{bmatrix} R[\mathbf{p}_i]^\wedge & -I \end{bmatrix} \in \mathbb{R}^{3 \times 6}$$
+
+**Stacking all correspondences:**
+
+Define the global residual vector and Jacobian matrix by stacking over all $N$ correspondences:
+
+$$\mathbf{e} = \begin{bmatrix} \mathbf{e}_1 \\ \vdots \\ \mathbf{e}_N \end{bmatrix} \in \mathbb{R}^{3N}, \quad J = \begin{bmatrix} J_1 \\ \vdots \\ J_N \end{bmatrix} \in \mathbb{R}^{3N \times 6}$$
+
+**The cost function:**
+
+$$F(\mathbf{x}) = \frac{1}{2} \sum_{i=1}^N \|\mathbf{e}_i\|^2 = \frac{1}{2} \|\mathbf{e}\|^2$$
+
+**Linearization:**
+
+Around the current estimate $\mathbf{x}$, we linearize:
+
+$$\mathbf{e}(\mathbf{x} + \delta\mathbf{x}) \approx \mathbf{e}(\mathbf{x}) + J \, \delta\mathbf{x}$$
+
+Substituting into the cost:
+
+$$F(\mathbf{x} + \delta\mathbf{x}) \approx \frac{1}{2}\|\mathbf{e} + J\delta\mathbf{x}\|^2$$
+
+**Solving for the update:**
+
+Setting the derivative to zero:
+
+$$\frac{\partial F}{\partial \delta\mathbf{x}} = J^\top (\mathbf{e} + J\delta\mathbf{x}) = 0 \quad \Rightarrow \quad J^\top J \, \delta\mathbf{x} = -J^\top \mathbf{e}$$
+
+This is the **normal equation** of the Gauss–Newton step. Define:
+
+$$H = J^\top J = \sum_{i=1}^N J_i^\top J_i, \quad \mathbf{b} = -J^\top \mathbf{e} = -\sum_{i=1}^N J_i^\top \mathbf{e}_i$$
+
+We obtain the linear system:
+
+$$H \, \delta\mathbf{x} = \mathbf{b}$$
+
+Solve this at each ICP iteration to update the pose:
+
+$$\mathbf{x} \leftarrow \mathbf{x} \oplus \delta\mathbf{x}$$
+
+## Algorithm Implementation
+
+The pseudocode looks like:
+
+```python
+def pt_pt_icp(pose_estimate, source_scan, target_scan):
+    """Point-to-point ICP algorithm."""
+    # Build an acceleration structure for nearest neighbors
     build_kd_tree(target_scan)
-    for n in ITERATION_NUM:
+
+    for iter in range(MAX_ITERS):
+        errors = []
+        jacobians = []
+
+        # 1. Correspondence step: associate each transformed source point
+        #    with its nearest neighbor in the target scan
         for pt in source_scan:
-            pt_map = pose_estimate * pt
-            pt_map_match = kd_tree_nearest_neighbor_search(pt_map)
-            errors[pt] = pt_map_match - pt_map
-            jacobians[pt] = [pose_estimate.rotation() * hat(pt_map), -Identity(3)]
-        total_residual = errors* errors
-        H = sum(jacobians.transpose() * jacobians)
-        b = sum(-jacobians.transpose() * errors)
-        dx = H.inverse() * b
-       pose_estimate += dx;
-        if get_total_error() -> constant:
-            return
+            pt_map = pose_estimate * pt              # transform into target/map frame
+            pt_map_match = kd_tree_nn(pt_map)        # closest point in target_scan
+
+            e = pt_map_match - pt_map                # residual
+            errors.append(e)
+
+            # Jacobian of e w.r.t [theta, t]
+            # Using e = q_i - R p_i - t with current pose estimate
+            J_rot = pose_estimate.rotation() @ hat(pt_map)   # ∂e/∂R ≈ R [p]^∧
+            J_trans = -np.eye(3)                               # ∂e/∂t = -I
+            J = np.hstack([J_rot, J_trans])
+            jacobians.append(J)
+
+        # 2. Linearized least squares step (Gauss–Newton)
+        #    Solve H dx = b for the pose increment dx
+        H = sum(J.T @ J for J in jacobians)
+        b = sum(-J.T @ e for J, e in zip(jacobians, errors))
+        dx = np.linalg.solve(H, b)
+
+        pose_estimate = pose_estimate.oplus(dx)     # update R, t using the increment
+
+        # 3. Convergence check
+        if total_error_change_small():
+            break
+
+    return pose_estimate
 ```
 
-Note that in Point-Point ICP, for scan matched point (in map frame) `p_i` and its matched point `q_i`, if pose estimate is decomposed into `[R, t]`, we set:
-
-$$
-\begin{gather*}
-\begin{aligned}
-& e = q_i - Rp_i - t
-\\ &
-\frac{\partial e}{\partial R} = R[p_i]^\land, \frac{\partial e}{\partial t} = -I
-\end{aligned}
-\end{gather*}
-$$
-
-### Notes
-
-- Iterative Method is not a must. Unlike the above point association -> pose estimate -> ... iteration, recent scan matching methods solve point association and pose estimate together. TODO?
-  - Iterative methods are relatively simpler, though. **It works as long as the cost landscape is decreasing from the current estimate to the global minimum.**
+- Iterative methods are relatively simpler, though. **It works as long as the cost landscape is decreasing from the current estimate to the global minimum.**
 
 ## Point-Plane ICP
 
