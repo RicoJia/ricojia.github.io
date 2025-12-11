@@ -338,6 +338,7 @@ Scenario 2: How to build a package from source:
     ```
 
 - Source the setup.bash, then run it/ `colcon build --packages-select capacity_manager behavior_executor  behaviortree_cpp   --cmake-clean-first --allow-overriding behaviortree_cpp`
+  - **always source after building C++**, especially if there are path changes in cpp files
 
 ### Copy to `./install`
 

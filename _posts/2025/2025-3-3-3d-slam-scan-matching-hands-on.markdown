@@ -91,3 +91,8 @@ $$
 The ndt hessian
 
 - Symmetric Fitness Check: Run NDT A->B and B->A
+
+## Gotchas
+
+- Appllying rotation to translation in motion updates does make this estimate better
+- In motion prediction, use the half motion to reduce the effect of noisy last pose

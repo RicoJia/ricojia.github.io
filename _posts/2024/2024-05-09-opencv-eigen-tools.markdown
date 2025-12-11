@@ -198,8 +198,8 @@ for (auto r : normalized_mat.rowwise()){
     r -= medians;
 }
 ```
-- [colwise() or rowwise() are writable vector, +=, -= are valid operations](https://libeigen.gitlab.io/eigen/docs-nightly/classEigen_1_1DenseBase.html#a6daa3a3156ca0e0722bf78638e1c7f28)
 
+- [colwise() or rowwise() are writable vector, +=, -= are valid operations](https://libeigen.gitlab.io/eigen/docs-nightly/classEigen_1_1DenseBase.html#a6daa3a3156ca0e0722bf78638e1c7f28)
 
 ### Lazy Evaluation Could Cause Issues in Eigen (Version 3.4.0)
 
@@ -351,6 +351,11 @@ class SE3{
 ## PCD
 
 `pcd` stands for Point Cloud Data, and it’s the standard file format used by the `Point Cloud Library (PCL)`. It stores 3D points (and `optionally color`, `normals`, `intensity`, etc.).
+
+## PCL
+
+- Custom PCL  structs requires  `EIGEN_MAKE_ALIGNED_OPERATOR_NEW`
+- PCL ICP would crash if there's `NaN`
 
 ## NanoFLANN
 
