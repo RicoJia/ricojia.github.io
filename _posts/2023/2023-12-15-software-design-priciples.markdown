@@ -2,12 +2,16 @@
 layout: post
 title: C++ - Common General Sofware Design Pricinples
 date: '2023-12-15 13:19'
-subtitle: Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy
+subtitle: Common Pain Points, Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy
 comments: true
 tags:
     - C++
     - Software Developer's Career Tips
 ---
+
+## Common Pain Points in Robotics Software Development
+
+- loading the wrong configuration (env vars, toolkitt_config pointer, gazebo params).
 
 ## "Plug and Play": Low Coupling, High Cohesion
 
