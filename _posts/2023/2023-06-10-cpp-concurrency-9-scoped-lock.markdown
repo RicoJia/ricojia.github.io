@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - [Concurrency 8] Scoped Lock and `adopt_lock`
+title: C++ - [Concurrency 9] Scoped Lock and `adopt_lock`
 date: '2023-06-01 13:19'
 subtitle: 
 comments: true
