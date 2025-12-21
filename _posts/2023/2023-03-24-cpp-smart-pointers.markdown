@@ -9,17 +9,20 @@ tags:
     - C++
 ---
 
+---
+
 ## Unique Pointer
 
 ### Basics
 
 ```cpp
-
 #include <memory>
 std::unique_ptr<int> ptr = std::make_unique<int>(1);
 ```
 
 - Note that a `unique_ptr` is only `8 bytes` on a 64 bit system, and **it's the same size as a raw pointer**, because it is just a wrapper that ensures sole ownership of the pointer.
+
+---
 
 ## Shared Pointer
 
@@ -41,6 +44,62 @@ auto ptr2 = std::shared_pointer<Type> (new Type());
 
 - `ptr` has 1 memory allocation call: control block + the object itself
 - `ptr2` has 2 memory allocation calls: control block and the object itself separately
+
+---
+
+## Weak Pointer
+
+**Usage: when two pointers could point to each other (cyclic reference)** . Wrong example:
+
+```cpp
+class Student {
+    shared_ptr<Student> bestFriend;
+public:
+    void makeFriend(shared_ptr<Student> other) {
+        bestFriend = other;
+    }
+};
+
+auto tom = make_shared<Student>();
+auto jerry = make_shared<Student>();
+tom->makeFriend(jerry);    // tom拉住jerry
+jerry->makeFriend(tom);    // jerry也拉住tom
+
+// Cyclic memory free!
+```
+
+- `shared_ptr`  increments reference counts of each other's members. So this will increase each student's count.  So the rule of thumb is **use the weak pointer in a class which stores a pointer to another instance of the same class!**
+
+Correct version:
+
+```cpp
+#include <memory>
+
+class Student {
+    std::weak_ptr<Student> bestFriend;  // non-owning reference
+public:
+    void makeFriend(const std::shared_ptr<Student>& other) {
+        bestFriend = other;
+    }
+
+    std::shared_ptr<Student> getBestFriend() const {
+        return bestFriend.lock(); // may be nullptr if expired
+    }
+};
+
+int main() {
+    auto tom   = std::make_shared<Student>();
+    auto jerry = std::make_shared<Student>();
+
+    tom->makeFriend(jerry);
+    jerry->makeFriend(tom);
+
+    // No cycle of ownership: objects are freed normally.
+}
+
+```
+
+---
 
 ## Common Operations
 
