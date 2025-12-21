@@ -31,48 +31,79 @@ tags:
 
 ### 📌 Using Pointers
 
-1. Initialization:
-    - Pointers are not auto-initialized.
-    - Always explicitly initialize to nullptr in constructors or field declarations.
+Initialization:
 
-2. **Getting array size is unsafe**: `sizeof(int*) / sizeof(int);  // ❌ not safe`
+- Pointers are not auto-initialized.
+- Always explicitly initialize to nullptr in constructors or field declarations.
 
-3. When to use raw pointers:
-    - Small, performance-critical code with clear ownership semantics.
-    - If your function doesn't care about ownership, prefer:
+**Getting array size is unsafe**: `sizeof(int*) / sizeof(int);  // ❌ not safe`
 
-        ```cpp
-        void f(widget& w);     // ✅ clear, safe
-        void f(widget* w);     // ✅ OK if nullable
-        void f(shared_ptr<widget>& w); // ❌ misleading — might reset or alias others
-        ```
+When to use raw pointers:
 
-4. After `delete` or `free`, set the pointer to `nullptr`:
-    - Avoids use-after-free or double-free errors.
-        ```cpp
-        delete ptr_;
-        ptr_ = nullptr;
-        ```
-    - ⚠️ Cautions: Always initialize your pointers! Uninitialized pointers cause random crashes or data corruption.
+- Small, performance-critical code with clear ownership semantics.
+- If your function doesn't care about ownership, prefer:
 
+    ```cpp
+    void f(widget& w);     // ✅ clear, safe
+    void f(widget* w);     // ✅ OK if nullable
+    void f(shared_ptr<widget>& w); // ❌ misleading — might reset or alias others
+    ```
 
-5. Drawbacks of `int* i`: 
-    - Is it a pointer to a single int or an array?
-    - Does it own the memory? 
-        -  If yes:
-            - Who deletes it?
-            - Use delete or delete[]?
-            - Is it dangling?
-            - Did you miss deleting one copy?
+Why is this more common?
 
-    - Raw pointers have no metadata — they don’t convey **ownership or lifetime info**. That's why modern C++ prefers smart pointers.
+```c++
+// 需要修改指针指向时，必须传递指针
+void updatePtr(int*& ptr); // 通过引用修改指针 - 这种情况很少见
+void updatePtr(int** ptr); // 通过指针修改指针 - 更常见的做法
+```
 
-6. const and Pointers
-    - `int* const ptr` → `constant pointer to int`
-    - `const int* ptr` → `pointer to constant int`
-    - `const shared_ptr<T>` ≈ `T* const` → shared_ptr can't be reassigned, but pointee can be mutated
-    - `shared_ptr<const T>` → pointer to const object
-        - If you're using `shared_ptr<const T>`, you must initialize in initializer list, especially for class members.
+- `int** ptr` can take an rvalue reference (&some_tmp_ptr), but `int *&` needs the ptr to be lvalue reference. so it's more flexible
+- In C, people have been using `int**`
+
+After `delete` or `free`, set the pointer to `nullptr`:
+
+- Avoids use-after-free or double-free errors.
+
+    ```cpp
+    delete ptr_;
+    ptr_ = nullptr;
+    ```
+
+- ⚠️ Cautions: Always initialize your pointers! Uninitialized pointers cause random crashes or data corruption.
+
+Drawbacks of `int* i`:
+
+- Is it a pointer to a single int or an array?
+- Does it own the memory?
+  - If yes:
+    - Who deletes it?
+    - Use delete or delete[]?
+    - Is it dangling?
+    - Did you miss deleting one copy?
+
+- Raw pointers have no metadata — they don’t convey **ownership or lifetime info**. That's why modern C++ prefers smart pointers.
+
+Const type pointer is read-only pointer (const T pointer), while `type* const`  is const pointer to T
+
+```c++
+// main.cpp: In function ‘void process(const int*)’:
+// main.cpp:13:10: error: assignment of read-only location ‘* ptr’
+void process(const int* ptr) {
+    *ptr = 9;
+}
+
+void keep_pointer_same_address(int* const ptr) {
+    // ptr = ...;  // ❌ cannot change ptr
+    *ptr = 5;      // ✅ can change the int
+}
+```
+
+- It's recommended to add const specifier to raw pointers whenever possible.
+- `int* const ptr` → `constant pointer to int`
+- `const int* ptr` → `pointer to constant int`
+- `const shared_ptr<T>` ≈ `T* const` → shared_ptr can't be reassigned, but pointee can be mutated
+- `shared_ptr<const T>` → pointer to const object
+  - If you're using `shared_ptr<const T>`, you must initialize in initializer list, especially for class members.
 
 ### 📚 Arrays
 
