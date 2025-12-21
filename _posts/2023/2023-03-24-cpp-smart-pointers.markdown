@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - Smart Pointers
+title: C++ - [Pointers - 2] - Smart Pointers
 date: '2023-03-18 13:19'
 subtitle: unique_ptr, shared_ptr
 comments: true
@@ -8,6 +8,39 @@ header-img: "img/post-bg-alitrip.jpg"
 tags:
     - C++
 ---
+
+## Unique Pointer
+
+### Basics
+
+```cpp
+
+#include <memory>
+std::unique_ptr<int> ptr = std::make_unique<int>(1);
+```
+
+- Note that a `unique_ptr` is only `8 bytes` on a 64 bit system, and **it's the same size as a raw pointer**, because it is just a wrapper that ensures sole ownership of the pointer.
+
+## Shared Pointer
+
+### Memory Usage of Shared Pointer
+
+Note that a `shared_ptr` is **2x8=16 bytes** itself. It includes:
+    - a raw pointer
+    - a pointer to the control block.
+
+The control block has a reference counter, deleter, etc. Its implementation is **platform-dependent**. Roughly, we need 8 bytes for the count, and 8 bytes for the pointer to the deleter. So, 16 bytes.
+
+Can you see the difference here?
+
+```cpp
+auto ptr = std::make_shared<Type> (args);
+// vs
+auto ptr2 = std::shared_pointer<Type> (new Type());
+```
+
+- `ptr` has 1 memory allocation call: control block + the object itself
+- `ptr2` has 2 memory allocation calls: control block and the object itself separately
 
 ## Common Operations
 
