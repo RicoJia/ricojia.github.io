@@ -20,6 +20,7 @@ tags:
     - Broadcast.
 3. Indexing: `arr[start:stop:step]`
     - `arr[0:i]` is equivalent to `arr[:i]`
+    - One fine detail is, accessing a single element in list, or np.array would yield an IndexError. However, accessing a view of the list would just yield an empty list
 
 ```python
 arr = np.random.randint(4,size=(3,4))
@@ -31,6 +32,14 @@ print(f'array: {arr}')
 #  [1 0]
 #  [3 2]]
 print(arr[:, 0::2])
+
+>>> ls = [1,2,3]
+>>> ls[4]
+# See IndexError: list index out of range
+
+>>> [1,2,3][1000:2000] 
+# Just see an empty list. Same goes with numpy array
+[]
 ```
 
 ### Mathematical Matrix Operations
