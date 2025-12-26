@@ -189,7 +189,7 @@ Eigen::IOFormat eigen_1_line_fmt(Eigen::StreamPrecision, Eigen::DontAlignCols, "
 std::cout << "p1: " << p1.format(eigen_1_line_fmt) << std::endl;
 ```
 
-## Attention! Quirks of Eigen
+## Attention! Eigen Quirks
 
 ### Writable Vectors Can Be Written Directly As A Copy
 
@@ -304,6 +304,28 @@ mat.resize(2, 2);  // resize to the same size!
     };
     ```
 
+### Do NOT use `std::accumulate`, use `+=`
+
+```cpp
+template <typename Container, typename VectorType, typename Getter>
+void compute_cov_and_mean(const Container &data, VectorType &mean,
+                          VectorType &cov, Getter &&getter) {
+    ... 
+
+    cov = std::accumulate(data.begin(), data.end(), VectorType::Zero().eval(),
+                          [&mean, &getter](const VectorType &sum,
+                                           const auto &item) {
+                              auto diff = (getter(item).eval() - mean);
+                              return (sum + diff.cwiseProduct(diff)).eval();
+                          }) /
+          static_cast<double>(N - 1);
+}
+```
+
+In this snippet, it was observed that eigen vectors in `std::accumulate` could produce garbage values. `std::accumulate` creates a temporary vector using the object's copy constructor. One assumption I'm making here is Eigen vector's copy constructor may not be super robust. So, write this piece using `+=` instead
+
+---
+
 ## Sophus
 
 In Sophus, the SE(2) group represents a rigid 2D transformation, which consists of both a rotation and a translation. The operation you're looking for, SE(2) * Eigen::Vector2d, is a common need when transforming 2D points between coordinate frames.
@@ -346,6 +368,29 @@ class SE3{
     SO3Member so3_; // has QuaternionMember unit_quaternion_; where QuaternionMember is Eigen::Quaternion<Scalar, Options>
     TranslationMember translation_; // Vector3<Scalar, Options>
 };
+```
+
+### Sophus Quirks
+
+It was observed that sophus SE3 multiplications and inverse are not very stable. On some machines, there were garbage values after multiplying. So when I use it, I would provide below overrides
+
+```cpp
+    // Override SE3 * SE3 to return halo::SE3
+    SE3 operator*(const SE3 &other) const {
+        return SE3(this->so3() * other.so3(), 
+                   this->so3() * other.translation() + this->translation());
+    }
+
+    // Override SE3 * Vec3d for consistent behavior
+    Vec3d operator*(const Vec3d &p) const {
+        return this->so3().matrix() * p + this->translation();
+    }
+    
+    // Override inverse to return halo::SE3 instead of Sophus::SE3d
+    SE3 inverse() const {
+        SO3 invR = this->so3().inverse();
+        return SE3(invR, invR.matrix() * (this->translation() * -1.0));
+    }
 ```
 
 ## PCD

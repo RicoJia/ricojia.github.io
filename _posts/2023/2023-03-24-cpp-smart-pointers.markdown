@@ -129,7 +129,7 @@ std::shared_ptr<int> s_ptr2 = std::make_shared<int>(6);
 s_ptr = s_ptr2; // now the element 3 is deleted since it's not referenced
 ```
 
-## Conversions
+### Conversions
 
 `unique_ptr` -> `shared_ptr`: use `std::move` to transfer ownership
 
@@ -139,4 +139,53 @@ std::unique_ptr<Foo> u = std::make_unique<Foo>();
 std::shared_ptr<Foo> s = std::move(u);    // OK
 // or:
 std::shared_ptr<Foo> s2(std::move(u));    // OK
+```
+
+### share_from_this
+
+When you want to pass `this` as a pointer to another object, you must use `share_from_this()`
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <thread>
+#include <chrono>
+#include <functional>
+
+struct Worker : std::enable_shared_from_this<Worker> {
+    void startAsyncJob() {
+        auto self = shared_from_this();
+        std::thread([self] {
+            self->onJobDone();
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        }).detach();
+    }
+    void onJobDone() {   
+        std::cout << "Job done, Worker is still alive.\n";
+    }
+
+    ~Worker() {
+        std::cout << "Worker destroyed.\n";
+    }
+};
+
+
+int main() {
+    auto w = std::make_shared<Worker>();
+    w->startAsyncJob();
+    w.reset();
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+}
+```
+
+- Note, in this example, `w.reset()` would NOT call the destructor because the detached thread now owns Worker. So, `Worker destroyed` is called when the worker function is done.
+
+#### Caveat: `shared_from_this` cannot be used in constructor, because shared_ptr  won't be ready yet
+
+Instead, use a reference to the object
+
+```cpp
+Foo::Foo() {
+  Foo& r = *this;   // always valid
+}
 ```
