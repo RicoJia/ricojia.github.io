@@ -7,6 +7,64 @@ date: 2024-01-06 13:19
 title: Computer Vision - Uzzle Solver
 layout: post
 ---
+## Vision Detection Pipeline
+
+1. **Detect the checkerboard (find the board/card region)**
+    
+    1. Convert the camera frame from **color → grayscale**
+        
+    2. Apply a **Gaussian blur** to reduce noise and stabilize edges
+        
+    3. **Dilate** edges so boundaries are thicker and more connected
+        
+    4. **Find contours**. For each contour:
+        
+        1. If the contour area is too small, **skip**
+            
+        2. Compute `minAreaRect(contour)` to get the best-fit rotated rectangle
+            
+        3. If the rectangle is too small, **skip**
+            
+        4. Track the contour whose rectangle encloses the **largest valid area**
+            
+        5. Use `cv2.boxPoints(rect)` to obtain the 4 corner points (`box`)
+            
+2. **Draw the detected board boundary**
+    
+    - Visualize the detected rectangle on the live feed:
+        
+        `cv2.polylines(overlay, [box.astype(np.int32)], True, (0, 255, 0), 2)`
+        
+3. **Perspective-warp the board**
+    
+    - Warp the detected quadrilateral into a fixed-size top-down view:
+        
+        `warped = warp_card(frame, box)`
+        
+4. **Detect the grid boundaries inside the warped view**
+    
+    - Use the blue grid lines to locate the 3×4 boundaries:
+        
+        `grid = find_grid_boundaries_from_blue(warped, debug=debug)`
+        
+5. **Classify each checker cell color**
+    
+    - If grid boundaries were found:
+        
+        1. Loop over each row and column
+            
+        2. Extract a central patch (avoid borders/gridlines):
+            
+            `patch = warped_inner[y0i:y1i, x0i:x1i]`
+            
+        3. Classify the patch color:
+            
+            `lbl, conf = classify_cell(patch)`
+            
+        4. Smooth results over time using a per-cell history:
+            
+            `hist[r][c].append(lbl) labels[r][c] = mode_label(hist[r][c])`
+
 ## FindContour
 
 A **contour** is a sequence of points that lie along the **boundary** of a connected region (object) in an image. In OpenCV, contours are typically extracted from a **binary image**, where pixels are split into **foreground** and **background**.
