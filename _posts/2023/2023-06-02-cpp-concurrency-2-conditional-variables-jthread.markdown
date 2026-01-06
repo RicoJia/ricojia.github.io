@@ -1,14 +1,44 @@
 ---
 layout: post
-title: C++ - [Concurrency 7] Jthread
-date: '2023-06-08 13:19'
-subtitle: 
+title: C++ - [Concurrency 2] Conditional Variables
+date: 2023-06-02 13:19
+subtitle: Conditional Variables, Jthread
 comments: true
-header-img: "img/post-bg-unix-linux.jpg"
+header-img: img/post-bg-unix-linux.jpg
 tags:
-    - C++
+  - C++
 ---
-## Introduction
+
+## Conditional Variables
+
+### Vanilla Usage
+
+```cpp
+std::unique_lock<std::mutex> lock(mutex_);
+cv_.wait(lock, pred);
+
+do_stuff_1();
+do_stuff_2();
+```
+
+What actually happens
+
+1. `std::unique_lock` locks the mutex.
+2. `cv_.wait(!pred())` basically:
+
+```cpp
+   std::unique_lock<std::mutex> lk(mutex);
+   
+   while (!pred()){
+    unlock(mutex);    
+  sleep_on_cv(mutex);// wakes on notify_one/all or spuriously
+  lock(mutex)
+   }
+   // here it's still locked
+   do_stuff_1(); 
+   ```
+
+## Jthread (C++20)
 
 The main characteristics of `std::jthread` include:
 

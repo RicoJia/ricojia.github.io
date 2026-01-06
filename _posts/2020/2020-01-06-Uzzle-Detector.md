@@ -7,65 +7,15 @@ date: 2024-01-06 13:19
 title: Computer Vision - Uzzle Solver
 layout: post
 ---
-## Vision Detection Pipeline
+## Step 1 Preprocessing TODO
 
-1. **Detect the checkerboard (find the board/card region)**
-    
-    1. Convert the camera frame from **color → grayscale**
-        
-    2. Apply a **Gaussian blur** to reduce noise and stabilize edges
-        
-    3. **Dilate** edges so boundaries are thicker and more connected
-        
-    4. **Find contours**. For each contour:
-        
-        1. If the contour area is too small, **skip**
-            
-        2. Compute `minAreaRect(contour)` to get the best-fit rotated rectangle
-            
-        3. If the rectangle is too small, **skip**
-            
-        4. Track the contour whose rectangle encloses the **largest valid area**
-            
-        5. Use `cv2.boxPoints(rect)` to obtain the 4 corner points (`box`)
-            
-2. **Draw the detected board boundary**
-    
-    - Visualize the detected rectangle on the live feed:
-        
-        `cv2.polylines(overlay, [box.astype(np.int32)], True, (0, 255, 0), 2)`
-        
-3. **Perspective-warp the board**
-    
-    - Warp the detected quadrilateral into a fixed-size top-down view:
-        
-        `warped = warp_card(frame, box)`
-        
-4. **Detect the grid boundaries inside the warped view**
-    
-    - Use the blue grid lines to locate the 3×4 boundaries:
-        
-        `grid = find_grid_boundaries_from_blue(warped, debug=debug)`
-        
-5. **Classify each checker cell color**
-    
-    - If grid boundaries were found:
-        
-        1. Loop over each row and column
-            
-        2. Extract a central patch (avoid borders/gridlines):
-            
-            `patch = warped_inner[y0i:y1i, x0i:x1i]`
-            
-        3. Classify the patch color:
-            
-            `lbl, conf = classify_cell(patch)`
-            
-        4. Smooth results over time using a per-cell history:
-            
-            `hist[r][c].append(lbl) labels[r][c] = mode_label(hist[r][c])`
+1. Convert the camera frame from **color → grayscale**
+ 
+2. Apply a **Gaussian blur** to reduce noise and stabilize edges
+ 
+3. **Dilate** edges so boundaries are thicker and more connected
 
-## FindContour
+## Step 2 -  FindContour
 
 A **contour** is a sequence of points that lie along the **boundary** of a connected region (object) in an image. In OpenCV, contours are typically extracted from a **binary image**, where pixels are split into **foreground** and **background**.
 
@@ -79,15 +29,15 @@ im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APP
 ```
 
 - Args
- 	- **Retrieval mode** (`cv2.RETR_TREE`, `cv2.RETR_EXTERNAL`, …)
-  		- `RETR_TREE`: returns _all_ contours and reconstructs full parent/child hierarchy (outer contours + holes).
-  		- `RETR_EXTERNAL`: returns only the outermost contours (often simplest).
- 	- **Approximation method** (`cv2.CHAIN_APPROX_SIMPLE`, `cv2.CHAIN_APPROX_NONE`)
-  		- `CHAIN_APPROX_SIMPLE`: compresses horizontal/vertical segments (fewer points).
-  		- `CHAIN_APPROX_NONE`: keeps every boundary pixel (more points).
+  - **Retrieval mode** (`cv2.RETR_TREE`, `cv2.RETR_EXTERNAL`, …)
+    - `RETR_TREE`: returns _all_ contours and reconstructs full parent/child hierarchy (outer contours + holes).
+    - `RETR_EXTERNAL`: returns only the outermost contours (often simplest).
+  - **Approximation method** (`cv2.CHAIN_APPROX_SIMPLE`, `cv2.CHAIN_APPROX_NONE`)
+    - `CHAIN_APPROX_SIMPLE`: compresses horizontal/vertical segments (fewer points).
+    - `CHAIN_APPROX_NONE`: keeps every boundary pixel (more points).
 - Returns:
- 	- contours is a list`[np.array(x, y), ...]` of boundary points in the image. Shape is typically `(N, 1, 2)` and points are `(x, y)` (x = column, y = row).
- 	- `hierarchy`: array describing contour nesting (parent/child relationships), useful for holes.
+  - contours is a list`[np.array(x, y), ...]` of boundary points in the image. Shape is typically `(N, 1, 2)` and points are `(x, y)` (x = column, y = row).
+  - `hierarchy`: array describing contour nesting (parent/child relationships), useful for holes.
 
 ### 1) Input image (grayscale)
 
@@ -150,3 +100,51 @@ We identify **boundary pixels** as foreground pixels that are _not fully surroun
 
 - OpenCV can return **different starting points**
 - OpenCV uses a specific **Suzuki-Abe algorithm**, can include holes/hierarchy
+
+## Step 3 Detect the checkerboard (find the board/card region) TODO
+
+1. If the contour area is too small, **skip**
+ 
+2. Compute `minAreaRect(contour)` to get the best-fit rotated rectangle
+ 
+3. If the rectangle is too small, **skip**
+ 
+4. Track the contour whose rectangle encloses the **largest valid area**
+ 
+5. Use `cv2.boxPoints(rect)` to obtain the 4 corner points (`box`)
+ 
+## Step 4 Draw the detected board boundary TODO
+
+    - Visualize the detected rectangle on the live feed:
+        
+        `cv2.polylines(overlay, [box.astype(np.int32)], True, (0, 255, 0), 2)`
+        
+## Step 5 Perspective-warp the board TODO
+
+    - Warp the detected quadrilateral into a fixed-size top-down view:
+        
+        `warped = warp_card(frame, box)`
+        
+## Step 6 **Detect the grid boundaries inside the warped view** TODO
+
+    - Use the blue grid lines to locate the 3×4 boundaries:
+        
+        `grid = find_grid_boundaries_from_blue(warped, debug=debug)`
+        
+## Step 7 Classify each checker cell color TODO
+
+    - If grid boundaries were found:
+        
+        1. Loop over each row and column
+            
+        2. Extract a central patch (avoid borders/gridlines):
+            
+            `patch = warped_inner[y0i:y1i, x0i:x1i]`
+            
+        3. Classify the patch color:
+            
+            `lbl, conf = classify_cell(patch)`
+            
+        4. Smooth results over time using a per-cell history:
+            
+            `hist[r][c].append(lbl) labels[r][c] = mode_label(hist[r][c])`
