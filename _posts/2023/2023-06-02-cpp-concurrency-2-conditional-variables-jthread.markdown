@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - [Concurrency 2] Conditional Variables
+title: C++ - [Concurrency 2] Conditional Variables, Jthread
 date: 2023-06-02 13:19
 subtitle: Conditional Variables, Jthread
 comments: true
