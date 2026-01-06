@@ -1,6 +1,6 @@
 ---
 layout: post
-title: C++ - [Concurrency 7]
+title: C++ - [Concurrency 7] Thread Policies
 date: 2023-06-08 13:19
 subtitle:
 comments: true
