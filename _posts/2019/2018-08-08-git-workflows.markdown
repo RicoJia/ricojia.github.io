@@ -25,7 +25,6 @@ git config --global user.email "your_email@example.com"
 
 - Store changes of one file to stash: `git stash push FILEPATH`
 
-
 Here is the cleaned-up, properly formatted **raw Markdown** (no code fences around the whole thing—**this is the final raw markdown**):
 
 ---
@@ -36,10 +35,10 @@ Test workflow is done through GitHub Actions. Here we are going to create a work
 
 ### Steps
 
-* Create a `.github/workflows/test.yml`
-* Add a custom Docker file `Docker_test_container` in the root directory
-* In the **Actions** tab on your repo's panel, you can check test runs
-* For a full example, please see here: **TODO**
+- Create a `.github/workflows/test.yml`
+- Add a custom Docker file `Docker_test_container` in the root directory
+- In the **Actions** tab on your repo's panel, you can check test runs
+- For a full example, please see here: **TODO**
 
 **Note:** `pre-commit` can be used to run tests even before committing.
 
@@ -51,7 +50,7 @@ Test workflow is done through GitHub Actions. Here we are going to create a work
 pip install pre-commit
 ```
 
-### 2. Create a `.pre-commit-config.yaml` file in your project’s root directory:
+### 2. Create a `.pre-commit-config.yaml` file in your project’s root directory
 
 ```yaml
 repos:
@@ -73,12 +72,12 @@ pre-commit install
 
 To ensure tests pass before a pull request can be merged:
 
-* Go to:
+- Go to:
   **Settings → Branches → Branch protection rules → Add rule**
 
-  * In **Branch name pattern**, enter `master` (or the protected branch name)
-  * Check **Require status checks to pass before merging**
-  * Optionally enable additional rules (e.g., *Require approvals*)
+  - In **Branch name pattern**, enter `master` (or the protected branch name)
+  - Check **Require status checks to pass before merging**
+  - Optionally enable additional rules (e.g., *Require approvals*)
 
 From the list of available checks, select the GitHub Actions workflow (usually named after your workflow file, such as **Run Tests**).
 
@@ -112,10 +111,9 @@ This is my project description...
 
 To compare branches:
 
-* **GitLab**: Use the right-hand side panel for *Compare Revisions*
+- **GitLab**: Use the right-hand side panel for *Compare Revisions*
 
 ---
-
 
 ## Set Up Github Pypi Workflow
 
@@ -276,8 +274,8 @@ git rebase origin/master
 
 **Scenario:**
 
-* **Branch 1 (b1):** Has `file1`, `file2`, and `file3`.
-* **Branch 2 (b2):** Has changes only to `file2` and `file3`.
+- **Branch 1 (b1):** Has `file1`, `file2`, and `file3`.
+- **Branch 2 (b2):** Has changes only to `file2` and `file3`.
 
 **Workflow:**
 
@@ -301,15 +299,17 @@ git rebase origin/master
 1. In GitLab, navigate to:
    **Subgroup information → Group members**
 
-   * Find your username in the Project Members list
-   * Ensure you have **Developer** access
+   - Find your username in the Project Members list
+   - Ensure you have **Developer** access
 
 2. Follow GitLab documentation to:
 
-   * Generate an SSH key
-   * Add the SSH key to `ssh-agent`
-   * Add the SSH key to GitLab
-
+   - Generate an SSH key
+   - Add the SSH key to `ssh-agent`
+   - Add the SSH key to GitLab
+   - [GITLAB] if you already have a key, you can add the key to the repo:
+ - Set repo to internal / public
+ - Make sure in Deploy Keys, your machine's ssh key's SHA 256  is there. You can check by `ssh-keygen -lf ~/.ssh/id_rsa.pub`
 3. Verify your SSH connection:
 
    ```bash
@@ -318,13 +318,13 @@ git rebase origin/master
 
    Helpful checks:
 
-   * List loaded keys:
+   - List loaded keys:
 
      ```bash
      ssh-add -l
      ```
 
-   * Add key (must be done *after* starting the agent):
+   - Add key (must be done *after* starting the agent):
 
      ```bash
      eval $(ssh-agent -s)
@@ -338,10 +338,3 @@ git rebase origin/master
    ```
 
    (Verbose output helps identify issues.)
-
----
-
-If you'd like, I can combine everything into a single README or cheat-sheet page.
-
-
-
