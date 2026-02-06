@@ -7,20 +7,15 @@ comments: true
 tags:
     - Linux
 ---
+---
 
-===============================================================================================================
-
-## Screenshots
-
-===============================================================================================================
+### Screenshots
 
 - `sudo apt install gnome-screenshot`
 - Open `keyboard shortcuts -> add custom shortcuts`
 - I use `ctrl-alt-4` to enable `gnome-screenshot -a`
 
-===============================================================================================================
-
-## Window Focus
+### Window Focus
 
 ===============================================================================================================
 
@@ -80,6 +75,15 @@ git log -1 --format="%ci" -- filter_projects/
 
 - `hostname`: host machine name in "USERNAME@HOSTNAME"
 - If to swap the function of `Fn` when hitting F2 and mute, `Fn lock` is the way to go. Just do `Esc + Fn`
+- `last -a | head` : a quick way to check the most recent login sessions on a Linux machine. The `last` command reads the system’s login history (from the `wtmp` database) and prints a list of users, terminals, login times, and session durations; the `-a` flag appends the remote host (source IP/hostname) to the end of each line
+
+```bash
+rico@gpc1:~/.config/toolkitt/toolkitt_config$ last -a | head
+rico pts/0        Wed Feb  4 23:24 - 23:24  (00:00)     192.168.200.232
+rico pts/0        Wed Feb  4 23:23 - 23:24  (00:00)     192.168.200.232
+rico pts/0        Wed Feb  4 23:22 - 23:23  (00:00)     192.168.200.232
+rico pts/8        Wed Feb  4 21:53 - 21:53  (00:00)     tmux(1279965).%6
+```
 
 ===============================================================================================================
 

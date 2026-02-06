@@ -102,7 +102,7 @@ F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
 \\ &
 \approx (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
 \\ &
-= C + 2b \Delta X + \Delta X^T H \Delta X
+= C + 2b^T \Delta X + \Delta X^T H \Delta X
 \end{aligned}
 \end{gather*}
 $$
@@ -287,6 +287,10 @@ $$
 2. Solve for $\Delta x_{c}$ in $L^T \Delta x_{c} = y$
 
 The system $Ax=b$ is always called "linear", **so its solver is called a "linear solver".**
+
+This is to assume:
+
+- $S$ is symmetruc and positive semi-definite
 
 ### Wrap Up
 
