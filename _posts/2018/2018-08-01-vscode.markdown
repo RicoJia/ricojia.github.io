@@ -1,12 +1,12 @@
 ---
 layout: post
 title: VSCode
-date: '2018-08-01 13:19'
-subtitle: Debugging ROS2 Projects, Remote SSH, Latex Support 
+date: 2018-08-01 13:19
+subtitle: Debugging ROS2 Projects, Remote SSH, Latex Support, Agentic Workflows
 comments: true
 tags:
-    - VSCode
-    - ROS2
+  - VSCode
+  - ROS2
 ---
 
 ## Useful Shortcuts
@@ -257,3 +257,13 @@ Host <HOSTNAME>
 ## Latex Support
 
 - $\| x \|$ works with Jekyll. Without escape, it won't
+
+---
+
+## Agentic Workflows
+
+### Workflow 1 - use AI to analyze a gitlab commit
+
+1. Pull master, and fetch your branch
+2. open gitlab inspect
+3. ctrl-shift-p: compare references: set master and your branch.
