@@ -8,52 +8,6 @@ header-img: "img/post-bg-infinity.jpg"
 tags:
     - Linux
 ---
----
-
-## Scripting
-
-### Error Handling
-
-#### `set -euo pipefail`
-
-- `-e (errexit)`: Exit immediately if any command returns a non-zero status (except in certain contexts like && )
-- `-u (nounset) Treat unset variables as an error and exit.`
-- `-o pipefail (same as -e -o pipefail, often written -eo pipefail)`: In a pipeline (cmd1 | cmd2) return the exit status of the first failed command instead of the last one.
-
-#### Trap an error
-
-- `set -e` will exits the parent shell immediately upon an error
-- `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell
-
-#### Test
-
-- `[[ -n STRING ]]` - returns true when STRING is not empty
-- `[[ -z STRING ]]` - returns true when STRING is empty
-  - equivalent to `[[ ! -n STRING ]]`
-- `[[ -d FILE ]]` - returns true when FILE exists and is a directory
-
-#### Regex
-
-- `$` asserts "end of line", so it makes sure the regex contains strings end in a certain pattern: `grep -E '\.(md|markdown)$'`
-
-#### Declare
-
-The `declare` builtin is used to explictly declare variables
-
-- `declare -r var` is to declare a **read-only** variable
-
-```bash
-declare -r var="123"
-var="456"   # see "var: readonly variable"
-```
-
-- `declare -a indexed_array`
-- `declare -A associative_array`
-- `declare -i integer_value`
-- `declare -x exported_var="exported var"` can also define and export a variable
-- It can also print all variable (custom & environment variables) values. `declare -p`
-
-Though a most variables (except for arrays) can be defined directly `VAR=123`, I found `declare` more "type-safe".
 
 ---
 
@@ -190,39 +144,34 @@ if command -v lcov > /dev/null  # makes it go to null
 
 ---
 
-## Process Management
+## Variables
 
-### PID
+### IFS
 
-```bash
-local temp_remote="/tmp/rico_toolkitt_bashrc_$$.sh"
-```
-
-`$$` gets resolved to PID
-
-- A container does not clean up zombie processes if it has a custom command, like `ros2 launch`, whose PID=1. On a modern linux machine, systemd is in charge of the zombie cleanup and usually has PID=1. If you add `init:true` to the compose file, docker will start the container with its own `tini` and that will be fine.
-
-### Kill and Pkill
-
-- `pkill -f "partial_process_name"` sends a `SIGTERM` to process. If it doesn't exit, do `pkill -9 -f "partial_process_name"` which sends a `SIGKILL`
-
----
-
-## File Management
-
-`umask 077` #  permissions mask that ensures any new files you create in that shell session are readable and writable only by you, and not accessible to group members or others.
-
-### A Faster Way To Copy Files From One Machine To Another Through SSH
+IFS: `IFS` is a special built-in shell variable that controls how Bash splits words. Many commands rely on it implicitly, but the most common place you’ll see it used intentionally is with the `read` builtin. By default, `IFS` contains:
 
 ```bash
-ssh gpc1 'tar -C /tmp -cf - MY_DIR' | tar -C . -xf -
+space, tab, newline
 ```
 
-- This Command walks through the entire directory, and creates a tar stream that writes to stdout. SSH will execute this command, and carry that stream  to the local `tar` extraction.
-- `tar` only reads files in the directory and writes to stream, so it's not like `scp` which also deals with timestamp, checksum, file skipping logic.
- 	- `rsync` is fast, but it still:
-  		- builds a file list on both sides
-  		- compares files: size, mime, perms, etc.
-  		- may do checksum logic (depending on flags)
-  		- lots of small protocol messages.
- 	- So if you want a fresh copy, rsync's incremental file delta method doesn't do much.
+That means when you run:
+
+```bash
+read -ra arr <<< "a b c"
+```
+
+Bash splits the input on whitespace and populates the array accordingly.
+
+#### Why `IFS` Matters
+
+The `read` command is hardcoded to use the variable named exactly `IFS` for field splitting. You cannot rename it. If you want to change how input is split, you must modify `IFS`. For example, suppose you have a pipe-delimited string:
+
+```bash
+OVERLAPS="foo|bar|baz"
+```
+
+You can split it like this:
+
+```bash
+IFS='|' read -ra OVERLAP_ARRAY <<< "$OVERLAPS"
+```
