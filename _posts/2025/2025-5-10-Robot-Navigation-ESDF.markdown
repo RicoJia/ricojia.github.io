@@ -188,7 +188,63 @@ y=0:  5   2   1
 
 Which is exactly $D(x,y) = (x - 2)^2 + (y-1)^2$
 
-## Reference
+## What Is a Signed Distance Field?
 
-[1]  [Zhihu](https://zhuanlan.zhihu.com/p/671385710
-)
+A signed distance field returns:
+
+$$
+\phi(x) =  
+\begin{cases}  
++\text{distance to the nearest obstacle}, & \text{if } x \text{ is in free space}, \\[6pt]  
+0, & \text{if } x \text{ lies on the obstacle surface}, \\[6pt]  
+-\text{penetration depth}, & \text{if } x \text{ is inside an obstacle}.  
+\end{cases}  
+$$
+
+### Why We Need a **Signed** Distance Field (Negative Distances Matter)
+
+Many modern planners like **Fast-Planner** do not rely on graph search (A*, RRT, etc.).  
+Instead, they use **trajectory optimization**. They represent a trajectory as a smooth function:
+
+$$
+x(t)
+$$
+and minimize a cost of the form:
+
+$$
+J = J_{smooth} + \lambda J_{collision}
+$$
+
+- $J_{smooth}$: encourages smooth motion, like minisnap, minijerk, etc.
+- $J_{collision}$: keeps trajectory away from obstacles. **This depends on the signed distance field**:
+
+$$
+\phi(x) = \text{signed dist to obstacle}
+$$
+
+Consider a single point on the trajectory: $x_k$. Suppose it is slightly inside a wall:
+
+$$
+\phi(x_k) < 0
+$$
+We define a collision penalty:
+
+$$
+J_{collision}(x_k) = \frac{1}{2} max(0, d_{safe} - \phi(x_k))^2
+$$
+The optimizer moves the trajectory by following the gradient of the cost.
+
+$$
+\nabla J = -(d_{safe} - \phi(x_k)) \nabla \phi(x_k)
+$$
+
+$\nabla \phi(x)$ is the gradient of the signed distance field. It points outward from the obstacle, and has magnitude $\approx 1$ near surface. If you are instead the wall, it will point outward too. In gradient descent update:
+
+$$
+x_k = x_k - \alpha \nabla J = x_k + \alpha(d_{safe} - \phi (x_k)) \nabla \phi(x_k)
+$$
+$x_k$  will be pushed outward, too. **Therefore, if we do NOT use negative distances within obstacles, $\phi(x) = 0$, so $x_k$ gets stuck and won't be pushed out**
+
+## References
+
+[1]  [Zhihu](https://zhuanlan.zhihu.com/p/671385710)
