@@ -155,3 +155,29 @@ cargo doc --open
 ```
 
 Generates beautiful HTML documentation directly from your source code.
+
+---
+
+## What Rust is NOT designed for
+
+Rust is a multi-paradigm systems language, but it is not _designed around_ classic OOP or pure FP principles the way Java or Haskell are.
+
+Rust has:
+
+- `struct`
+- `impl`
+- methods
+- encapsulation (via `pub`)
+- traits (like interfaces)
+
+But Rust **does not** have:
+
+- inheritance
+- class hierarchies
+- traditional subtype polymorphism by default
+
+Rust prefers:
+
+- **composition over inheritance** (I love this)
+- **traits over class hierarchies**
+- **static dispatch over runtime polymorphism** (I love this)
