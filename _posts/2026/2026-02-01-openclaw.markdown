@@ -1,0 +1,24 @@
+---
+layout: post
+title: "[ML] OpenClaw"
+date: 2026-02-01 13:19
+subtitle:
+header-img: img/post-bg-o.jpg
+tags:
+  - Machine-Learning
+comments: true
+---
+
+## OpenClaw  
+Video: https://www.youtube.com/watch?v=Otn-NbpQH1k
+
+
+1. Start **Ollama**:
+    ```bash
+    ollama run
+    http://localhost:11434/
+    ollama launch openclaw
+    # on the control panel
+    /model qwen2.5:7b
+    qwen2.5:7b (custom-127-0-0-1-11434/qwen2.5:7b)
+    ```
