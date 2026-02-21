@@ -45,6 +45,8 @@ cv::Size s = mat.size();
 std::cout<<"image size: "<<img.size<<std::endl;
 rows = s.height;
 cols = s.width;
+
+image.step;     // get number of bytes from the start of one row to the start of next row
 ```
 
 - Opencv indexing has `row` coming before `col`: `image.at<cv::Vec3b>(row, col)`
