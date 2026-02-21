@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Bash File Management
-date: 2023-06-1913:19
+date: 2023-06-19 13:19
 subtitle:
 comments: true
 header-img: img/post-bg-infinity.jpg

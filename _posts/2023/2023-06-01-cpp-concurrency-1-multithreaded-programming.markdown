@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Concurrency 1] Multithreaded Programming
 date: '2023-06-01 13:19'
-subtitle: `std::thread`, mutex, atomic_variables, Threading-Monitoring
+subtitle: "`std::thread`, mutex, atomic_variables, Threading-Monitoring"
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
