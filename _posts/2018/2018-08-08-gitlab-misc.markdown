@@ -8,6 +8,10 @@ tags:
     - Linux
 ---
 
+## Basic Navigation
+
+- create a new project in the personal space: The hamburger list menu -> your work
+
 ## Access Control
 
 If you are not sure who have the merge privileges,
