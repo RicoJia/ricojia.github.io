@@ -20,6 +20,12 @@ tags:
 		- `dpkg -s <pkg> >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install <pkg>)`
 - `ssh -o StrictHostKeyChecking=accept-new` will **automatically accept the host key without prompting**, even for a fresh container. This option was introduced in OpenSSH 7.6 and automatically adds unknown host keys to `~/.ssh/known_hosts` without user interaction.
 
+- Quick for loop:
+
+```bash
+for i in {1..10}; do echo "Run #$i"; done
+```
+
 ### Get the current dir path 
 - BASH_SOURCE vs $0:
 	- `BASH_SOURCE` is a Bash array that holds the filenames of the scripts in the current “source call stack”.

@@ -1,0 +1,53 @@
+---
+layout: post
+title: Git and VCS
+date: '2018-08-05 13:19'
+subtitle: Gitalk, CI/CD, vcstools
+comments: true
+tags:
+    - Linux
+---
+
+## Gitalk
+
+Gitalk is a free, open-source commenting system that uses GitHub issues for comment storage. It’s an excellent option for developers hosting websites on platforms like GitHub Pages.
+
+1. Create a GitHub OAuth Application
+    1. `Developer Settings > OAuth Apps.`
+    2. Click on `New OAuth App` to get a Client ID and Client Secret
+        - Application Name: Name of your app (e.g., Gitalk Comments).
+        - Homepage URL: URL of your website.
+        - Authorization Callback URL: Same as your homepage URL (e.g., <https://your-website-url.com>).
+
+## CI/CD Tools
+
+### pre-commit tools
+
+- A pre-commit hook is simply a Git hook that’s run automatically every time you make a commit
+  - On each git commit it runs this sequence of checks, the “hooks” defined in your `.pre-commit-config.yaml`
+  - `pre-commit install: pre-commit installed at .git/hooks/pre-commit`
+  - `pre-commit run --all-files`
+- Copyright test.
+  - Use `ament_copyright --add-missing "Rico Jia" bsd_3clause <DIR_NAME>` to automatically insert a license
+
+### To Pull From Gitlab Container Registry
+
+- `echo <PERSONAL_TOKEN> | docker login registry.gitlab.com -u "<YOUR_GITLAB_USERNAME>"  --password-stdin`
+- `docker pull registry.gitlab.com/<REPO>/<IMAGE>:<TAG>`
+
+## VCS Tools
+
+`vcstool` is a tool developed by the ROS community to manage multiple VCS repos (git, etc.). vcs works by finding a `.repos` which lists all repos to clone.
+
+- Installation:
+
+    ```
+    sudo apt install python3-vcstool
+    ```
+
+- Usage:
+
+    ```
+    vcs custom --args <git commands>:
+        - git status
+    ```

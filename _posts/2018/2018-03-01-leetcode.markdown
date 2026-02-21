@@ -1,0 +1,198 @@
+---
+layout: post
+title: Things About Leetcode Before That Coding Interview
+date: '2024-05-01 13:19'
+subtitle: Leetcode IDE Tips, Common Leetcode Problems, C++ Commands, String
+comments: true
+tags:
+    - Linux
+    - Docker
+---
+
+## Introduction
+
+At the bare minimum, it's good to have a solid understanding of 2 Pointers, sliding window, BFS/DFS, Trees, Graphs, Stacks, Queus, Hash Maps.
+
+## Leetcode IDE Tips
+
+### No Global Variables
+
+To evaluate our code samples, Leetcode simply import the file containing our implementation. Then, it will run test cases on it. If we have a global variable, the global variable will be used consistently. E.g., 
+
+```cpp
+int MyGlobalVar2;    // bad
+
+class Solution{
+    int MyGlobalVar;    // good
+};
+```
+
+## Shortcuts & Debugging Tips
+
+- `ctrl - '` is to run.
+- Leetcode does support `std::cout` in a separate window `stdout`.
+- no need for `std::`
+
+## Questions
+
+### Two Pointers
+
+[Question Description](https://leetcode.com/problems/container-with-most-water/?envType=problem-list-v2&envId=two-pointers)
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/dedd4d95-5bc9-423f-a674-50d451950c41" height="400" alt=""/>
+       </figure>
+    </p>
+</div>
+
+Two pointers is a local gradient descent technique: we use 2 points starting from the head and tail of the vector. Calculate the area, then move the pointer if its side is shorter than the other. 
+
+```cpp
+    int maxArea(vector<int>& height) {
+        int i_s = 0, i_e = height.size()-1;
+        int max = 0;
+        while (i_s != i_e){
+            int area = std::min(height.at(i_s), height.at(i_e)) * (i_e - i_s); 
+            max = std::max(area, max);
+            if (height.at(i_s) > height.at(i_e)){
+                i_e --;
+            }
+            else{
+                i_s ++;
+            }
+        }
+        // Why does this work? gradient descent? 
+        return 0;
+    }
+```
+
+In this case, it can **actually guarantee** to find the global maximum. Why? Because as we move the pointers along, we are actually evaluating:
+1. what's the max when size = L
+1. what's the max when size = L-1 (apparently if we move the pointer the way we do)
+1. What's the max when size = L-2 (still, we can find the max there)
+
+So we find all these local maximums, which covers all combination of sides. So, two pointers is an interesting algorithm!
+
+### Queue
+
+#### [Sliding Window Max](https://leetcode.com/problems/sliding-window-maximum)
+
+<div style="text-align: center;">
+    <p align="center">
+       <figure>
+            <img src="https://github.com/user-attachments/assets/267f6ebb-d3d0-4c00-a91e-486cde711155" height="300" alt=""/>
+       </figure>
+    </p>
+</div>
+
+This question is an interesting one. We can quickly come up with a brute force solution, but wait a second, that is $o(nk)$. There's gotta be a better way. Can we do this in just one pass?
+
+The trick is a maintaining a queue to store indices of monotonically decreasing elements. For example: `Input: nums = [1,3,-1,-3,5,3,6,7], k = 3` 
+
+| Index | Num  | Deque (Indices) | Max in Window |
+|-------|------|----------------|--------------|
+| 0     | 1    | `[0]`           | - (not yet)  |
+| 1     | 3    | `[1]`           | - (not yet)  |
+| 2     | -1   | `[1,2]`         | 3            |
+| 3     | -3   | `[1,2,3]`       | 3            |
+| 4     | 5    | `[4]`           | 5            |
+| 5     | 3    | `[4,5]`         | 5            |
+| 6     | 6    | `[6]`           | 6            |
+
+```cpp
+std::vector<int> maxSlidingWindow(std::vector<int>& nums, int k) {
+    std::deque<int> dq;  // Stores indices, not values
+    std::vector<int> result;
+    for (int i = 0; i < nums.size(); ++i) {
+        // Remove elements that are out of the window
+        if (!dq.empty() && dq.front() < i - k + 1) {
+            dq.pop_front();
+        }
+        // Maintain decreasing order: Remove elements smaller than nums[i]
+        while (!dq.empty() && nums[dq.back()] <= nums[i]) {
+            dq.pop_back();
+        }
+        // Add current element's index
+        dq.push_back(i);
+        // Store the max value once we have processed at least k elements
+        if (i >= k - 1) {
+            result.push_back(nums[dq.front()]);  // The max is always at the front
+        }
+    }
+    return result;
+}
+```
+
+## Common Leetcode Commands (C++)
+
+### Find Next Element
+
+- Universal search method: `std::search(start_it, end_it, sub_element_end, sub_element_end)`
+
+```cpp
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <algorithm>	// for std::search
+#include <list>
+using namespace std;
+int main()
+{
+    std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> sub = {4, 5, 6};
+    auto it = std::search(vec.begin(), vec.end(), sub.begin(), sub.end());
+
+    std::list<int> lst = {10, 20, 30, 40, 50, 60};
+    std::list<int> sub_lst = {30, 40};
+    auto it_2 = std::search(lst.begin(), lst.end(), sub_lst.begin(), sub_lst.end());
+}
+```
+
+- Vector, list:
+
+```
+auto it = std::find(vec.begin(), vec.end(), 3);
+auto it = std::find(lst.begin(), lst.end(), 30);
+```
+
+- String `str.find(sub_str)`. Returns `std::string::npos` if nothing is found
+
+```cpp
+std::string str = "Hello, World!";
+std::string sub = "World";
+size_t pos = str.find(sub);
+```
+    - For string, if the search is for **tokenization**, `std::stringstream` could be more efficient for tokenization:
+
+    ```cpp
+    #include <sstream>
+    stringstream ss(str);
+    while (std::getline(ss, token, '/')) {
+        // No '/', we get token directly
+    }
+    ```
+
+#### `std::find_if(a, b, pred)`
+
+#### `std::binary_search(vec.begin(), vec.end(), val)`  (For sorted data)
+
+### Equate
+
+#### `std::equal(sub.begin(), sub.end(), it)`
+std::search() for subsequence matching.
+
+### std::stack
+
+`std::stack` is simply an adapter for `std::deque` and `std::vector`
+
+```cpp
+stack<int> sta;
+sta.top();
+sta.pop();
+sta.empty();
+sta.push();
+```
+
+- stack can be iterated over as well. So iterating over a stack will guarantee insertion order using `std::stack().size()`

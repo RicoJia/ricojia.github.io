@@ -1,0 +1,19 @@
+---
+layout: post
+title: Adoc
+date: '2018-08-10 13:19'
+subtitle: 
+comments: true
+tags:
+    - Linux
+---
+
+## 📄 What is AsciiDoc?
+
+An `.adoc` file is a text file written in AsciiDoc format—a lightweight and readable markup language used for writing technical documentation, software manuals, README files, and even books. AsciiDoc is similar in spirit to Markdown, but more powerful and extensible. It’s often used when more complex formatting is needed without sacrificing readability in plain text.
+
+### 🧩 Features of .adoc Files
+
+- Reusable Content: With macros and includes.
+- Extensible: Supports plugins and custom processors.
+- Document Attributes: Easily define metadata like authorship, version, and dates.
