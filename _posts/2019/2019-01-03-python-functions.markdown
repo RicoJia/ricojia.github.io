@@ -65,6 +65,21 @@ b = lambda x:x+1
 print b(1)
 ```
 
+- A smart use for lambda: capture input from the current function, then use it later in a callback
+
+```python
+for topic in topics:
+ subscription = self.create_subscription(
+  PointCloud2,  # Assuming PointCloud2 message type
+  topic,
+  lambda msg, topic=topic: self.pointcloud_callback(topic, msg),
+  10,
+  callback_group=cb_group
+ )
+```
+
+- `lambda msg, topic=topic: self.pointcloud_callback(topic, msg)` creates a lambda wiith `topic` being the current value, but you can still call it with only one arg (which is required by `create_subscription`)
+
 ## Functools
 
 ### partial
@@ -133,7 +148,6 @@ class MyClass:
         return "<ii5B"
 ```
 
-
 `cache` came with `Python 3.9`. It simply caches results of all functions. It's equivalent to `lru_cache(maxsize=None)`
 
 ```python
@@ -149,7 +163,6 @@ print(expensive_function(2))  # Returns cached result
 ```
 
 - `cached_property` is available Python 3.8+
-
 
 ## Run Function Only Once
 

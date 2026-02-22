@@ -156,3 +156,4 @@ var="456"   # see "var: readonly variable"
 - It can also print all variable (custom & environment variables) values. `declare -p`
 
 Though a most variables (except for arrays) can be defined directly `VAR=123`, I found `declare` more "type-safe".
+

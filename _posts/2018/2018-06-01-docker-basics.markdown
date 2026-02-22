@@ -85,6 +85,12 @@ However, if you want to delete a series of images that are built on top of each 
   - Either command just stops the container process, but the container itself (filesystem, name, etc.) still exists in the Docker's state.
   - `docker run -it --rm --name rico_test simple-robotics-test-image` has `--rm` in it. `--rm` will respond to only `docker stop` (graceful exit). Use this command instead: `docker rm`
 
+## Docker Kill vs Docker stop
+
+- **`docker stop <container>`**: Sends a SIGTERM signal to allow graceful shutdown (e.g., saving state or closing connections). Waits up to 10 seconds by default, then sends SIGKILL if needed. Use for clean stops.
+
+- **`docker kill <container>`**: Sends SIGKILL immediately to force-stop the container without cleanup. Use only when `stop` fails or for urgent halts.
+
 ### Docker Run Args
 
 `docker run`: this is how to start a docker container. Args that I use quite often are:

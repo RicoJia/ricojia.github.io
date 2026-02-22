@@ -26,3 +26,7 @@ ssh gpc1 'tar -C /tmp -cf - MY_DIR' | tar -C . -xf -
     - may do checksum logic (depending on flags)
     - lots of small protocol messages.
   - So if you want a fresh copy, rsync's incremental file delta method doesn't do much.
+
+### Softlink
+
+- `ln -s <target_path> <dest_path>`

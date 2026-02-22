@@ -8,7 +8,6 @@ tags:
     - Linux
 ---
 
-
 ## Networking Layers: From DDS Payload to Wire Format
 
 When we talk about “sending a DDS message,” it’s easy to think of it as a single thing moving across the system. In reality, networking is layered. Each layer wraps the one above it.
@@ -93,3 +92,23 @@ sudo ethtool eno1  # ^--- look for "Link detected: yes/no", negotiated speed/dup
 ```
 
 - Disable ufw: `sudo ufw disable` (Livox Viewer2 would not be able to get point clouds otherwise)
+
+---
+
+## Network Loop
+
+If Two network switches are connected, and if STP (Spanning tree??)is not configured correctly? There would be a **network loop**.  traffic will broadcast; get come back around. There will be massive packet duplication. So you might see some `ros2` calls sometime fail.  
+
+```
+Switch A ───── Switch B  
+│ │  
+└──────────────┘
+```
+
+- what is spanning tree protocol? STP???
+ 	- Layer 2 netowrk protocol that Detects switch loops, and automatically keeps only one active path between switches
+- Diagnosis:
+ 	- `ip -s link` =  ;ppl fpr jige RX package counts, with dropped packets.
+- Fix:
+ 	- Remove redundant cable
+ 	- Enable STP/RSTP
