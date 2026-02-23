@@ -1,0 +1,54 @@
+---
+layout: post
+title: "[CUDA - 3] SIMT in CUDA"
+date: 2026-01-14 13:19
+subtitle: SIMD SIMT
+comments: true
+tags:
+  - CUDA
+---
+---
+
+### SIMT and SIMD
+
+CUDA is a very good embodiment of SIMD (Single-Instruction-Multiple Data). SIMD is great for addressing **embarassingly parallel problems**, problems that are so "embarassingly" simple, that there are no dependency on each other.
+
+- One example is point cloud transformation. All points can be transformed into a different frame by MMA with transform matrices.
+
+Up until 2016, a CUDA core does SIMD. In SIMD, the same exact instructions are applied to the same data, like a marching band
+
+```
+C[i] = A[i] * B[i]
+```
+
+However, when there is a condition in the kernel, there is a divergence. In the below example, the Stream Manager would split this logic into two passes for threads, one for `C[i] = A[i] * B[i]`, and one for `[i] = A[i] + B[i]`
+
+```
+if A[i] > 0:
+    C[i] = A[i] * B[i]
+else:
+    C[i] = A[i] + B[i]
+```
+
+Single-Instruction-Multiple-Threads SIMT can handle moderate levels of logical branches **on the thread level**. That is, it would take 1 pass for an arbitrary thread to decide which instruction it should execute. This means each thread has a **program counter**. Meanwhile, there are 128kb L1 caches for 1 thread to share data with others.
+
+```c
+__global__ void conditional_op(float* A, float* B, float* C, int n) {
+    // Compute the unique thread ID
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+
+    // Ensure we don’t go out of bounds
+    if (idx < n) {
+        if (A[idx] > 0) {
+            C[idx] = A[idx] * B[idx];  // Branch 1
+        } else {
+            C[idx] = A[idx] + B[idx];  // Branch 2
+        }
+    }
+}
+```
+
+For SIMT:
+
+- The more branches, the less performance. Nested logic in a kernel is not a good idea
+- Contiguous Memory (coalesced) are faster to access in a **warp** of memory
