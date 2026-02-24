@@ -89,10 +89,20 @@ else:
 ### HDF5
 
 - open-source file for **store large amount of data**
-    - largely used in numpy community
-    - Can handle many different datatypes in multiple data blocks, with metadata
-    - We can access them in data blocks
-    - numpy array holds the data, and directly to and from the data.
-    - used as ML model weights
+  - largely used in numpy community
+  - Can handle many different datatypes in multiple data blocks, with metadata
+  - We can access them in data blocks
+  - numpy array holds the data, and directly to and from the data.
+  - used as ML model weights
 - To use HDF5, numpy needs to be imported.
 
+## Formatting
+
+isort will reorder this. But **you can turn off the formatting** for now so path is properly added
+
+```python
+# fmt: off
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models", "Chamfer3D"))
+from dist_chamfer_3D import chamfer_3DDist, chamfer_3DFunction
+# fmt: on
+```

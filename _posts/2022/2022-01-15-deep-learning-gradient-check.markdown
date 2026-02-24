@@ -42,7 +42,7 @@ f'(\theta) = \frac{f(\theta + \epsilon) - f(\theta)}{\epsilon} = f'(\theta) + \f
 \end{gather*}
 $$
 
-One way to reduce this error is to do
+One way to reduce this error is to **use central difference formula** to verify your grads are correct:
 
 $$
 \begin{gather*}
@@ -63,6 +63,43 @@ $$
 $$
 
 If the result is above $10^{-3}$, then we should worry about it.
+
+$$
+\frac{f(x+\epsilon) - f(x - \epsilon)}{2 \epsilon}
+$$
+
+```python
+def _numerical_grad(fn, x, eps=1e-3):
+ # This will store the numerical gradient
+ grad = torch.zeros_like(x)
+ it = x.numel()
+ x_flat = x.view(-1)
+ grad_flat = grad.view(-1) 
+ for i in range(it):
+  orig = x_flat[i].item()
+  x_flat[i] = orig + eps 
+  fp = fn().item()
+  x_flat[i] = orig - eps 
+  fm = fn().item()
+  x_flat[i] = orig 
+  grad_flat[i] = (fp - fm) / (2.0 * eps)
+```
+
+### Another Method - Apply Gradient And See Decrease In Loss
+
+- You can even apply gradient on the inputs, evaluate with the loss again. That's gradient descent
+
+```python
+loss_before = _chamfer_loss(p1, p2)
+loss_before.backward()
+
+with torch.no_grad():
+ p1_stepped = p1 - 0.01 * p1.grad
+loss_after = _chamfer_loss(p1_stepped, p2)
+
+assert loss_after < loss_before, \
+ f"Gradient step did not reduce loss: {loss_before.item():.4f} → {loss_after.item():.4f}"
+```
 
 ## Things To Note In Gradient Checking
 

@@ -9,7 +9,7 @@ tags:
 ---
 ---
 
-### SIMT and SIMD
+## SIMT and SIMD
 
 CUDA is a very good embodiment of SIMD (Single-Instruction-Multiple Data). SIMD is great for addressing **embarassingly parallel problems**, problems that are so "embarassingly" simple, that there are no dependency on each other.
 

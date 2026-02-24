@@ -127,6 +127,8 @@ Voltage Regulation:
 
 - A graphics card will have 12v input, and 1.1v output to the GA102 chip. This could produce significant amount of heat, so we need a heat sink.
 - A graphics card also has 24 graphics memory chips (GDDR6x, GDDR7). In gaming, 3D models are loaded  `SSD ->  graphics memory -> L2 cache`.
+ 	-  L2 is just a hardware cache between global memory and the SMs.
+ 	- It's not directly controllable by us
   - A GA102 chip has 2 L2 Cache (3MB each), which is very limited
   - The 24 graphics memory chips transfer 384 bits/s (bus width) for`graphics memory -> L2 cache`. The bandwidth is 1.15Tbytes/s
   - Graphics memory chips micron GDDR6x encodes 2 bits into 1 4-voltage level bit, using PAM4 encoding. But now, the industry agrees to use PAM3, an encoding scheme that uses 3 voltage levels that's on GDDR7
@@ -156,3 +158,8 @@ From the [NVidia documentation](https://developer.nvidia.com/blog/how-optimize-d
     </figure>
 </p>
 </div>
+
+- Global memory - either DRAM or VRAM
+ 	- Your batch data live here too.
+ 	- Your tensors, model weights, activations all live here.
+ 	- RTX 30xx use VRAM (GDDR6), lower tier integrated GPU (AMD Radeon Graphics, Intel UHD) **has no dedicated memory, so it carves out a chunk of CPU DRAM. It's slower and lower bandwidth**

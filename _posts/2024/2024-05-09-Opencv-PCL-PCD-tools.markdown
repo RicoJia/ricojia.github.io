@@ -178,6 +178,7 @@ $$
 
 - Custom PCL  structs requires  `EIGEN_MAKE_ALIGNED_OPERATOR_NEW`
 - PCL ICP would crash if there's `NaN`
+- leave intensity as a float. PCL's xyzi cloud uses that! Otherwise if you do later you might find spam `Failed to find match for field 'intensity'.`
 
 ## NanoFLANN
 
