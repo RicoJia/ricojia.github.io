@@ -2,7 +2,7 @@
 layout: post
 title: "[CUDA - 2] Introduction to CUDA Coding"
 date: 2026-01-14 13:19
-subtitle: First CUDA Program, JIT Compile
+subtitle: CUDA Programming Hierarchy
 comments: true
 tags:
   - CUDA
@@ -188,16 +188,18 @@ __host__ void foo() { ... }  // same as just: void foo() { ... }
 __host__ __device__ inline float clamp(float x, float lo, float hi) {  
   return x < lo ? lo : (x > hi ? hi : x);  
 }
+__device__ __forceinline__ void reduce_max_pair(float* dists, int* dists_i, int i, int j) {}
 ```
 
 - `__global__` means the kernel is called from the CPU, runs on the GPU. Return Type must be `void`. This is what **defines a kernel**: it must be launched with `<<<grid, block>>>`
- 	- The kernel must be `__global__ void`
- 	- The kernel is called once on the CPU with `<<<grid, block>>>`, but called on every thread.  
+  - The kernel must be `__global__ void`
+  - The kernel is called once on the CPU with `<<<grid, block>>>`, but called on every thread.  
 - `__device__` : called from the GPU, runs on the GPU. It's not launchable with `<<< >>>` from the CPU, but instead it runs on other kernels?
- 	- It's not a kernel, but **instead a GPU function**
+  - It's not a kernel, but **instead a GPU function**
 - `__host__`: called from the CPU, runs on the CPU. It's basically a normal C++ function
 - combinations: `__host__ __device__`: this is compiled into two versions of the function, one for CPU calls, one for GPU calls. It's useful for small utilities in both places.
   - In such a function, you can't freely use host-only code like `printf`, `new`, os calls, **unless guarded**
+  - `__forceinline__`: inline the function aggressively instead of generating a function call.
 
 Variable specifiers:
 
@@ -209,136 +211,9 @@ __global__ void nearest_neighbor_kernel( const float* __restrict__ src_points)
 ```
 
 - `__shared__` : shared memory (per block) on GPU, slower
- 	- when launched in a kernel, CUDA runtime will make sure it's created only ONCE per block.
+  - when launched in a kernel, CUDA runtime will make sure it's created only ONCE per block.
 - `__device__`: global device variable (lives on GPU), faster
 - `__constant__`: constant memory on GPU (cached, read-only from kernels)
 - `__managed__` : unified memory (accessible from CPU & GPU; managed migration)
 - `__restrict__` is a **promise to the compiler** about pointers: "for the lifetime of the pointer, it does not overlap with the memory of any other `__restrict__` pointers"
- 	- Without it, the compiler would become conservative and add extra loads / stores, fewer reorderings.
-
----
-
-## My First CUDA Program
-
-```cpp
-
-// point cloud 1: (B, N, 3), point cloud 2: (B, M, 3)
-__global__ void distance_kernel(int batch_size, int n_points1, const float* points1, int n_points2, const float* points2, float* result, int* result_idx)
-{
-}
-```
-
-A kernel launch looks like
-
-```cpp
-Kernel<<<gridDim, blockDim>>>(...)
-```
-
-Inside kernels, you see built-in indices:
-
-```cpp
-blockIdx.x, blockIdx.y, blockIdx.z
-threadIdx.x, threadIdx.y, threadIdx.z
-gridDim.*, blockDim.*: sizes
-```
-
-Warp and Streaming Processors:
-
-- threads are executed in groups of 32 threads, each group is a **warp**. Warps are schedulred onto SMs (streaming processors). Threads in the same warp execute the same instruction (SIMT). If they branch differently, performance can drop.
-
-Memory types:
-
-- global memory: large, slowish, accessible by all threads. Your tensor data lives here.
-- shared memory: small, fast, per-block, used for coorperation (your `__shared__ float buf[...]`)
-- registers: fastest, per thread (your local float x1, y1, z1)
-- `__syncthreads()`: block level barrier, all threads in the block wait until everyone reaches it.
-
-### Export
-
-In `chamfer_cuda.cpp`, we use pybind11 to bind two functions for the forward pass and backward pass:
-
-```cpp
-PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {  
-m.def("forward", &chamfer_forward, "chamfer forward (CUDA)");  
-m.def("backward", &chamfer_backward, "chamfer backward (CUDA)");  
-}
-```
-
-- forward pass: compute nearest neighbor squared distances + argmin indices
-- backward pass: compute gradients w.r.t point coordinates using those argmin indices
-
----
-
-## How to Compile
-
-### Compilation Method 1 - the classical setup.py
-
-`setup.py`
-
-```python
-from setuptools import setup
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension
-
-setup(
-    name='chamfer_3D',
-    ext_modules=[
-        CUDAExtension('chamfer_3D', [
-            "/".join(__file__.split('/')[:-1] + ['chamfer_cuda.cpp']),
-            "/".join(__file__.split('/')[:-1] + ['chamfer3D.cu']),
-        ]),
-    ],
-    cmdclass={
-        'build_ext': BuildExtension
-    })
-```
-
-- `setuptools` register an extension with sources `chamfer_cuda.cpp` and `chamfer3D.cu`
-- `BuildExtension` invokes host side C++ compiler (for `.cpp`) and nvcc (for `.cu` files) into object files, then link them together into a shared object `.so`
-  - the object files are linked against PyTorch/ATen/c10 and CUDA runtime libraries (e.g., `libcudart`), so the `.so` is an importable Python extension
-    - it's `-fPIC`, position independent code, so it can be linked into a shared library
-    - Pybind11 or torch macros are used to expose functions to python
-    - `kernels` in C++ are `at::Tensor::data_ptr<T>()` or `tensor.contiguous().data_ptr()`
-
- Then in a new console:
-
-```bash
-python3 setup.py build_ext --inplace
-```
-
-### Compilation Method 2: Pytorch JIT Compilation
-
-If a `.so` is not found, one can use Pytorch to compile using `torch.utils.cpp_extension.load`, no setup.py or `build_ext` is needed.  You do need Ninja
-
-```bash
-apt-get install -y ninja-build
-```
-
-```python
-from torch.utils.cpp_extension import load
-
-chamfer_3D = load(
-    name="chamfer_3D",
-    sources=["chamfer_cuda.cpp", "chamfer3D.cu"]
-)
-```
-
-What it does:
-
-1. Calls `nvcc` + the host C++ compiler **the first time** the module is imported
-2. Caches the compiled `.so` in `~/.cache/torch_extensions/` (keyed by source hash + PyTorch version)
-3. Returns the extension as a **regular Python module** — `chamfer_3D.forward(...)` just works
-4. On subsequent imports: cache hit → **instant load**, no recompile
-
----
-
-## Gotchas
-
-- **DEADLOCK-ALERT** If the code has some threads return before reaching  `__syncthreads()`, then there could be a deadlock
-
-```cpp
-if (threadIdx.x >= some_threshold) return;  
-...  
-__syncthreads();
-```
-
-This is because `__syncthreads()` is a block-wide barrier. **For the block to proceed, all threads in the block must arrive at the barrier**. This is one of the most common CUDA bugs.
+  - Without it, the compiler would become conservative and add extra loads / stores, fewer reorderings.
