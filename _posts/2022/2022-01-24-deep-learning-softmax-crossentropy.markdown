@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Deep Learning - Softmax And Cross Entropy Loss
-date: '2022-01-24 13:19'
-subtitle: Softmax, Cross Entropy Loss, and MLE 
+date: 2022-01-24 13:19
+subtitle: Logit, Softmax, Cross Entropy Loss, and MLE
 comments: true
-header-img: "img/home-bg-art.jpg"
+header-img: img/home-bg-art.jpg
 tags:
-    - Deep Learning
+  - Deep Learning
 ---
 
 ## Softmax
@@ -32,6 +32,12 @@ Z_i = \frac{e^{Y_i}}{\sum_i e^{Y_i}}
 $$
 
 Then, the classifier picks the highest scored class as its final output.
+
+Note, in mathematics, logit is defined differently. BELOW IS NOT USED IN MACHINE LEARNING:
+
+$$
+logit = \frac{p}{1-p}
+$$
 
 ### Properties of Softmax
 
