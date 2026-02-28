@@ -127,8 +127,8 @@ Voltage Regulation:
 
 - A graphics card will have 12v input, and 1.1v output to the GA102 chip. This could produce significant amount of heat, so we need a heat sink.
 - A graphics card also has 24 graphics memory chips (GDDR6x, GDDR7). In gaming, 3D models are loaded  `SSD ->  graphics memory -> L2 cache`.
- 	-  L2 is just a hardware cache between global memory and the SMs.
- 	- It's not directly controllable by us
+  -  L2 is just a hardware cache between global memory and the SMs.
+  - It's not directly controllable by us
   - A GA102 chip has 2 L2 Cache (3MB each), which is very limited
   - The 24 graphics memory chips transfer 384 bits/s (bus width) for`graphics memory -> L2 cache`. The bandwidth is 1.15Tbytes/s
   - Graphics memory chips micron GDDR6x encodes 2 bits into 1 4-voltage level bit, using PAM4 encoding. But now, the industry agrees to use PAM3, an encoding scheme that uses 3 voltage levels that's on GDDR7
@@ -160,6 +160,51 @@ From the [NVidia documentation](https://developer.nvidia.com/blog/how-optimize-d
 </div>
 
 - Global memory - either DRAM or VRAM
- 	- Your batch data live here too.
- 	- Your tensors, model weights, activations all live here.
- 	- RTX 30xx use VRAM (GDDR6), lower tier integrated GPU (AMD Radeon Graphics, Intel UHD) **has no dedicated memory, so it carves out a chunk of CPU DRAM. It's slower and lower bandwidth**
+  - Your batch data live here too.
+  - Your tensors, model weights, activations all live here.
+  - RTX 30xx use VRAM (GDDR6), lower tier integrated GPU (AMD Radeon Graphics, Intel UHD) **has no dedicated memory, so it carves out a chunk of CPU DRAM. It's slower and lower bandwidth**
+
+---
+
+## Discussions
+
+### What happens if I run two ML inference workloads on one GPU?  
+
+*(e.g., image compression + point cloud compression)*  
+  
+1. First, you’re far more likely to run out of **VRAM** than compute. If you have, say, an 8GB GPU, that memory must hold:  
+  
+- Model weights (both models)  
+- Activations for the current batch  
+- Temporary buffers (e.g., KNN scratch space, attention tensors)  
+- CUDA context + allocator caches  
+- Possibly optimizer states (if training, though you mentioned inference)
+
+Even in inference-only mode, activations and intermediate buffers can be large.  Point cloud models especially (e.g., KNN graphs, Chamfer distance buffers) can allocate sizable temporary tensors.  
+  
+If both models together exceed available VRAM:  
+
+- You’ll get **CUDA OOM errors**  
+- Or heavy allocator fragmentation  
+- Or forced fallback to smaller batch sizes  
+  
+2. Second, you probably won’t “run out of compute” — you’ll slow down . GPUs don’t crash when two workloads compete for compute. Instead:  
+  
+- CUDA kernels from both workloads get **time-sliced**  
+- SMs (streaming multiprocessors) are shared  
+- Kernel launches interleave  
+  
+The result:  
+
+- Lower throughput per model  
+- Increased latency  
+- Less predictable performance  
+  
+Compute is elastic. Memory is not.
+
+2. Read / Write Memory bandwidth contention can hurt a lot. That bandwidth is shared by:  
+
+- All SMs  
+- All running kernels  
+- All processes using the GPU  
+  
