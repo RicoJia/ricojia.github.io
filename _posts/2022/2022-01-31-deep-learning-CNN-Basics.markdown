@@ -337,6 +337,12 @@ A receptive field of a feature of an element in a feature map refers to **the si
 </p>
 </div>
 
+Then, the receptive field across layers are:
+
+- 1 layer → sees 3×3
+- 2 layers → sees 5×5
+- L layers → sees (2L+1) × (2L+1)
+
 We denote the input as $f_0$, output of layer $l$ as $f_l$. The receptive field of layer $l$ is $r_l$, but really **it's the number of cells on layer $l$ that a reference layer output sees**. In the below example, $r_0=8$ at the input, w.r.t the second layer. It would be different w.r.t a different layer.
 
 <div style="text-align: center;">
@@ -357,6 +363,21 @@ r_{l-1} = s_lr_l + k_l-s_l
 $$
 
 For more formulas and an interactive representation, [please see Araujo's work](https://distill.pub/2019/computing-receptive-fields/).
+
+Early layers learn **finer** features, later layers learn **coarser** features
+ 1. This is because with more layers and the same kernels, a point on the final feature map carries information from a larger input region.
+ 2. Imaging you just have one CNN layer that converts the output dimension drastically in one shot, say the input is 5x5, output is 1x1. Your kernel is 5x5. Compared to the two stage setup above where there are two 3x3 kernels. First, **you have more parameters which is more cumbersome**, second, the single 5x5 kernel only learns linear combination of pixels, the non-linearity in their combination is not learned.
+
+Actually, because the same number of parameters can create a larger receptive field with more layers, you are able to create deeper neural networks. Yes, one big MLP like `f(x1​,x2​,x3​,x4​)` can approximate any function. However, it may need exponentially more neurons. **Depth here allows us to learn more non-linearity between combination** of inputs, by **reusing intermediate features like** `g(h2​(h1​(x)))`
+
+image and point cloud are hierarchical, and **not really random**:  
+
+```
+pixels → edges → corners → shapes → object
+points → local curvature → surface patches → parts → object
+```
+
+Each hierarchy requires a non-linear combination of the previous feature. A deeper network would better capture this hierarchy using its depth
 
 ## References
 
