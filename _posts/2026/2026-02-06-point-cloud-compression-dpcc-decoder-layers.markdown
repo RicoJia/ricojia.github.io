@@ -32,40 +32,44 @@ Instead of doing it in one shot:
 
 ### Icosahedron
 
-Icosahedron is a solid with 20 triangles. In this project, `def icosahedron2sphere(level)`, an Icosahedron produce nearly uniformly distributed directions on a sphere
+An **icosahedron** is a regular solid with 20 triangular faces and 12 vertices. In this project, `icosahedron2sphere(level)` uses it to generate nearly uniformly distributed directions on a sphere — these serve as candidate upsampling directions when reconstructing point clouds.
 
-1. project an Icosahedron's vertices onto a sphere
-2. optionally subdivides faces based on `level` to create more points
-3. produce nearly uniformly distributed directions on a sphere
+A unit icosahedron has all edges of equal length. This holds if and only if its 12 vertices are:
 
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://i.postimg.cc/Z51RQH4J/image-29.png" height="300" alt=""/>
-    </figure>
-</p>
-</div>
+$$(0, \pm 1, \pm \varphi), \quad (\pm 1, \pm \varphi, 0), \quad (\pm \varphi, 0, \pm 1)$$
 
-These directions are used as candidate upsampling directions when reconstructing point clouds
+where $\varphi$ is the **golden ratio**:
+
+$$\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618$$
+
+Using any other value would produce unequal edge lengths.
+
+`icosahedron2sphere(level)` works as follows:
+
+1. Project the icosahedron's 12 vertices onto a unit sphere.
+2. If `level > 1`, subdivide each triangular face by inserting a new vertex at the midpoint of each edge, then project those new vertices back onto the sphere.
+3. Return the resulting directions, which are nearly uniformly distributed over the sphere.
 
 <div style="text-align: center;">
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; flex-wrap: wrap;">
     <figure>
       <img src="https://i.postimg.cc/Z51RQH4J/image-29.png" height="300" alt="Icosahedron"/>
-      <figcaption>Icosahedron</figcaption>
+      <figcaption>Icosahedron (20 faces, 12 vertices)</figcaption>
     </figure>
     <figure>
       <img src="https://i.postimg.cc/L8NX9Stm/icosahedron-sphere-points-level1.png" height="300" alt="Icosahedron Sphere Points Level 1"/>
-      <figcaption>Icosahedron sphere points — Level 1 subdivision</figcaption>
+      <figcaption>Vertices projected onto sphere — Level 1</figcaption>
     </figure>
   </div>
 </div>
+
+The 12 base vertices are not perfectly uniform, but each subdivision level makes the distribution increasingly uniform. Below is Level 2 — the midpoints of all edges are added and re-projected:
 
 <div style="text-align: center;">
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; flex-wrap: wrap;">
     <figure>
       <img src="https://i.postimg.cc/4xBdfG6T/uniform-directions-level2-angular-projection.png" height="300" alt="Uniform Directions Level 2 Angular Projection"/>
-      <figcaption>Uniform directions which is used for upsampling</figcaption>
+      <figcaption>Uniform directions — Level 2 angular projection</figcaption>
     </figure>
     <figure>
       <img src="https://i.postimg.cc/DwBZvhr2/uniform-directions-level2-mesh-quiver.png" height="300" alt="Uniform Directions Level 2 Mesh Quiver"/>
