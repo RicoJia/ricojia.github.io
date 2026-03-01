@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[CUDA - 2] My First CUDA Kernel - Chamfer Distance"
-date: 2026-01-16 13:19
+title: "[CUDA - 4] My First CUDA Kernel - Chamfer Distance"
+date: 2026-01-18 13:19
 subtitle: First CUDA Program, JIT Compile
 comments: true
 tags:

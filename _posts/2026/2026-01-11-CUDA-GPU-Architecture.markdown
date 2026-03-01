@@ -126,18 +126,24 @@ That warp must wait hundreds of cycles for the data. So an SM will pick another 
 Voltage Regulation:
 
 - A graphics card will have 12v input, and 1.1v output to the GA102 chip. This could produce significant amount of heat, so we need a heat sink.
-- A graphics card also has 24 graphics memory chips (GDDR6x, GDDR7). In gaming, 3D models are loaded  `SSD ->  graphics memory -> L2 cache`.
-  -  L2 is just a hardware cache between global memory and the SMs.
-  - It's not directly controllable by us
-  - A GA102 chip has 2 L2 Cache (3MB each), which is very limited
-  - The 24 graphics memory chips transfer 384 bits/s (bus width) for`graphics memory -> L2 cache`. The bandwidth is 1.15Tbytes/s
-  - Graphics memory chips micron GDDR6x encodes 2 bits into 1 4-voltage level bit, using PAM4 encoding. But now, the industry agrees to use PAM3, an encoding scheme that uses 3 voltage levels that's on GDDR7
-    - This improves power efficiency, reduces encoder complexity, and increases SNR
+
+A graphics card also has 24 graphics memory chips (GDDR6x, GDDR7). In gaming, 3D models are loaded  `SSD ->  graphics memory -> L2 cache`.
+
+-  L2 is just a hardware cache between global memory and the SMs.
+- It's not directly controllable by us
+- A GA102 chip has 2 L2 Cache (3MB each), which is very limited
+- The 24 graphics memory chips transfer 384 bits/s (bus width) for`graphics memory -> L2 cache`. The bandwidth is 1.15Tbytes/s
+- Graphics memory chips micron GDDR6x encodes 2 bits into 1 4-voltage level bit, using PAM4 encoding. But now, the industry agrees to use PAM3, an encoding scheme that uses 3 voltage levels that's on GDDR7
+  - This improves power efficiency, reduces encoder complexity, and increases SNR
 - High-Bandwidth Memory Chip Micron HBM3E
   - This chip is a memory "cube", with layers of memory that are connected by "Through-Silicon Vias".
   - This is usually used in AI Datacenters 😊
 
 ## Data Transfer
+
+### NVLink vs PCIe
+
+`NV Link` is High-speed GPU ↔ GPU interconnect, used in multi-GPU systems. A laptop doesn't have it, instead it uses CPU - GPU PCIe, whose bandwidth is `~16GB/s`
 
 ### `pin_memory`
 

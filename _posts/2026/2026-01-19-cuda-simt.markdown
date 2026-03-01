@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[CUDA - 3] SIMT in CUDA"
+title: "[CUDA - 5] SIMT in CUDA"
 date: 2026-01-19 13:19
 subtitle: SIMD SIMT
 comments: true

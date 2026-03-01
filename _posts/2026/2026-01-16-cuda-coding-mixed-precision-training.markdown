@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[CUDA - 4] - Mixed Precision Training"
+title: "[CUDA - 3] - Mixed Precision Training"
 date: 2026-01-16 13:19
 subtitle: AT_DISPATCH_FLOATING_TYPES_AND_HALF
 comments: true
