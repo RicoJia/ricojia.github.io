@@ -1,13 +1,21 @@
 ---
 layout: post
-title: "[ML] Libraries For Point Cloud Compression"
+title: "[ML] PyTorch Functions
 date: 2025-02-09 13:19
-subtitle: einops
+subtitle: Convolution, Normalization, Sum, Torch Cache Emptying
 header-img: img/post-bg-o.jpg
 tags:
   - Machine-Learning
 comments: true
 ---
+## Operations
+
+### Convolution
+
+conv1d vs conv 2d:
+
+- **Conv1d** is used when data is [(B, C, N)](vscode-file://vscode-app/usr/share/code/resources/app/out/vs/code/electron-browser/workbench/workbench.html) — a list of N independent vectors:
+- **Conv2d** is used when data is [(B, C, M, K)](vscode-file://vscode-app/usr/share/code/resources/app/out/vs/code/electron-browser/workbench/workbench.html) — a grid of M points × K neighbors:
 
 ### Normalization
 
@@ -28,7 +36,8 @@ $$
 ```python
 relu(x) = max(0, x)
 ```
-  - Sometimes it could break autograd if the original pre-Relu value is needed, e.g., skip connections. If those values are not reused they are usually fine.
+
+- Sometimes it could break autograd if the original pre-Relu value is needed, e.g., skip connections. If those values are not reused they are usually fine.
 
 - **`torch.gather()`**
   - `idx[:, None]` is the same as `idx.unsqueeze(-1)`, which adds a new dimension. For example, an array of shape `(5,)` becomes `(5, 1)`.
@@ -99,9 +108,9 @@ print(res)  # [[[11.3, 21.2]]]
 ```
 
 - Histogram Count:
- 	- `idx`: idx to update
- 	- `src`: values to add to counts
- 	- `counts`: histogram counting bins
+  - `idx`: idx to update
+  - `src`: values to add to counts
+  - `counts`: histogram counting bins
 
 ```python
 sample_num = 5
@@ -121,3 +130,29 @@ counts.scatter_add_(0, idx, src)
 # idx[7] = 4, so counts[4] += src[7] = 2
 print("counts:", counts.tolist())  # [4, 1, 24, 0, 2]
 ```
+
+---
+
+## Infrastructure
+
+### what is ctx in autograd function?
+
+`ctx` is the “backward stash” for whatever forward needs to remember. It's part of the Torch API.
+
+```python
+
+class Gathering(Function):
+    @staticmethod
+    def forward(ctx, features: torch.Tensor, idx: torch.Tensor) -> torch.Tensor:
+```
+
+- In `forward(ctx, ...)`, you use `ctx` to **save things you’ll need later** for gradients.
+- In `backward(ctx, ...)`, you retrieve them.
+
+### When to Empty Cuda Cache
+
+Caching allocator exists to avoid **cudaMalloc / cudaFree** which is expensive.
+
+`torch.cuda.empty_cache()` releases unused cached GPU memory back to the CUDA driver so other processes can use it. It doesn't free memory held by live tensors - If something is still referenced, it stays allocated. This however, should NOT be called in the middle of a `forward()` call, because it introduces synchronization / stalls to reallocate memory later. **So this is rarely used in real life**
+
+- **[](vscode-file://vscode-app/usr/share/code/resources/app/out/vs/code/electron-browser/workbench/workbench.html)** — Original calls it mid-forward; Rico removes it (it stalls the CUDA pipeline and shouldn't be needed in normal use). ???

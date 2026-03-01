@@ -2,7 +2,7 @@
 layout: post
 title: "[CUDA - 3] - Mixed Precision Training"
 date: 2026-01-16 13:19
-subtitle: AT_DISPATCH_FLOATING_TYPES_AND_HALF
+subtitle: AT_DISPATCH_FLOATING_TYPES_AND_HALF, gpuAtomicAdd
 comments: true
 tags:
   - CUDA
@@ -74,7 +74,7 @@ void gathering_forward_cuda_launcher(int batch_size, int channels, int n, int m,
 
 ---
 
-## Atomic Add
+## `gpuAtomicAdd`
 
 **`gpuAtomicAdd` — how it works:**
 

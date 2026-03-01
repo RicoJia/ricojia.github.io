@@ -9,6 +9,8 @@ tags:
     - Python
 ---
 
+---
+
 ## Run Pytest
 
 - Run a specific test file `pytest path/to/test_file.py`
@@ -89,4 +91,22 @@ def test_webcam_restart():
     """Test if the webcam restart command is patched correctly."""
     response = requests.get(f"{SERVER_URL}/RestartService")
     assert response.status_code == 200
+```
+
+---
+
+## Configure Pytests
+
+In `conftext.py`, you can **add a fixture** to find `float_dtype`
+
+```python
+@pytest.fixture(scope="session")
+def float_dtype(request):
+    return torch.float16 if request.config.getoption("--fp16") else torch.float32
+```
+
+Then, pytest will automatically inject this fixture if you test has it:
+
+```python
+def test_gathering_forward_output_shape(float_dtype):
 ```
