@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[ML] Point Cloud Transformer"
-date: 2025-02-02 13:19
+date: 2026-02-02 13:19
 subtitle: Vector Attention
 header-img: img/post-bg-o.jpg
 tags:
