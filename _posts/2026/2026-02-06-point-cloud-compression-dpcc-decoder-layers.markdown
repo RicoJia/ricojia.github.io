@@ -63,7 +63,12 @@ Using any other value would produce unequal edge lengths.
   </div>
 </div>
 
-The 12 base vertices are not perfectly uniform, but each subdivision level makes the distribution increasingly uniform. Below is Level 2 — the midpoints of all edges are added and re-projected:
+The 12 base vertices are not perfectly uniform, but each subdivision level makes the distribution increasingly uniform. As the return values of this stage, we return
+
+- vertices as 3D coordinates
+- triangles' vertex indices in verticex coordinates above
+
+Below is Level 2 — the midpoints of all edges are added and re-projected:
 
 <div style="text-align: center;">
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; flex-wrap: wrap;">

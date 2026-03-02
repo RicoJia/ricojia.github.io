@@ -9,42 +9,47 @@ tags:
     - Python
 ---
 
-Python has mutable and immutable objects:
+## Mutable vs Immutable Objects
 
-Mutables:
+Python objects are either mutable or immutable:
 
-- bytearray
-- list
-- ...
+| Mutable | Immutable |
+|---------|-----------|
+| `bytearray`, `list`, `dict`, `set` | `str`, `bytes`, `int`, `tuple` |
 
-Immutables:
+Key slicing behaviour:
 
-- string
-- bytes
-- ...
+- A slice of an **immutable** object (e.g. `bytes`) always creates a **new copy**.
+- A slice of a **mutable** object also creates a new copy by default — unless you use `memoryview`.
+
+## Memory View
+
+`memoryview` exposes the underlying buffer of an object without copying it. This is useful for working with large binary data efficiently.
 
 ```python
 buf = bytearray(b"hello world")
 mv = memoryview(buf)
-mv2 = mv[6:11]        # refers to the same bytes as buf[6:11]
-mv2.tobytes()         # => b"world", but buf isn’t duplicated in memory until you call tobytes()
+mv2 = mv[6:11]        # zero-copy slice — still refers to buf[6:11]
+mv2.tobytes()         # => b"world" (copy only happens here)
 ```
 
-- **Bytes is immutable, meaning once created, its contents cannot be changed. So any slice of it will be a new object**
-- By default, **slice of a mutable object is also a new object**
-
-## Memory View
-
-It returns the memory of the underlying object. To avoid copies, use `memoryview`:
+A common use case is writing directly into a pre-allocated buffer:
 
 ```python
 buf = bytearray(1024)
 view = memoryview(buf)[100:]   # no copy
-n = sock.recv_into(view)       # writes *directly* into buf[100:100+n]
+n = sock.recv_into(view)       # writes directly into buf[100:100+n]
 ```
 
-- The `memoryview` object of a mutable object is writable, otherwise it'd be read-only for an immutable
+- A `memoryview` of a **mutable** object is **writable**.
+- A `memoryview` of an **immutable** object is **read-only**.
 
-### Advanced buffer‐protocol features
+### Advanced: Casting to Other Types
 
-You can cast a `memoryview` object to other element types, like raw bytes as 32-bit ints
+You can reinterpret the raw bytes as a different element type using `.cast()`. For example, treating raw bytes as 32-bit integers:
+
+```python
+buf = bytearray(b'\x01\x00\x00\x00\x02\x00\x00\x00')
+mv = memoryview(buf).cast('I')  # unsigned 32-bit ints
+list(mv)  # => [1, 2]
+```

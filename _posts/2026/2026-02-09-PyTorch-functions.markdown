@@ -2,7 +2,7 @@
 layout: post
 title: "[ML] PyTorch Functions
 date: 2025-02-09 13:19
-subtitle: Convolution, Normalization, Sum, Torch Cache Emptying
+subtitle: Torch.Function, Convolution, Normalization, Sum, Torch Cache Emptying
 header-img: img/post-bg-o.jpg
 tags:
   - Machine-Learning

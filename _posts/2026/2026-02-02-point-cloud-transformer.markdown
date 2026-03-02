@@ -8,29 +8,27 @@ tags:
   - Machine-Learning
 comments: true
 ---
-TODO
---- 
 
 ## Terminology
 
 - modulate
-	- In ML, modulation means *changing one signal using another signal*. 
-	- So Attention $output=\alpha \odot v$  with elementwise product is modulation on value features. The value is scaled first before being summed over
+ 	- In ML, modulation means *changing one signal using another signal*.
+ 	- So Attention $output=\alpha \odot v$  with elementwise product is modulation on value features. The value is scaled first before being summed over
 - MLP (Multi-Layer-Perceptron)
-	- *A feedforward network made of linear layers + non-linearities*. Technically, we are using Neurons, not just perceptrons (Rosenblatt, 1958) 
-	- So `Conv1d + GroupNorm + ReLU + Conv1d` is a valid MLP
+ 	- *A feedforward network made of linear layers + non-linearities*. Technically, we are using Neurons, not just perceptrons (Rosenblatt, 1958)
+ 	- So `Conv1d + GroupNorm + ReLU + Conv1d` is a valid MLP
 
 ## Point Transformer vs Traditional Transformer
 
 ## Overview
 
-1. In a point cloud, our input is the raw point cloud. Assuming we have B batches, M points in each batch. P is `[B, 3, M]`. Each point is 
+1. In a point cloud, our input is the raw point cloud. Assuming we have B batches, M points in each batch. P is `[B, 3, M]`. Each point is
 
 $$
 p_i = [x_i, y_i, z_i]
 $$
 
-2. we first calculate K Nearest Neighbors (KNN) for each point. N is the raw neighbor point set and is `[B, 3, M, K]` 
+2. we first calculate K Nearest Neighbors (KNN) for each point. N is the raw neighbor point set and is `[B, 3, M, K]`
 
 $$
 n_i = knn(p_i)
@@ -64,8 +62,6 @@ q_i & q_i & \cdots & q_i
 \end{bmatrix}_{H \times K}
 $$
 
-
-
 6. Calculate positional encoding $\delta_{i,j}$ between **point coordinates $p_i$ and its K neighbors**, so distance and direction information is encoded. $\delta$ is `[B, H, M, K]`:
 
 $$
@@ -77,7 +73,8 @@ $$
 $$
 l_{i,j} = MLP(\mathbf{q}_i - \mathbf{k}_j + \delta_{ij})
 $$
-8. So, for each channel, we can calculate a softmax probability where $\delta_{ij}$ encodes relative positional information and a small MLP creates an additional learnable mapping for the logit to increase expressiveness and stablizes training. 
+
+8. So, for each channel, we can calculate a softmax probability where $\delta_{ij}$ encodes relative positional information and a small MLP creates an additional learnable mapping for the logit to increase expressiveness and stablizes training.
 
 $$
 \alpha_{ij} = \mathrm{Softmax}_j \big( MLP(\mathbf{q}_i - \mathbf{k}_j + \delta_{ij}) \big),
@@ -99,10 +96,11 @@ Think of each channel as detecting something different:
 - Channel 3 → curvature
 - Channel 7 → edge direction
 - Channel 12 → density pattern
-    
+
 Now different neighbors may contribute differently **per channel**. So now, channel 3 might prefer the left neighbor. channel 7 might prefer the above neighbor. channel 12 might prefer the closest neighbor.
 
-Of course, in a real network, each channel could be something more extract. 
+Of course, in a real network, each channel could be something more extract.
+
 ### Positional Encoding $\delta_{i,j}$ is relative position
 
 Vanilla transformer:
@@ -111,12 +109,11 @@ Vanilla transformer:
 x = token embedding + absolute positional encoding
 ```
 
-Then you do 
+Then you do
 
 ```
 q = Wq x, k = Wk x, v = Wv x
 ```
-
 
 In a Point Transformer, position embedding is relative:
 
@@ -125,8 +122,6 @@ $$
 \\
 \phi(q_i, k_j) = \gamma (q_i - k_j + \delta_{i,j})
 $$
-
-
 
 ### Vector Attention & Elementwise Scalar Product
 
@@ -141,7 +136,6 @@ $$
 = \frac{\exp\!\left( \frac{q_i^\top k_j}{\sqrt{d}} \right)}  
 {\sum\limits_{l} \exp\!\left( \frac{q_i^\top k_l}{\sqrt{d}} \right)}
 $$
-
 
 Point Transformer (Zhao et al., 2021 ICCV) modified this. Instead of using dot product, the vector attention uses hardamard product
 
@@ -170,7 +164,7 @@ $$
 - Rows = channels $C$
 - Columns = neighbors $K$
 
-So 
+So
 
 $$
 \mathbf{v}_1 =  
@@ -195,6 +189,7 @@ $$
 \end{bmatrix}  
 \in \mathbb{R}^{2 \times 2}
 $$
+
 - Row c = attention weights for channel c
 - Column k = weight for neighbor k
 
@@ -208,7 +203,7 @@ $$
 y_c = \sum_{k=1}^{K} \alpha_{c k} \, v_{c k}.
 $$
 
-Channel 0: 
+Channel 0:
 
 $$
 y_0 = 0.25 \cdot 2 + 0.75 \cdot 4 = 3.5  

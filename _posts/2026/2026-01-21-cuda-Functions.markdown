@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[CUDA - 6] SIMT in CUDA"
+title: "[CUDA - 6] CUDA Functions"
 date: 2026-01-21 13:19
 subtitle: attomicAdd, pragma unroll
 comments: true
