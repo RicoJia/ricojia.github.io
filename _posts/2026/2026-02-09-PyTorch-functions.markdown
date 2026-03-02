@@ -2,12 +2,58 @@
 layout: post
 title: "[ML] PyTorch Functions
 date: 2025-02-09 13:19
-subtitle: Torch.Function, Convolution, Normalization, Sum, Torch Cache Emptying
+subtitle: autograd Function, Convolution, Normalization, Sum, Torch Cache Emptying
 header-img: img/post-bg-o.jpg
 tags:
   - Machine-Learning
 comments: true
 ---
+
+## Torch.autograd.Function
+
+`torch.autograd.Function` lets you define a custom op with explicit `forward()` and `backward()` passes. Common built-ins like `MaxPool` are implemented this way. It's especially useful for wrapping a CUDA kernel — calling `FurthestSampling.apply` exposes it as a regular callable you can drop into your model.
+
+```python
+class FurthestSampling(Function):
+    @staticmethod
+    def forward(ctx, xyz: torch.Tensor, m: int) -> torch.Tensor:
+        """
+        input: xyz: (B, N, 3)
+               m: number of points to sample
+        output: idx: (B, m) int32
+        NOTE: kernel supports float32 and float16.
+              For fp16, coordinates must be < ~181 units apart (max sq dist ~65504).
+        """
+        assert xyz.is_contiguous()
+        b, n, _ = xyz.size()
+        idx = torch.zeros(b, m, dtype=torch.int32, device=xyz.device)
+        temp = torch.full((b, n), float('inf'), dtype=xyz.dtype, device=xyz.device)
+        pointops_cuda.furthestsampling_cuda(b, n, m, xyz, temp, idx)
+        return idx
+
+    @staticmethod
+    def backward(ctx, grad_idx):
+        return None, None
+
+furthestsampling = FurthestSampling.apply
+```
+
+`backward()` returns `None` for both inputs because furthest-point sampling only selects indices — it is non-differentiable, so no gradients flow back through it:
+
+$$\frac{\partial\, \text{idx}}{\partial\, \text{xyz}} = 0 \quad \text{(undefined / not provided)}$$
+
+- `xyz` receives no gradients from this op — the sampling step acts as a **stop-gradient**.
+- `m` is a plain Python `int`, so it has no gradient anyway.
+
+**Why backprop still works in practice**
+
+```python
+selected = feat[..., idx, :]   # shape (B, m, C)
+```
+
+`feat` *does* have a gradient, and `torch.gather` is differentiable w.r.t. `feat`. So gradients flow through the gathered features back into the feature extractor — the network learns *what features to produce*, even though it cannot learn *where to sample*.
+
+
 ## Operations
 
 ### Convolution
