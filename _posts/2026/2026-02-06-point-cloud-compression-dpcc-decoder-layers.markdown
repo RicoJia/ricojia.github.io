@@ -245,6 +245,46 @@ OUTPUT
 
 ═══════════════════════════════════════════════════════════════════════════════
 
+## Data Processing
+
+### Select First K Points Per Point
+
+For each point $i$ in a batch item, keep only the first `upsample_num[b, i]` candidates along the upsampling dimension $U$, then concatenate all kept candidates into a flat list of output points.
+
+**Example** — `candidate_xyzs` of shape `(1, 3, 2, 3)` (1 batch, 3D coords, 2 points, 3 candidates each):
+
+| Point | Candidates (u=0,1,2) |
+|-------|----------------------|
+| 0     | (10,0,0), (11,0,0), (12,0,0) |
+| 1     | (20,0,0), (21,0,0), (22,0,0) |
+
+`candidate_feats` of shape `(1, 1, 2, 3)`:
+
+| Point | Feature values (u=0,1,2) |
+|-------|--------------------------|
+| 0     | 100, 101, 102 |
+| 1     | 200, 201, 202 |
+
+With `upsample_num = [[2, 1]]` (keep 2 candidates for point 0, 1 for point 1), the output retains points with x-coords `[10, 11, 20]` — 3 points total.
+
+### Multi-Batch Processing
+
+For each batch item `bi`:
+
+1. Call `_select_first_k_per_point(...)` to obtain a variable-length selection:
+   - `sel_xyzs`: `(1, 3, m)`
+   - `sel_feats`: `(1, C, m)`
+
+   where $m = \sum_i \texttt{upsample\_num}[bi, i]$.
+
+2. Normalize every batch item to the same point count `target_m = int(n * target_rate)`:
+   - If $m > \texttt{target\_m}$: **downsample** to `target_m` using FPS (Farthest Point Sampling).
+   - If $m < \texttt{target\_m}$: **pad** by randomly repeating existing points.
+
+3. Concatenate across the batch dimension to produce:
+   - `xyzs_out`: `(B, 3, target_m)`
+   - `feats_out`: `(B, C, target_m)`
+
 ## Loss
 
  mean distance, number of upsampled points, Chamfer loss per downsample stage is fed into the loss function, so they are directly penalized:
