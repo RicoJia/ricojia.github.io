@@ -10,7 +10,7 @@ comments: true
 ---
 ---
 
-## Decoder
+## Decoder Overview
 
 We need multiple upsampling block, instead of a major one. Like instead of doing upsampling `x3 -> x3 -> x3`, we just do `x27`. Why?
 
@@ -83,54 +83,167 @@ Below is Level 2 — the midpoints of all edges are added and re-projected:
   </div>
 </div>
 
-### Sub-Pixel / Sub point Convolution
+---
 
-Assume we want to upsample an input by upsample factor `r`
+## Sub-Pixel / Sub point Convolution
 
-```
-H x W x C -> rH x rW x C
-```
+### What is Sub-Pixel Convolution
 
-TODO: Traditionally, this is done by interpolation. However, this tends to yield similar features Why would they duplicate in the first place???
-Because these features have small variations, the resultant points are clustered.
+Given a small low-resolution image (e.g. 4×4), how do you generate a larger high-resolution image (e.g. 8×8)?
 
-**Periodic shuffle is**
+1. **Vanilla upsampling** — bilinear or bicubic interpolation. Fast, but no new fine-grained features are added; the result is a smooth blur.
 
-```
-H x W x C -> H x W x (C*r^2) ---shuffle---> rH x rW x C 
-```
+2. **Upsample then convolve** — upsample to 8×8, then apply a convolution. Can learn new features, but the convolution runs on the larger image, so it's expensive.
 
-You simply interpret the same data in a different shape, like
+3. **Sub-pixel convolution** (convolve then upsample) — apply convolution first on the small image, then rearrange channels into spatial resolution:
+
+$$4 \times 4 \times 3 \;\xrightarrow{\text{conv}}\; 4 \times 4 \times 12 \;\xrightarrow{\text{pixel shuffle}}\; 8 \times 8 \times 3$$
+
+Convolution runs on the smaller spatial size, so it is cheaper. The expanded channel dimension `(×12)` is **learned** — it is not a simple duplication. Each of the 12 channels is a different learned filter response, and the subsequent pixel-shuffle step interprets those channels as sub-pixel displacements to tile into the higher-resolution output.
 
 <div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://i.postimg.cc/nh6Hs8vF/Chat-GPT-Image-Feb-26-2026-12-24-43-PM.png" height="300" alt=""/>
-    </figure>
-</p>
+  <figure>
+    <img src="https://i.postimg.cc/nLnbXbcV/subp.jpg" height="300" alt="Sub-pixel convolution diagram"/>
+    <figcaption>Sub-pixel convolution: convolve at low resolution, then shuffle channels into spatial dimensions</figcaption>
+  </figure>
 </div>
 
-**TODO: Why it works? Channel shuffling + piecing together increase the possiblity of variation of the feature space?? Then this helps gradient descent will optimize parameters with more variation.**
+**Sub-point convolution** (the 3-D point cloud analogue) follows the same idea. Each point has a feature vector of dimension $C$. To upsample by factor $r$, convolution first expands the channel dimension to $C \cdot r$, then a point shuffle redistributes those extra channels into $r$ new points — $C$ stays the same:
 
-#### Sub-pixel Convolution is similar
+$$N \times C \;\xrightarrow{\text{conv}}\; N \times (C \cdot r) \;\xrightarrow{\text{point shuffle}}\; (r \cdot N) \times C$$
 
-Feature Dimension is 4.
+For example, with $N=4$, $C=3$, $r=2$:
 
-```
-N x c = 2 x 4
-```
+$$4 \times 3 \;\xrightarrow{\text{conv}}\; 4 \times 6 \;\xrightarrow{\text{point shuffle}}\; 8 \times 3$$
 
-wuith `upsampling factor = r`: after convolution:
+The intermediate $4 \times 6$ representation is **learned via convolution**, not duplicated — the network packs the information needed to reconstruct 2 new points into those 6 channels.
 
-```
-N x c x r
-```
+### Pixel Shuffle
 
-Then periodic shuffle:
+The reshape step $4 \times 4 \times 12 \;\to\; 8 \times 8 \times 3$ is called **pixel shuffle** (or periodic shuffle). It reinterprets the extra channel slots as sub-pixel spatial positions. In a minimal 1D example with upscale factor $r = 2$:
 
-```
-(r * N) x c
-```
+$$[1,\; 2,\; 3,\; 4] \;\xrightarrow{\text{shuffle}}\; \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$$
+
+In 2D, the general form is:
+
+$$H \times W \times (C \cdot r^2) \;\xrightarrow{\text{pixel shuffle}}\; rH \times rW \times C$$
+
+<div style="text-align: center;">
+  <figure>
+    <img src="https://i.postimg.cc/nh6Hs8vF/Chat-GPT-Image-Feb-26-2026-12-24-43-PM.png" height="300" alt="Pixel shuffle diagram"/>
+    <figcaption>Pixel shuffle: channels are rearranged into spatial dimensions</figcaption>
+  </figure>
+</div>
+
+For point cloud compression, **why not just copy-then-convolve?** The older approach was to first copy (or nearest-neighbour interpolate) the $4 \times 4 \times 3$ feature map 4 times to produce $4 \times 4 \times 12$, then upsample spatially to $8 \times 8 \times 3$ and convolve. The problem is that neighbouring output features all inherited the exact same copied input value, so the network had very little gradient signal to differentiate them — the upsampled points clustered together. Sub-pixel convolution avoids this entirely: the convolution runs on the **small** feature map and learns genuinely distinct values in each of the $C \cdot r^2$ channels, so every output position starts from a different learned representation.
+
+### Sub-Point Convolution
+
+For point clouds the same idea applies along the point dimension instead of spatial H×W. With upsample factor $r$:
+
+$$N \times C \;\xrightarrow{\text{conv}}\; N \times (C \cdot r) \;\xrightarrow{\text{point shuffle}}\; (r \cdot N) \times C$$
+
+---
+
+## Upsampling
+
+### FeatureUpsampleLayer
+
+feature vector (B, C,N) --> SubpointConv (in_channels = C, out_channels = out_dim *upsample_factor) ---> (B, out_dim* upsample_factor, N, U).
+
+### PointCloudUpsampleLayer
+
+XyzsUpsampleLayer Forward Pass
+═══════════════════════════════════════════════════════════════════════════════
+
+[STATIC] icosahedron2sphere(1) + zero row
+  hypothesis: (43, 3) — fixed unit sphere directions on GPU
+
+───────────────────────────────────────────────────────────────────────────────
+
+INPUT
+  xyzs  : (B, 3, N)
+  feats : (B, C, N)
+
+───────────────────────────────────────────────────────────────────────────────
+
+BRANCH 1 — Weighted Direction For Each Point's Upsampled Point
+──────────────────────────────
+
+  feats (B, C, N)
+    │
+    │  SubPointConv — weight_nn
+    │    └─ Conv2d(in=C,        out=hidden_dim,    kernel=1)  ─┐  group loop
+    │    └─ Conv2d(in=hidden_dim, out=43,          kernel=1)  ─┘  × U groups
+    │
+    ▼
+  weights (B, 43, N, U)
+    │
+    │  .unsqueeze(2)
+    ▼
+  weights (B, 43, 1, N, U)
+    │
+    │  softmax(dim=1)           ← normalise over 43 directions
+    ▼
+  weights (B, 43, 1, N, U)     — probabilities, sum=1 over dim 1
+    │
+    │                         hypothesis (43, 3)
+    │                           │
+    │                           │  repeat("h c -> b h c n u")
+    │                           ▼
+    │                         hypothesis (B, 43, 3, N, U)
+    │
+    │  weights * hypothesis    (broadcast over dim=2)
+    ▼
+  weighted_hypothesis (B, 43, 3, N, U)
+    │
+    │  sum(dim=1)
+    ▼
+  directions (B, 3, N, U)
+    │
+    │  F.normalize(p=2, dim=1)
+    ▼
+  directions (B, 3, N, U)      — unit vectors
+
+───────────────────────────────────────────────────────────────────────────────
+
+BRANCH 2 — Scale
+─────────────────
+
+  feats (B, C, N)
+    │
+    │  SubPointConv — scale_nn
+    │    └─ Conv2d(in=C,        out=hidden_dim,    kernel=1)  ─┐  group loop
+    │    └─ Conv2d(in=hidden_dim, out=1,           kernel=1)  ─┘  × U groups
+    │
+    ▼
+  scales (B, 1, N, U)
+
+───────────────────────────────────────────────────────────────────────────────
+
+MERGE
+──────
+
+  directions (B, 3, N, U)
+  scales     (B, 1, N, U)
+    │
+    │  directions * scales     (broadcast over dim=1)
+    ▼
+  deltas (B, 3, N, U)
+    │
+    │                         xyzs (B, 3, N)
+    │                           │
+    │                           │  repeat("b c n -> b c n u")
+    │                           ▼
+    │                         xyzs_rep (B, 3, N, U)
+    │
+    │  xyzs_rep + deltas
+    ▼
+
+OUTPUT
+  upsampled_xyzs (B, 3, N, U)
+
+═══════════════════════════════════════════════════════════════════════════════
 
 ## Loss
 

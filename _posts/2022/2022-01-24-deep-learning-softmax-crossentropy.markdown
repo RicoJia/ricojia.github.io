@@ -39,6 +39,46 @@ $$
 logit = \frac{p}{1-p}
 $$
 
+### Softmax Example
+
+Softmax does **not** reduce dimensions. It is applied along the chosen axis:
+
+$$
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_k e^{x_k}}
+$$
+
+Let
+
+$$
+T = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}
+$$
+
+**Column 0:** $[1,\ 2]$
+
+$$
+e^1 = 2.718,\quad e^2 = 7.389,\quad \text{sum} = 10.107
+$$
+
+$$
+\text{softmax}(\text{col}_0) = \begin{bmatrix} 2.718 / 10.107 \\ 7.389 / 10.107 \end{bmatrix} \approx \begin{bmatrix} 0.269 \\ 0.731 \end{bmatrix}
+$$
+
+**Column 1:** $[3,\ 4]$
+
+$$
+e^3 = 20.085,\quad e^4 = 54.599,\quad \text{sum} = 74.684
+$$
+
+$$
+\text{softmax}(\text{col}_1) = \begin{bmatrix} 20.085 / 74.684 \\ 54.599 / 74.684 \end{bmatrix} \approx \begin{bmatrix} 0.269 \\ 0.731 \end{bmatrix}
+$$
+
+Therefore,
+
+$$
+\text{softmax}(T,\ \text{dim}=0) \approx \begin{bmatrix} 0.269 & 0.269 \\ 0.731 & 0.731 \end{bmatrix}
+$$
+
 ### Properties of Softmax
 
 - Softmax is effectively just choosing the highest scored predicted class, so it does not change how the raw score is calculated. So, if we have a perceptron network, all outputs will be a linear combination of the inputs. Adding a softmax will keep the decision boundaries linear
