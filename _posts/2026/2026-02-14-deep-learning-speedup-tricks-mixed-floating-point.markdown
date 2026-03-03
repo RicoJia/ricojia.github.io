@@ -78,7 +78,7 @@ So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing g
 ### Precisions
 
 - FP16 has 10 mantissa bits, which is `2^10=1024` numbers. So that's roughly `log_10(1024) = 3` significant digits.
-- FP32 has 23 mantissa bits. So that is `log_10(2^23) = 7` significant digits. 
+- FP32 has 23 mantissa bits. So that is `log_10(2^23) = 7` significant digits.
 - FP64 has 52 mantissa bits. So that's `log_10(2^52) = 15.6` significant digits
 
 ## Mixed Precision Training
@@ -158,76 +158,3 @@ learning_rate = 0.1
 W -= learning_rate * unscaled_dW
 b -= learning_rate * unscaled_db
 ```
-
-### Pytorch
-
-```python
-use_amp = True
-
-net = make_model(in_size, out_size, num_layers)
-opt = torch.optim.SGD(net.parameters(), lr=0.001)
-# if False, then this is basically noop
-scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
-
-for epoch in range(epochs):
-    for input, target in zip(data, targets):
-        with torch.autocast(device_type=device, dtype=torch.float16, enabled=use_amp):
-            # gradients are scaled here?
-            output = net(input) # this should be torch.float16
-            loss = loss_fn(output, target)  # loss is autocast to torch.float32
-        # exits autocast before backward()
-        # create scaled gradients
-        scaler.scale(loss).backward()
-        # First, gradients of optimizer params are unscaled here. Unless nan or inf shows up, optimizer.step() is called
-
-        scaler.step(opt)
-        scaler.update()
-        opt.zero_grad() # set_to_none=True here can modestly improve performance
-```
-
-- It's important to have both the forward and the backward passes in `autocast`.
-
-Or using FP16 througout without scaling
-
-```python
-for epoch in range(0): # 0 epochs, this section is for illustration only
-    for input, target in zip(data, targets):
-        # Runs the forward pass under ``autocast``.
-        with torch.autocast(device_type=device, dtype=torch.float16):
-            output = net(input)
-            # output is float16 because linear layers ``autocast`` to float16.
-            assert output.dtype is torch.float16
-
-            loss = loss_fn(output, target)
-            # loss is float32 because ``mse_loss`` layers ``autocast`` to float32.
-            assert loss.dtype is torch.float32
-
-        # Exits ``autocast`` before backward().
-        # Backward passes under ``autocast`` are not recommended.
-        # Backward ops run in the same ``dtype`` ``autocast`` chose for corresponding forward ops.
-        loss.backward()
-        opt.step()
-        opt.zero_grad() # set_to_none=True here can modestly improve performance
-```
-
-- Note that `torch.autocast` expects the device type ('cuda' or 'cpu'), without the device index.
-
-- According to this [NVidia page](https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html):
-  - Each Tensor Core performs `D = A x B + C`, where A, B, C, and D are matrices
-  - In practice, higher performance is achieved when A and B dimensions are multiples of `8`
-  - **Half precision is about an order of magnitude** (10x) faster than double precision (FP64) and about four times faster than single precision (FP32).
-  - **Scaling is quite essential here**. Without scaling, loss would diverge.
-
-- DO NOT USE MIXED_PRECISION TRAINING FOR:
-  - Reduction is an operation that makes a tensor smaller along one or more dimensions, such as sum, mean, max, min.
-    - This is not sitting well with mixed-precision training, e.g., in a MSE loss function, the mean (a reduction) could have underflow issues.
-  - Division is not sitting well with mixed-precision training, either. That's because the denominator could have underflow issues.
-
-- Is it better to use `@torch.inference_mode()` or with `torch.no_grad()`?
-  - `torch.inference_mode()` is a newer con\text manager.
-    - It disables not only gradient computation but also the **version tracking** of tensors required by autograd
-    - Turning off version tracking can be significant for memory usage.
-
-### Results
-
-I observed at 50% speed up in inference when profiling my UNet model using fp16 for inferencing.
