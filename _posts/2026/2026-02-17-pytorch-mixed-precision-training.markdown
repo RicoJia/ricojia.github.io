@@ -2,7 +2,7 @@
 layout: post
 title: PyTorch Mixed Precision Training
 date: 2026-02-17 13:19
-subtitle: torch.zeros
+subtitle: torch.zeros, GradScaler, GradCheck
 comments: true
 tags:
   - CUDA
@@ -163,6 +163,8 @@ from torch.autograd import gradcheck
 ```
 
 fp16 underflows to zero for values under `6 x 10^-5`.  Gradients deep in the network are often too small and simply vanish
+
+`gradcheck` perturbs one scalar input element at a time (not “each point vector” together).
 
 ---
 

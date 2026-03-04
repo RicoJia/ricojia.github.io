@@ -12,25 +12,123 @@ comments: true
 
 ## Decoder Overview
 
-We need multiple upsampling block, instead of a major one. Like instead of doing upsampling `x3 -> x3 -> x3`, we just do `x27`. Why?
+The decoder reconstructs a dense point cloud from a compressed latent representation through multiple **progressive upsampling stages** rather than a single large expansion.
 
-1. upsampling x27 in training might require large gradient changes, which might introduce numerical instabilities
-2. this would require input features to capture extremely fine details.
-3. receptive field is the same, but more intermediate non-linearity between combinations of input elements is learned.
+Instead of one large jump:
 
-This is similar to super pixel:
+$$\times 27$$
+
+the model applies three sequential steps:
+
+$$\times 3 \;\to\; \times 3 \;\to\; \times 3$$
+
+**Why progressive upsampling?**
+
+1. **Numerical stability** — a single ×27 expansion requires large coordinate and feature transformations in one step, which can produce unstable gradients and large coordinate jumps. Progressive expansion distributes geometric refinement across smaller, more manageable steps.
+
+2. **Staged feature specialization** — each block focuses on a different resolution level:
+   - Block 0: coarse structure recovery
+   - Block 1: local detail refinement
+   - Block 2: density adjustment
+
+This is analogous to progressive upsampling in image super-resolution. The overall decoder architecture is:
 
 ```
-2x -> 2x -> 2x
+latent_xyzs
+    ↓
+Decoder block 0  →  pred_xyzs[0]
+    ↓
+Decoder block 1  →  pred_xyzs[1]
+    ↓
+Decoder block 2  →  pred_xyzs[2]
+    ↓
+Final reconstructed point cloud
 ```
 
-Instead of doing it in one shot:
+## Per-block overview
+
+Each decoder layer performs four conceptual steps:
+
+1. For each input point, upsample $U$ candidate child points.
+2. Predict how many upsampled points each input point actually needs.
+3. Select the appropriate number of candidates.
+4. Refine the selected points' coordinates and features.
+
+### Step 1 — Candidate Generation
+
+Given inputs:
 
 ```
-->8x
+xyzs  : (B, 3, N)
+feats : (B, C, N)
 ```
 
-### Icosahedron
+the model produces $U$ candidates per parent point:
+
+```
+candidate_xyzs  : (B, 3, N, U)
+candidate_feats : (B, C, N, U)
+```
+
+Each candidate child is placed at:
+
+$$\text{child\_xyz} = \text{parent\_xyz} + \text{direction} \times \text{scale}$$
+
+- **Directions** are learned as convex combinations over 43 near-uniform sphere directions (from the icosahedron basis).
+- **Scales** and **features** are produced by sub-point convolution.
+
+### Step 2 — Predict Upsampling Count
+
+For each parent point the network predicts:
+
+```
+upsample_num : (B, N)
+```
+
+This allows **variable-density reconstruction** — different regions of the point cloud can be upsampled by different amounts. For example:
+
+| Parent point | Children kept |
+|---|---|
+| Point 0 | 3 |
+| Point 1 | 1 |
+| Point 2 | 5 |
+
+Total output points: $M = \sum_i \texttt{upsample\_num}_i$
+
+### Step 3 — Candidate Selection
+
+From the $U$ candidates per parent, the decoder keeps the first `upsample_num[i]` candidates and flattens across all parents:
+
+```
+xyzs  : (B, 3, M)
+feats : (B, C, M)
+```
+
+For mini-batch training the result is normalized to a fixed target size:
+
+- **Too many points** ($M >$ target): downsample with FPS.
+- **Too few points** ($M <$ target): pad by randomly repeating existing points.
+
+### Step 4 — Refinement
+
+The selected points are refined before being passed to the next stage:
+
+- Coordinate refinement (small residual shifts)
+- Feature refinement
+- Optional normal reconstruction at the final layer
+
+Output:
+
+```
+refined_xyzs  : (B, 3, M)
+refined_feats : (B, C_out, M)
+```
+
+This becomes the input to the next decoder block.
+
+---
+
+## Icosahedron
 
 An **icosahedron** is a regular solid with 20 triangular faces and 12 vertices. In this project, `icosahedron2sphere(level)` uses it to generate nearly uniformly distributed directions on a sphere — these serve as candidate upsampling directions when reconstructing point clouds.
 
@@ -284,6 +382,8 @@ For each batch item `bi`:
 3. Concatenate across the batch dimension to produce:
    - `xyzs_out`: `(B, 3, target_m)`
    - `feats_out`: `(B, C, target_m)`
+
+---
 
 ## Loss
 
