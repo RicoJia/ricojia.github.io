@@ -117,31 +117,80 @@ return out(agg) + q_feat  # (B, C_out, M)
 
 `out` is `Conv1d(hidden, C_out, 1)`. The channel size is kept constant so the residual `+ q_feat` is always valid. This produces an updated feature for each of the M query points.
 
-### Downsampling Block
-
-- FPS
-- collapsed set: C(p): points whose nerest neighbor is P and get downsampled out.
-- downsampling factor?
-
------> Downsampled Point cloud
-
 ### Embeddings
 
-- density embedding -> d-dimensional embedding MLP
-- local position embedding (attention):
-  - for each point in collapsed set
-    - calculate direction and distance [pk - p] -> vec4[direction, distance
-- ancestor embedding: point transformer layer to aggregate the previous stage feature (TODO?) of the collapsed points set -> representative sampled point (???) it's Uxd???
-- all 3 embeddings -> MLP embedding -> vecd[ next stage]
--> local position embedding inflace [u, d] -> Attention
+Each encoder stage collapses a set of input points into fewer representative points (via FPS/downsampling). For every surviving representative point, three embeddings are computed and then fused:
 
-**IMPORTANT QUESTION: why this arrangement??**
+**1. Density embedding**
 
-### Entropy Encoding
+Encodes how many original points were collapsed into this representative. An MLP maps the count (or a soft density estimate) to a $d$-dimensional vector. This lets the decoder know how densely populated each region was so it can upsample by the right amount.
 
-- what was bottleneck in ML again?
-- ps is quantized, how?
-- Entropy Encoder
-  - Need **arithmetic encoder** into the training process
-  - How does the arithmetic encoder jointly optimize the entropy of the features?
-- rate loss func?
+**2. Local position embedding**
+
+For each collapsed point $p_k$ in the neighbourhood of representative $p$, the relative offset is computed:
+
+$$\delta_k = p_k - p$$
+
+Direction and distance are extracted from $\delta_k$ and passed through an MLP to produce a $d$-dimensional geometry descriptor. This captures the local surface shape around each representative.
+
+**3. Ancestor embedding**
+
+The features from the **previous encoder stage** (carried on the collapsed points) are aggregated into the representative via a `MaskedPointTransformer`. This propagates multi-scale context — details learned at finer scales are preserved as the point cloud is progressively compressed.
+
+The three embeddings are concatenated and fused by another MLP to produce the final $d$-dimensional feature vector that travels to the next stage.
+
+**Why separate coordinates and features?**
+
+A point cloud is stored as two parallel tensors:
+
+- **Coordinates** `(B, 3, N)` — where each point is in 3D space.
+- **Features** `(B, C, N)` — what each point *means* in the context of compression.
+
+Raw $(x,y,z)$ alone says only *where* a point is. Compression additionally needs to record *how densely packed* the original cloud was around each anchor, *what the local surface shape looks like*, and *what was learned at earlier encoder stages*. Three numbers per point cannot carry all of that information, which is why a $C$-dimensional feature vector is maintained alongside every point.
+
+By the bottleneck those features encode:
+
+- **Density** — how many original points collapsed into each anchor (density embedding).
+- **Local geometry** — the spatial arrangement of those collapsed points (local position embedding).
+- **Multi-scale context** — information propagated from the previous encoder stage (ancestor embedding).
+
+Recall that during encoding, for each downsampled point p, downsampling discarded points collapse into it. This information is not losslessly transmitted but fused into the features. During decoding, in order to properly upsam- ple each point, we apply MLPs to predict an upsampling factor uˆ ≈ u from the features
+
+This mirrors how learned **large image compression** works: a CNN encoder does not collapse an image to a single global vector; it produces a spatial feature map `(H/s × W/s × C)` so each decoder element has access to locally relevant information. D-PCC does the same on point clouds — the bottleneck is a sparse set of anchor points with feature vectors `(B, C, N_s)`.
+
+The decoder then upsamples each anchor, using its feature vector to determine how many new points to generate and where to place them.
+
+---
+
+## Entropy Encoding
+
+### What is the bottleneck?
+
+The **entropy bottleneck** is a learned probability model $p(\hat{z})$ placed on the quantized latent features $\hat{z}$. It serves two purposes:
+
+- **Training**: adds a rate penalty $R = -\sum \log_2 p(\hat{z})$ to the loss, pushing the encoder to produce features that are cheap to code.
+- **Inference**: provides the CDF the range coder needs to compress $\hat{z}$ into a bitstream.
+
+### How are the features quantized?
+
+During training, hard rounding is replaced by additive uniform noise to keep gradients flowing:
+
+$$\tilde{z} = z + u, \qquad u \sim \mathcal{U}(-0.5,\, 0.5)$$
+
+At inference the features are hard-rounded: $\hat{z} = \text{round}(z)$.
+
+### How does the range coder fit into training?
+
+It does **not** run during training. The expected bit cost is computed analytically from the learned CDF $F$:
+
+$$R = -\sum_i \log_2 \bigl[F(\hat{z}_i + 0.5) - F(\hat{z}_i - 0.5)\bigr]$$
+
+This is differentiable, so it can be backpropagated. The range coder is only called at inference via `EntropyBottleneck.compress()` / `.decompress()`.
+
+### Rate–distortion loss
+
+$$\mathcal{L} = D + \lambda R$$
+
+- $D$ — reconstruction distortion (e.g. Chamfer distance).
+- $R$ — estimated bit-rate from the entropy bottleneck (bits per point).
+- $\lambda$ — trade-off weight: larger $\lambda$ → smaller bitstream at the cost of higher distortion.

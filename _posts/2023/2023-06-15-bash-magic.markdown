@@ -81,6 +81,7 @@ echo "Done Downloading"
 ### Grep
 
 - `grep -B 5 "Something"`: grep the next 5 lines of each instance
+- `grep -Rin` vs `grep -rin`: `-r` doesn't allow softlink.
 
 ### Compound Command?
 

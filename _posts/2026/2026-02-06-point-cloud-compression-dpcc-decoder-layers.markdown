@@ -382,12 +382,3 @@ For each batch item `bi`:
 3. Concatenate across the batch dimension to produce:
    - `xyzs_out`: `(B, 3, target_m)`
    - `feats_out`: `(B, C, target_m)`
-
----
-
-## Loss
-
- mean distance, number of upsampled points, Chamfer loss per downsample stage is fed into the loss function, so they are directly penalized:
-
-- Upsampling ratioL: L1(predicted upsample_num  vs  ground truth downsample_num)
-- predicted mean distance  vs  true mean distance

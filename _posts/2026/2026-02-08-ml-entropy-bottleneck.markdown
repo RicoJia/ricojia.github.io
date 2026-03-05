@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Entropy Bottleneck
-date: 2026-02-23 13:19
-subtitle: Entropy Encoding
+date: 2026-02-08 13:19
+subtitle: Entropy Encoding, Range Encoding
 comments: true
 tags:
   - CUDA
@@ -64,7 +64,17 @@ Hard rounding $\hat{y} = \text{round}(y)$ has zero gradient everywhere, so it ca
 
 $$\tilde{y} = y + u, \qquad u \sim \mathcal{U}(-0.5,\, 0.5)$$
 
-This **approximates quantization** in expectation while keeping gradients flowing. Note: $\tilde{y}$ is **not** an integer — it is a continuous value that statistically behaves like a rounded one. The rate loss is then computed using $p(\tilde{y})$ as a proxy for $p(\hat{y})$.
+This **approximates quantization** in expectation while keeping gradients flowing. $\tilde{y}$ is **not** an integer — it is a continuous value that statistically behaves like a rounded one. The rate loss is computed using $p(\tilde{y})$ as a proxy for $p(\hat{y})$.
+
+**But noise is random — how is it differentiable?** For a fixed sampled $u$, $\tilde{y} = y + u$ is just a shift, so:
+
+$$\frac{\partial \tilde{y}}{\partial y} = 1$$
+
+Backprop flows through as identity. The randomness is in $u$, but the mapping is smooth in $y$. Training then optimises the expected loss over noise:
+
+$$\mathbb{E}_{u \sim \mathcal{U}(-0.5,\,0.5)}\bigl[\mathcal{L}(y + u)\bigr]$$
+
+One sampled $u$ per forward pass is a Monte Carlo estimate of this expectation — the same idea as dropout. Gradients are stochastic but unbiased for the true objective.
 
 ### Entropy Bottleneck — Learning the CDF
 
@@ -161,7 +171,13 @@ $$\text{low}'' = 0 + 5000 \times \tfrac{80}{100} = 4000 \qquad \text{high}'' = 0
 
 **Step 4 — Emit a number in $[4000, 4999]$**, e.g. $4500 = 1000110010100_2$. That binary string is the compressed bitstream.
 
-# TODO: 4500 is 13 bits, quite a bit, does it get better with a longer sequence?
+**$4500$ takes 13 bits — does efficiency improve with longer sequences?**
+
+Yes, dramatically. The 13-bit cost is dominated by the fixed overhead of expressing a number within the initial range $[0, 9999]$ ($\approx \log_2 10000 = 13.3$ bits total), regardless of how many symbols were encoded. With only 2 symbols that is $13/2 = 6.5$ bits per symbol — far above the 3.32-bit Shannon limit. With $n$ symbols the total bitstream length approaches:
+
+$$\underbrace{\log_2(\text{initial range})}_{\text{fixed overhead}} + \sum_{i=1}^{n} -\log_2 P(x_i)$$
+
+As $n$ grows the overhead is amortised and the per-symbol cost converges to the entropy. In practice, range coders periodically **renormalise** — rescaling the interval and flushing bits into a fixed-width register — allowing arbitrarily long sequences in bounded memory.
 
 **Why does this achieve compression?**
 

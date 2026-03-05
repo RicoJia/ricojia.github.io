@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[ML] PyTorch Functions"
-date: 2026-02-09 13:19
+date: 2026-02-23 13:19
 subtitle: autograd Function, Convolution, Normalization, Sum, Torch Cache Emptying
 header-img: img/post-bg-o.jpg
 tags:
@@ -52,7 +52,6 @@ selected = feat[..., idx, :]   # shape (B, m, C)
 ```
 
 `feat` *does* have a gradient, and `torch.gather` is differentiable w.r.t. `feat`. So gradients flow through the gathered features back into the feature extractor — the network learns *what features to produce*, even though it cannot learn *where to sample*.
-
 
 ## Operations
 
