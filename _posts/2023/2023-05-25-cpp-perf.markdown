@@ -1,0 +1,110 @@
+---
+layout: post
+title: Perf
+date: 2023-05-25 13:19
+subtitle: Perf
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - C++
+  - CMake
+---
+
+## perf
+
+> Reference: [cnblogs post](https://www.cnblogs.com/wx170119/p/11459995.html)
+
+### Basic Workflow
+
+1. Compile with `-g` to embed debug symbols. This increases binary size but does not affect runtime performance.
+
+2. Record and convert the trace:
+
+    ```bash
+    perf record -F 99 -a -g -- MY_EXE && perf script -i perf.data &> perf.unfold
+    ```
+
+3. Visualize with one of:
+    - **FlameGraph**
+
+        ```bash
+        git clone https://github.com/brendangregg/FlameGraph.git
+        ./FlameGraph/stackcollapse-perf.pl perf.unfold &> perf.folded
+        ./FlameGraph/flamegraph.pl perf.folded > perf.svg
+        ```
+
+    - **[Speedscope](https://www.speedscope.app/)** (recommended) — drag `perf.unfold` onto the page.
+
+### Perf in a Docker Container
+
+Running `perf` inside Docker has a few quirks, especially with custom kernels (e.g., System76 / Pop!_OS).
+
+#### 1. Missing kernel-matched perf binary
+
+If you see:
+
+```
+WARNING: perf not found for kernel 6.9.3-76060903
+  You may need to install the following packages for this specific kernel:
+    linux-tools-6.9.3-76060903-generic
+```
+
+Custom kernel builds (System76, etc.) often have no matching `linux-tools-<version>` package in the default Ubuntu repos, so `apt install linux-tools-$(uname -r)` will fail inside the container.
+
+**Fix:** Perf's ABI is very stable (`perf_event_open(2)` is backward/forward compatible), so copy the host's `perf` binary directly into the container:
+
+```bash
+cp /usr/lib/linux-tools-$(uname -r)/perf ./perf-copy
+```
+
+> Do **not** copy `/usr/bin/perf` — it is a shell wrapper, not the real binary.
+
+#### 2. Required docker-compose settings
+
+```yaml
+privileged: true      # or at least cap_add: [SYS_ADMIN, PERFMON]
+pid: "host"
+```
+
+- `privileged` / `SYS_ADMIN` / `PERFMON` are required for `perf_event_open`.
+- `pid: "host"` lets `perf` trace real host PIDs and resolve symbols correctly.
+
+#### 3. Lowering the paranoid level
+
+If `perf` complains about permissions, run inside the container:
+
+```bash
+sudo sysctl -w kernel.perf_event_paranoid=0
+sudo sysctl --system
+```
+
+## Profiling
+
+### Timing and Resource Metrics
+
+| Metric | Description | How to measure |
+|--------|-------------|----------------|
+| **Elapsed** | Wall-clock time (includes sleep/wait) | `std::chrono`, `/usr/bin/time`, benchmark timers |
+| **CPU Time** | User+system CPU time; can exceed elapsed when multithreaded | `/usr/bin/time -p/-v`, `getrusage(RUSAGE_SELF)`, `clock_gettime(CLOCK_PROCESS_CPUTIME_ID)` |
+| **Peak RSS** | Peak physical memory resident (not virtual) | `/usr/bin/time -v`, `/proc/<pid>/status` (`VmHWM`/`VmRSS`), `ps -o rss`, `smem` |
+
+### CPU Performance Counter Metrics
+
+These require hardware perf counters to be enabled (may show "n/a" otherwise).
+
+| Metric | Description |
+|--------|-------------|
+| **Cycles** | CPU clock cycles (hardware counter) |
+| **Instructions** | Retired instructions (hardware counter) |
+| **IPC** | Instructions per cycle = `instructions / cycles` (higher is better) |
+| **CPI** | Cycles per instruction = `cycles / instructions` (lower is better) |
+| **Branch miss rate** | Wrong branch predictions / total branches |
+| **Cache miss rate** | Last-level cache misses / references |
+
+Collect all at once with:
+
+```bash
+perf stat -r 5 \
+  -e task-clock,cycles,instructions,branches,branch-misses,cache-references,cache-misses \
+  -- ./your_benchmark_binary --your-flags
+```
