@@ -4,7 +4,7 @@ title: "[ML] HuggingFace Trainer"
 date: 2026-02-26 13:19
 subtitle:
 comments: true
-header-img: img/post-bg-alitrip.jpg
+header-img: img/post-bg-infinity.jpg
 tags:
   - Machine-Learning
 ---
