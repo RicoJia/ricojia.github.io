@@ -3,7 +3,7 @@ layout: post
 title: "[ML] HuggingFace Trainer"
 date: 2026-02-26 13:19
 subtitle:
-header-img: img/post-bg-o.jpg
+header-img: img/post-infinity.jpg
 tags:
   - Machine-Learning
 comments: true
