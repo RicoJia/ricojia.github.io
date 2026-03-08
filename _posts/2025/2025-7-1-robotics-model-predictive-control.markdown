@@ -3,7 +3,7 @@ layout: post
 title: Robotics - Model Predictive Control
 date: '2025-07-01 13:19'
 subtitle: 
-header-img: img/post-bg-walle.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
     - Robotics
     - Control Systems
