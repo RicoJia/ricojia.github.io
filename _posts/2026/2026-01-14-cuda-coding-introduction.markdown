@@ -4,6 +4,7 @@ title: "[CUDA - 2] Introduction to CUDA Coding"
 date: 2026-01-14 13:19
 subtitle: CUDA Programming Hierarchy
 comments: true
+header-img: img/post-bg-o.jpg
 tags:
   - CUDA
 ---

@@ -4,6 +4,7 @@ title: "[CUDA - 3] - Mixed Precision Training"
 date: 2026-01-16 13:19
 subtitle: AT_DISPATCH_FLOATING_TYPES_AND_HALF, gpuAtomicAdd
 comments: true
+header-img: img/post-bg-o.jpg
 tags:
   - CUDA
 ---
