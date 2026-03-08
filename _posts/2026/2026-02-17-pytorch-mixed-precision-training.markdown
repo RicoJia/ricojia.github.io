@@ -4,9 +4,9 @@ title: PyTorch Mixed Precision Training
 date: 2026-02-17 13:19
 subtitle: torch.zeros, GradScaler, GradCheck
 comments: true
+header-img: img/post-infinity.jpg
 tags:
   - CUDA
-header-img: img/post-infinity.jpg
 ---
 
 ## Pytorch Setup

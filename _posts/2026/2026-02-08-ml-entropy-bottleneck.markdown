@@ -4,9 +4,9 @@ title: Entropy Bottleneck
 date: 2026-02-08 13:19
 subtitle: Entropy Encoding, Range Encoding
 comments: true
+header-img: img/post-infinity.jpg
 tags:
   - CUDA
-header-img: img/post-infinity.jpg
 ---
 
 
