@@ -3,7 +3,7 @@ layout: post
 title: "[ML] D-PCC Decoder Layers"
 date: 2026-02-06 13:19
 subtitle: isohedron, losses
-header-img: img/post-bg-o.jpg
+header-img: img/post-infinity.jpg
 tags:
   - Machine-Learning
 comments: true

@@ -6,8 +6,9 @@ subtitle: Entropy Encoding, Range Encoding
 comments: true
 tags:
   - CUDA
+header-img: img/post-infinity.jpg
 ---
----
+
 
 ## Problem Setup
 

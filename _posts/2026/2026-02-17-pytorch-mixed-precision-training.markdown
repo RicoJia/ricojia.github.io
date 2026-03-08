@@ -6,6 +6,7 @@ subtitle: torch.zeros, GradScaler, GradCheck
 comments: true
 tags:
   - CUDA
+header-img: img/post-infinity.jpg
 ---
 
 ## Pytorch Setup
