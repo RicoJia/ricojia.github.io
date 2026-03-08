@@ -3,10 +3,10 @@ layout: post
 title: "[ML] D-PCC Losses"
 date: 2026-02-11 13:19
 subtitle: Chamfer Loss, Density Loss, Point-Count Loss, Rate-Distortion Loss
+comments: true
 header-img: img/post-bg-o.jpg
 tags:
   - Machine-Learning
-comments: true
 ---
 
 ## Entropy Encoding

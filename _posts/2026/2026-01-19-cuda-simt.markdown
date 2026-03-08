@@ -7,7 +7,6 @@ comments: true
 tags:
   - CUDA
 ---
----
 
 ## SIMT and SIMD
 

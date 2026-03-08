@@ -3,10 +3,10 @@ layout: post
 title: "[ML] D-PCC Encoder-Layers"
 date: 2026-02-03 13:19
 subtitle: sub-pixel convolution
+comments: true
 header-img: img/post-bg-o.jpg
 tags:
   - Machine-Learning
-comments: true
 ---
 
 [D-PCC paper](https://yunhe20.github.io/D-PCC/)
