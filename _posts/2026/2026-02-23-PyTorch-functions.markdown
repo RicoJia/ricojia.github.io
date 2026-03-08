@@ -4,7 +4,7 @@ title: "[ML] PyTorch Functions"
 date: 2026-02-23 13:19
 subtitle: autograd Function, Convolution, Normalization, Sum, Torch Cache Emptying
 comments: true
-header-img: img/post-bg-o.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Machine-Learning
 ---

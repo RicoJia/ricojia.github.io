@@ -4,7 +4,7 @@ title: "[ML] Model Visualization"
 date: 2026-02-26 13:19
 subtitle: 
 comments: true
-header-img: img/post-infinity.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Machine-Learning
 ---

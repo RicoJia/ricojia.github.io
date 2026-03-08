@@ -3,7 +3,7 @@ layout: post
 title: "[CUDA - 1]  GPU Architecture"
 date: 2026-01-11 13:19
 subtitle: GPU Architecture, Tensor Cores, Pinned Memory
-header-img: img/post-bg-o.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Machine-Learning
 comments: true

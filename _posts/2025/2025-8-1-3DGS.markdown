@@ -3,7 +3,7 @@ layout: post
 title: Computer Vision - 3D Gaussian Splatting
 date: '2025-08-01 13:19'
 subtitle: 
-header-img: "img/post-bg-walle.jpg"
+header-img: img/post-bg-kuaidi.jpg
 tags:
     - Robotics
     - Control Systems

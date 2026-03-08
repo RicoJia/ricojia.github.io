@@ -4,7 +4,7 @@ title: "[ML] D-PCC Losses"
 date: 2026-02-11 13:19
 subtitle: Chamfer Loss, Density Loss, Point-Count Loss, Rate-Distortion Loss
 comments: true
-header-img: img/post-bg-o.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Machine-Learning
 ---

@@ -3,7 +3,7 @@ layout: post
 title: "[Rust Learning]-2-Variables"
 date: 2025-11-03 13:19
 subtitle: Ownership
-header-img: img/post-bg-o.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Python
 comments: true

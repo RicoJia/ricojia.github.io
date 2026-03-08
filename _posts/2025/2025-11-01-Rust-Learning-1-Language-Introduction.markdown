@@ -3,7 +3,7 @@ layout: post
 title: "[Rust Learning]-1-Language Introduction"
 date: 2025-11-01 13:19
 subtitle: Why Rust
-header-img: img/post-bg-o.jpg
+header-img: img/post-bg-kuaidi.jpg
 tags:
   - Python
 comments: true
