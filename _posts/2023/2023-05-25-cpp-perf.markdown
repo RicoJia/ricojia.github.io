@@ -9,10 +9,31 @@ tags:
   - C++
   - CMake
 ---
-
 ## perf
 
 > Reference: [cnblogs post](https://www.cnblogs.com/wx170119/p/11459995.html)
+
+### Prerequisites: Permissions
+
+By default, many distros set `perf_event_paranoid=4`, which blocks hardware counter access for unprivileged users. Check and fix:
+
+```bash
+cat /proc/sys/kernel/perf_event_paranoid   # 4 = very restricted, -1 = fully open
+
+# Temporarily lower it (until next reboot):
+sudo sysctl -w kernel.perf_event_paranoid=0
+
+# Make it permanent:
+echo 'kernel.perf_event_paranoid=0' | sudo tee -a /etc/sysctl.conf
+```
+
+| Value | Effect |
+|-------|--------|
+| -1 | All events allowed for all users |
+| 0 | CPU events allowed (recommended for dev machines) |
+| 1 | No raw/ftrace access |
+| ≥ 2 | No kernel profiling |
+| 4 | Heavily restricted (default on some distros) |
 
 ### Basic Workflow
 
@@ -107,4 +128,182 @@ Collect all at once with:
 perf stat -r 5 \
   -e task-clock,cycles,instructions,branches,branch-misses,cache-references,cache-misses \
   -- ./your_benchmark_binary --your-flags
+```
+
+### Hands-on Example
+
+The program below exercises all the metrics above in one binary:
+
+- **Sequential sum** — cache-friendly, high IPC, low cache-miss rate baseline.
+- **Random scatter** — cache-unfriendly, drives up LLC miss rate.
+- **Unpredictable branches** — values are random so the branch predictor is ~50 % wrong.
+- **Large allocation** — 256 MB array → visible Peak RSS.
+- **`std::chrono` timer** — prints elapsed time from inside the program.
+
+```cpp
+// perf_demo.cpp
+#include <algorithm>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+#include <numeric>
+#include <random>
+#include <vector>
+
+static const size_t N = 64 * 1024 * 1024;   // 64 M elements = 256 MB (int)
+
+// Cache-friendly sequential sum
+long long sequential_sum(const std::vector<int>& v) {
+    long long s = 0;
+    for (size_t i = 0; i < v.size(); ++i) s += v[i];
+    return s;
+}
+
+// Cache-unfriendly random scatter read
+long long random_sum(const std::vector<int>& v,
+                     const std::vector<size_t>& idx) {
+    long long s = 0;
+    for (size_t i : idx) s += v[i];
+    return s;
+}
+
+// Unpredictable branches (random input → ~50 % misprediction)
+long long branch_heavy(const std::vector<int>& v) {
+    long long s = 0;
+    for (int x : v) {
+        if (x & 1) s += x;     // odd/even depends on random data
+        else        s -= x;
+    }
+    return s;
+}
+
+int main() {
+    std::mt19937 rng(42);
+    std::uniform_int_distribution<int> dist(0, 1 << 20);
+
+    std::cout << "Allocating " << N * sizeof(int) / (1024 * 1024) << " MB...\n";
+    std::vector<int> data(N);
+    for (auto& x : data) x = dist(rng);
+
+    // Random index permutation for scatter access
+    std::vector<size_t> idx(N);
+    std::iota(idx.begin(), idx.end(), 0);
+    std::shuffle(idx.begin(), idx.end(), rng);
+
+    auto t0 = std::chrono::steady_clock::now();
+
+    volatile long long r1 = sequential_sum(data);
+    volatile long long r2 = random_sum(data, idx);
+    volatile long long r3 = branch_heavy(data);
+
+    auto t1 = std::chrono::steady_clock::now();
+    double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+
+    std::cout << "Results (prevent DCE): " << r1 << " " << r2 << " " << r3 << "\n";
+    std::cout << "Elapsed: " << ms << " ms\n";
+}
+```
+
+- `sequential_sum` gives high IPC (~2–4) and low cache-miss rate (<1 %).
+- `random_sum` drives LLC miss rate to 20–40 % and drops IPC below 1.
+- `branch_heavy` pushes branch-miss rate toward 50 %.
+
+**Compile and run:**
+
+```bash
+g++ -O2 -g -o perf_demo perf_demo.cpp
+./perf_demo
+```
+
+**Timing + RSS (`/usr/bin/time -v`):**
+
+```bash
+/usr/bin/time -v ./perf_demo 2>&1 | grep -E "wall clock|Maximum resident"
+```
+
+**CPU counters (`perf stat`):**
+
+```bash
+perf stat -e task-clock,cycles,instructions,branches,branch-misses,cache-references,cache-misses \
+  -- ./perf_demo
+```
+
+### Expected Output (actual run, hardware varies)
+
+```
+ Performance counter stats for './perf_demo':
+
+    33,189,508,178      task-clock         #    0.998 CPUs utilized
+    43,898,685,981      cycles             #    1.323 GHz
+    67,699,556,400      instructions       #    1.54  insn per cycle
+     9,385,632,421      branches           #  282.789 M/sec
+       103,063,756      branch-misses      #    1.10% of all branches
+       223,694,419      cache-references   #    6.740 M/sec
+       165,054,219      cache-misses       #   73.79% of all cache refs
+
+      33.271095641 seconds time elapsed
+      32.689158000 seconds user
+       0.504431000 seconds sys
+```
+
+#### Time breakdown
+
+| Field | Value | Meaning |
+|-------|-------|---------|
+| Elapsed | 33.27 s | Wall-clock time |
+| User | 32.69 s | Time in user code |
+| Sys | 0.50 s | Time in kernel (allocations, syscalls) |
+| task-clock | 33.19 s | CPU time charged to the process |
+| CPUs utilized | 0.998 | ~1 core active — program is single-threaded |
+
+#### Cycles and effective frequency
+
+- **43.9 B cycles / 33.2 s ≈ 1.32 GHz** effective frequency.
+- This is below typical turbo speeds (2–4 GHz). Possible causes: power/thermal throttling, container CPU quota, or frequent stalls causing the CPU to clock-gate.
+
+#### IPC — Instructions Per Cycle
+
+**1.54 IPC** — the CPU retired 1.54 instructions on average every cycle.
+
+| IPC | Interpretation |
+|-----|----------------|
+| < 0.5 | Severely stalled (memory-bound or branch-heavy) |
+| ~1.0 | Moderate utilisation |
+| **1.5–2.5** | **Good** (this run falls here) |
+| 3–4 | Excellent (compute-bound, vectorised) |
+
+Cross-check: 1.32 GHz × 1.54 IPC ≈ **2.03 billion instructions/sec**, which matches 67.7 B instructions / 33.3 s.
+
+#### Branch misses
+
+A **branch misprediction** occurs when the CPU's branch predictor guesses the wrong direction for a conditional jump. Modern out-of-order CPUs speculatively execute instructions along the predicted path. When the prediction is wrong the pipeline must be flushed and re-executed from the correct target — wasting ~15–20 cycles per miss.
+
+Common causes:
+
+- **Data-dependent conditions** on random input (e.g., `if (x & 1)` where `x` is random → ~50 % miss rate).
+- **Indirect calls / virtual dispatch** — the target address is computed at runtime.
+- **Loop bounds that vary** — the predictor can't learn a fixed pattern.
+- **Correlated branches** deep in call chains.
+
+This run: **103 M misses / 9.39 B branches = 1.10 %** — normal range for a mix of predictable and unpredictable code.
+
+| Miss rate | Interpretation |
+|-----------|----------------|
+| < 1 % | Excellent |
+| 1–3 % | Normal |
+| > 10 % | Problematic |
+
+#### Cache misses
+
+- **223 M cache-references, 165 M cache-misses → 73.79 %** looks alarming, but `perf cache-misses` measures **Last Level Cache (LLC / L3) misses**, not L1/L2.
+- The denominator (`cache-references`) counts only the subset of accesses that reach L3, not all memory accesses, so the ratio can appear inflated.
+- In absolute terms: **165 M LLC misses / 33 s ≈ 5 M misses/sec** — not unusually high.
+- The `random_sum` workload (random scatter over 256 MB) is the main driver; it defeats hardware prefetchers and forces most accesses all the way to DRAM.
+
+### Flame Graph (`perf record`)
+
+```bash
+perf record -F 99 -a -g -- ./perf_demo
+perf script -i perf.data &> perf.unfold
+# drag perf.unfold to https://www.speedscope.app
 ```
