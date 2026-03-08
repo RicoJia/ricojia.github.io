@@ -4,7 +4,7 @@ title: "[CUDA - 5] SIMT in CUDA"
 date: 2026-01-19 13:19
 subtitle: SIMD SIMT
 comments: true
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-alibaba.jpg
 tags:
   - CUDA
 ---

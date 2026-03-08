@@ -4,7 +4,7 @@ title: Deep Learning - Mixed Floating Point Training
 date: '2026-02-14 13:19'
 subtitle: FP16, BF16, Mixed Precision Training
 comments: true
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-infinity.jpg
 tags:
     - Deep Learning
 ---

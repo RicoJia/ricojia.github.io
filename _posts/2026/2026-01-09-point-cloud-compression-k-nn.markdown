@@ -3,7 +3,7 @@ layout: post
 title: "[ML] K-Nearest-Neighbor Using Heap With CUDA"
 date: 2025-01-09 13:19
 subtitle:
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-alibaba.jpg
 tags:
   - Machine-Learning
 comments: true

@@ -4,7 +4,7 @@ title: "[ML] D-PCC Encoder-Layers"
 date: 2026-02-03 13:19
 subtitle: sub-pixel convolution
 comments: true
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-infinity.jpg
 tags:
   - Machine-Learning
 ---

@@ -3,7 +3,7 @@ layout: post
 title: "[ML] -Point-cloud-compression-1-Basic-Concepts"
 date: 2026-01-05 13:19
 subtitle: PSNR, Chamfer Distance
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-alibaba.jpg
 tags:
   - Machine-Learning
 comments: true

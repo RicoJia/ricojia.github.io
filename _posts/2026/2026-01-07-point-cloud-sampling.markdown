@@ -4,7 +4,7 @@ title: "[Point Cloud Compression] - Sampling"
 date: 2026-01-07 13:19
 subtitle:
 comments: true
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-alibaba.jpg
 tags:
   - CUDA
 ---

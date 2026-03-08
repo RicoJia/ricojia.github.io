@@ -4,7 +4,7 @@ title: "[ML] Libraries For Point Cloud Compression"
 date: 2026-02-12 13:19
 subtitle: einops
 comments: true
-header-img: img/post-bg-kuaidi.jpg
+header-img: img/post-bg-infinity.jpg
 tags:
   - Machine-Learning
 ---
