@@ -94,6 +94,10 @@ session = ort.InferenceSession("model.onnx")
 outputs = session.run(None, {"input": x})
 ```
 
+### ONNX Graph
+
+An ONNX graph represents the neural network as a computational graph. Connections are connected together to show how data flows from input -> output.
+
 ONNX is commonly used for C++ deployment on edge devices. One such graph typically includes:
 
 | Component           | Meaning                               |
@@ -127,10 +131,6 @@ Output (y)
 Each box is a node in the graph. Graph engines can optimize the graph. E.g., `Conv → BatchNorm → ReLU` may become `FusedConv` which is much faster. ️Also, a graph lets runtime detect independent operations and run them in Parallel.
 
 A graph lets runtimes detect independent operations and run them in parallel.
-
-### ONNX Graph
-
-An ONNX graph represents the neural network as a computational graph. Connections are connected together to show how data flows from input -> output.
 
 ### Caution: Not All Components Are ONNX-Exportable
 
