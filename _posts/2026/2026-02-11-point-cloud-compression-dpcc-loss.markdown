@@ -114,14 +114,6 @@ Chamfer loss **pulls matched points toward each other**:
 $$p_1: (0,0) \to (0.2,0) \qquad p_2: (2,0) \to (2.4,0)$$
 $$q_1: (0.5,0) \to (0.3,0) \qquad q_2: (3,0) \to (2.6,0)$$
 
-> **Single-sided vs. bidirectional Chamfer.**
-> The two directions play distinct roles:
->
-> - $P \to Q$ (**accuracy**): every predicted point must be near some GT point.
-> - $Q \to P$ (**coverage**): every GT point must be near some predicted point.
->
-> With only $P \to Q$, the coverage term is absent. All predicted points can collapse onto a single GT point and still achieve low loss — there is no gradient to spread them over uncovered GT points. Single-sided loss therefore **worsens** the clustering / mode-collapse problem compared to the full bidirectional loss.
-
 **One important Chamfer behavior — point clustering.**
 
 A single point can become the nearest neighbor for multiple points simultaneously. For example:
@@ -133,6 +125,14 @@ Both $p_1$ and $p_2$ match $q_1$, so $q_1$ receives gradient from both:
 $$\nabla_q L = 2(q - p_1) + 2(q - p_2)$$
 
 $q$ is pulled toward the **average** of $p_1$ and $p_2$. This is one reason Chamfer loss can produce clustering: many predicted points can chase the same target, or one predicted point can represent several targets imperfectly.
+
+> **Single-sided vs. bidirectional Chamfer.**
+> The two directions play distinct roles:
+>
+> - $P \to Q$ (**accuracy**): every predicted point must be near some GT point.
+> - $Q \to P$ (**coverage**): every GT point must be near some predicted point.
+>
+> With only $P \to Q$, the coverage term is absent. All predicted points can collapse onto a single GT point and still achieve low loss — there is no gradient to spread them over uncovered GT points. Single-sided loss therefore **worsens** the clustering / mode-collapse problem compared to the full bidirectional loss.
 
 ### Density Loss
 
