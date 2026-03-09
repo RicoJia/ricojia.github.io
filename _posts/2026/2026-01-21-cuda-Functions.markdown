@@ -5,7 +5,6 @@ date: 2026-01-21 13:19
 subtitle: attomicAdd, pragma unroll
 comments: true
 header-img: img/post-bg-alibaba.jpg
-header-img: img/post-bg-alibaba.jpg
 tags:
   - CUDA
 ---
