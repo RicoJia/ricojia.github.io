@@ -150,10 +150,6 @@ Not every part of a model can be traced into an ONNX graph. The table below summ
 The realistic deployment split is to keep the encoder and entropy coding in Python/CUDA, and export only the decoder side to ONNX:
 
 ```
-┌─ encode (Python/CUDA) ────────────────────────────┐
-│  encoder → latent_xyzs, latent_feats              │
-│  feats_eblock.compress() → byte strings           │
-└───────────────────────────────────────────────────┘
 
 ┌─ decode (ONNX-exportable) ────────────────────────┐
 │  feats_eblock.decompress() → latent_feats         │
@@ -163,6 +159,29 @@ The realistic deployment split is to keep the encoder and entropy coding in Pyth
 
 **Q: Could a C++ reimplementation of `compress()` be ONNX-exported?**
 It doesn't need to be. If `compress()` / `decompress()` are reimplemented natively in C++, they are called directly from C++ code — completely outside the ONNX graph. The ONNX model only needs to cover the neural network computations (i.e., the decoder). The entropy coder lives alongside it as a separate C++ component, not inside the graph.
+
+Within the encoder, `EntropyBottleneck` is a pure python loop with learnable parameters to represent a Cumulative Distribution Function (CDF).
+
+```python
+EntropyBottleneck
+├── forward()          → tensor ops on CDF params  → ✅ ONNX  (training path only)
+├── compress()         → range encoder loop         → ❌ not a torch graph
+└── decompress()       → range decoder loop         → ❌ not a torch graph
+     └── uses _quantized_cdf  (learned, stored)     → these weights must travel
+                                                       with the C++ entropy coder
+```
+
+So you can export the CDF tables as raw tensors, not as an ONNX graph
+
+```python
+torch.save({
+    "quantized_cdf":     model.feats_eblock._quantized_cdf,
+    "cdf_lengths":       model.feats_eblock._cdf_lengths,
+    "offsets":           model.feats_eblock._offset,
+}, "feats_eblock_cdf.pt")
+```
+
+Then in C++ you load those tables and feed them into a C++ range coder — ryg-rans or the one compressai itself ships in compressai/lib/.
 
 **C++ decoder-side skeleton:**
 
