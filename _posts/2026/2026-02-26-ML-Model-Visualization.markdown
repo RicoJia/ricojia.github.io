@@ -2,7 +2,7 @@
 layout: post
 title: "[ML] Model Visualization"
 date: 2026-02-26 13:19
-subtitle: 
+subtitle: ONNX, Netron, Model Size
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -91,3 +91,13 @@ ConstantOfShape → Expand → Tile
 ## torchviz
 
 pip install torchinfo torchviz
+
+## Model Size Checking
+
+```python
+model.eval()
+total_params = sum(p.numel() for p in model.parameters())
+trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Loaded model from {args.model_path}")
+print(f"Model size: {total_params:,} total params  ({trainable_params:,} trainable)")
+```
