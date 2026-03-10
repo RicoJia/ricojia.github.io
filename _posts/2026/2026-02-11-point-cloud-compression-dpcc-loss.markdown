@@ -126,13 +126,41 @@ $$\nabla_q L = 2(q - p_1) + 2(q - p_2)$$
 
 $q$ is pulled toward the **average** of $p_1$ and $p_2$. This is one reason Chamfer loss can produce clustering: many predicted points can chase the same target, or one predicted point can represent several targets imperfectly.
 
-> **Single-sided vs. bidirectional Chamfer.**
-> The two directions play distinct roles:
+> **Single-sided vs. bidirectional Chamfer — asymmetric matching example.**
 >
+> The two directions play distinct roles:
 > - $P \to Q$ (**accuracy**): every predicted point must be near some GT point.
 > - $Q \to P$ (**coverage**): every GT point must be near some predicted point.
 >
-> With only $P \to Q$, the coverage term is absent. All predicted points can collapse onto a single GT point and still achieve low loss — there is no gradient to spread them over uncovered GT points. Single-sided loss therefore **worsens** the clustering / mode-collapse problem compared to the full bidirectional loss.
+> The following example has **asymmetric** nearest-neighbor matching and shows how the $Q \to P$ term actively fights clustering.
+>
+> $$P = \{p_1=(0,0),\ p_2=(1,0)\} \quad \text{(predicted)}, \qquad Q = \{q_1=(0.6,0),\ q_2=(3,0)\} \quad \text{(GT)}$$
+>
+> **Matching:**
+>
+> | Direction | Pair | Note |
+> |---|---|---|
+> | $P \to Q$ | $p_1 \to q_1$, $p_2 \to q_1$ | both predicted points are closest to $q_1$; $q_2$ is **uncovered** |
+> | $Q \to P$ | $q_1 \to p_2$, $q_2 \to p_2$ | both GT points are closest to $p_2$; $p_1$ gets no pull from this direction |
+>
+> The matching is asymmetric: $p_1$ chases $q_1$ in $P \to Q$, but $q_1$ chases $p_2$ in $Q \to P$.
+>
+> **Gradients on predicted points** (sum loss):
+>
+> | Term | $\nabla_{p_1} L$ | $\nabla_{p_2} L$ |
+> |---|---|---|
+> | $P \to Q$ | $2(p_1 - q_1) = (-1.2,\,0)$ | $2(p_2 - q_1) = (+0.8,\,0)$ |
+> | $Q \to P$ | — (not matched) | $2(p_2-q_1)+2(p_2-q_2) = (+0.8,0)+(-4,0) = (-3.2,\,0)$ |
+> | **Total** | $(-1.2,\,0)$ | $(-2.4,\,0)$ |
+>
+> **Update with $\eta = 0.1$:**
+>
+> $$p_1: (0,0) \to (0.12,0) \quad \text{(moves toward } q_1\text{)}$$
+> $$p_2: (1,0) \to (1.24,0) \quad \text{(moves toward } q_2 \text{ — pulled away from } q_1\text{!)}$$
+>
+> The dominant force on $p_2$ is the $Q \to P$ coverage penalty from the distant $q_2=(3,0)$. It **overrides** the $P \to Q$ pull toward $q_1$ and drives $p_2$ rightward to cover $q_2$.
+>
+> **With single-sided $P \to Q$ only:** $\nabla_{p_2} L = (+0.8, 0)$, so $p_2$ moves *left* toward $q_1$ — deepening the cluster. The bidirectional loss is what breaks the symmetry and spreads predictions to cover the full GT.
 
 ### Density Loss
 
