@@ -50,7 +50,7 @@ The joint optimisation drives the encoder to produce a **compact, peaked latent 
 
 The total training loss is the sum of three terms:
 
-$$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{chamfer}} + \mathcal{L}_{\text{density}} + \mathcal{L}_{\text{pts\_num}}$$
+$$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{chamfer}} + \mathcal{L}_{\text{density}} + \mathcal{L}_{\text{pts\_num}} + \mathcal{L}_{\text{bpp\_loss}}$$
 
 ### Chamfer Loss
 
@@ -129,6 +129,7 @@ $q$ is pulled toward the **average** of $p_1$ and $p_2$. This is one reason Cham
 > **Single-sided vs. bidirectional Chamfer — asymmetric matching example.**
 >
 > The two directions play distinct roles:
+>
 > - $P \to Q$ (**accuracy**): every predicted point must be near some GT point.
 > - $Q \to P$ (**coverage**): every GT point must be near some predicted point.
 >
@@ -216,4 +217,25 @@ def get_pts_num_loss(
         loss = loss + torch.abs(pred_unums[i].sum() - target_total)
 
     return loss * pts_num_coe
+```
+
+### Bits Per Point (BPP) Loss
+
+- Use shannon entropy to get an exstimates of range encoding bits. This is an approximation because range encoding itself is not-differentiable, but shannon entropy is. TODO: Likelihoods is the CDF???  
+
+```python
+latent_feats_hat, likelihoods = self.feats_eblock(latent_feats)
+feats_bits = self.shannon_entropy_in_bits(likelihoods)
+feats_bpp = feats_bits / points_num
+
+analyzed_hat, likelihoods = self.xyzs_eblock(analyzed)
+xyzs_bpp = self.shannon_entropy_in_bits(likelihoods) / points_num
+```
+
+- scale the BPP
+
+```python
+bpp = feats_bpp + xyzs_bpp
+bpp_loss = bpp * self.args.bpp_lambda
+loss = loss + bpp_loss
 ```

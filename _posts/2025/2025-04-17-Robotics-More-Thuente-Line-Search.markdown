@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Robotics - Moré-Thuente Line Search Algorithmk
-date: '2025-04-17 13:19'
-subtitle: 
+title: Robotics - Moré-Thuente Line Search Algorithm
+date: 2025-04-17 13:19
+subtitle:
 comments: true
-header-img: "img/post-bg-unix-linux.jpg"
+header-img: img/post-bg-unix-linux.jpg
 tags:
-    - Robotics
+  - Robotics
 ---
 
 
@@ -30,7 +30,7 @@ Given the current pose $x_0$​, the cost w.r.t $\alpha$ along the search direct
 
 $$\phi(\alpha) = f\bigl(x_0 + \alpha\,dx\bigr).$$
 
-We want: 
+We want:
 
 $$
 f\bigl(x_0 + \alpha\,dx\bigr) \le f(x_0 + dx)
@@ -54,7 +54,6 @@ $$
 \phi'(0)=\nabla f(x_0)^\top dx
 $$
 
-
 ### When Armijo is violated, what went wrong?
 
 When the Armijo sufficient-decrease condition fails, there are two possible causes:
@@ -66,7 +65,7 @@ When the Armijo sufficient-decrease condition fails, there are two possible caus
 
 $$
 \alpha \leftarrow 0.5\alpha
-$$ 
+$$
 
 2. The step is too small. The decrease in the cost is smaller than the linear model predicts, and Armijo rejects the step even though it is not too large. This can happen when:
     - The search direction dx is nearly orthogonal to the gradient,
@@ -81,7 +80,7 @@ We check the directional derivative at the candidate step:
 
 $$
 \phi'(\alpha)=\nabla f\bigl(x_0+\alpha\,dx\bigr)^\top dx
-$$ 
+$$
 
 - If $\phi'(\alpha)<0$: the slope is still negative → the cost is still decreasing → $\alpha$ is too small (we haven't reached the bottom yet).
 - If $\phi'(\alpha)>0$: the slope became positive → we passed the minimum → $\alpha$ is too large.
@@ -92,11 +91,10 @@ After Armijo is satisfied, we check for the stopping condition: whether the dire
 
 ϕ'(α) is sufficiently close to zero.
 
-If 
+If
 
 $$
 |\phi'(\alpha)|\le c_2\,|\phi'(0)|, c_2 \in (c_1, 1)
-$$ 
+$$
 
-we say the slope is flat enough and accept $\alpha$. This is the (strong) Wolfe curvature condition. 
-
+we say the slope is flat enough and accept $\alpha$. This is the (strong) Wolfe curvature condition.
