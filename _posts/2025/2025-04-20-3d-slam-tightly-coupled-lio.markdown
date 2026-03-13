@@ -2,7 +2,7 @@
 layout: post
 title: "[3D-SLAM 6] Tightly Coupled Lio"
 date: 2025-04-20 13:19
-subtitle:
+subtitle: iekf
 comments: true
 header-img: img/post-bg-unix-linux.jpg
 tags:
@@ -43,9 +43,9 @@ $$
 \mathbf{e}_i = R\mathbf{p}_i + \mathbf{t} - \mathbf{q}_i \in \mathbb{R}^3
 $$
 
-The total cost is $\mathcal{C} = \frac{1}{2}\sum_i \|\mathbf{e}_i\|^2$.
+The total cost is $\mathcal{C} = \frac{1}{2}\sum_i \lVert\mathbf{e}_i\rVert^2$.
 
-**Jacobian** — linearize $\mathbf{e}_i$ around the current nominal pose $(\hat{R}, \hat{\mathbf{t}})$ using the error state $\delta x = [\delta \mathbf{p},\; \delta\boldsymbol{\theta}]^T \in \mathbb{R}^6$:
+**Jacobian** — linearize $\mathbf{e}_i$ around the current nominal pose $(\hat{R}, \hat{\mathbf{t}})$ using the error state $\delta x = \lbrack\delta \mathbf{p},\; \delta\boldsymbol{\theta}\rbrack^T \in \mathbb{R}^6$:
 
 $$
 \mathbf{e}_i \approx \underbrace{(\hat{R}\mathbf{p}_i + \hat{\mathbf{t}} - \mathbf{q}_i)}_{\mathbf{e}_i^{(0)}} + J_i\,\delta x,
@@ -53,7 +53,7 @@ $$
 J_i = \begin{bmatrix} I_3 & -[\hat{R}\mathbf{p}_i]_\times \end{bmatrix} \in \mathbb{R}^{3\times 6}
 $$
 
-where $[\cdot]_\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w.r.t. translation is $I_3$; w.r.t. rotation it is $-[\hat{R}\mathbf{p}_i]_\times$ (from the first-order approximation $R \approx \hat{R}(I + [\delta\boldsymbol{\theta}]_\times)$).
+where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w.r.t. translation is $I_3$; w.r.t. rotation it is $-\lbrack\hat{R}\mathbf{p}_i\rbrack_\times$ (from the first-order approximation $R \approx \hat{R}(I + \lbrack\delta\boldsymbol{\theta}\rbrack_\times)$).
 
 **Gauss-Newton normal equations** — stacking all $N$ correspondences:
 
@@ -105,7 +105,7 @@ $$
 \delta x_\text{ICP} = [\delta p_x,\; \delta p_y,\; \delta p_z,\; \delta\theta_x,\; \delta\theta_y,\; \delta\theta_z]^T
 $$
 
-**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian $J = [I_6 \mid 0_{6\times 12}]$ and noise covariance $R_\text{ICP}$:
+**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian $J = \lbrack I_6 \mid 0_{6\times 12}\rbrack$ and noise covariance $R_\text{ICP}$:
 
 $$
 K = P^-_k J^T \bigl(J P^-_k J^T + R_\text{ICP}\bigr)^{-1}
@@ -119,7 +119,7 @@ $$
 \hat{x}^+_k = \hat{x}^-_k \oplus \delta x, \qquad P^+_k = (I - KJ)\,P^-_k
 $$
 
-**Why is this loosely coupled and less informative?** Yes — this *is* loosely coupled: LiDAR is processed independently by ICP, which produces a pose estimate that is then fused into the filter, exactly matching the loosely-coupled definition. ICP minimizes $\sum_i \|\mathbf{e}_i\|^2$ without any knowledge of $P^-_k$. The resulting $\delta x_\text{ICP}$ is optimal for the scan-matching problem *alone*, but it discards the individual residual structure of all $N$ point pairs. When handed to the ESKF as a single synthetic observation, the filter cannot exploit those $N$ independent constraints individually — making it less informative than if the raw point residuals were incorporated directly. That is what Alternative 2 does.
+**Why is this loosely coupled and less informative?** Yes — this *is* loosely coupled: LiDAR is processed independently by ICP, which produces a pose estimate that is then fused into the filter, exactly matching the loosely-coupled definition. ICP minimizes $\sum_i \lVert\mathbf{e}_i\rVert^2$ without any knowledge of $P^-_k$. The resulting $\delta x_\text{ICP}$ is optimal for the scan-matching problem *alone*, but it discards the individual residual structure of all $N$ point pairs. When handed to the ESKF as a single synthetic observation, the filter cannot exploit those $N$ independent constraints individually — making it less informative than if the raw point residuals were incorporated directly. That is what Alternative 2 does.
 
 ---
 
@@ -146,7 +146,7 @@ J^{(j)} = \begin{bmatrix} J^{(j)}_1 \\ \vdots \\ J^{(j)}_N \end{bmatrix} \in \ma
 \mathbf{r}_0^{(j)} = \begin{bmatrix} \mathbf{r}_1^{(j)} \\ \vdots \\ \mathbf{r}_N^{(j)} \end{bmatrix} \in \mathbb{R}^{3N}
 $$
 
-Each row-block $J^{(j)}_i = \begin{bmatrix} I_3 & -[\hat{R}^{(j)}\mathbf{p}_i]_\times & 0_{3\times 12} \end{bmatrix}$ (zeros for velocity, biases, gravity).
+Each row-block $J^{(j)}_i = \begin{bmatrix} I_3 & -\lbrack\hat{R}^{(j)}\mathbf{p}_i\rbrack_\times & 0_{3\times 12} \end{bmatrix}$ (zeros for velocity, biases, gravity).
 
 3. **Kalman gain and update** — let $\tilde{x}^{(j)} = \hat{x}^{(j)} \ominus \hat{x}^-_k$ denote the accumulated drift from the prior:
 
