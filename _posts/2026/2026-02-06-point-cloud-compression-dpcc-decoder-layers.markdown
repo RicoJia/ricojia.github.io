@@ -12,6 +12,25 @@ comments: true
 
 ## Decoder Overview
 
+The overall decoder is looking to achieve the below:
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/ncjXKYTZ/Screenshot-from-2026-03-13-11-23-06.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+1. Icosahedron vertices on a unit sphere become **candidate directions** — unit vectors pointing from a parent point toward each potential upsampled child.
+2. Multiple upsampling blocks each independently reference this same set of candidate directions; direction duplication happens across blocks, not within a single block.
+3. From the sub-point convolution layer, the network learns per-point:
+    - **Weights** (convex combination coefficients) over the candidate directions, producing a soft-blended displacement direction per child.
+    - **Scale**: a scalar controlling *how far* along the direction each child is placed (i.e., the displacement magnitude). Scale is learned per-point rather than globally because local point spacing varies across different regions of the cloud.
+    - **Upsampled features**: child feature vectors derived from the parent's input features (e.g., normals, latent descriptors).
+4. A new upsampled point is placed at: `child_xyz = parent_xyz + direction * weight * scale`
+5. A new upsampled feature = upsampled feature + input feature (skip connection, preserving parent information).
+
 The decoder reconstructs a dense point cloud from a compressed latent representation through multiple **progressive upsampling stages** rather than a single large expansion.
 
 Instead of one large jump:
@@ -76,6 +95,7 @@ $$\text{child\_xyz} = \text{parent\_xyz} + \text{direction} \times \text{scale}$
 
 - **Directions** are learned as convex combinations over 43 near-uniform sphere directions (from the icosahedron basis).
 - **Scales** and **features** are produced by sub-point convolution.
+  - This is because scale for different regions of the point cloud might be very different.
 
 ### Step 2 — Predict Upsampling Count
 
