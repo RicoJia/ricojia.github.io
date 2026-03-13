@@ -271,6 +271,7 @@ feature vector (B, C,N) --> SubpointConv (in_channels = C, out_channels = out_di
 
 ### PointCloudUpsampleLayer
 
+```
 XyzsUpsampleLayer Forward Pass
 ═══════════════════════════════════════════════════════════════════════════════
 
@@ -286,12 +287,12 @@ INPUT
 ───────────────────────────────────────────────────────────────────────────────
 
 BRANCH 1 — Weighted Direction For Each Point's Upsampled Point
-──────────────────────────────
+──────────────────────────────────────────────────────────────
 
   feats (B, C, N)
     │
     │  SubPointConv — weight_nn
-    │    └─ Conv2d(in=C,        out=hidden_dim,    kernel=1)  ─┐  group loop
+    │    └─ Conv2d(in=C,          out=hidden_dim,  kernel=1)  ─┐  group loop
     │    └─ Conv2d(in=hidden_dim, out=43,          kernel=1)  ─┘  × U groups
     │
     ▼
@@ -326,12 +327,12 @@ BRANCH 1 — Weighted Direction For Each Point's Upsampled Point
 ───────────────────────────────────────────────────────────────────────────────
 
 BRANCH 2 — Scale
-─────────────────
+────────────────
 
   feats (B, C, N)
     │
     │  SubPointConv — scale_nn
-    │    └─ Conv2d(in=C,        out=hidden_dim,    kernel=1)  ─┐  group loop
+    │    └─ Conv2d(in=C,          out=hidden_dim,  kernel=1)  ─┐  group loop
     │    └─ Conv2d(in=hidden_dim, out=1,           kernel=1)  ─┘  × U groups
     │
     ▼
@@ -340,7 +341,7 @@ BRANCH 2 — Scale
 ───────────────────────────────────────────────────────────────────────────────
 
 MERGE
-──────
+─────
 
   directions (B, 3, N, U)
   scales     (B, 1, N, U)
@@ -362,6 +363,7 @@ OUTPUT
   upsampled_xyzs (B, 3, N, U)
 
 ═══════════════════════════════════════════════════════════════════════════════
+```
 
 ## Data Processing
 

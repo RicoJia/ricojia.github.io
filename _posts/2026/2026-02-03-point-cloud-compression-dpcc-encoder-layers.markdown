@@ -15,6 +15,38 @@ tags:
 
 - **latent feature**: a compressed internal representation that contains essential information needed to reconstruct the original data.
 - **Cardinality**: the number of elements in a set. If a point cloud P is: `P = {p1, p2, ..., pN}` cardinality  $C(s) = N$
+- Permutation: reordeirng points so they are easier to compress. Compression algorithms reorder points so that nearby points in space appear close together in memory. This makes prediction, delta encoding, or entropy coding work better.E.g., `P = [(0,0), (10,10), (1,1), (11,11), (2,2)]` is hard to encode because This order jumps back and forth across space., but `P' = [(0,0), (1,1), (2,2), (10,10), (11,11)]` is better.
+
+---
+
+## Overview - What Does D-PCC Bring Us?
+
+### Why not PointNet++?
+
+PointNet++ is a classic hierarchical architecture for point cloud processing. It uses **max-pooling** to aggregate local neighborhoods, which makes it permutation-invariant but causes two problems:
+
+- **Clustering bias**: max-pooling collapses the entire local neighborhood into one scalar per channel, discarding relative spatial arrangement. Points from a flat surface vs. a sharp edge may produce the same pooled output.
+- **Fixed cardinality assumption**: the network is designed for a fixed number of input points. It does not naturally handle variable-size point sets across batches.
+
+### Point Transformer
+
+The **Point Transformer** replaces max-pooling with **vector self-attention** over K-nearest-neighbor graphs. This addresses both issues:
+
+- **Permutation invariance** is preserved because attention is a weighted sum over an unordered neighborhood.
+- **Variable cardinality** is handled naturally — the attention mechanism does not assume a fixed set size.
+- **Local geometry is preserved** — instead of collapsing neighbors into a single value, each neighbor's feature is weighted by its learned relevance (attention score), retaining relative spatial structure.
+
+### Traditional vs. learned compression
+
+Traditional point cloud codecs (e.g., octree, kd-tree) achieve near-lossless compression by exploiting spatial locality: nearby points differ little, so only their residuals need to be stored. These methods are hand-engineered and do not generalize across varying densities or scene types.
+
+D-PCC replaces this with a **learned latent representation** — a compact feature vector per anchor point that is entropy-coded. The decoder reconstructs the full cloud from these anchors.
+
+### The variable-density upsampling problem
+
+A naive upsampler that generates a fixed number of new points per anchor produces **uniform density**, which is wrong — real-world point clouds are non-uniform, with more points on nearby surfaces and fewer on distant ones.
+
+D-PCC solves this by having the decoder **predict an upsampling factor per anchor point** from its feature vector, so each region can be reconstructed at the appropriate density.
 
 ---
 

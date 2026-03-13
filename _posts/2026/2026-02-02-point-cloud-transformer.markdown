@@ -89,7 +89,7 @@ $$
 
 ## Discussions
 
-### What is a Channel?
+### What Does a Channel Represent?
 
 Think of each channel as detecting something different:
 
