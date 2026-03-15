@@ -71,7 +71,8 @@ Triggered every time a keyframe is added (for flat-map scan matchers like `pcl_n
 
 1. Compute the `TileKey` of the **current robot position**.
 2. Iterate over tiles within a cube of half-width `ceil(local_map_radius / tile_size)` around that center tile.
-3. Include a tile if its center is within `radius + tile_size * 0.87` of the robot position. The factor $0.87 \approx \frac{\sqrt{3}}{2}$ is the circumscribed-sphere radius of a unit cube, ensuring no border tile is incorrectly excluded.
+    - **No tiles are missed.** `ceil` is conservative — it rounds up, so the iteration cube is always at least as large as needed. Even if the robot sits exactly on a tile boundary (a floating-point edge case), `ceil` keeps the cube one step larger rather than smaller. The Euclidean filter in step 3 then adds a second layer of protection.
+3. Include a tile if its center is within `radius + tile_size * 0.87` of the robot position. The factor $0.87 \approx \frac{\sqrt{3}}{2}$ is the half-diagonal of a unit cube (its circumscribed-sphere radius), so any tile that geometrically overlaps the query sphere passes the check even if its center sits right at the boundary. Together, `ceil` and the `0.87` buffer make the selection conservative on both the iteration bound and the distance filter.
 4. Concatenate all qualifying tile clouds into a **fresh `global_map_`**, replacing the old one.
 
 ### 5. Consumption (Scan Matching)
