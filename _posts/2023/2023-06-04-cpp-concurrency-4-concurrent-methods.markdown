@@ -12,24 +12,26 @@ tags:
 ## Asynchronous Programming
 
 - Single-Threaded Asynchornous Programming
-    - Cooperative Multitasking & Pre-emptive Multitasking
-        - This is a model where each task **voluntarily gives up control** after executing X instructions, so other tasks can execute. 
-            - Say a line-printing thread prints 3 lines then yield control.
-        - Another paradigm is **preemptive multitasking, where the scheduler forcibly interrupts tasks**.
-            - E.g.,: `CPython` threading model. The interpreter periodically releases the GIL after a certain number of bytecode is executed
-    - Event loop 
-        - Used in Like Javascript in a browser / `Node.js`
-        - The python `Asyncio` has an event loop that schedules and runs coroutines.
+  - Cooperative Multitasking & Pre-emptive Multitasking
+    - This is a model where each task **voluntarily gives up control** after executing X instructions, so other tasks can execute.
+      - Say a line-printing thread prints 3 lines then yield control.
+    - Another paradigm is **preemptive multitasking, where the scheduler forcibly interrupts tasks**.
+      - E.g.,: `CPython` threading model. The interpreter periodically releases the GIL after a certain number of bytecode is executed
+  - Event loop
+    - Used in Like Javascript in a browser / `Node.js`
+    - The python `Asyncio` has an event loop that schedules and runs coroutines.
+
         ```
         Event Loop:
             while queue.get():
                 event = queue.pop_front(); // FIFO
                 event.handler(args)
         ```
-        - Event could be OS notification mechanisms, like epoll, select, poll.
+
+    - Event could be OS notification mechanisms, like epoll, select, poll.
 
 - Concurrent Programming
-    - This involves multiple threads / processes running in parallel. (True parallelism)
+  - This involves multiple threads / processes running in parallel. (True parallelism)
 
 ## Summary of Performance
 
@@ -188,15 +190,16 @@ int main() {
 ```
 
 - To compile and run: `g++ -fopenmp -O2 -msse4.1 -std=c++17 omp_test.cpp -ltbb && ./a.out`
-    - `msse4.1` is for SIMD, `-fopenmp` is for OpenMP
+  - `msse4.1` is for SIMD, `-fopenmp` is for OpenMP
 
 ------------------------------------------------------------
+
 ## [Method 1] SIMD (Optimization Impact: ⭐️⭐⭐️️⭐️️⚪)
 
 SSE2 is "streaming SIMD Extensions2" is a **SIMD** instruction set introduced with Intel's Pentium 4 (2001). It was a major step forward in enabling vectorized operations on 128-bit registers (`XMM`). In a nutshell, it can:
+
 - process 128 bits (2 doubles)
 - Adds instructions for: Integer math, floating point aritmatic, memory access, bitwise ops
-
 
 TODO: is this portable?
 
@@ -248,6 +251,7 @@ int main() {
 ```
 
 ------------------------------------------------------------
+
 ## [Method 3] Vectorization Execution Policy `std::execution::par_unseq` (C++ 17, Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
 
 `std::execution::par_unseq` is an execution policy introduced in C++17 that you can pass to algorithms like `std::for_each`. It directs the algorithm to execute in parallel and in an unordered fashion, allowing the implementation to use both multi-threading and vectorization (SIMD). This means that **iterations may be run concurrently without any guarantee of order**, so you must ensure that your loop body is free of data races and side effects that depend on ordering.
@@ -271,7 +275,7 @@ Use parallelisim on associative operations `a+(b+c) = (a+b) + c`
 - `std::execution::par`: This policy tells the algorithm to run with multiple threads. However, **while tasks are distributed across threads**, the order in which operations within each thread (or chunk) are performed is still relatively predictable. The overall reduction order is unspecified between chunks, but within each chunk it maintains a certain order.
 
 - `std::execution::par_unseq`: This policy not only allows parallel execution but also permits vectorization. Vectorization may rearrange the order of operations even more freely for performance reasons. Because of this extra level of reordering, the final result can differ when using non-associative operations.
-    - There's no guarantee that this will be multi-threaded, it could be SIMD instructions only.
+  - There's no guarantee that this will be multi-threaded, it could be SIMD instructions only.
 - `std::execution::seq`: sequential execution (the default)
 
 ### `std::transform(std::execution::par_unseq)`
@@ -304,8 +308,8 @@ undefined reference to tbb::detail::r1::execution_slot(tbb::detail::d1::executio
 
 To link: do `g++ -O2 -std=c++17 omp_test.cpp -ltbb` (note, libraries like `-ltbb` appear after the filename)
 
-
 ------------------------------------------------------------
+
 ## [Method 4] `std::async` (Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
 
 ```cpp
@@ -363,10 +367,15 @@ int main() {
 }
 ```
 
--  Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads and **immediately start them**. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
-- Alternatively, one can use `std::async(std::launch::deferred)`, function execution will be **synchronous** and single-threaded. They will start when `future.get()` is called. 
+- Each value in values is processed by `alignTask` in its own thread using `std::async(std::launch::async, ...)`. `std::launch::async` launches new threads and **immediately start them**. Some implementations might optimize by reusing threads, but this behavior is not guaranteed.
+- Alternatively, one can use `std::async(std::launch::deferred)`, function execution will be **synchronous** and single-threaded. They will start when `future.get()` is called.
+
+### Nuanced points
+
+- `fut.get();` can only call once, but `fut.wait()` can be called multiple times, then followed by `fut.get()`. You can collect results afterward.
 
 ------------------------------------------------------------
+
 ## [Method 5] OpenMP    (Optimization Impact: ⭐️⚪⚪⚪⚪)
 
 See above example
