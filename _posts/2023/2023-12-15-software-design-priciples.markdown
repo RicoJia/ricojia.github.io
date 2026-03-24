@@ -1,12 +1,12 @@
 ---
 layout: post
 title: C++ - Common General Sofware Design Pricinples
-date: '2023-12-15 13:19'
-subtitle: Common Pain Points, Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy
+date: 2023-12-15 13:19
+subtitle: Common Pain Points, Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy, Reading List
 comments: true
 tags:
-    - C++
-    - Software Developer's Career Tips
+  - C++
+  - Software Developer's Career Tips
 ---
 ---
 
@@ -68,3 +68,10 @@ public:
 ## Thoughts about Testing
 
 - when testing with an working older branch, the stuff you didn't touch could break.
+
+---
+
+## Reading List
+
+- [Small Business trends](https://www.guidantfinancial.com/small-business-trends/)
+- [Apollo technical](https://www.apollotechnical.com/advice/)
