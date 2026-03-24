@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Robotics - A Survey On Oil Pipe Inspection Robotics (Revising)
-date: '2024-12-20 13:19'
-subtitle: Sonar Imaging
-header-img: "img/post-bg-os-metro.jpg"
+date: 2024-12-20 13:19
+subtitle: Sonar Imaging, gradian
+header-img: img/post-bg-os-metro.jpg
 tags:
-    - Robotics
-    - Oil and Gas
+  - Robotics
+  - Oil and Gas
 catalog: true
 ---
 
@@ -104,7 +104,6 @@ A 2D sonar scannar sends a vertical planar sound wave around 360 degrees (horizo
 
 ### How 3D Sonar Imaging Works
 
-
 Here is a very helpful document on learning about [the SeaBeam instruments Sonar Imaging Camera](https://lismap.uconn.edu/wp-content/uploads/sites/2333/2018/11/SeaBeamMultibeamTheoryOperation.pdf)
 
 **A classic "Mills-cross" setup**
@@ -115,19 +114,16 @@ Here is a very helpful document on learning about [the SeaBeam instruments Sonar
 
     ![](https://i.postimg.cc/SsFTgVjm/Screenshot-from-2025-06-23-21-21-03.png)
 
-3. A receiver (hydrophone) array 
-    1.  After the ping, each patch of the sea bed sends back a plane-wave (to very good approximation). Each receiver receives them and could form their own waveform: $A(t)$ (amplitude), and $\phi(t)$ (phase)
+3. A receiver (hydrophone) array
+    1. After the ping, each patch of the sea bed sends back a plane-wave (to very good approximation). Each receiver receives them and could form their own waveform: $A(t)$ (amplitude), and $\phi(t)$ (phase)
         - The receive array is at most a few metres long; the covered seabed distance (swath) is hundreds of metres away.
-        - We assume the distance from the camera to sea bed is much longer than the receiver array size (far-field condition): `Range >> L^2/lambda`. A single echo from the seabed will have an arbitrary angle of incidence $\theta$ on to receiver 3, 2, 1. It will first reach 3, then travel by $d sin\theta$ to 2, then $d sin\theta$ to 1. 
+        - We assume the distance from the camera to sea bed is much longer than the receiver array size (far-field condition): `Range >> L^2/lambda`. A single echo from the seabed will have an arbitrary angle of incidence $\theta$ on to receiver 3, 2, 1. It will first reach 3, then travel by $d sin\theta$ to 2, then $d sin\theta$ to 1.
             ![](https://i.postimg.cc/85Ry9WrM/Screenshot-from-2025-06-23-22-14-44.png)
-        - **the spherical wavefront that leaves any single patch is practically planar by the time it spans the array.** Therefore, 
+        - **the spherical wavefront that leaves any single patch is practically planar by the time it spans the array.** Therefore,
     2. So effectively, we can work out the **beams** to each patch of the seabed, based on the received waveforms at each receiver
 
         ![](https://i.postimg.cc/Kjm92znV/Screenshot-from-2025-06-23-22-14-25.png)
 
-### Math for Beam Forming: TODO
+## Gradian
 
-
-Leading players:
-
-- Micron 
+In fields like surveying, you have small angle calculation. 460 deg = 400 gradian - use gradians because **they’re easier for decimal math**, but that’s about it. For example, in gradians, 90 degrees = 100 gradians.

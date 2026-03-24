@@ -52,7 +52,7 @@ public:
 ## General Philosophy
 
 - Keep working on worthwhile personal projects, and prototype lots
- 	- First of all, I view this as an eye opening experience. Second, it'd be nice to come up with designs that are close to or even better than the industry standard.
+  - First of all, I view this as an eye opening experience. Second, it'd be nice to come up with designs that are close to or even better than the industry standard.
 
 - Always Profile. When optimizing code, an experienced programmer will have a "ball park" of each method: how fast is the raw for loop here? Would using threads worth its overhead here?
 
@@ -63,4 +63,8 @@ public:
 - A seasoned engineer has many stashed code snippets. For example, when talking about a multi-threaded program with caching, an experienced engineer finished it within a day because he worked on it before.
 
 - Always think about cost, even though you have a bigger tool.
- 	- Even on GPU, think about the computational complexity you need. E.g., for a brute force K-nearest-neighbor search, your Nearest Neighbor will be: `batch_size * n_src_points * n_dst_points`. Are we allocating enough threads for that?
+  - Even on GPU, think about the computational complexity you need. E.g., for a brute force K-nearest-neighbor search, your Nearest Neighbor will be: `batch_size * n_src_points * n_dst_points`. Are we allocating enough threads for that?
+
+## Thoughts about Testing
+
+- when testing with an working older branch, the stuff you didn't touch could break.
