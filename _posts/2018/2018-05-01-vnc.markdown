@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Virtual Network Computing (VNC)
-date: '2024-05-01 13:19'
+date: 2018-05-01 13:19
 subtitle: Graphical Desktop Environment
 comments: true
 tags:
-    - Linux
-    - Docker
+  - Linux
+  - Docker
 ---
 
 ## What is `vncviewer`

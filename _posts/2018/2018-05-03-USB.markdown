@@ -1,0 +1,124 @@
+---
+layout: post
+title: USB
+date: 2018-05-03 13:19
+subtitle: HID
+comments: true
+tags:
+  - Linux
+  - Docker
+---
+
+# Main USB Device Classes
+
+Here are the big categories you'll actually see in robotics / embedded:
+
+## 1. CDC (Communication Device Class) — USB Serial
+
+- Appears as: `/dev/ttyUSB0`, `/dev/ttyACM0`
+- Emulates UART — behaves like a byte stream
+- You read/write bytes like: `write(fd, "hello", 5);`
+- Examples: Arduino, GPS modules, microcontrollers
+
+This is **stream-based communication**.
+
+## 2. HID (Human Interface Device) — Fixed Packet Reports
+
+- Appears as: `/dev/hidraw0`
+- No driver needed
+- Uses **fixed-size packets** (called _reports_) — no concept of a byte stream
+- Example: send exactly 64 bytes, receive exactly 64 bytes
+- Examples: keyboard, mouse, gamepad, custom devices
+
+This is **packet-based communication**.
+
+## 3. Mass Storage (MSC)
+
+- Appears as: `/dev/sda`
+- Uses block storage protocol
+- Examples: USB sticks, SD card readers, dev boards (drag-and-drop firmware)
+
+## 4. UVC (USB Video Class)
+
+- Appears as: `/dev/video*`
+- Standardized video streaming
+- Examples: webcams, depth cameras (sometimes)
+
+## 5. USB Audio Class
+
+- Appears in ALSA / PulseAudio
+- Used for microphones and speakers
+
+## 6. USB Networking (CDC ECM / RNDIS)
+
+- Creates a network interface: `usb0`
+- Examples: Raspberry Pi gadget mode, Jetson USB networking
+
+## 7. Vendor-Specific (Custom Class)
+
+- No standard driver
+- Accessed via `libusb` or a custom kernel driver
+- Examples: robotics sensors, firmware update tools, proprietary devices
+
+## 8. DFU (Device Firmware Upgrade)
+
+- Used for flashing microcontrollers
+- Examples: STM32 DFU, some bootloaders
+
+## 9. Smart Card / Security
+
+- Used for authentication tokens
+- Not common in robotics
+
+## 10. Wireless / Bluetooth over USB
+
+- USB Bluetooth adapters, Wi-Fi dongles
+
+---
+
+# Composite Devices
+
+A single USB device can expose **multiple classes at once**.
+
+Example — a robot controller might appear as:
+
+- HID (control commands)
+- CDC (debug logs)
+- Mass storage (firmware update)
+
+---
+
+# Where `libusb` Fits
+
+`libusb` is a **low-level USB library** that lets you talk to USB devices directly. It bypasses serial drivers, HID drivers, and kernel abstractions.
+
+- Works with **any class**
+- Especially useful for vendor-specific devices and bypassing existing drivers
+- If a kernel driver already owns the device (e.g., HID, UVC), you may need to detach it first
+
+> "USB HID via libusb" = talking directly to a HID device at the USB level, not through `/dev/ttyUSB*`.
+
+---
+
+# In Robotics: What You'll Commonly See
+
+| Device | Likely USB Class |
+|---|---|
+| Lidar | Serial (CDC) or vendor-specific |
+| IMU | HID or vendor-specific |
+| Camera | UVC |
+| Microcontroller | CDC + HID |
+| Motor controller | HID or vendor-specific |
+
+---
+
+# Simple Mental Model
+
+| Class | Think of it as |
+|---|---|
+| CDC | Stream (like UART) |
+| HID | Packets (like a gamepad) |
+| UVC | Video stream |
+| MSC | Disk |
+| Network | Ethernet over USB |
+| Vendor-specific | Raw USB (`libusb` territory) |
