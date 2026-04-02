@@ -110,3 +110,20 @@ Then, pytest will automatically inject this fixture if you test has it:
 ```python
 def test_gathering_forward_output_shape(float_dtype):
 ```
+
+---
+
+## Pylint
+
+The `duplicate-code` warning is expected here. Pylint rule **R0801** is triggered because several files contain nearly identical ROS 2 boilerplate. For example, the `main()` stubs in `_compressor_node.py` and `_decompressor_node.py` are very similar, and the same is true for the two launch files. You see this pattern across much of the codebase—such as `knowledge_base` and `kb_visual_tools`—because ROS 2 node setup naturally repeats. Unless we want to factor that boilerplate into a shared helper module, suppressing this warning is the practical choice.
+
+Pylint’s `duplicate-code` check is purely textual. It compares all files passed to pylint in a single run and reports when the number of consecutive identical lines between two files exceeds its threshold (four lines by default). It does not consider whether the repeated code is simple, intentional, or idiomatic.
+
+So if two files both contain something like:
+
+```python
+rclpy.init(args=args)
+node = None
+try:
+    node = SomeNode()
+    rclpy.spin(node)

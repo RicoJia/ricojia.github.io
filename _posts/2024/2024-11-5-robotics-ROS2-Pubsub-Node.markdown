@@ -240,15 +240,12 @@ enum class StatusCode : uint8_t {
 
 - ros1 and ros2 `.msg` are similar, except that some default messages change namespaces: `time -> builtin_interface/time`
 
-### Latched Topic
+### ## ROS QoS
 
-One can check a latched topic using: `ros2 topic info /TOPIC --verbose`
-
+```cpp
+DurabilityPolicy.VOLATILE // publisher doesn't store old message
+DurabilityPolicy.TRANSIENT_LOCAL // publisher stores the last message
 ```
-Durability: TRANSIENT_LOCAL
-```
-
-- If durability were `VOLATILE`, this topic is not latched
 
 ## Built-in Example
 

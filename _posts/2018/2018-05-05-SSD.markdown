@@ -1,0 +1,21 @@
+---
+layout: post
+title: SSD
+date: 2018-05-05 13:19
+subtitle: NVME, SATA
+comments: true
+tags:
+  - Linux
+  - Docker
+---
+
+## WHat is nvme vs sata?
+
+SATA and NVMe are two different storage interfaces with very different performance levels. SATA (Serial ATA) is
+
+- an older standard originally designed for hard drives and later adapted for SSDs;
+- it uses a SATA cable/interface and typically tops out around **550 MB/s**, often in the familiar 2.5-inch drive form factor.
+
+NVMe (Non-Volatile Memory Express), on the other hand,
+
+- is a newer standard built specifically for SSDs that uses **PCIe lanes** (like GPUs), enabling much lower latency and far greater parallelism. This results in dramatically higher speeds—around **3,500 MB/s on PCIe 3.0**, **7,000 MB/s on PCIe 4.0**, and **10,000+ MB/s on PCIe 5.0**

@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Linux - Networking
-date: '2018-01-27 13:19'
-subtitle: NIC
+date: 2018-01-27 13:19
+subtitle: NIC, Wireshark
 comments: true
 tags:
-    - Linux
+  - Linux
 ---
 
 ## Networking Layers: From DDS Payload to Wire Format
@@ -106,9 +106,19 @@ Switch A ───── Switch B
 ```
 
 - what is spanning tree protocol? STP???
- 	- Layer 2 netowrk protocol that Detects switch loops, and automatically keeps only one active path between switches
+  - Layer 2 netowrk protocol that Detects switch loops, and automatically keeps only one active path between switches
 - Diagnosis:
- 	- `ip -s link` =  ;ppl fpr jige RX package counts, with dropped packets.
+  - `ip -s link` =  ;ppl fpr jige RX package counts, with dropped packets.
 - Fix:
- 	- Remove redundant cable
- 	- Enable STP/RSTP
+  - Remove redundant cable
+  - Enable STP/RSTP
+
+---
+
+## Wireshark
+
+Wireshark is a **network protocol analyzer** that captures and inspects packets traveling over a network, allowing you to examine source and destination IPs, protocols like TCP/UDP/HTTP, payload data (when not encrypted), and packet timing and sequencing. It’s commonly used for debugging network issues, analyzing traffic, and security investigations.
+
+The data it captures is stored in a **`.pcap` (packet capture)** file, which is simply a recorded snapshot of network traffic that Wireshark can either generate from live captures or open for later analysis. While Wireshark itself is primarily a GUI tool, packet capture is often done via the command line using tools like `tcpdump` or `tshark`.
+
+For example, you can capture traffic with `sudo tcpdump -i eth0 -w capture.pcap` or `sudo tshark -i eth0 -w capture.pcap`, where `-i` specifies the network interface (use `any` if unsure) and `-w` writes the captured packets to a `.pcap` file.

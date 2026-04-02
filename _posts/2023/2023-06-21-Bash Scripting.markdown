@@ -157,3 +157,7 @@ var="456"   # see "var: readonly variable"
 
 Though a most variables (except for arrays) can be defined directly `VAR=123`, I found `declare` more "type-safe".
 
+### Operators
+
+`for ((i=1; i < 100; ++i))` : `(())`is arithmatic evaluation. `()` is just grouping 
+

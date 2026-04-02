@@ -212,6 +212,16 @@ In many textbook descriptions of kd trees, each leaf is thought of as holding a 
     - Instead of splitting until each leaf holds exactly one point, nanoflann **stops splitting when the number of points in a node is less than or equal to a specified maximum** (provided as a parameter in `KDTreeSingleIndexAdaptorParams`, e.g., 10). At that point, the node becomes a leaf node.
     - Leaf nodes in nanoflann do not represent a single point; they are buckets that contain several points. When a nearest neighbor query reaches a leaf node, it performs a linear search over all the points in that bucket.
 
+### Python Implementation
+
+SciPy provides two KD-tree implementations for fast spatial searches: `cKDTree` and `KDTree`. The `cKDTree` version is implemented in C/C++ (with a Python interface), making it significantly faster and more memory-efficient, so it’s the preferred choice for most applications. In contrast, `KDTree` is a pure Python implementation that is slower but easier to inspect and debug, and is mainly retained for historical reasons and readability.
+
+```python
+from scipy.spatial import cKDTree 
+# vs
+from scipy.spatial import KDTree
+```
+
 ## Octo Tree
 
 Octo-Tree is similar to KD tree, it spatially segments a point cloud into tree nodes. It is a tree data structure in which each internal node has exactly eight children. Octrees are most often used to partition a three-dimensional space. In KD Tree, we have "splits", whereas in octotree, we have 3D boxes.
