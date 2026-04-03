@@ -397,3 +397,32 @@ std::string common_share =
 std::filesystem::path data_dir = common_share;
 data_dir /= "test_data";  // or "data" if you renamed it
 ```
+
+## `colcon clean`
+
+Remove build and install artifacts for specific packages:
+
+```bash
+# Remove a specific package
+colcon clean packages -y --packages-select <package_name>
+
+# Remove a package and all packages that depend on it
+colcon clean packages -y --packages-up-to <package_name>
+```
+
+The `--packages-up-to` flag also works with mixins.
+
+## Case Study - `find_package` and `.cmake` Config Files
+
+When any package calls `find_package(draco)`, CMake walks a prioritized list of prefix paths looking for a file named `draco-config.cmake` (or `draco-targets.cmake`). The two candidates for `draco` are:
+
+| Who installed it | Config location | Target declared |
+| --- | --- | --- |
+| `apt install libdraco-dev` | `/usr/lib/…` | `draco_shared` (SHARED) + `draco_static` (STATIC) |
+| `pip install DracoPy==2.0.0` | `/usr/local/share/cmake/draco/` | `draco::draco` (STATIC only) |
+
+**What a `.cmake` config file actually does:** it is pure CMake script — no binary code. When CMake loads it, it executes `add_library(draco_shared SHARED IMPORTED)` and sets `IMPORTED_LOCATION` to **point at the actual** `.so` on disk. From that point on, any `target_link_libraries(my_target draco_shared)` in a downstream `CMakeLists.txt` knows exactly what file to link against and what include paths to add.
+
+**Why local wins:** CMake's default search order puts `/usr/local` before `/usr`. So after `pip install DracoPy`, `find_package(draco)` loads DracoPy's config from `/usr/local` first and stops searching — it never reaches the apt config. DracoPy's config only declares `draco::draco` (static), not `draco_shared`. When `assimpTargets.cmake` later tries to link `draco_shared`, the target is undefined → linker error: `cannot find -ldraco_shared`.
+
+**The fix:** `rm -rf /usr/local/share/cmake/draco` removes DracoPy's config files so CMake falls through to `/usr` and loads the apt config, which correctly declares both `draco_shared` and `draco_static`. No binaries are touched — DracoPy's `.so` has Draco statically compiled in and never consults these config files at runtime.

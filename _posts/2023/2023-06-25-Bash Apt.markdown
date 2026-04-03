@@ -1,0 +1,42 @@
+---
+layout: post
+title: Apt
+date: 2023-06-25 13:19
+subtitle:
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Linux
+---
+---
+
+## apt
+
+check a package - use `dpkg -l | grep`
+
+```bash
+$ dpkg -l | grep draco 
+
+ii libdraco-dev:amd64 1.5.2+dfsg-2 amd64 Library for compressing 3D geometric meshes and point clouds (headers) 
+
+ii libdraco4:amd64 1.5.2+dfsg-2 amd64 Library for compressing 3D geometric meshes and point clouds
+```
+
+check which package is depended on - use `apt-cache rdepends`
+```
+
+└─  $ apt-cache rdepends --installed libdraco-dev
+libdraco-dev
+Reverse Depends:
+  libassimp-dev
+
+└─  $ apt-cache rdepends --installed libassimp-dev
+libassimp-dev
+Reverse Depends:
+  ros-humble-moveit-core
+  ros-humble-geometric-shapes
+  ros-humble-rviz-assimp-vendor
+  ros-humble-moveit-core
+  ros-humble-geometric-shapes
+  libdart-dev
+```
