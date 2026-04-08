@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Python - Enums
-date: '2019-01-15 13:19'
+title: Python - Enums, dataclass
+date: 2019-01-15 13:19
 subtitle: Enum, IntEnum
 comments: true
-header-img: "img/post-bg-2015.jpg"
+header-img: img/post-bg-2015.jpg
 tags:
-    - Python
+  - Python
 ---
 
 ## `IntEnum`
@@ -41,3 +41,16 @@ tags:
         ```
         self.motor_error_code = MotorErrorCode(self.motor_error_code)
         ```
+
+---
+
+## Dataclass
+
+The `@dataclass(frozen=True)` decorator defines a class whose instances are simple data containers with automatically generated methods. By using `@dataclass`, Python creates common methods such as `__init__` (constructor), `__repr__`, and `__eq__`, eliminating the need to write boilerplate code manually. 
+
+The `frozen=True` argument makes instances of the class immutable, meaning that once an object is created, its fields cannot be modified.
+
+```python
+@dataclass(frozen=True) 
+class Config:
+```
