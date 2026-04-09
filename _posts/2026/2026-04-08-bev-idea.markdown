@@ -1,0 +1,172 @@
+---
+layout: post
+title: "[BEV] BEV Ideas and View Transformation"
+date: 2026-04-08 13:19
+subtitle: "Training pipelines, multiview geometry, and how to lift image features into BEV"
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+## 1. The Core Goal of a BEV Network
+
+A Bird's Eye View (BEV) network aims to reconstruct, in real time using only onboard cameras, a local 3D map of comparable quality to what an offline reconstruction pipeline can produce with full compute budgets and hindsight. The key questions are: (a) what does that offline system produce, and (b) how does the online network learn to approximate it?
+
+---
+
+## 2. The Training Problem: Where Does Ground Truth Come From?
+
+Camera-only networks have no LiDAR or direct depth sensor onboard (or pretend not to use one at inference time). So where does the depth/occupancy supervision come from during training?
+
+### 2.1 Offline Auto-Labeling Pipeline
+
+Companies build a heavy **offline reconstruction pipeline** that runs after data collection, not in real time. It may include:
+
+- **SLAM / SfM** — simultaneous localization and mapping, structure from motion
+- **Bundle adjustment** — global joint optimization of camera poses and 3D structure
+- **Multiview stereo (MVS)** — dense depth from many overlapping views
+- **Temporal tracking** — associating objects across frames
+- **Map fusion** — aggregating reconstructions across many drives
+
+The full pipeline, simplified:
+
+```
+1. Collect: synchronized multi-camera video + calibration + ego-motion (GPS/IMU)
+2. Reconstruct: run offline SLAM / SfM / MVS / bundle-adjustment stack
+3. Label:  generate pseudo-ground-truth targets
+             ├── 3D points / surfaces
+             ├── object tracks and bounding boxes
+             ├── occupancy volumes
+             ├── lane geometry
+             └── free-space masks
+4. Train:  supervise online network to predict those targets from raw images alone
+```
+
+The offline system may produce depth at varying densities:
+
+| Output | Typical source |
+|---|---|
+| Sparse depth | SfM / feature matching |
+| Semi-dense depth | Direct methods (LSD-SLAM, DSO) |
+| Dense depth | Multiview stereo, depth completion |
+| Surface estimates | TSDF fusion, mesh reconstruction |
+
+### 2.2 Voxel Occupancy as Training Target
+
+Rather than supervising metric depth directly, it is often more useful to voxelize the reconstructed scene into discrete states:
+
+- **Occupied** — a reconstructed surface or tracked object is present
+- **Free** — a camera ray passed through this cell without hitting anything
+- **Unknown** — no ray coverage
+
+This is task-aligned for autonomous driving (collision avoidance, path planning) and avoids the difficulty of regressing a single depth value per pixel.
+
+**Key insight:** The offline system produces supervisory signals of far higher quality than the real-time car could compute onboard. The online network learns to predict a compatible world representation directly from raw images, leveraging that offline investment only at training time.
+
+### 2.3 Feature Consistency / Reprojection Loss (Self-Supervised Signal)
+
+An alternative or supplementary signal requires no offline reconstruction. Given calibrated cameras or consecutive video frames:
+
+1. Predict depth or 3D feature locations from frame $t$
+2. Project them into another camera viewpoint or into frame $t+1$ using known/estimated camera pose
+3. Compare projected features or pixels against actual observations there
+
+This **photometric or feature-level reprojection loss** provides a self-supervised geometric signal without any annotation. It is used in methods such as Monodepth2, SurroundDepth, and similar works.
+
+---
+
+## 3. Multiview Geometry: Building the Offline Reconstruction
+
+### 3.1 Classical Sparse Pipeline
+
+```
+1. Detect and match feature points across views / time
+   (SIFT, SuperPoint, ORB, ...)
+2. Use epipolar geometry + RANSAC to reject bad matches
+   (fundamental matrix F, essential matrix E)
+3. Recover relative camera poses from E/F decomposition
+4. Triangulate matched point pairs into 3D
+5. Refine globally with bundle adjustment
+   → sparse 3D point cloud
+```
+
+### 3.2 Densification and Semantic Enrichment
+
+A sparse point cloud alone is not sufficient for autonomous driving training. The pipeline goes further:
+
+| Technique | Output |
+|---|---|
+| Multiview stereo (MVS) | Dense depth / dense point cloud |
+| Plane / surface fitting | Ground plane, building facades |
+| Temporal fusion | Consistent HD map across many drives |
+| Semantic segmentation | Per-voxel class labels |
+| Object-level reconstruction | Tracked 3D bounding boxes |
+
+**Summary:** Epipolar geometry and triangulation give the geometric skeleton; the full offline pipeline densifies, cleans, and semantically organizes it into usable training targets — surface estimates, lane geometry, curb profiles, occupancy volumes, and tracked objects.
+
+---
+
+## 4. View Transformation: From Perspective Images to BEV
+
+### 4.1 The Core Challenge — Depth Ambiguity
+
+A single image pixel $(u, v)$ does not correspond to one unique 3D point. It corresponds to an entire **ray** through 3D space:
+
+$$\mathbf{p}_{3D} = \mathbf{o} + d \cdot \hat{\mathbf{r}}_{u,v}, \quad d \in [d_{\min}, d_{\max}]$$
+
+Without knowing the depth $d$, you cannot place the image feature into a unique BEV cell. This is the central difficulty of perspective-to-BEV lifting.
+
+### 4.2 IPM — Inverse Perspective Mapping
+
+**Inverse Perspective Mapping (IPM)** projects image pixels to BEV without depth estimation, by assuming all scene points lie on the ground plane ($Z = 0$ in world coordinates).
+
+Given camera intrinsics $K$ and extrinsics $[R \mid t]$, the ground-plane constraint reduces the problem to a planar homography, giving a closed-form, per-pixel mapping with no learning.
+
+- **Strengths:** Fast, simple, no supervision needed
+- **Limitation:** Works only for flat ground. Fails for raised objects (vehicles, pedestrians), curbs, overpasses, or any non-planar structure
+
+### 4.3 The General Feature-Lifting Approach
+
+For a BEV cell at world position $(x, y)$:
+
+1. Assume or predict a height hypothesis $z$
+2. Project $(x, y, z)$ into image coordinates $(u, v)$ using $K$ and $[R \mid t]$
+3. Sample the **image feature map** at $(u, v)$ via bilinear interpolation
+4. Write or accumulate the sampled feature into the BEV cell
+
+This family of operations is called **unprojection**, **lifting**, **splatting**, or **view transformation** depending on direction and implementation.
+
+### 4.4 Why Lift Features, Not Raw Pixels
+
+Warping the raw image into BEV before the backbone is the wrong order:
+
+| Warp pixels first | Warp features first |
+|---|---|
+| Heavy distortion, artifacts, missing regions | Features encode semantic meaning across viewpoint changes |
+| Backbone receives broken, unrealistic input | Backbone has already extracted edges, object parts, lane markings |
+| Sensitive to lighting, texture changes | Backbone-learned invariance carries over |
+
+**Correct pipeline order:**
+
+```
+image → backbone → feature map → geometric lifting / projection → BEV fusion
+```
+
+Not:
+
+```
+image → hard warp to BEV → backbone   ✗
+```
+
+### 4.5 Four Methods for Handling Depth Ambiguity
+
+| Method | Mechanism | Strengths | Weaknesses |
+|---|---|---|---|
+| **A. Flat-ground / IPM** | Assume ground plane $z = 0$; closed-form homography | Simple, fast, no learned depth | Fails for non-flat objects |
+| **B. Depth distribution (LSS)** | Predict softmax over depth bins per pixel; lift feature along ray weighted by distribution | Handles arbitrary heights; differentiable; end-to-end | Needs depth supervision or self-sup. loss |
+| **C. Attention-based (BEVFormer)** | BEV grid queries attend to image features via cross-attention; geometry encoded in positional embeddings | No explicit depth; learns flexible correspondences | Computationally heavier; less geometric interpretability |
+| **D. Occupancy prediction** | Predict occupied / free / unknown per voxel directly; no explicit per-pixel depth | Task-aligned; avoids metric depth regression | Requires 3D occupancy ground truth |
+
+**Method B** is the basis of **Lift-Splat-Shoot (LSS)** and **BEVDet**.  
+**Method C** is the basis of **BEVFormer**, **DETR3D**, and **PETR**.
