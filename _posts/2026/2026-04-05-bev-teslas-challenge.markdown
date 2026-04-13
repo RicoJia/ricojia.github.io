@@ -1,242 +1,210 @@
 ---
 layout: post
-title: "[BEV] BEV Introduction"
+title: "[BEV] BEV Introduction: Tesla's Challenges and Architecture"
 date: 2026-04-05 13:19
-subtitle:
+subtitle: "Why per-camera detection falls short, and how BEV solves it"
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
   - Machine-Learning
 ---
 
-Tesla's Challenges @2021
+## 1. Tesla's Perception Challenges (2021)
 
-- Back then their lane detections are still very un-usable. 
+Before BEV, Tesla's pipeline detected objects and lanes independently in each camera view and then tried to fuse the results. This created fundamental problems:
+
+**Lane detection was unreliable.**
 
 ![](https://i.postimg.cc/T102tRN1/Screenshot-from-2026-04-08-08-26-43.png)
 
 ![](https://i.postimg.cc/7h9PKxtf/Screenshot-from-2026-04-08-08-27-00.png)
 
-- per-camera detect then fuse: how can you tell if they belong to the same truck? REcovering the shape of a big truck is a challenge
+**Per-camera detect-then-fuse breaks for large objects.** If a truck spans multiple cameras, how do you tell which detections belong to the same object? Recovering the full 3D shape of a large vehicle from disjointed per-camera boxes is hard.
 
 ![](https://i.postimg.cc/3N1rtKfk/Screenshot-from-2026-04-08-08-27-11.png)
 
-- How fast is the truck traveliing? is it moving or doubled parked? is there a pedestrian behind the car? 
+**No shared spatial context.** Each camera sees its own patch of the world. Questions like "how fast is that truck moving?", "is it double-parked?", and "is there a pedestrian behind it?" need a shared spatial frame to answer reliably.
 
 ![](https://i.postimg.cc/Kjfc0ZpY/Screenshot-from-2026-04-08-08-27-19.png)
 
-- Lane marking is for the future. How to preserve them in the feature space? 
+**Lane markings are hard to preserve across views and over time.**
 
 ![](https://i.postimg.cc/0NhCNvfQ/Screenshot-from-2026-04-08-08-34-04.png)
 
-- Tesla's solution: Top-Down pixel ("local map") that provides a uniform perspective, adding features temporally is viable.  This is basically Bird-Eye-VIew, or BEV.
+**Tesla's solution:** Move to a unified top-down ("local map") representation — a Bird's Eye View (BEV). BEV provides a single, ego-centric spatial grid where features from all cameras can be fused in a common coordinate frame, and temporal accumulation is straightforward.
 
+---
 
-
-
-## The Evolution of Tesla Vision
+## 2. The Evolution of Tesla's Vision Stack
 
 ![](https://i.postimg.cc/Cxs11ssZ/Screenshot-from-2026-04-08-08-38-52.png)
 
-- 2017: range detection (reg)is that right?? and classification
+**2017:** Per-image range detection (regression) and classification. One model, one camera, one task at a time.
 
 ![](https://i.postimg.cc/7Zn66nnT/Screenshot-from-2026-04-08-08-38-57.png)
 
-- multi-model and multi-tasking???
-
+**Later:** Multi-camera, multi-task models. Several cameras feed into shared feature extractors; outputs include depth, segmentation, object detection simultaneously.
 
 ![](https://i.postimg.cc/zGFBBFFg/Screenshot-from-2026-04-08-08-39-18.png)
 
-- feature queue and vector space. Supports ??
+**Vector Space / Feature Queue:** Features are not just pooled but stored in a spatial queue across time. This supports:
+
+- Spatial: merging overlapping camera fields of view into a consistent grid
+- Temporal: accumulating features from past frames to handle occlusion and velocity estimation
 
 ![](https://i.postimg.cc/J49JJxJV/Screenshot-from-2026-04-08-08-46-00.png)
-- Use a transformer to elevate image domain into 3D vector space (similar to BEV??)
-- FEature Queue: cache spatial and temporal features
-- video module: fuse spatial and temporal features
+
+The transformer-based architecture works as follows:
+
+1. Take images from multiple cameras at multiple timesteps; rectify them
+2. Feed each image through an image feature extractor (backbone)
+3. Generate **keys** and **values** per image; generate a **spatial BEV query** over the shared grid
+4. Cross-attention produces BEV-aligned spatial features, all referenced to the same ego frame at time $T$
 
 ![](https://i.postimg.cc/pXg88Cjg/Screenshot-from-2026-04-08-08-46-07.png)
 
-1. Take in images taken at multiple times, rectify them
-2. feed them into image featurizers
-3. generate key and value for each image, in the meantime generate a spatial query of all these images together
-4. Generate spatial features. These features are aligned at the same time T? 
+Tesla is notable for using **no HD map** — all spatial context is built on-the-fly from vision alone. Their **data closed-loop** (auto-labeling triggered by edge cases, retrain, redeploy) is a major competitive advantage. The system powers **NOA (Navigate on Autopilot / Navigate on Autosteer)** in city driving.
 
-Tesla is the only company that does not use HD map, visiion only achieve NOA in cities (what is NOA??). Based on vector space. Their Data closed loop is extremely strong. Below is from their 2022 Demo
-    - NOA: navigate on Autosteer now, but previously, navigate on autopilot
+---
+
+## 3. Tesla's Full Perception Pipeline
 
 ![](https://i.postimg.cc/Z5JWSQzW/Screenshot-from-2026-04-08-09-07-54.png)
 
- What Tesla wants to achieve for a L2+ (even FSD)? 
+Target: L2+ (and eventually FSD) perception from vision only.
 
 ![](https://i.postimg.cc/B6mgTF5y/Screenshot-from-2026-04-08-09-11-22.png)
-1. Feature extraction, this can be done using resnet, etc. 
-2. Transform features to the same view?? (but isn't view transform supposed be before feature extraction???)
-3. Align spatial features onto the same view (vector space, or BEV)
-	1. [Spatial Transformers](https://lacie-life.github.io/posts/STN-1/)
-	2. [BEV](https://lacie-life.github.io/posts/BEV/)
-4. temporal fusion aligns multiple consecutive frames  (why would you need to do that since you have already algined spatial feature? )
-5. multi-task heads like occupancy grid, parking, etc. can use the BEV representation ?? 
 
+The pipeline has five stages:
 
-## Idea for A Model That Reconstructs Occupancy in Real Time
+| Stage | What it does |
+|---|---|
+| **1. Feature extraction** | Each camera image passes through a backbone (e.g. ResNet, RegNet) to produce a rich feature map |
+| **2. View transform** | Image features are lifted from perspective views into a shared BEV / 3D vector space using cross-attention or geometric projection |
+| **3. Spatial fusion** | BEV features from all cameras are merged into a single ego-centric grid ([Spatial Transformer](https://lacie-life.github.io/posts/STN-1/), [BEV](https://lacie-life.github.io/posts/BEV/)) |
+| **4. Temporal fusion** | Consecutive BEV frames are aligned (using ego-motion) and fused to aggregate motion cues and reduce occlusion uncertainty |
+| **5. Multi-task heads** | The fused BEV representation feeds task-specific heads: occupancy grid, free-space, parking, lane geometry, object detection |
 
-How would you train though, like where do you get your depth measurements
-- companies often build an offline auto-labeling / reconstruction pipeline that may include SLAM, SfM, bundle adjustment, tracking, multiview stereo, map fusion, and other heavy optimization. The pipeline is:
+> **Why temporal fusion after spatial fusion?** The spatial transform produces a BEV frame tied to a single timestep. Temporal fusion then aligns and merges *multiple* such BEV frames across time using ego-motion, which is easier and more principled in BEV space than in perspective image space.
 
-    collect synchronized multi-camera video + calibration + ego motion
-    run a heavy offline reconstruction / tracking stack
-    generate pseudo-ground-truth labels:
-    3D points / surfaces
-    object tracks
-    occupancy
-    lane geometry
-    free space
-    train the online network to predict those targets from raw camera input alone
+---
 
+## 4. Training a BEV Network: Where Does Ground Truth Come From?
 
-The offline system may produce:
+Camera-only networks need depth or occupancy supervision, but depth sensors are either absent at inference time or intentionally excluded. The answer is an **offline auto-labeling pipeline**.
 
-    sparse depth
-    semi-dense depth
-    dense depth
-    surface estimates
+### 4.1 Offline Reconstruction Pipeline
 
-Then the network predicts depth or occupancy and is penalized against those targets.
+Companies run a heavy reconstruction stack offline (after data collection, not in real time):
 
-Instead of supervising depth directly, you voxelize the reconstructed scene into:
+```
+1. Collect: synchronized multi-camera video + calibration + ego-motion (GPS/IMU)
+2. Reconstruct: run offline SLAM / SfM / MVS / bundle-adjustment stack
+3. Label:  generate pseudo-ground-truth targets
+             ├── 3D points / surfaces
+             ├── object tracks and bounding boxes
+             ├── occupancy volumes
+             ├── lane geometry
+             └── free-space masks
+4. Train:  supervise online network to predict those targets from raw images alone
+```
 
-    occupied
-    free
-    unknown
+Depth output density varies by method:
 
-This is often closer to what driving actually needs.
+| Output | Typical source |
+|---|---|
+| Sparse depth | SfM / feature matching |
+| Semi-dense depth | Direct methods (LSD-SLAM, DSO) |
+| Dense depth | Multiview stereo, depth completion |
+| Surface estimates | TSDF fusion, mesh reconstruction |
 
-That offline system produces training targets that are much better than what the real-time car can compute onboard. The offline system reconstructs the scene and produces supervisory signals; the online network learns to predict a compatible world representation directly from images.
+### 4.2 Voxel Occupancy as Training Target
 
-Sois the point for BEV network is to reconstruct a similar quality local 3D map to the offline processed one, using onboard cameras during runtime?
+Rather than regressing metric depth per pixel, it is more useful to voxelize the scene:
 
-Feature consistency / reprojection loss
+- **Occupied** — a reconstructed surface or tracked object is present
+- **Free** — a camera ray passed through without hitting anything
+- **Unknown** — no ray coverage
 
-You can also say:
+This is task-aligned for autonomous driving and avoids single-pixel depth regression difficulties.
 
-predict depth or 3D features
-project them into another camera/time
-compare with observations there
+### 4.3 Feature Reprojection Loss (Self-Supervised Signal)
 
-That gives a self-supervised or weakly supervised signal.
+An additional signal needs no offline reconstruction:
 
-#### “Multiview geometry = find feature points + epipolar geometry + sparse point cloud?”
+1. Predict depth or lifted 3D features from frame $t$
+2. Project them into another camera or frame $t+1$ using known ego-motion
+3. Compare against actual observations there (photometric or feature-level loss)
 
+This is the basis of methods like Monodepth2 and SurroundDepth.
 
+---
 
-The classical pipeline is:
+## 5. Multi-View Geometry: The Offline Reconstruction Stack
 
-detect/match feature points across views or across time
-use epipolar geometry to reject bad matches
-estimate relative pose
-triangulate matched points into 3D
-refine with bundle adjustment
+The offline pipeline is built on classical multi-view geometry, extended with dense methods:
 
-That gives a sparse 3D point cloud.
+### 5.1 Sparse Pipeline
 
-Then you can go further with:
+```
+1. Detect and match feature points (SIFT, SuperPoint, ORB, ...)
+2. Apply epipolar geometry + RANSAC to filter bad matches
+3. Recover relative camera poses from fundamental / essential matrix
+4. Triangulate matched point pairs into 3D
+5. Refine globally with bundle adjustment → sparse point cloud
+```
 
-multiview stereo
-plane fitting
-temporal fusion
-semantic segmentation
-object-level reconstruction
+**Epipolar geometry and triangulation give the geometric skeleton.**
 
-to get denser scene structure.
+### 5.2 Densification and Semantic Enrichment
 
-So your statement is correct, but sparse point clouds alone are often not enough for autonomous driving training. You usually want something richer:
+| Technique | Output |
+|---|---|
+| Multiview stereo (MVS) | Dense depth / point cloud |
+| Plane / surface fitting | Ground plane, facades |
+| Temporal fusion | Consistent HD map across drives |
+| Semantic segmentation | Per-voxel class labels |
+| Object-level reconstruction | Tracked 3D bounding boxes |
 
-surface estimates
-lanes
-curb geometry
-occupancy volumes
-tracked objects
+The full pipeline densifies, cleans, and semantically organizes the skeleton into the rich training targets (lanes, curbs, occupancy volumes, tracked objects) that sparse SfM alone cannot provide.
 
-A nice summary sentence:
+---
 
-Epipolar geometry and triangulation give the geometric skeleton; the full offline pipeline densifies, cleans, and semantically organizes it into usable training targets.
+## 6. View Transformation: From Images to BEV
 
-## View transformation:
-- IPM: (inverse perspective mapping): convert 2D points from images to 3D points without using depth information , by assuming points lie on an arbitrary plane. 
+### 6.1 The Depth Ambiguity Problem
 
-For a BEV cell at world position (x, y), you can:
+A single pixel $(u, v)$ maps not to one 3D point but to an entire ray:
 
-assume or predict some height/depth hypothesis
-use camera calibration to project that 3D point into the image plane
-sample the image feature map at that image coordinate
-write or accumulate that sampled feature into the BEV cell
+$$\mathbf{p}_{3D} = \mathbf{o} + d \cdot \hat{\mathbf{r}}_{u,v}, \quad d \in [d_{\min}, d_{\max}]$$
 
-This is often called:
+Without knowing $d$, you cannot assign that image feature to a unique BEV grid cell. This is the core difficulty of perspective-to-BEV lifting.
 
-unprojection
-lifting
-splatting
-view transformation
+### 6.2 IPM — Inverse Perspective Mapping
 
+**IPM** resolves the ambiguity by assuming all scene points lie on the ground plane ($Z = 0$). The constraint turns the projection into a planar homography — closed-form, no learning required.
 
-Depending on the method, you may:
+- **Good for:** flat road surface, lane markings
+- **Bad for:** vehicles, pedestrians, curbs, overpasses
 
-use explicit geometry
-predict a depth distribution per pixel
-use attention instead of explicit projection
-do voxel lifting then collapse to BEV
+### 6.3 Why Lift Features, Not Raw Pixels
 
+| Warp pixels first | Warp features first |
+|---|---|
+| Heavy distortion and missing regions | Features already encode edges, objects, lanes |
+| Backbone sees broken, unrealistic input | Backbone invariances (lighting, viewpoint) carry over |
 
-5) Why feature warping is preferable to raw image warping
+**Correct order:**
 
-Because the features already encode useful semantics:
+```
+image → backbone → feature map → geometric lifting → BEV fusion
+```
 
-edges
-lane markings
-car-like structure
-curb-like structure
-texture invariance
-lighting robustness
+### 6.4 Four Lifting Methods
 
-If you warp raw pixels into BEV, you get a strange distorted top-down image with lots of artifacts and no real understanding.
-
-If you warp learned features, the network can preserve meaning, not just appearance.
-
-That is why the usual order is:
-
-image -> backbone -> feature map -> geometric lifting/projection -> BEV/world fusion
-
-not:
-
-image -> hard warp -> backbone
-
-
-6) The subtle issue: one image pixel does not have a known depth
-
-This is exactly why BEV lifting is hard.
-
-If I take one image feature at pixel (u,v), it corresponds not to one definite 3D point, but to a whole ray in 3D unless depth is known.
-
-Different methods solve this differently:
-
-Method A: Flat-ground assumption / IPM
-
-For roads, assume points lie on the ground plane.
-Then each image point maps to one BEV point.
-
-Good for lanes/road surface, bad for tall objects.
-
-Method B: Predict depth distribution
-
-For each image feature, predict probabilities over multiple depth bins.
-Then “lift” the feature along the ray into 3D/BEV.
-
-This is common in modern BEV methods.
-
-Method C: Attention-based cross-view transform
-
-Instead of explicit triangulation, let transformers learn how image features correspond to BEV queries.
-
-Method D: Occupancy prediction
-
-Predict whether cells/voxels are occupied, sometimes bypassing an explicit dense metric depth map.
+| Method | Mechanism | Papers |
+|---|---|---|
+| **A. IPM / flat-ground** | Ground-plane homography; no depth network | Classic |
+| **B. Depth distribution** | Predict softmax over depth bins; lift feature along ray | LSS, BEVDet |
+| **C. Cross-attention** | BEV queries attend to image features; geometry in positional embeddings | BEVFormer, DETR3D, PETR |
+| **D. Occupancy prediction** | Predict voxel occupancy directly; bypass explicit depth | MonoScene, TPVFormer |

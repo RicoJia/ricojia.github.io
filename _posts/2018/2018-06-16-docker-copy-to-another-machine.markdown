@@ -163,57 +163,65 @@ SEOF
 
 ```
 
-### Walkthrough
+### Case Study: Move `toolkitt_robot` to a Remote Host
 
-**Step 0 — Get the host gateway IP**
+This is the same flow shown in the script above, reorganized as a practical checklist.
+
+#### Step 0 - Resolve host gateway (when running in a dev container)
 
 ```bash
 host_gw=$(ip route | awk '/default/ {print $3; exit}')
 ```
 
-When running inside a dev container, `localhost` refers to the container, not the host. The registry is bound on the host-facing side, so the remote tunnel needs the actual bridge gateway IP to reach it.
+Inside a dev container, `localhost` points to the container, not the host. Since the registry is bound on the host side, the reverse tunnel must target the bridge gateway IP.
 
-**Step 1 — Start a local ephemeral registry**
+#### Step 1 - Start a local ephemeral registry
 
 ```bash
 docker run -d --name "$registry_name" -p "${registry_port}:5000" registry:2
 ```
 
-This starts a throwaway registry container on the host at `localhost:5000`.
+This launches a throwaway registry on `localhost:5000`.
 
-**Step 2 — Retag and push**
+#### Step 2 - Retag and push image into that registry
 
 ```bash
 docker tag "$image_name" "$local_tag"
 docker push "$local_tag"
 ```
 
-This retagged image goes from:
+Tag mapping:
 
 ```
 code.hmech.us:5050/nautilus/common/dockers/toolkitt_robot:latest
-  → localhost:5000/toolkitt_robot:latest
+    -> localhost:5000/toolkitt_robot:latest
 ```
 
-**Step 3 — Allow insecure registry on the remote**
+#### Step 3 - Allow insecure registry on remote Docker daemon
 
-The registry is served over plain HTTP (no TLS), so Docker would reject it by default. The script temporarily adds `"insecure-registries": ["localhost:5000"]` to `/etc/docker/daemon.json` on the remote and reloads Docker.
+The local registry here is plain HTTP (no TLS). The script temporarily updates remote `/etc/docker/daemon.json` to include:
 
-**Step 4 — Open an SSH reverse tunnel**
+```json
+"insecure-registries": ["localhost:5000"]
+```
+
+Then it reloads Docker, and restores the original daemon config during cleanup.
+
+#### Step 4 - Open and verify SSH reverse tunnel
 
 ```bash
 ssh -N -R "${registry_port}:${host_gw}:${registry_port}" "$remote_host" &
 ```
 
-An SSH **reverse tunnel** opens a listening port on the remote machine and forwards traffic back to the local machine. Here, `localhost:5000` on the remote routes to host port 5000 on the local side — so the remote can pull from the local registry transparently.
+This creates a listening port on the remote host and forwards it back to your local registry. From the remote side, `localhost:5000` now reaches your local machine.
 
-The tunnel is verified before proceeding:
+Verification:
 
 ```bash
 ssh -n "$remote_host" "timeout 3 curl -sf http://localhost:${registry_port}/v2/ > /dev/null"
 ```
 
-**Step 5 — Pull, retag, and clean up on the remote**
+#### Step 5 - Pull on remote, retag, and remove temporary tag
 
 ```bash
 docker pull localhost:5000/toolkitt_robot:latest
@@ -221,4 +229,61 @@ docker tag  localhost:5000/toolkitt_robot:latest ${image_name}
 docker rmi  localhost:5000/toolkitt_robot:latest
 ```
 
-The remote pulls through the tunnel, retags to the original name, and removes the temporary `localhost:5000` tag.
+The remote pulls through the tunnel, keeps the original image name, and drops the temporary localhost tag.
+
+### Related Docker Notes Used in This Workflow
+
+#### Package and build-tool notes
+
+```bash
+git \
+sudo \
+pkg-config \
+libapr1-dev \
+```
+
+- `sudo` comes from an apt package. Without it, `sudo ...` fails with "command not found". In many containers you are already root, so `sudo` is often unnecessary.
+- `pkg-config` is a build-time helper that reports include and linker flags.
+- `libapr1-dev` is the APR development package; `-dev` packages are typically required when compiling against that library.
+
+#### Environment variables: prepend vs replace
+
+```diff
+-ENV CMAKE_PREFIX_PATH=${PCL_PREFIX}:$CMAKE_PREFIX_PATH \
+-LD_LIBRARY_PATH=${PCL_PREFIX}/lib:$LD_LIBRARY_PATH
++ENV CMAKE_PREFIX_PATH=${PCL_PREFIX} \
++LD_LIBRARY_PATH=${PCL_PREFIX}/lib
+```
+
+- `CMAKE_PREFIX_PATH` helps CMake find packages, headers, and config files.
+- `LD_LIBRARY_PATH` helps the runtime linker find `.so` files.
+- Replacing instead of prepending can hide previously configured paths, so choose intentionally.
+
+#### `cp -f` and `cp -rf`
+
+```bash
+cp -f package_ROS2.xml package.xml && \
+cp -rf launch_ROS2 launch && \
+```
+
+- `cp -f` forces overwrite of destination files.
+- `cp -rf` recursively copies directories and force-overwrites destination entries.
+
+### Alternative Transfer Path: Stream Tar Over SSH
+
+If `docker save` is healthy for your image store, this direct pipeline is simpler:
+
+```bash
+docker save "${IMAGE_NAME}" | ssh "${TARGET}" "docker load"
+```
+
+- `docker save` writes a tar stream to stdout.
+- `docker load` on the remote reads that stream and imports the image.
+
+Equivalent explicit workflow:
+
+```bash
+docker save "$IMAGE_NAME" > image.tar
+scp image.tar "${TARGET}:/tmp/"
+ssh "$TARGET" "docker load < /tmp/image.tar"
+```

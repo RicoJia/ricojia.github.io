@@ -58,14 +58,12 @@ So `enp3s0` means â€œEthernet adapter located on PCI bus 3, slot 0, function 0â€
 
 <https://i.postimg.cc/RZr9PNSP/2025-06-29-14-16-38.png>
 
-All Livox Mid- & Horizon-series sensors come with a fixed IP in the `192.168.1. range (/24 mask)`.
+Livox Mid/Horizon sensors use a fixed address in the `192.168.1.x/24` range.
+When connected, the LiDAR negotiates link speed/duplex with the NIC and then starts sending UDP packets.
 
-1. Upon connection, LiDAR negotiates speed/duplex w/ NIC
-2. LiDAR will start publishing UDP packets.
+Use this checklist to bring the link up cleanly.
 
-The configuration steps include:
-
-- Checking for the NIC name:
+1. Identify the NIC name:
 
 ```
 $ ip a
@@ -74,8 +72,9 @@ eno1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN group def
     altname enp8s0
 ```
 
-- Connect the device
-- Checking if the physical link from the livox is up - `NIC Link is Up 100 Mbps Full Duplex` shows it's up now
+1. Connect the device.
+
+2. Confirm the physical link is up. You should see a message like `NIC Link is Up 100 Mbps Full Duplex`:
 
 ```
 ricojia@system76-pc:~/Downloads/LivoxViewer2 for Ubuntu v2.3.0$  sudo dmesg | grep -i -e eno1 -e enp8s0  
@@ -83,7 +82,7 @@ ricojia@system76-pc:~/Downloads/LivoxViewer2 for Ubuntu v2.3.0$  sudo dmesg | gr
 [80870.168221] igc 0000:08:00.0 eno1: NIC Link is Up 100 Mbps Full Duplex, Flow Control: RX
 ```
 
-- To confirm auto-negotiation is valid:
+1. Verify auto-negotiation:
 
 ```
 sudo ethtool eno1  # ^--- look for "Link detected: yes/no", negotiated speed/duplex
@@ -91,7 +90,30 @@ sudo ethtool eno1  # ^--- look for "Link detected: yes/no", negotiated speed/dup
  Supports auto-negotiation: Yes
 ```
 
-- Disable ufw: `sudo ufw disable` (Livox Viewer2 would not be able to get point clouds otherwise)
+1. Disable UFW if Livox Viewer cannot receive point clouds:
+
+`sudo ufw disable`
+
+1. Detect architecture and interface, then assign the static Livox-side address:
+
+```
+# detect architecture
+uname -m
+IFACE="$(ip -o link show | awk -F': ' '{print $2}' | sed 's/@.*//' | grep -E '^(en|eth)' | head -n1)"
+
+sudo ip addr add "${LIVOX_IP}" dev "${IFACE}" 2>/dev/null || echo "Address already assigned, skipping."
+sudo ip link set "${IFACE}" up
+```
+
+Notes:
+
+- `uname -m` reports architecture (for example `x86_64` or `aarch64`).
+- Wired interfaces are Ethernet interfaces, typically named with `en` or `eth`.
+- `grep -E` enables extended regex. `^` means start of string, and `|` means OR.
+- `ip addr add` is the modern tool and has clearer scripting semantics than `ifconfig` (`net-tools`).
+- `ip link set "${IFACE}" up` administratively enables the interface. It does not request DHCP by itself.
+- DHCP is handled by services such as `NetworkManager`, `systemd-networkd`, or `dhclient`.
+- You can assign an IP while link is down, but traffic still fails until the link is up. Explicitly setting the link up makes behavior deterministic.
 
 ---
 
