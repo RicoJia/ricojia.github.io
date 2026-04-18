@@ -1,0 +1,199 @@
+---
+layout: post
+title: Robotics - [3D SLAM - 4] GICP
+date: '2025-3-7 13:19'
+subtitle: Generalized ICP
+header-img: "img/post-bg-o.jpg"
+tags:
+    - Robotics
+    - SLAM
+comments: true
+---
+
+## 1. Intuition
+
+In GICP, each matched pair is not just two points $p_s$ and $p_t$.  
+Each point also carries a local covariance estimated from its neighbors (for example, 20 nearest points), which approximates a local surface patch.
+
+1. For each source point $p_s$, find its local neighborhood and compute covariance $C_s$.
+2. For each target correspondence $p_t$, do the same and compute covariance $C_t$.
+3. Use both covariances to weight the residual directionally.
+
+Compared with classic ICP variants:
+
+- Point-to-point ICP can be viewed as moving each point directly toward its nearest matched point.
+- Point-to-plane ICP moves each point toward the matched local surface, mainly reducing error along the surface normal.
+
+In this context, isotropic means the same behavior in all directions, while anisotropic means the behavior depends on direction (for example, a much larger penalty along the normal direction than tangent directions).
+
+The key idea is that local geometry is anisotropic:
+
+- Along the surface normal direction, uncertainty is small.
+- Along tangent directions, uncertainty is larger.
+
+So optimization penalizes residuals more strongly in constrained directions (especially normal direction for planar patches), which helps surfaces collapse correctly instead of sliding arbitrarily.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/d00HK8V0/assss.png" height="300" alt=""/>
+        <figcaption>GICP workflow</figcaption>
+    </figure>
+</p>
+</div>
+
+## 2. Weighted Residual in GICP
+
+The per-pair GICP cost is a Mahalanobis distance:
+
+$$
+E = r^T M r
+$$
+
+where $r$ is the residual vector and $M$ is an information-like matrix (inverse covariance structure).
+
+If we decompose $r$ in local orthonormal directions $(u, v, n)$:
+
+$$
+r = r_u u + r_v v + r_n n
+$$
+
+then the cost can be viewed as:
+
+$$
+E = m_u r_u^2 + m_v r_v^2 + m_n r_n^2
+$$
+
+Typically for planar regions:
+
+$$
+m_n \gg m_u \approx m_v
+$$
+
+So off-plane error is penalized heavily, while in-plane motion is penalized less.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/mrGLXgL3/dddd.png" height="300" alt=""/>
+        <figcaption>Covariance ellipsoid shows surface normal direction, which is penalized heavily</figcaption>
+    </figure>
+</p>
+</div>
+
+## 3. Why Use $C_t + R C_s R^T$?
+
+For a residual between target and transformed source, uncertainty comes from both sides:
+
+- target local uncertainty: $C_t$
+- source local uncertainty after rotation: $R C_s R^T$
+
+So pair covariance is modeled as:
+
+$$
+\Sigma = C_t + R C_s R^T
+$$
+
+and the weight matrix is approximately $M = \Sigma^{-1}$.
+
+### 3.1 If Two Planes Are Similar
+
+Suppose both patches are near the $xy$-plane:
+
+$$
+C \approx
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & \epsilon
+\end{bmatrix}, \quad \epsilon \ll 1
+$$
+
+Then:
+
+$$
+\Sigma \approx
+\begin{bmatrix}
+2 & 0 & 0 \\
+0 & 2 & 0 \\
+0 & 0 & 2\epsilon
+\end{bmatrix},
+\qquad
+M = \Sigma^{-1} \approx
+\begin{bmatrix}
+\frac{1}{2} & 0 & 0 \\
+0 & \tfrac{1}{2} & 0 \\
+0 & 0 & \tfrac{1}{2\epsilon}
+\end{bmatrix}
+$$
+
+The normal-direction residual gets very large weight, so optimization strongly pulls the two planes together.
+
+### 3.2 Highly Constrained Geometry (e.g., Corners)
+
+If local geometry constrains multiple directions, covariance is small in more axes.  
+After inversion, weights become large in more axes, giving sharper constraints.
+
+### 3.3 Bad Correspondence or Inconsistent Surface Orientation
+
+If one patch is horizontal and the other is vertical, then $C_t + R C_s R^T$ tends to be more isotropic and larger overall.  
+Its inverse becomes smaller and less informative.
+
+This is a robustness feature: inconsistent matches become weak constraints instead of dominating the fit.
+
+## 4. GICP as a Unified View of ICP Variants
+
+GICP objective:
+
+$$
+T^* = \arg\min_T \sum_i d_i^T
+\left(C_i^B + T C_i^A T^T\right)^{-1} d_i,
+\qquad
+d_i = b_i - T a_i
+$$
+
+Point-to-plane ICP minimizes only normal-direction error:
+
+$$
+T^* = \arg\min_T \sum_i \lVert \eta_i^T(Ta_i - b_i) \rVert^2
+= \arg\min_T \sum_i d_i^T P_i d_i,
+\qquad
+P_i = \eta_i \eta_i^T
+$$
+
+To recover point-to-plane from GICP (as a limiting case):
+
+- choose source covariance $C_i^A = 0$
+- choose target covariance $C_i^B \approx P_i^{-1}$ with very large tangent variance and very small normal variance
+
+Then:
+
+$$
+\left(C_i^B + T C_i^A T^T\right)^{-1}
+= \left(C_i^B\right)^{-1}
+\approx P_i
+$$
+
+So GICP reduces to the point-to-plane objective.
+
+## 5. Math: Rotation Covariance Identity
+
+Why does rotated covariance become $R C R^T$?
+
+For centered random vector $x$ with covariance
+
+$$
+C = \mathbb{E}[x x^T],
+$$
+
+let $y = Rx$. Then:
+
+$$
+\operatorname{Cov}(y)
+= \mathbb{E}[y y^T]
+= \mathbb{E}[R x x^T R^T]
+= R\,\mathbb{E}[x x^T]R^T
+= R C R^T.
+$$
+
+That is exactly why the source covariance must be rotated before being combined with target covariance.
