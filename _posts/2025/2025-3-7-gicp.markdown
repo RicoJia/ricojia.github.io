@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [3D SLAM - 4] GICP
 date: '2025-3-7 13:19'
-subtitle: Generalized ICP
+subtitle: Generalized ICP, BFGS Optimization
 header-img: "img/post-bg-o.jpg"
 tags:
     - Robotics
@@ -12,7 +12,7 @@ comments: true
 
 ## 1. Intuition
 
-In GICP, each matched pair is not just two points $p_s$ and $p_t$.  
+In GICP (Segal et al, 2009), each matched pair is not just two points $p_s$ and $p_t$.  
 Each point also carries a local covariance estimated from its neighbors (for example, 20 nearest points), which approximates a local surface patch.
 
 1. For each source point $p_s$, find its local neighborhood and compute covariance $C_s$.
@@ -197,3 +197,19 @@ $$
 $$
 
 That is exactly why the source covariance must be rotated before being combined with target covariance.
+
+## Appendix A - BFGS Algorithm
+
+Once correspondences are fixed, the algorithm must solve for the best 6-dof pose: tx, ty, tz, rx, ry, rz.
+
+Newton's Method would use gradient and Hessian. But computing the exact hessian is expensive.
+
+TODO: What is the problem?
+
+TODO: What does Newton's Method do to solve this problem?
+
+Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm is a standard quasi-newton method to use the gradient, and **approximate the inverse Hessian** over iterations. Often much faster than simple gradint descent because it leans the local shape of the objective
+
+- What do you mean local shape?
+- Who is GSL
+-

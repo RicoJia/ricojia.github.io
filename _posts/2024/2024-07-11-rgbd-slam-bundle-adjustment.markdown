@@ -118,12 +118,20 @@ H = \sum_{ij} H_{ij} = \sum_{ij} (J^T_{ij} \Omega J_{ij} + \lambda I) \text{(Lev
 \end{gather*}
 $$
 
+Actually, this is only the Gauss-Newton approximation to the real Hessian. If we differentiate the cost one more time, the exact Hessian for one residual block also contains a second-order term:
+
+$$
+H_{ij}^{\text{exact}} = J_{ij}^T \Omega J_{ij} + \sum_k (\Omega e_{ij})_k \, \nabla^2 e_{ij,k}
+$$
+
+The Gauss-Newton method drops the second term and keeps only $J_{ij}^T \Omega J_{ij}$, which is usually a good approximation when the residual is already small.
+
 $b$ is:
 
 $$
 \begin{gather*}
 \begin{aligned}
-& b = J^Te
+& b = J^T \Omega e
 \end{aligned}
 \end{gather*}
 $$
