@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Linux - Filesystem
-date: '2018-01-10 13:19'
-subtitle: inode, soft/symbolic link, FIFO
+date: 2018-01-10 13:19
+subtitle: inode, soft/symbolic link, FIFO, File Lock
 comments: true
 tags:
-    - Linux
+  - Linux
 ---
 
 ## Inode
@@ -97,3 +97,30 @@ A **FIFO special file** is a rendez-vous point in the filesystem that **lets two
 
 - `rsync -vva --info=progress2 <FROM> <TO>`
 
+## File Lock
+
+Linux file locks are a simple way to coordinate access to the same file across multiple processes. They are commonly used to prevent conflicts such as two copies of the same program running at once, or multiple processes trying to update the same resource simultaneously. File locks are mainly a **process-level coordination** mechanism, not a guarantee enforced against every possible file access pattern.
+
+A common way to do this in Python is with `fcntl.flock()`. For example:
+
+```bash
+import fcntl
+
+try:
+    fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    print("Lock acquired")
+except BlockingIOError:
+    print("Another process already holds the lock")
+```
+
+In this example, `LOCK_EX` requests an **exclusive lock**, meaning only one process can hold it at a time, while `LOCK_NB` makes the request **non-blocking**. If another process already holds the lock, the call fails immediately instead of waiting.
+
+One important detail is that Linux file locks are generally **advisory**. This means other processes must also cooperate by using the same locking mechanism. A process that ignores locking can still access the file normally. Because of this, file locks work best when all participating programs are designed to respect them.
+
+Another subtle point is that the lock applies to the **open file description**, not simply the filename itself. In practice, this means the lock is tied to the opened file handle and its descriptor, not just to the path on disk.
+
+The lock is released in any of these situations:
+
+- when you explicitly call `fcntl.flock(fd, fcntl.LOCK_UN)`
+- when the file descriptor is closed
+- when the process exits

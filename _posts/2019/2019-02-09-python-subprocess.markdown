@@ -25,7 +25,7 @@ subprocess.run(args, *, stdin=None, input=None, stdout=None, stderr=None, captur
 
 #### Explicitly invoking bash
 
-When using `/bin/bash -c`, the subsequent argument should be a single string. 
+When using `/bin/bash -c`, the subsequent argument should be a single string.
 
 ```python
 # 1 - bad because only the first argument after -c is taken as an argument
