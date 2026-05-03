@@ -158,6 +158,28 @@ int main() {
 
 [Here is an online C++ compiler with `Eigen`](https://coderpad.io/languages/cpp/)
 
+### Another Real World Example
+
+A perfect rotation matrix R has
+
+$$
+R = U I Vᵀ
+$$
+
+When you multiply two matrices together, though they are SE3 matrices, there still could be numerical errors. When that happens, R can be adjusted to $U V^T$ because without numerical errors, those should be R's values
+
+```cpp
+Eigen::Isometry3d guess = last;
+Sophus::SE3d full_delta  = Sophus::SE3d::exp(xi);
+
+guess.matrix() = last.matrix() * full_delta.matrix();
+
+// Reorthogonalize rotation to avoid numerical drift from matrix composition
+Eigen::Matrix3d R = guess.linear();
+Eigen::JacobiSVD<Eigen::Matrix3d> svd(R, Eigen::ComputeFullU | Eigen::ComputeFullV);
+guess.linear() = svd.matrixU() * svd.matrixV().transpose();
+```
+
 ## More Remarks
 
 SVD is like "Data Driven Generalization of Fourier Transform". It's one of the transformations used in **the last generation computational science tools, which maps a system into a new coordinates**. In a system like facial recognition, we have a bunch of data but no off-the-shelf mathematical model for Fourier Tranformation. SVD allows us to tailor a model with those data to the specific problem.
