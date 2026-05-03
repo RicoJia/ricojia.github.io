@@ -27,6 +27,10 @@ ssh gpc1 'tar -C /tmp -cf - MY_DIR' | tar -C . -xf -
     - lots of small protocol messages.
   - So if you want a fresh copy, rsync's incremental file delta method doesn't do much.
 
+Additionally, `tar -cvzf` means: c is create, v is verbose, z is gzip, f means filename follows.
+
+- pigz is parallel gzip. Faster than gzip.
+
 ### Softlink
 
 - `ln -s <target_path> <dest_path>`

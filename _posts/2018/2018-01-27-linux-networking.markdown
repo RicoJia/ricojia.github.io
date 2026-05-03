@@ -7,7 +7,6 @@ comments: true
 tags:
   - Linux
 ---
-
 ## Networking Layers: From DDS Payload to Wire Format
 
 When we talk about “sending a DDS message,” it’s easy to think of it as a single thing moving across the system. In reality, networking is layered. Each layer wraps the one above it.
@@ -134,6 +133,8 @@ Switch A ───── Switch B
 - Fix:
   - Remove redundant cable
   - Enable STP/RSTP
+
+- Checking for TCP port 8181 is open: `nmap 192.168.10.87 -p 8181`
 
 ---
 

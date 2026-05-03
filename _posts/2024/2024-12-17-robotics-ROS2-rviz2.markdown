@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - rviz2
-date: 2024-11-5 13:19
+date: 2024-12-17 13:19
 subtitle:
 header-img: img/post-bg-os-metro.jpg
 tags:
@@ -10,6 +10,7 @@ tags:
 comments: true
 ---
 ---
+
 ## Visualization Marker
 
 If you’ve ever wanted to display text directly in RViz2—for debugging, labeling, or status messages—you can do this using visualization markers.
@@ -40,7 +41,7 @@ marker.text = "Hello RViz"
 publisher.publish(marker)
 ```
 
-- would it hurt to launch the rviz twice in two different launch files - no, but you will get two instances of rviz. 
+- would it hurt to launch the rviz twice in two different launch files - no, but you will get two instances of rviz.
 
 ---
 
