@@ -1,0 +1,18 @@
+---
+layout: post
+title: "AI Agent Setup"
+date: 2026-03-02 13:19
+subtitle: Remote Claude Code Setup
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+## Remote Claude Code Setup
+
+1. Bring up tailscale: `sudo tailscale up`
+2. Bring up `code-server`: `code-server --bind-addr $(tailscale ip -4):8081`
+3. To see password for access `cat ~/.config/code-server/config.yaml`
+4. Start byobu / tmux. Bring up your claude code. `claude code` If you are developing in a container, do so in the container
+5. Access remotely by opening a web browser, connect to tailscale on your remote machine, go to the tailscale ip, and type in the password above. Then, find the byobu / tmux page and start coding 😊

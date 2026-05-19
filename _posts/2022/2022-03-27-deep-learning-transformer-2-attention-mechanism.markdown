@@ -63,6 +63,14 @@ $$
 
 Now, let's talk about how to calculate the attention score `a(q, k_i)`. There are two types: additive attention, and scaled dot-product attention.
 
+## TODO: Intro  to key, value
+
+If you come into a library, you know your research question as query. You try to find the shelf number and shelf position of your book, that's your key. The content of the book you retrieve based on the key is called value.  E.g., if your query is "history of the first emperor of Ming Dynasty China", you then have access to the names of all books in the library (keys), e.g., "Those things in MIng Dynasty", you can find similarity between the key and your query by their cosine similarity, which is also called "attention" (attn = query * key)
+
+Back to transformer, if you try to **learn** the wording relationship from individual words in "hi how are you" ,you first convert each word into a vector through the embedding layer. Then you feed each word through 3 different  matrices for their query (something interesting about this word), key (unique index of the word), value (the content of the word). For word hi, you get the attention of query hi and key hi = 0.8, hi and how are 0.02, hi and are to be 0.01, hi and you to be 0.1.   The learned context vector for "hi" becomes `0.8 * value(hi) + 0.02 * value(how) + 0.02 * value(are) + 0.16 * value(you)`. This context will be fed though the rest of the system, then each matrix will be updated through back-propagation to minimize some loss function
+
+![](https://i.postimg.cc/NMzrfCXB/Screenshot-from-2026-05-18-09-06-21.png)
+
 ### Additive (Bahdanau) Attention
 
 When keys and the query have different lengths, we can use the **additive attention**. Additive attention projects keys and the **query into the same length** using two linear layers.
