@@ -1,0 +1,89 @@
+---
+layout: post
+title: "[BEV] DETR3D"
+date: 2026-04-11 13:19
+subtitle: ""
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+#### [DETR3D](https://proceedings.mlr.press/v164/wang22b/wang22b.pdf?utm_source=chatgpt.com) (CoRL 2021)
+
+```
+6 camera images + calibration
+        ↓
+Shared 2D backbone
+ResNet / VoVNet
+        ↓
+FPN
+multi-scale 2D image features
+        ↓
+Learned 3D object queries
+        ↓
+Predict 3D reference points
+        ↓
+Project 3D points into camera views
+        ↓
+Sample 2D FPN features
+        ↓
+Transformer decoder updates queries
+        ↓
+Class head + 3D box head
+        ↓
+Hungarian matching during training
+        ↓
+Final 3D detections, no NMS
+```
+
+How it works:
+
+1. Input: 6 surrounding camera images+ camera intrinsics+ camera extrinsics
+2. **Feature Pyramid Extraction**: in the encoder stage, every image passes through ResNet / VovNet to extract features, these features then pass through an FPN (Feature Pyramid Network) to get 2D feature maps at 4 scales.
+3. Decoder gets feature maps at 4 scales as inputs. It then converts the 2D features into 3D features. This avoids building a dense 3D voxel/BEV feature volume. It uses **sparse 3D object queries**. Each query predicts or owns a 3D reference point, projects that point into the camera images, samples 2D features there, and updates the query
+1. **Generate 3D Reference Points**: leaves 100 trainable query embedding vectors as "3D object slots". During inference, these vectors are not inputs, but rather fixed parameters of the network. After going through decoder layers with current image features, these embeddings will become 3D points which are not the same across scenes. Then, these 3D locations are projected back to the camera view using extrinsics and intrinsics.
+2. **Project 3D reference points to 2D feature maps**. Convert each 3D camera point back into each camera's feature maps at all scales (TODO is this true?), using the camera extrinsics and intrinsics.
+3. **Sample Features** : using bilinear interpolation, the model samples image features around projected locations and updates query features via cross-attention
+4. **Training:** There are two heads:
+1. a bounding box head (x,y,z, bounding box height, width, legnth, velocity, and yaw).  
+2. 1D class label
+5. During training, Hungarian matching teaches each query slot to specialize into object detection behavior (one-to-one assignment).
+1. TODO: can you explain more?
+6. Loss: set-to-set loss. bounding box part is L1, classification loss is focal loss. The overall loss is the same as DETR
+
+ANd please give me a tiny DETR3D workflow chart
+
+### Detailed Explaination
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/qMrWdpGt/Screenshot-from-2026-05-19-19-24-56.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+```
+100x256 -> self attention -> 100x256 -> cross attention: 
+
+feature map (H/4, W/4, 1) -> (H/4, W/4, 256) -> cross attention
+```
+
+1. Each object query is like a feature vector, and represent an obstacle bounding box at one 3D location. So the vector carries (x,y,z)
+2. These queries vectors become unique by learning from each other by going through self attention (after back propagation).
+100 querys = 100 x 256. Position embedding added
+
+3. Cross Attention:
+    - the feature map gets transformed into `(H/4, W/4, 256)`. This is still in the image space feature. The 256-D vector `f` at `[x0,y0]` represents a feature at the feature map point.
+    - If you pass `f` through `K` and `V`, you can get key and value vectors `k` and `v` for `f`. Then you can feed an object query `q` in, to get a context vector of `q` that has image information at `f`.
+    - Full attention over every pixel in every camera at every scale would be expensive. Naive cross-attention would do `object query attends to all image pixels from all cameras and scales`. That will be `6 camera x 4 scales * many H, W locations`.
+        - **Instead, we project 3D reference locations to 2D  cameras and look there**
+        - Deformable cross-attention does not attend to all feature-map positions. For each query `q`, each attention head samples a small number of image feature locations around the projected reference point (basically we select a small neighborhood of `f` vectors, get their `k` and v`), then combines those sampled values with learned attention weights.
+            - So the final context vector is $\sum(multiheaded{q, k_i, v_i})$
+
+4. Repeat step 3 N times
+
+5. Will predict `(x,y,z, h,w,l, yaw, confidence)`. Over training, this output vector will become better and better
+
+Original Dataset: Kitti, Nuscenes (Multimodal city traffic datasets), sunrgbd (indoor 3D object detection datasets), scannet (RGBD camera objects)

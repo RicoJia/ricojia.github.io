@@ -1,0 +1,21 @@
+---
+layout: post
+title: Neural Processing Unit
+date: 2026-04-16 13:19
+subtitle: ""
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+An **NPU** is a **Neural Processing Unit**. It is a specialized chip designed to run **neural network inference** efficiently, especially on edge devices like phones, drones, cameras, robots, and embedded systems. So instead of running a YOLO model on a power-hungry GPU, an edge device may run it on an NPU to save power and reduce latency.
+
+For deep learning, an NPU is optimized for operations like:
+
+```
+matrix multiplication
+convolution
+activation functions
+quantized INT8/INT4 operations
+```
