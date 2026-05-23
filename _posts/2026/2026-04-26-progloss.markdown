@@ -149,6 +149,14 @@ $$
 
 ## 3. Small numeric example
 
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://picx.zhimg.com/v2-e10820ad41fde2a1df94107119f2edf3_1440w.jpg" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
 Suppose we train for:
 
 $$
