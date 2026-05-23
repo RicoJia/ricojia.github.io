@@ -183,6 +183,14 @@ $$
 
 That is the basic Muon-SGD idea.
 
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://pic2.zhimg.com/v2-6e50bf2d646817c39b450245744004bd_1440w.jpg" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
 ---
 
 # Numerical example
