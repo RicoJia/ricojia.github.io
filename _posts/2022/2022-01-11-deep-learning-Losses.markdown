@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Deep Learning - Loss Functions
-date: '2022-01-11 13:19'
-subtitle: Mean Squared Error, Mean Absolute Error, Hinge Loss, Huber Loss, L1 Loss, Cross Entropy Loss, NLL Loss, Sparse Entropy, IoU Loss, Dice Loss, Focal Loss, Cauchy Robust Kernel
+date: 2022-01-11 13:19
+subtitle: Mean Squared Error, Mean Absolute Error, Hinge Loss, Huber Loss, L1 Loss, Cross Entropy Loss, NLL Loss, Sparse Entropy, IoU Loss, Dice Loss, Focal Loss, Cauchy Robust Kernel, DFL
 comments: true
-header-img: "img/home-bg-art.jpg"
+header-img: img/home-bg-art.jpg
 tags:
-    - Deep Learning
+  - Deep Learning
 ---
 
 ## Regression Losses
@@ -208,6 +208,53 @@ def focal_binary_cross_entropy(logits, targets, gamma=1):
     return num_label * loss.mean()
 
 focal_binary_cross_entropy(logits, targets)
+```
+
+---
+
+## Distribution Focal Loss
+
+For anchor-free detection, each feature-map point predicts four distances:
+
+```
+l, t, r, b
+```
+
+Without DFL, the model might directly predict: `l = 2.7`. With DFL, the model predicts: `P(l=0), P(l=1), P(l=2), P(l=3), P(l=4), ...` Then the final distance is: `predicted_distance = sum(probability_of_bin_i × i)` .  So if the model thinks the value is between 2 and 3, it can place probability mass around bins 2 and 3, for example, 30% bin 2
+70% bin 3, and the final bin value is 2.7. DFL calcuates loss of the left bin and the right bin around the target
+
+```
+probs = [0.08, 0.09, 0.20, 0.54, 0.09]
+```
+
+```python
+import math
+
+def dfl_loss_one_side(logits, target):
+    """
+    logits:
+        raw prediction over bins, e.g. [0, 1, 2, 3, 4]
+    target:
+        continuous target distance, e.g. 2.7
+    """
+    probs = softmax(logits)
+
+    left_bin = math.floor(target)
+    right_bin = left_bin + 1
+
+    # Clamp in case target is at the edge
+    right_bin = min(right_bin, len(probs) - 1)
+
+    # Linear interpolation weights
+    weight_right = target - left_bin
+    weight_left = 1.0 - weight_right
+
+    # Cross entropy on two neighboring bins
+    loss = 0.0
+    loss += -weight_left * math.log(probs[left_bin] + 1e-9)
+    loss += -weight_right * math.log(probs[right_bin] + 1e-9)
+
+    return loss
 ```
 
 ---

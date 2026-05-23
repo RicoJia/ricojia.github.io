@@ -25,6 +25,8 @@ The Transformer has an encoder-decoder architecture.
 
 The encoder has one multi-head self-attention pooling and one positionwise feed-forward network (FFN) modules. Some highlights are:
 
+- Positional encoding converts each token’s **position index** and the scalar `i` of each output dimension into a vector using
+ 	- `position 0 → [sin(...), cos(...), sin(...), cos(...), ...]`, this is a 1xN vector
 - In the multi-head self-attention pooling, the queries, keys, and values are the previous encoder output.
 - Inspired by ResNet, **a residual connection (or skip connection) is added to boost the input signal**. Because of this, **no layer in the encoder changes the shape of the input**.
 - The positionwise feedforward networks **transforms embeddings at all timesteps using the same multi-layer perceptrons (MLP)**. So, they do not perform any time-wise operations.

@@ -71,6 +71,30 @@ Back to transformer, if you try to **learn** the wording relationship from indiv
 
 ![](https://i.postimg.cc/NMzrfCXB/Screenshot-from-2026-05-18-09-06-21.png)
 
+This is self attention, which means words in a sentence will learn from each other (self refers to the sentence itself)
+
+Now, let's calculate attention:
+
+```
+input -> embedding -> 4x256 (each row is an embedding vector for)
+```
+
+![](https://i.postimg.cc/FKp3Jy6D/Screenshot-from-2026-05-19-11-13-55.png)
+Scaling is to normalize the input vectors to the same scale, so they are along similar
+
+MHSA
+
+![](https://i.postimg.cc/ZqbyZ9q0/Screenshot-from-2026-05-19-11-15-20.png)
+
+In cross attention,
+
+![](https://i.postimg.cc/Hs3HJ34x/Screenshot-from-2026-05-19-12-41-00.png)
+
+Look-ahead Mask:
+During text generation (in decoder), the model predicts a token using only previous tokens. E.g., For example, when predicting after `["I", "am"]` , the model should not secretly know that the future tokens are: `["fine", "thank", "you", EOS].` By applying a mask, during training, similarities (attention) won't be calculated for `[prev -> future]` tokens
+
+![](https://i.postimg.cc/k47ftNyR/Screenshot-from-2026-05-19-12-45-56.png)
+
 ### Additive (Bahdanau) Attention
 
 When keys and the query have different lengths, we can use the **additive attention**. Additive attention projects keys and the **query into the same length** using two linear layers.
