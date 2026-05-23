@@ -1,0 +1,347 @@
+---
+layout: post
+title: Small Target Label Assignment (STAL)
+date: 2026-04-16 13:19
+subtitle: ""
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+## STAL
+
+STAL = **Small-Target-Aware Label Assignment**. It is a training-time matching rule for object detectors: it decides which predicted boxes / anchors should be treated as **positive samples** for each ground-truth object.
+
+The problem it solves: standard label assignment can drop very small objects because their IoU with candidate anchors is often low, even when the anchor is visually near the object. Ultralytics describes STAL in YOLO26 as a modification of TAL that keeps tiny objects from being ignored during training. ([Ultralytics][1])
+
+In short, STAL aims to increase positive supervision for tiny objects during training, which improves small-object recall and training stability.
+
+STAL does **not** change inference directly. It changes how positives are assigned during training.
+
+$$
+\operatorname{STAL} \approx \operatorname{TAL} + \operatorname{scale\text{-}adaptive\ IoU\ thresholding}
+$$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://pic1.zhimg.com/v2-8704092783090ab923bdbb3b35e0804c_1440w.jpg" height="300" alt="STAL intuition"/>
+    </figure>
+</p>
+</div>
+
+---
+
+## Why dynamic IoU thresholding
+
+Fixed IoU thresholds are harsh on small objects. A shift of 1-2 pixels changes IoU much more for a $6 \times 6$ box than for a $100 \times 100$ box.
+
+STAL addresses this by lowering the IoU acceptance threshold for smaller objects. ([arXiv][2])
+
+$$
+τ_j = τ_{\min} + (τ_{\max} - τ_{\min}) \sqrt{\frac{A_j}{A_{\mathrm{img}}}}
+$$
+
+where:
+
+$$
+A_j = \operatorname{area\ of\ GT\ object}\ j, \qquad A_{\mathrm{img}} = \operatorname{image\ area}
+$$
+
+For small objects, $\tau_j$ becomes lower than the base threshold. This allows spatially reasonable low-IoU matches to remain trainable positives.
+
+Example intuition:
+
+```text
+large object: tau ~ 0.50
+medium object: tau ~ 0.35
+tiny object: tau ~ 0.10
+```
+
+---
+
+## STAL pseudocode
+
+```python
+def STAL_assign(
+    pred_scores,       # [N, C]
+    pred_boxes,        # [N, 4]
+    anchor_points,     # [N, 2]
+    gt_boxes,          # [M, 4]
+    gt_labels,         # [M]
+    image_w,
+    image_h,
+    top_k=10,
+    alpha=1.0,
+    beta=6.0,
+    tau_min=0.10,
+    tau_max=0.50,
+    small_size_thr=8,
+    min_small_pos=4,
+):
+    """
+    STAL = Task-Aligned Label Assignment
+           + dynamic IoU threshold for small targets
+           + optional minimum-positive guarantee for tiny objects.
+    """
+
+    N = len(pred_boxes)
+    M = len(gt_boxes)
+    C = pred_scores.shape[1]
+
+    assigned_gt_idx = [-1 for _ in range(N)]
+    assigned_metric = [0.0 for _ in range(N)]
+
+    target_labels = ["background" for _ in range(N)]
+    target_boxes = [[0, 0, 0, 0] for _ in range(N)]
+    target_scores = [[0.0 for _ in range(C)] for _ in range(N)]
+
+    image_area = image_w * image_h
+
+    if M == 0:
+        return assigned_gt_idx, target_labels, target_boxes, target_scores
+
+    # IoU between every GT and prediction
+    ious = compute_iou_matrix(gt_boxes, pred_boxes)  # [M, N]
+
+    positive_pairs = []
+
+    for j in range(M):
+        gt = gt_boxes[j]
+        cls = gt_labels[j]
+
+        x1, y1, x2, y2 = gt
+        gt_w = x2 - x1
+        gt_h = y2 - y1
+        gt_area = gt_w * gt_h
+
+        # --------------------------------------------------------
+        # 1. Dynamic IoU threshold
+        # --------------------------------------------------------
+        area_ratio = gt_area / image_area
+
+        # One possible scale-aware threshold.
+        # Small area_ratio -> threshold close to tau_min.
+        # Large area_ratio -> threshold closer to tau_max.
+        tau_j = tau_min + (tau_max - tau_min) * sqrt(area_ratio)
+
+        # Optional clamp
+        tau_j = max(tau_min, min(tau_j, tau_max))
+
+        is_small = min(gt_w, gt_h) < small_size_thr
+
+        candidates = []
+
+        for i in range(N):
+            ax, ay = anchor_points[i]
+
+            # Candidate center condition
+            inside_gt = (x1 <= ax <= x2) and (y1 <= ay <= y2)
+
+            if not inside_gt:
+                continue
+
+            iou = ious[j][i]
+
+            # ----------------------------------------------------
+            # 2. STAL thresholding:
+            #    use dynamic threshold instead of fixed IoU cutoff
+            # ----------------------------------------------------
+            if iou < tau_j:
+                continue
+
+            s = pred_scores[i][cls]
+
+            # TAL metric
+            task_metric = (s ** alpha) * (iou ** beta)
+
+            candidates.append((i, task_metric, iou))
+
+        # --------------------------------------------------------
+        # 3. Select top-k using TAL metric
+        # --------------------------------------------------------
+        candidates.sort(key=lambda x: x[1], reverse=True)
+        selected = candidates[:top_k]
+
+        # --------------------------------------------------------
+        # 4. Small-object fallback:
+        #    if dynamic threshold still gives too few positives,
+        #    force at least min_small_pos.
+        # --------------------------------------------------------
+        if is_small and len(selected) < min_small_pos:
+            selected = add_small_object_fallback_candidates(
+                selected=selected,
+                gt_box=gt,
+                gt_label=cls,
+                pred_scores=pred_scores,
+                pred_boxes=pred_boxes,
+                anchor_points=anchor_points,
+                ious=ious[j],
+                alpha=alpha,
+                beta=beta,
+                min_pos=min_small_pos,
+            )
+
+        for i, task_metric, iou in selected:
+            positive_pairs.append((j, i, task_metric, iou))
+
+    # ------------------------------------------------------------
+    # 5. Resolve conflicts:
+    #    if one anchor is assigned to multiple GTs, keep best IoU
+    # ------------------------------------------------------------
+    for j, i, task_metric, iou in positive_pairs:
+        old_j = assigned_gt_idx[i]
+
+        if old_j == -1:
+            assigned_gt_idx[i] = j
+            assigned_metric[i] = task_metric
+        else:
+            old_iou = ious[old_j][i]
+
+            if iou > old_iou:
+                assigned_gt_idx[i] = j
+                assigned_metric[i] = task_metric
+
+    # ------------------------------------------------------------
+    # 6. Build targets
+    # ------------------------------------------------------------
+    for i in range(N):
+        j = assigned_gt_idx[i]
+
+        if j == -1:
+            continue
+
+        cls = gt_labels[j]
+
+        target_labels[i] = cls
+        target_boxes[i] = gt_boxes[j]
+        target_scores[i][cls] = assigned_metric[i]
+
+    return assigned_gt_idx, target_labels, target_boxes, target_scores
+```
+
+---
+
+## Optional fallback for tiny objects
+
+```python
+def add_small_object_fallback_candidates(
+    selected,
+    gt_box,
+    gt_label,
+    pred_scores,
+    pred_boxes,
+    anchor_points,
+    ious,
+    alpha,
+    beta,
+    min_pos,
+):
+    selected_ids = set(i for i, _, _ in selected)
+
+    gx, gy = box_center(gt_box)
+
+    fallback = []
+
+    for i in range(len(pred_boxes)):
+        if i in selected_ids:
+            continue
+
+        ax, ay = anchor_points[i]
+
+        dist = squared_distance((ax, ay), (gx, gy))
+        iou = ious[i]
+        s = pred_scores[i][gt_label]
+
+        task_metric = (s ** alpha) * (iou ** beta)
+
+        # For tiny objects, center proximity can rescue candidates
+        # whose IoU is low because of pixel discretization.
+        fallback_score = task_metric - 0.01 * dist
+
+        fallback.append((i, fallback_score, task_metric, iou))
+
+    fallback.sort(key=lambda x: x[1], reverse=True)
+
+    for i, _, task_metric, iou in fallback:
+        if len(selected) >= min_pos:
+            break
+
+        selected.append((i, task_metric, iou))
+
+    return selected
+```
+
+---
+
+## Tiny numeric example
+
+Suppose:
+
+$$
+\tau_{\max} = 0.50,
+\qquad
+\tau_{\min} = 0.10
+$$
+
+and the image is $640 \times 640$.
+
+### Large object
+
+```text
+GT size = 160 x 160
+area ratio = 25600 / 409600 = 0.0625
+sqrt(area ratio) = 0.25
+```
+
+Then:
+
+$$
+τ = 0.10 + (0.50 - 0.10)(0.25) = 0.20
+$$
+
+So a candidate needs IoU at least $0.20$.
+
+### Tiny object
+
+```text
+GT size = 8 x 8
+area ratio = 64 / 409600 = 0.000156
+sqrt(area ratio) = 0.0125
+```
+
+Then:
+
+$$
+τ = 0.10 + (0.50 - 0.10)(0.0125) = 0.105
+$$
+
+So a candidate with IoU $0.15$ is accepted.
+
+With a fixed threshold of $0.50$, that candidate would be rejected.
+
+This is the key STAL difference:
+
+$$
+\operatorname{fixed\ threshold:}\ \operatorname{IoU} > 0.5
+$$
+
+$$
+\operatorname{STAL:}\ \operatorname{IoU} > τ(\operatorname{object\ size})
+$$
+
+For small objects:
+
+$$
+τ(\operatorname{small\ object}) \ll 0.5
+$$
+
+---
+
+## Summary
+
+STAL keeps TAL's task-aligned ranking but adds scale-adaptive IoU thresholding so tiny objects are not systematically filtered out. In practice, this yields stronger supervision for small targets and better recall in small-object regimes.
+
+[1]: https://www.ultralytics.com/blog/how-ultralytics-yolo26-trains-smarter-with-progloss-stal-and-musgd "Ultralytics YOLO26 Trains Smarter with ProgLoss, STAL, and MuSGD! | Ultralytics"
+[2]: https://arxiv.org/html/2601.12882v1 "YOLO26: An Analysis of NMS-Free End to End Framework for Real-Time Object Detection"
