@@ -1,0 +1,441 @@
+---
+layout: post
+title: Muon SGD
+date: 2026-04-19 13:19
+subtitle: ""
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+Muon means **MomentUm Orthogonalized by Newton–Schulz**. In practice, it takes the usual SGD momentum update for a 2D weight matrix, then orthogonalizes that update before applying it. NVIDIA’s Emerging Optimizers docs describe Muon as SGD-momentum plus Newton–Schulz post-processing for 2D parameter updates, replacing each update by an approximately nearest orthogonal matrix. ([NVIDIA Docs][1])
+
+---
+
+## 1. Regular SGD with momentum
+
+Suppose a layer has a matrix weight
+
+$$
+W_t \in \mathbb{R}^{m \times n}
+$$
+
+and gradient
+
+$$
+G_t = \nabla_W L(W_t).
+$$
+
+SGD with momentum forms a velocity / momentum buffer:
+
+$$
+M_t = \beta M_{t-1} + G_t
+$$
+
+or with Nesterov-style momentum:
+
+$$
+\widetilde{M}_t = G_t + \beta M_t.
+$$
+
+Then standard momentum SGD would update
+
+$$
+W_{t+1} = W_t - \eta \widetilde{M}_t.
+$$
+
+Muon changes the last step.
+
+---
+
+## 2. Muon idea
+
+Instead of using the raw momentum update $\widetilde{M}_t$, Muon orthogonalizes it:
+
+$$
+O_t = \operatorname{Ortho}(\widetilde{M}_t)
+$$
+
+and then updates
+
+$$
+W_{t+1} = W_t - \eta O_t.
+$$
+
+The ideal orthogonalized direction is the polar factor:
+
+$$
+\operatorname{Ortho}(M) = UV^T
+$$
+
+where
+
+$$
+M = U \Sigma V^T.
+$$
+
+So ideal Muon would be:
+
+$$
+W_{t+1} = W_t - \eta UV^T.
+$$
+
+But computing an SVD every optimizer step is expensive, so Muon approximates this using Newton–Schulz. Keller Jordan’s Muon write-up notes that Muon uses Newton–Schulz instead of SVD for more efficient orthogonalization, with momentum applied before orthogonalization. ([Keller Jordan][2])
+
+The diagonal entries of $\Sigma$ are singular values. They tell you how strongly the update acts along different matrix directions. Muon keeps the **directional structure** $(U, V)$, but flattens the singular values:
+
+$$
+\Sigma
+\quad\longrightarrow\quad
+I.
+$$
+
+---
+
+## 3. Newton–Schulz orthogonalization
+
+A simple Newton–Schulz iteration is:
+
+$$
+X_{k+1} = \frac{1}{2} X_k (3I - X_k^T X_k)
+$$
+
+Start with
+
+$$
+X_0 = \frac{M}{\lVert M \rVert_F}.
+$$
+
+After several iterations,
+
+$$
+X_k^T X_k \approx I,
+$$
+
+so $X_k$ is approximately orthogonal.
+
+Muon implementations often use a polynomial version:
+
+$$
+X_{k+1} = aX_k + bX_k X_k^T X_k + cX_k X_k^T X_k X_k^T X_k.
+$$
+
+Equivalently:
+
+$$
+X_{k+1} = aX_k + bA_k X_k + cA_k^2 X_k,
+\qquad
+A_k = X_k X_k^T.
+$$
+
+The original Muon write-up gives a simple coefficient choice
+
+$$
+(a,b,c) = (2, -1.5, 0.5)
+$$
+
+and a tuned practical choice
+
+$$
+(a,b,c) = (3.4445, -4.7750, 2.0315).
+$$
+
+It also says Muon commonly uses around 5 Newton–Schulz steps in experiments. ([Keller Jordan][2])
+
+---
+
+## 4. Full Muon-style update
+
+For a matrix parameter $W_t$:
+
+$$
+G_t = \nabla_W L(W_t)
+$$
+
+$$
+M_t = \beta M_{t-1} + G_t
+$$
+
+Nesterov version:
+
+$$
+\widetilde{M}_t = G_t + \beta M_t
+$$
+
+Normalize:
+
+$$
+X_0 = \frac{\widetilde{M}_t}{\lVert \widetilde{M}_t \rVert_F}
+$$
+
+Run Newton–Schulz:
+
+$$
+X_{k+1} = aX_k + bX_k X_k^T X_k + cX_k X_k^T X_k X_k^T X_k
+$$
+
+Then update:
+
+$$
+W_{t+1} = W_t - \eta X_K.
+$$
+
+That is the basic Muon-SGD idea.
+
+---
+
+# Numerical example
+
+Let the current weight matrix be
+
+$$
+W_0 =
+\begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+$$
+
+and suppose the gradient is
+
+$$
+G_0 =
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}.
+$$
+
+Assume no previous momentum:
+
+$$
+M_{-1} = 0.
+$$
+
+Use
+
+$$
+\beta = 0.9,
+\qquad
+\eta = 0.1.
+$$
+
+Then the momentum buffer is
+
+$$
+M_0 = 0.9M_{-1} + G_0 = G_0 =
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}.
+$$
+
+For simplicity, use the basic Newton–Schulz iteration:
+
+$$
+X_{k+1} = \frac{1}{2}X_k(3I - X_k^TX_k).
+$$
+
+First normalize:
+
+$$
+\lVert M_0 \rVert_F
+= \sqrt{1^2 + 2^2 + 3^2 + 4^2}
+= \sqrt{30}
+\approx 5.477.
+$$
+
+So
+
+$$
+X_0 =
+\frac{1}{5.477}
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}
+\approx
+\begin{bmatrix}
+0.1826 & 0.3651 \\
+0.5477 & 0.7303
+\end{bmatrix}.
+$$
+
+After several Newton–Schulz steps:
+
+$$
+X_1 \approx
+\begin{bmatrix}
+0.1335 & 0.4009 \\
+0.5708 & 0.7165
+\end{bmatrix}
+$$
+
+$$
+X_2 \approx
+\begin{bmatrix}
+0.0366 & 0.4692 \\
+0.6137 & 0.6863
+\end{bmatrix}
+$$
+
+$$
+X_3 \approx
+\begin{bmatrix}
+-0.1400 & 0.5936 \\
+0.6918 & 0.6312
+\end{bmatrix}
+$$
+
+$$
+X_5 \approx
+\begin{bmatrix}
+-0.5138 & 0.8570 \\
+0.8572 & 0.5147
+\end{bmatrix}.
+$$
+
+Check orthogonality:
+
+$$
+X_5^T X_5
+\approx
+\begin{bmatrix}
+0.9987 & 0.0009 \\
+0.0009 & 0.9994
+\end{bmatrix}
+\approx I.
+$$
+
+So Muon uses approximately
+
+$$
+O_0 =
+\begin{bmatrix}
+-0.5138 & 0.8570 \\
+0.8572 & 0.5147
+\end{bmatrix}.
+$$
+
+Now update the weights:
+
+$$
+W_1 = W_0 - \eta O_0.
+$$
+
+With $\eta = 0.1$:
+
+$$
+W_1 =
+\begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+-
+0.1
+\begin{bmatrix}
+-0.5138 & 0.8570 \\
+0.8572 & 0.5147
+\end{bmatrix}.
+$$
+
+Therefore
+
+$$
+W_1
+\approx
+\begin{bmatrix}
+1.0514 & -0.0857 \\
+-0.0857 & 0.9485
+\end{bmatrix}.
+$$
+
+---
+
+## Compare with plain SGD
+
+Plain SGD would use
+
+$$
+W_1 = W_0 - 0.1G_0.
+$$
+
+So
+
+$$
+W_1^{\text{SGD}} =
+\begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+-
+0.1
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}
+=
+\begin{bmatrix}
+0.9 & -0.2 \\
+-0.3 & 0.6
+\end{bmatrix}.
+$$
+
+Muon instead uses the **orthogonalized direction**, not the raw gradient:
+
+$$
+W_1^{\text{Muon}}
+\approx
+\begin{bmatrix}
+1.0514 & -0.0857 \\
+-0.0857 & 0.9485
+\end{bmatrix}.
+$$
+
+So the pipeline is:
+
+$$
+\boxed{
+\operatorname{gradient}
+\rightarrow
+\operatorname{momentum}
+\rightarrow
+\operatorname{Newton\text{-}Schulz\ orthogonalization}
+\rightarrow
+\operatorname{weight\ update}
+}
+$$
+
+The problem Muon is trying to solve is: **raw momentum updates can be badly conditioned as matrices**.
+
+For a matrix parameter $W$, the momentum buffer
+
+$$
+M_t = \beta M_{t-1} + G_t
+$$
+
+is also a matrix. Plain SGD uses $M_t$ directly:
+
+$$
+W_{t+1} = W_t - \eta M_t.
+$$
+
+For matrix parameters in neural networks, especially transformer weight matrices, different singular directions can get very different magnitudes. Raw SGD momentum can therefore produce updates that are too concentrated in high-gain directions.
+
+Orthogonalizing $M_t$ tries to make the update more **isotropic** across matrix directions. NVIDIA’s Emerging Optimizers docs describe this as using Newton–Schulz to efficiently orthogonalize each update, and note that orthogonalization can be viewed as steepest descent in the spectral norm. ([NVIDIA Docs][1])
+
+Intuitively:
+
+$$
+\operatorname{plain\ SGD:}\ \operatorname{use\ all\ magnitudes\ in}\ M_t
+$$
+
+$$
+\operatorname{Muon:}\ \operatorname{keep\ matrix\ direction,\ remove\ singular\text{-}value\ imbalance}
+$$
+
+This can improve conditioning of the update direction, especially when $M_t$ is close to low-rank or has very uneven singular values.
+
+[1]: https://docs.nvidia.com/nemo/emerging-optimizers/0.1.0/_modules/emerging_optimizers/orthogonalized_optimizers/muon.html "emerging_optimizers.orthogonalized_optimizers.muon — Emerging-Optimizers"
+[2]: https://kellerjordan.github.io/posts/muon/ "Muon: An optimizer for hidden layers in neural networks | Keller Jordan blog"
