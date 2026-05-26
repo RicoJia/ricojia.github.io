@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Distance Metrics
-subtitle: KL Divergence , Chi-Squared Similarity, Mahalanobis Distance
+subtitle: KL Divergence , Chi-Squared Similarity, Mahalanobis Distance, Geodesic Distance
 date: '2017-01-23 13:19'
 header-img: "img/bg-walle.jpg"
 tags:
@@ -35,7 +35,7 @@ However, this could cause a lot of issues. instead, we can assume $q(x) = \epsil
 
 $$
 \begin{aligned}
-D_{\mathrm{KL}}(p(x) \,\|\, q(x)) 
+D_{\mathrm{KL}}(p(x) \,\|\, q(x))
 &= \int p(x) \ln\left( \frac{p(x)}{q(x)} \right) \, dx \\
 &= \int -p(x) \ln\left( \frac{q(x)}{p(x)} \right) \, dx \\
 &\ge -\ln\left( \int p(x) \frac{q(x)}{p(x)} \, dx \right) \quad \text{(Jensen's inequality)} \\
@@ -70,7 +70,7 @@ Where $P_i$, $Q_i$ are bins for distributions $P$, $Q$. Denometer $P_i + Q_i$ br
 
 ## Mahalanobis Distance
 
-The Mahalanobis distance is a measure of “how far” a point $x$ lies from the mean $\mu$ of a multivariate distribution, taking into account the scale (variance) and correlations of the data. 
+The Mahalanobis distance is a measure of “how far” a point $x$ lies from the mean $\mu$ of a multivariate distribution, taking into account the scale (variance) and correlations of the data.
 
 $$
 \begin{gather*}
@@ -80,6 +80,28 @@ $$
 \end{gather*}
 $$
 
-### Bhattacharyya Distance
+## Geodesic distance
 
-TODO
+Geodesic distance measures the smallest rotation angle between two rotations.
+
+For rotation matrices $R_1$ and $R_2$:
+
+$$
+d_{geo}(R_1, R_2) = \cos^{-1}\left(\frac{\operatorname{tr}(R_1 R_2^\top) - 1}{2}\right)
+$$
+
+Interpretation:
+
+```text
+0°   = same rotation
+10°  = close orientation
+180° = maximally different orientation
+```
+
+So:
+
+$$
+d_{geo}(R_{pos}, R^*) < \theta
+$$
+
+means the positive pose must be close enough in viewpoint to be useful for training.
