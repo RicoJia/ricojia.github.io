@@ -34,7 +34,7 @@ tags:
 </p>
 </div>
 
-### Step 1: Data Generation for Pose-Refinement and Scoring Networks
+## Step 1: Data Generation for Pose-Refinement and Scoring Networks
 
 A foundation model is a large, general-purpose model trained on a very large and diverse dataset, so it learns reusable 3D priors that transfer to many new objects and tasks.
 
