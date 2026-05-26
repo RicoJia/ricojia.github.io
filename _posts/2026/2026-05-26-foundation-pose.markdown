@@ -27,25 +27,13 @@ FoundationPose (CVPR 2024)
 2. For pose estimation, it first initializes global poses uniformly around the object, which are then refined by the refinement network. Finally, it forwards the refined poses to the pose selection module which predicts their scores. The pose with the best score is selected as output
 3. It also supports model-free mode with a small set of reference images we leverage an object-centric neural field (Sec. 3.2) for novel view RGBD rendering for subsequent renderand-compare. (Skipped in this article because we don't need it)
 
-```mermaid
-                         flowchart TD
-    A["RGB-D camera observation"] --> B["2D object detector<br/>bbox / mask"]
-
-    B --> C1["CAD model<br/>model-based setup"]
-    B --> C2["Reference images<br/>model-free setup"]
-
-    C1 --> D1["Graphics renderer<br/>RGB-D rendering"]
-    C2 --> D2["Neural object field<br/>SDF + appearance"]
-
-    D1 --> E["Generate pose hypotheses<br/>depth translation + sampled rotations"]
-    D2 --> E
-
-    E --> F["Render each hypothesis"]
-    F --> G["Pose-conditioned crop<br/>observed RGB-D"]
-    G --> H["Pose refinement network<br/>render vs observation<br/>predicts ΔR, Δt"]
-    H --> I["Pose ranking / selection<br/>score all hypotheses"]
-    I --> J["Final 6D pose"]
-```
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/FHXYVqCs/mermaid-diagram.png" height="700" alt=""/>
+    </figure>
+</p>
+</div>
 
 ### Step 2 Data Generation For Pose-Refinement and Scoring Networks
 
