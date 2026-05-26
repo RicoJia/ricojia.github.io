@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[ML] Foundation Pose"
+title: "[ML] FoundationPose (CVPR 2024)"
 date: 2026-05-26 13:19
 subtitle: ""
 comments: true
@@ -21,11 +21,10 @@ tags:
 </p>
 </div>
 
-FoundationPose (CVPR 2024)
 
-1. To reduce manual effort for large-scale training, it introduces a synthetic data generation pipeline built on 3D model databases (GSO, Objaverse), large language models, and diffusion models (Sec. 3.1).
-2. For pose estimation, it first initializes global poses uniformly around the object, then refines them with a refinement network. Finally, it forwards the refined poses to a pose selection module that predicts scores, and selects the highest-scoring pose as output.
-3. It also supports a model-free mode: with a small set of reference images, it uses an object-centric neural field (Sec. 3.2) for novel-view RGB-D rendering in a render-and-compare pipeline. (Skipped in this article because we do not need it.)
+1. To reduce manual effort for large-scale training, FoundationPose introduces a synthetic data generation pipeline built on 3D model databases (GSO, Objaverse), large language models, and diffusion models (Sec. 3.1).
+2. For pose estimation, FoundationPose  first initializes global poses uniformly around the object, then refines them with a refinement network. Finally, it forwards the refined poses to a pose selection module that predicts scores, and selects the highest-scoring pose as output.
+3. FoundationPose also supports a model-free mode: with a small set of reference images, it uses an object-centric neural field (Sec. 3.2) for novel-view RGB-D rendering in a render-and-compare pipeline. (Skipped in this article because we do not need it.)
 
 <div style="text-align: center;">
 <p align="center">
@@ -35,7 +34,7 @@ FoundationPose (CVPR 2024)
 </p>
 </div>
 
-### Step 2: Data Generation for Pose-Refinement and Scoring Networks
+### Step 1: Data Generation for Pose-Refinement and Scoring Networks
 
 A foundation model is a large, general-purpose model trained on a very large and diverse dataset, so it learns reusable 3D priors that transfer to many new objects and tasks.
 
@@ -55,7 +54,7 @@ FoundationPose is trained mostly on synthetic data. The authors use large 3D ass
 </p>
 </div>
 
-## Step 3: Pose Initialization
+## Step 2: Pose Initialization
 
 FoundationPose starts with many rough pose guesses.
 
@@ -78,7 +77,7 @@ def initialize_global_poses(bbox, depth):
     return poses
 ```
 
-## Step 4: Render-and-Compare Refinement
+## Step 3: Render-and-Compare Refinement
 
 For each coarse pose hypothesis:
 
@@ -102,7 +101,7 @@ def refine_pose(pose, rgb, depth, object_representation):
     return new_pose
 ```
 
-## Step 5: Refinement Network Learns Features
+## Step 4: Refinement Network Learns Features
 
 The CNN extracts local visual alignment cues. The transformer lets different regions of the rendered and observed inputs compare with each other and form richer feature vectors. The refiner has two RGB-D branches:
 
@@ -141,7 +140,7 @@ t_new = t_old + delta_t_cam
 R_new = delta_R_cam @ R_old
 ```
 
-## Step 6: Pose Selection / Ranking
+## Step 5: Pose Selection / Ranking
 
 After refinement, FoundationPose may still have many candidate poses. It needs to choose the best one. The pose selection module uses a hierarchical ranking network:
 
@@ -199,7 +198,7 @@ def select_best_pose(poses, rgb, depth, object_representation):
 </p>
 </div>
 
-## Step 7: Tracking Workflow
+## Step 6: Tracking Workflow
 
 For tracking, FoundationPose does not need to globally sample many poses every frame. Once the pose in frame $t-1$ is known, the pose in frame $t$ is probably nearby. Use the previous pose as the initial hypothesis and refine it.
 
@@ -215,7 +214,7 @@ This is why tracking is much faster than single-frame pose estimation. The paper
 
 ---
 
-## Step 8 — Loss: Contrast Validation for Pose Ranking
+## Step 7 — Loss: Contrast Validation for Pose Ranking
 
 Let's score some candidate poses! During training, ground truth is available, so we can decide which candidate pose is better.
 
@@ -263,7 +262,7 @@ $$
 s_{pos} \ge s_{neg} + m
 $$
 
-### 8-1 Example of Loss Calculation
+### 7-1 Example of Loss Calculation
 
 Example with $m = 0.2$:
 
@@ -304,7 +303,7 @@ Bad: A is better, but not scored sufficiently higher.
 
 ---
 
-### 8-2 Positive Poses with Rotations That Are Too Far Are Not Included in Loss
+### 7-2 Positive Poses with Rotations That Are Too Far Are Not Included in Loss
 
 FoundationPose only uses pairs where the positive pose is close enough to the ground-truth viewpoint in [geodesic distance](https://ricojia.github.io/2017/01/23/math-distance-metrics/):
 
@@ -320,7 +319,7 @@ where:
 
 This filtering excludes pose pairs in which the better pose is still too far rotated from ground truth, because in those pairs both estimates are "bad." They are more likely to introduce noise during training.
 
-### 8-3 Summary of Loss Calculation
+### 7-3 Summary of Loss Calculation
 
 ```python
 loss = 0
