@@ -23,29 +23,9 @@ tags:
 
 FoundationPose (CVPR 2024)
 
-1. To reduce manual efforts for large scale training, it introduces a synthetic data generation pipeline by 3D model databases (GSO, Objaverse), large language models and diffusion models (Sec. 3.1). 
+1. To reduce manual efforts for large scale training, it introduces a synthetic data generation pipeline by 3D model databases (GSO, Objaverse), large language models and diffusion models (Sec. 3.1).
 2. For pose estimation, it first initializes global poses uniformly around the object, which are then refined by the refinement network. Finally, it forwards the refined poses to the pose selection module which predicts their scores. The pose with the best score is selected as output
 3. It also supports model-free mode with a small set of reference images we leverage an object-centric neural field (Sec. 3.2) for novel view RGBD rendering for subsequent renderand-compare. (Skipped in this article because we don't need it)
-
-```mermaid
-flowchart TD
-    A["RGB-D camera observation"] --> B["2D object detector<br/>bbox / mask"]
-
-    B --> C1["CAD model<br/>model-based setup"]
-    B --> C2["Reference images<br/>model-free setup"]
-
-    C1 --> D1["Graphics renderer<br/>RGB-D rendering"]
-    C2 --> D2["Neural object field<br/>SDF + appearance"]
-
-    D1 --> E["Generate pose hypotheses<br/>depth translation + sampled rotations"]
-    D2 --> E
-
-    E --> F["Render each hypothesis"]
-    F --> G["Pose-conditioned crop<br/>observed RGB-D"]
-    G --> H["Pose refinement network<br/>render vs observation<br/>predicts ΔR, Δt"]
-    H --> I["Pose ranking / selection<br/>score all hypotheses"]
-    I --> J["Final 6D pose"]
-```
 
 <div style="text-align: center;">
 <p align="center">
@@ -63,23 +43,8 @@ FoundationPose is trained mostly on synthetic data. The authors use large 3D ass
 
 1. The system collects object assets from 3D model libraries such as >40,000 objects in Objaverse-LVIS and Google Scanned Objects. 1,156 LVIS categories are covered, each object has a category label, such as cup, bottle, box, and so on.
 2. These category labels are then given to ChatGPT, allowing the large language model to automatically generate more specific appearance descriptions, such as: `“a green ceramic cup with cartoon patterns on its surface.”`.
-
-    ```
-    Objaverse-LVIS object category tag
-            ↓
-    ChatGPT generates appearance description
-            ↓
-    TexFusion receives:
-        1. text prompt
-        2. object shape
-        3. randomly initialized noisy texture
-            ↓
-    TexFusion generates augmented textured 3D model
-            ↓
-    NVIDIA Isaac Sim renders synthetic RGB-D training data
-    ```
-
-3. These text prompts are then passed to a diffusion model / texture generation model, which generates more realistic and diverse textures for the original 3D objects.
+3. These text prompts are then passed to TexFusion (a diffusion model / texture generation model), which generates more realistic and diverse textures for the original 3D objects.
+    - TexFusion also gets randomly initialized noisy texture
 4. Finally, the system uses a physics simulation and rendering engine (Isaac Sim) to randomly generate RGB-D images under different lighting conditions, viewpoints, backgrounds, materials, and occlusions. At the same time, it automatically obtains accurate ground-truth annotations, including 6D pose, depth maps, segmentation masks, and 2D bounding boxes.
 
 <div style="text-align: center;">
@@ -90,18 +55,14 @@ FoundationPose is trained mostly on synthetic data. The authors use large 3D ass
 </p>
 </div>
 
-
-## Step 3 Pose initialization 
+## Step 3 Pose initialization
 
 FoundationPose starts with many rough pose guesses.
 
-Mental model:
+1. For translation, they use the median depth inside the **detected 2D bounding box** to estimate an initial 3D position.
+2. For rotation, they uniformly sample viewpoints from an icosphere around the object and add discretized in-plane rotations.
 
-“Before precise matching, scatter many possible poses around the object. Some guesses will be bad, but at least a few should be close enough for refinement.”
-
-For translation, they use the median depth inside the detected 2D bounding box to estimate an initial 3D position. For rotation, they uniformly sample viewpoints from an icosphere around the object and add discretized in-plane rotations. 
-
-```
+```python
 def initialize_global_poses(bbox, depth):
     center_3d = median_depth_point_inside_bbox(bbox, depth)
 
@@ -119,26 +80,21 @@ def initialize_global_poses(bbox, depth):
 
 ## Step 4: Render-and-compare refinement
 
-“Show the network two images: what I expected to see under this pose, and what the camera actually sees. The network predicts how to move the object pose so the two align better.”
 For each coarse pose hypothesis:
 
-Render the object at that pose.
-Crop the observed RGB-D image around where that pose predicts the object should appear.
-Feed rendered RGB-D and observed RGB-D into a neural refiner.
-Predict a small pose update.
+1. Given a guessed pose, we project the hypothesized object center into the image and use that projected point as the crop center.
+2. Estimate the projected object diameter
+3. Then we crop the observed RGB-D image around this pose-conditioned center.
+    - If the pose hypothesis has the wrong translation, the real object will appear shifted inside the observed crop relative to the rendered object. This shift gives the refinement network a clear signal for how to update the translation.
+4. Feed rendered RGB-D and observed RGB-D into a neural refiner.
+5. Predict a small pose update.
 
-The paper says the refinement network takes the rendering conditioned on the coarse pose and a crop of the camera observation, then outputs a pose update that improves pose quality.
-
-```
+```python
 def refine_pose(pose, rgb, depth, object_representation):
     rendered = render(object_representation, pose)
-
-    observed_crop = pose_conditioned_crop(
-        rgb=rgb,
-        depth=depth,
-        pose=pose,
-        object_size=object_diameter,
-    )
+    crop_center = project_object_origin(pose)
+    crop_size = project_object_diameter(pose, object_diameter)
+    crop(rgb+depth, center=crop_center, size=crop_size)
 
     delta_R, delta_t = refinement_network(rendered, observed_crop)
 
@@ -146,33 +102,9 @@ def refine_pose(pose, rgb, depth, object_representation):
     return new_pose
 ```
 
-## Step 5: Pose-conditioned crop
+## Step 5: Refinement Network Learns Features
 
-
-A simpler method would always crop using the detector bounding box. FoundationPose instead crops based on the current pose hypothesis: project the object origin into image space, estimate the projected object diameter, and crop around that.
-
-Mental model:
-
-“The crop itself should tell the network whether the current pose is shifted too far left, right, up, down, near, or far.”
-
-Why this matters:
-
-If the crop is fixed from the detector box, translation errors are partially hidden.
-If the crop follows the pose hypothesis, bad translation causes misalignment inside the crop.
-The refiner can then learn: “the rendered object is left of the real object, so update translation right.”
-
-Pseudo-code:
-
-```
-def pose_conditioned_crop(rgbd, pose, object_diameter):
-    crop_center = project_object_origin(pose)
-    crop_size = project_object_diameter(pose, object_diameter)
-    return crop(rgbd, center=crop_center, size=crop_size)
-```
-
-## Refinement network architecture
-
-“The CNN extracts local visual alignment cues; the transformer lets different regions of the rendered/observed comparison talk to each other globally.” The refiner has two RGB-D branches:
+The CNN extracts local visual alignment cues; the transformer lets different regions of the rendered/observed compare with each other and finds its own feature vectors. The refiner has two RGB-D branches:
 
 ```
 rendered RGB-D branch     observed RGB-D branch
@@ -190,18 +122,17 @@ rendered RGB-D branch     observed RGB-D branch
    predict translation update + rotation update
 ```
 
-## Disentangled pose update
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://pic4.zhimg.com/v2-522b2f3a9aea5da8d1002e085c858101_1440w.jpg" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
-Instead of predicting one monolithic SE(3) transform, FoundationPose predicts rotation and translation updates separately in the camera frame. The authors say this removes dependence on the updated orientation when applying translation and simplifies learning.
+The main method for pose generation (also used in gpd, graspnet) is roughly "generate *a bunch of* pose hypothesis, then find the one that best matches with the observation". Similar to particle filtering, the main limitation is the number of hypothesis. The `Coarse + refine` samples only a small set of poses, then refinement output deltas. This way, raw sampling / hypothesis effort is reduced.  
 
-Mental model:
-
-“Predict ‘rotate this much’ and ‘shift this much’ as two separate corrections, both expressed in the camera coordinate system.”
-
-This matters because rotation and translation interact. If translation is expressed in object coordinates, then a rotation change can change what the translation means. Expressing both updates in the camera frame makes the target easier for the network to learn.
-
-Simplified pseudo-code:
-
+Instead of predicting one monolithic SE(3) transform, FoundationPose predicts rotation and translation updates separately in the camera frame.
 
 ```
 delta_t_cam, delta_R_cam = network(rendered, observed)
@@ -210,25 +141,39 @@ t_new = t_old + delta_t_cam
 R_new = delta_R_cam @ R_old
 ```
 
-## Pose selection / ranking
+## Step 6 - Pose selection / ranking
 
-After refinement, FoundationPose may still have many candidate poses. It needs to choose the best one.
+After refinement, FoundationPose may still have many candidate poses. It needs to choose the best one. The pose selection module uses a hierarchical ranking network:
 
-Mental model:
+1. Input K poses.
 
-“Each refined pose renders a possible explanation of the image. Score all explanations, compare them against each other, and choose the most plausible one.”
+2. For each pose hypothesis:
+   - render the object at that pose;
+   - crop the observed RGB-D image using pose-conditioned cropping;
+   - encode the `(rendered RGB-D crop with the observed RGB-D crop)` pair into a feature embedding.
 
-The pose selection module uses a hierarchical ranking network:
+3. First-level self-attention comparison: render-vs-observation comparison.
+   - For each candidate pose, the network asks: "If this pose were correct, would the rendered object look aligned with the real observation?"
+   - This produces one alignment-quality vector per pose.
 
-Compare each rendered pose against the observed crop.
-Produce an embedding describing alignment quality.
-Use self-attention across all pose hypotheses.
-Output a score for each pose.
-Pick the highest-scoring pose.
+4. Second-level self-attention comparison: pose-vs-pose comparison: The K pose embeddings are treated as a sequence and passed through multi-head self-attention.
 
-The paper says the ranking network first compares each hypothesis rendering to the observation, then performs a second-level comparison among all pose hypotheses using multi-head self-attention, allowing it to use global context instead of assigning isolated absolute scores.
+   - This allows each pose's score to be computed relative to the other candidates, instead of assigning an isolated absolute score to each pose independently.
+   - This is analagous to "Do not grade each student in isolation. Let the students be compared against the whole class, so the best explanation stands out."
 
-```
+5. The attended embeddings are linearly projected to K scalar scores.
+
+6. The pose with the highest score is selected as the final pose.
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://pica.zhimg.com/v2-4058303bff38ffeadff7017d41f94f8a_1440w.jpg" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+```python
 def select_best_pose(poses, rgb, depth, object_representation):
     embeddings = []
 
@@ -246,44 +191,173 @@ def select_best_pose(poses, rgb, depth, object_representation):
     return poses[argmax(scores)]
 ```
 
-## Tracking workflow
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://pica.zhimg.com/v2-a19b3afbcb1ce6f35feccf1869e24db4_1440w.jpg" height="300" alt=""/>
+    </figure>
+</p>
+</div>
 
-For tracking, FoundationPose does not need to globally sample many poses every frame.
+## Step 7 - Tracking workflow
 
-Mental model:
+For tracking, FoundationPose does not need to globally sample many poses every frame. Once pose in frame t−1 is known, the pose in frame t is probably nearby. Use the previous pose as the initial hypothesis and refine it.
 
-“Once I know the pose in frame t−1, the pose in frame t is probably nearby. Use the previous pose as the initial hypothesis and refine it.”
-
-Pseudo-code:
-
-```
-pose = estimate_pose_first_frame(rgb0, depth0)
-
-for rgb_t, depth_t in video:
-    rendered = render(object_representation, pose)
-    observed_crop = pose_conditioned_crop(rgb_t, depth_t, pose)
-
-    delta_R, delta_t = refinement_network(rendered, observed_crop)
-
-    pose = apply_pose_update(pose, delta_R, delta_t)
+```python
+# instead of proposing a lot of pose hypothesis
+rendered = render(object_representation, last_pose)
+observed_crop = pose_conditioned_crop(rgb_t, depth_t, pose)
+delta_R, delta_t = refinement_network(rendered, observed_crop)
+pose = apply_pose_update(pose, delta_R, delta_t)
 ```
 
-This is why tracking is much faster than single-frame pose estimation. The paper reports single-object pose estimation taking about 1.3 seconds, while tracking runs at 32 Hz because it only needs refinement and not many global hypotheses.
+This is why tracking is much faster than single-frame pose estimation. The paper says it extracts feature maps from two RGB-D input branches using a shared CNN encoder, concatenates the features, tokenizes them into patches with positional embeddings, then uses transformer encoders to predict translation and rotation updates.
 
-The paper says it extracts feature maps from two RGB-D input branches using a shared CNN encoder, concatenates the features, tokenizes them into patches with positional embeddings, then uses transformer encoders to predict translation and rotation updates.
+---
 
-如果有 CAD 模型，就直接渲染候选位姿；如果没有 CAD，只给少量参考图像，就先训练一个 object-centric neural field 来渲染新视角 RGB-D 图像。之后无论是 CAD 渲染还是 neural field 渲染，都会进入同一个 render-and-compare 位姿估计框架：先在物体周围均匀初始化一批全局位姿假设，再用 refinement network 逐步修正这些候选位姿，最后用 pose selection module 给每个 refined pose 打分，选择分数最高的位姿作为最终输出。
+## Step 8 — Loss: Contrast Validation for Pose Ranking
 
-- what does foundation model meann in "Zero123-XL. Using Objaverse-XL, we train Zero123-XL, a foundation model for 3D, observing incredible 3D generation abilities.  " TODO
+Let's score some candidate poses! During training, ground truth is available, so we can decide which candidate pose is better.
 
+First, define the **ADD metric**. For predicted pose $T = (R, t)$ and ground-truth pose $T^* = (R^*, t^*)$, ADD measures the average distance between object model points transformed by the predicted and ground-truth poses:
 
-TODO: 3D point cloud -> CAD
-TODO: How to setup texfusion
+$$
+\mathrm{ADD}(T, T^*) =
+\frac{1}{|\mathcal{M}|}
+\sum_{x \in \mathcal{M}}
+\left\| Rx + t - (R^*x + t^*) \right\|_2
+$$
 
+where:
 
+- $x$: a sampled 3D point on the CAD/object model.
+- $\mathcal{M}$: the set of sampled object points.
+- Smaller ADD means the pose is closer to ground truth.
 
+Then, let's define **positive and negative pose samples**. Given two candidate poses $T_i$ and $T_j$:
 
-## Appendix 
+```python
+if ADD(T_i, T_gt) < ADD(T_j, T_gt):
+    positive = T_i
+    negative = T_j
+else:
+    postive = T_j
+    negative = T_i
+```
+
+Putting the above together, we can define **Pose-Conditioned Ranking Loss**:
+
+$$
+\mathcal{L} = \max(0, s_{neg} - s_{pos} + m)
+$$
+
+where:
+
+- $s_{pos}$: score of the better pose.
+- $s_{neg}$: score of the worse pose.
+- $m$: margin.
+
+Desired condition:
+
+$$
+s_{pos} \ge s_{neg} + m
+$$
+
+### 8-1 Example of Loss Calculation
+
+Example with $m = 0.2$:
+
+if the ADD metric we get is:
+
+```
+Pose A ADD = 2 cm  -> positive
+Pose B ADD = 8 cm  -> negative
+```
+
+A well-trained network should output `score(A) > score(B)`.
+
+If we see:
+
+```text
+score(A) = 0.7
+score(B) = 0.4
+```
+
+$$
+\mathcal{L} = \max(0, 0.4 - 0.7 + 0.2) = 0
+$$
+
+Good: positive pose is ahead by enough.
+
+But:
+
+```text
+score(A) = 0.55
+score(B) = 0.50
+```
+
+$$
+\mathcal{L} = \max(0, 0.50 - 0.55 + 0.2) = 0.15
+$$
+
+Bad: A is better, but not scored sufficiently higher.
+
+---
+
+### 8-2 Positive Poses Whose Rotations Are Too Far Are NOT Included In Loss
+
+FoundationPose only use pairs where the positive pose is close enough to the ground-truth viewpoint in [geodesic distance](https://ricojia.github.io/2017/01/23/math-distance-metrics/):
+
+$$
+d_{geo}(R_{pos}, R^*) < \theta
+$$
+
+where:
+
+- $R_{pos}$: rotation of the positive pose.
+- $R^*$: ground-truth rotation.
+- $\theta$: predefined threshold.
+
+So this filtering excludes pose pairs in which the better pair is too far rotated from the ground truth, because in those pairs, both pose estimates are "bad". They are more likely to introduce noise to training.
+
+### 8-3 Summary of Loss Calculation
+
+```python
+loss = 0
+
+for i in range(K):
+    for j in range(i + 1, K):
+        add_i = ADD(T_i, T_gt)
+        add_j = ADD(T_j, T_gt)
+
+        if add_i < add_j:
+            pos, neg = T_i, T_j
+            s_pos, s_neg = score_i, score_j
+        else:
+            pos, neg = T_j, T_i
+            s_pos, s_neg = score_j, score_i
+
+        if geodesic_distance(pos.R, T_gt.R) < theta:
+            loss += max(0, s_neg - s_pos + margin)
+```
+
+## Performance
+
+The paper reports single-object pose estimation taking about 1.3 seconds, while tracking runs at 32 Hz because it only needs refinement and not many global hypotheses.
+
+## Validation
+
+FoundationPose’s official framing is: [it can be applied to a novel object at test time without fine-tuning if you provide either a CAD model or a small number of reference images.](https://github.com/NVlabs/FoundationPose?utm_source=chatgpt.com) FoundationPose’s model-based mode expects a CAD model / mesh file of the target object, because it needs to render the object from candidate poses. For FoundationPose, you usually do not need a fully parametric SolidWorks-style CAD model. [A decent renderable mesh is often enough](https://deepwiki.com/NVlabs/FoundationPose/4.1-model-based-pose-estimation?utm_source=chatgpt.com)
+
+Here is a guide [for FoundationPose usage](https://deepwiki.com/NVlabs/FoundationPose/4.1-model-based-pose-estimation?utm_source=chatgpt.com)
+
+### ⚠️ Data Synthesis - TexFusion is EXPERIMENTAL
+
+TexFusion’s method takes a text prompt plus mesh geometry and produces a UV-parameterized texture using Stable Diffusion as the text-to-image backbone. Its core idea is multi-view diffusion sampling, aggregating views through a latent texture map, then fusing decoded RGB views into a texture map.
+
+Caveat: the NVIDIA TexFusion project page describes the method, but I do not see an official NVIDIA code release on that page. [The GitHub repo I found is explicitly an unofficial](https://github.com/silence401/Texfusion.git) implementation and mentions open issues with “vgg loss” and “quality,” so treat it as experimental.
+
+## Appendices
 
 - [Objaverse-XL](https://objaverse.allenai.org/): "A Universe of 10M+ 3D Objects". (Zero123-XL transforms single image into 3D model using Dreamfusion. )
 
@@ -296,3 +370,4 @@ TODO: How to setup texfusion
 </div>
 
 - [GSO](https://research.google/blog/scanned-objects-by-google-research-a-dataset-of-3d-scanned-common-household-items/): 1032 3D importable objects for Gazebo
+- [BOP Benchmark for 6D Object Pose Estimation](https://bop.felk.cvut.cz/leaderboards/pose-estimation-unseen-bop23/core-datasets/)
