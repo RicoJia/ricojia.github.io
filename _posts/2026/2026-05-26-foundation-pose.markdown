@@ -54,7 +54,16 @@ FoundationPose is trained mostly on synthetic data. The authors use large 3D ass
 </p>
 </div>
 
-## Step 2: Pose Initialization
+## Step 2: 2D Object Detection Input
+
+The pose estimation pipeline takes the following inputs:
+
+- RGB image
+- Depth image
+- 2D bounding box or mask of the target object
+- CAD/mesh or reference views
+
+## Step 3: Pose Initialization
 
 FoundationPose starts with many rough pose guesses.
 
@@ -77,7 +86,7 @@ def initialize_global_poses(bbox, depth):
     return poses
 ```
 
-## Step 3: Render-and-Compare Refinement
+## Step 4: Render-and-Compare Refinement
 
 For each coarse pose hypothesis:
 
@@ -101,7 +110,7 @@ def refine_pose(pose, rgb, depth, object_representation):
     return new_pose
 ```
 
-## Step 4: Refinement Network Learns Features
+## Step 5: Refinement Network Learns Features
 
 The CNN extracts local visual alignment cues. The transformer lets different regions of the rendered and observed inputs compare with each other and form richer feature vectors. The refiner has two RGB-D branches:
 
@@ -140,7 +149,7 @@ t_new = t_old + delta_t_cam
 R_new = delta_R_cam @ R_old
 ```
 
-## Step 5: Pose Selection / Ranking
+## Step 6: Pose Selection / Ranking
 
 After refinement, FoundationPose may still have many candidate poses. It needs to choose the best one. The pose selection module uses a hierarchical ranking network:
 
@@ -198,7 +207,7 @@ def select_best_pose(poses, rgb, depth, object_representation):
 </p>
 </div>
 
-## Step 6: Tracking Workflow
+## Step 7: Tracking Workflow
 
 For tracking, FoundationPose does not need to globally sample many poses every frame. Once the pose in frame $t-1$ is known, the pose in frame $t$ is probably nearby. Use the previous pose as the initial hypothesis and refine it.
 
@@ -214,7 +223,7 @@ This is why tracking is much faster than single-frame pose estimation. The paper
 
 ---
 
-## Step 7 — Loss: Contrast Validation for Pose Ranking
+## Step 8 — Loss: Contrast Validation for Pose Ranking
 
 Let's score some candidate poses! During training, ground truth is available, so we can decide which candidate pose is better.
 
@@ -344,11 +353,25 @@ for i in range(K):
 
 The paper reports single-object pose estimation taking about 1.3 seconds, while tracking runs at 32 Hz because it only needs refinement and not many global hypotheses.
 
+[Nvidia claims that](https://nvidia-isaac-ros.github.io/concepts/pose_estimation/foundationpose/index.html?utm_source=chatgpt.com) FoundationPose tracking, which runs at over 120 FPS on Jetson Thor.
+
+The paper also states that it could handle moderate amount of occlusion well. This is probably because the network learns the pose - RGBD alignment of objects instead of fix shape templates.
+
 ## Validation
 
 FoundationPose’s official framing is: [it can be applied to a novel object at test time without fine-tuning if you provide either a CAD model or a small number of reference images](https://github.com/NVlabs/FoundationPose). FoundationPose’s model-based mode expects a CAD model or mesh file of the target object because it needs to render the object from candidate poses. In practice, you usually do not need a fully parametric SolidWorks-style CAD model; [a decent renderable mesh is often enough](https://deepwiki.com/NVlabs/FoundationPose/4.1-model-based-pose-estimation).
 
 Here is a practical guide for [FoundationPose usage](https://deepwiki.com/NVlabs/FoundationPose/4.1-model-based-pose-estimation).
+
+### Metric - AR
+
+Average Recall (AR) is often used in the BOP benchmark style 6D pose estimation. Here we define a correct pose being `pose is correct if error < threshold`, then `recall = number of correctly estimated poses / number of ground-truth poses`. Here we have 3 BOP pose errors:
+
+1. VSD — Visible Surface Discrepancy. Measures whether the visible rendered surface of the predicted pose matches the visible surface of the ground truth. Good for occlusion because it focuses on what is visible.
+
+2. MSSD — Maximum Symmetry-Aware Surface Distance: measures 3D surface mismatch while accounting for object symmetries. BOP describes MSSD as a surface-deviation metric that considers predefined global object symmetries.
+
+3. MSPD — Maximum Symmetry-Aware Projection Distance: Measures 2D projection mismatch while also considering object symmetries. BOP describes MSPD as a symmetry-aware projection-distance metric.
 
 ### Data Synthesis: TexFusion Is Experimental
 
