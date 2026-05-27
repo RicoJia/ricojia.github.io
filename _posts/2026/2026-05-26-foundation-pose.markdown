@@ -21,7 +21,6 @@ tags:
 </p>
 </div>
 
-
 1. To reduce manual effort for large-scale training, FoundationPose introduces a synthetic data generation pipeline built on 3D model databases (GSO, Objaverse), large language models, and diffusion models (Sec. 3.1).
 2. For pose estimation, FoundationPose  first initializes global poses uniformly around the object, then refines them with a refinement network. Finally, it forwards the refined poses to a pose selection module that predicts scores, and selects the highest-scoring pose as output.
 3. FoundationPose also supports a model-free mode: with a small set of reference images, it uses an object-centric neural field (Sec. 3.2) for novel-view RGB-D rendering in a render-and-compare pipeline. (Skipped in this article because we do not need it.)
@@ -378,6 +377,12 @@ Average Recall (AR) is often used in the BOP benchmark style 6D pose estimation.
 TexFusion’s method takes a text prompt plus mesh geometry and produces a UV-parameterized texture using Stable Diffusion as the text-to-image backbone. Its core idea is multi-view diffusion sampling, aggregating views through a latent texture map, then fusing decoded RGB views into a texture map.
 
 Caveat: the NVIDIA TexFusion project page describes the method, but I do not see an official NVIDIA code release on that page. [The GitHub repo I found is explicitly an unofficial](https://github.com/silence401/Texfusion.git) implementation and mentions open issues with “vgg loss” and “quality,” so treat it as experimental.
+
+## Model Specs
+
+- Model size is likely <50M. I didn't find a formal published number on the model size, the refine model and score model are small CNN encoders plus 512-dim transformer/multi-head-attention layers, with default RGB-D input c_in=6, batch norm enabled, and axis-angle rotation output
+
+- License: [NVidia license](https://github.com/NVlabs/FoundationPose/blob/main/LICENSE), for research / evaluation. However, [the NVidia NGC version](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/isaac/models/foundationpose?utm_source=chatgpt.com&version=1.0.1_onnx) is potentially commercially usable
 
 ## Appendices
 
