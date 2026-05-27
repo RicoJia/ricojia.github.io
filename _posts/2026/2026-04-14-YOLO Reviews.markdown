@@ -10,7 +10,7 @@ tags:
 ---
 ## Metrics
 
-mAP 50 - 95
+`mAP@0.50:0.95`
 
 For each IoU threshold from 0.50 to 0.95, we decide whether each predicted bbox is a true positive by checking whether its IoU with a matched ground-truth box is at least that threshold. Then we sort predictions by confidence, compute the precision-recall curve, calculate AP as the area under that curve, and finally average AP across all IoU thresholds and classes.
 
@@ -23,12 +23,13 @@ For each IoU threshold from 0.50 to 0.95, we decide whether each predicted bbox 
 - Repeat for each class.
 - Average across thresholds and classes.
 
-## YOLO V1 (Joseph Redmon, Ali Farhadi, 2016)
+## YOLOv1 (Joseph Redmon, Ali Farhadi, 2016)
 
-[Paper]([arxiv.org/pdf/1506.0264](https://link.zhihu.com/?target=https%3A//arxiv.org/pdf/1506.02640))
+[Paper](https://arxiv.org/pdf/1506.02640)
 
-Before Yolo v1, CNN methods are prevalent, such as R-CNN, Fast R-CNN. These methods would first predict bounding boxes, then classify objects within the bounding boxes. This was slow . 
-YOLO was constructed with 24 convolutional layers and 2 fully connected (FC) layers. This architecture was inspired by GoogLeNet, where convolutional layers learn features while the FC layers output confidence and bounding box coordinates.  Therefore, bounding box detection and object classification are implicitly distributed across the network, and the detection speed goes up. 
+Before YOLOv1, CNN-based detection methods such as R-CNN and Fast R-CNN were prevalent. These methods first proposed bounding boxes, then classified objects inside them, which was relatively slow.
+
+YOLOv1 used 24 convolutional layers and 2 fully connected (FC) layers. The architecture was inspired by GoogLeNet: convolutional layers learn features, while FC layers output confidence and bounding box coordinates. Bounding box detection and classification are learned jointly, which significantly improves speed.
 
 
 ![](https://i.postimg.cc/LXFVP4Xf/Screenshot-from-2026-05-21-10-55-50.png)
@@ -37,21 +38,22 @@ YOLO was constructed with 24 convolutional layers and 2 fully connected (FC) lay
 In particular, the bounding box refinement step is ultimately a regression. Its input is a bounding box proposal, e.g., `P=(Px​,Py​,Pw​,Ph​)`. The model will output a delta to this prediction: `[delta_x, delta_y, delta_w, delta_h]`.
 
 Additionally, YOLO used:
-- Leaky ReLU: like ReLU, but allows a small negative output when the input is negative. This avoids the **dying ReLU problem**: with normal ReLU, negative inputs become exactly 0, If a neuron keeps receiving negative inputs, its gradient can become zero, and stop learning. 
-- Dropout: after the first fully connected layer, drop out is turned on such that randomly chosen neurons are turned off amd the network cannot rely too heavily on specific neurons or one specific pathway. Each neuron has to learn features that are useful
-- Data Augmentation
+- Leaky ReLU: like ReLU, but allows a small negative output when the input is negative. This avoids the **dying ReLU problem**. With vanilla ReLU, negative inputs become exactly 0; if a neuron keeps receiving negative inputs, its gradient can become zero and it stops learning.
+- Dropout: after the first FC layer, dropout is enabled so randomly selected neurons are turned off. This prevents the network from relying too heavily on a narrow pathway and encourages more robust feature learning.
+- Data augmentation.
 
 ![](https://i.postimg.cc/TYHYQCD0/Screenshot-from-2026-05-21-11-21-10.png)
 
-YOLO V1 divides the input image into an SxS grid. The center of a cell is responsible for detecting an object that falls into the cell. Every bounding box has a confidence score, so IoU (Intersection over Union) is used to filter out predictions that do not cover most amount of high-confidence cells. 
+YOLOv1 divides the input image into an $S \times S$ grid. The cell containing an object's center is responsible for detecting that object. Each predicted bounding box has a confidence score, and IoU (Intersection over Union) is used to filter poor predictions.
 
-Limitations: 
-- Each grid cell can only have one class
-- Loss function for small bounding boxes is the same for large bounding boxes, which could magnify IoU of the small bboxes. 
-- Localization Error 
-## [YOLO V2](https://arxiv.org/pdf/1612.08242#page=4.24) (Joseph Redmon, Ali Farhadi, 2017)
+Limitations:
+- Each grid cell can predict only one class.
+- The loss for small boxes is treated similarly to large boxes, which can hurt localization quality for small objects.
+- Localization errors are common.
 
-Aka YOLO 9000, YOLO V2 can detect 9000 classes
+## [YOLOv2](https://arxiv.org/pdf/1612.08242) (Joseph Redmon, Ali Farhadi, 2017)
+
+Also known as YOLO9000, YOLOv2 can detect about 9000 classes.
 
 ```python
 predictions = model(image)  # many grid-cell / anchor predictions
@@ -80,12 +82,13 @@ loss = loss_box + loss_obj + loss_cls
 loss.backward()
 ```
 
-The biggest change is joint training using COCO and Imagenet datasets. COCO has bounding boxes and class labels, with fewer classes. For a detection image, such as COCO:
-`image + bbox + class label` . YOLO 9000 trains `L = L_box + L_class + L_confidence`. When training with ImageNet data, the model still outputs many bounding boxes. The model only calculates loss for class. Then in back propagation, neurons that do not participate in classification will get close to zero gradient updates. 
+The biggest change is joint training on COCO and ImageNet. COCO has bounding boxes and class labels but fewer classes. For a detection image (for example, from COCO), YOLO9000 trains with `L = L_box + L_class + L_confidence` on `image + bbox + class label`.
 
-One note is that We do not pad the output with fake zero bounding boxes because they will teach the robot the wrong things. 
+When training with ImageNet classification data, the model still outputs many bounding boxes, but only class loss is computed. During backpropagation, neurons not involved in classification receive close-to-zero updates.
 
-Another thing is to infer sub categories probabilities. Say there is a golden retriever image from Imagenet. COCO only has a dog category. YOLO9000 uses a conditional probability 
+One note: we do not pad outputs with fake zero bounding boxes, because that would teach the model incorrect behavior.
+
+Another idea is to infer subcategory probabilities. For example, suppose we have a golden retriever image from ImageNet, while COCO only has a generic `dog` class. YOLO9000 uses conditional probabilities:
 
 ```
 P(Norfolk terrier)
@@ -96,7 +99,7 @@ P(animal | object)
 × P(Norfolk terrier | terrier)
 ```
 
-This is done by WordTree. For a COCO output class "dog", the logit 
+This is done with WordTree. For a COCO output class like `dog`, logits can be interpreted along the taxonomy path.
 
 ```python
 class Node:
@@ -188,20 +191,21 @@ def wordtree_probability(target_node, class_logits):
 ```
 
 
-YOLOV2 also uses darknet-19 as the backbone. Darknet-19 is a 19-layered CNN. 
-## [YOLO V3](https://arxiv.org/pdf/1804.02767) Joseph Redmon, Ali Farhadi, 2018)
+YOLOv2 also uses Darknet-19 as the backbone. Darknet-19 is a 19-layer CNN.
+
+## [YOLOv3](https://arxiv.org/pdf/1804.02767) (Joseph Redmon, Ali Farhadi, 2018)
 
 [Code](https://pjreddie.com/darknet/yolo/)
 
-- multiscale prediction: bounding boxes at 3 different scales, similar to feature pyramid networks. The paper explicitly notes that YOLO had historically struggled with small objects, but multiscale prediction reversed much of that trend.
-- Better, and bigger backbone: 53 layered Darknet-53, which suses residual connection but more efficient than ResNet-101 ResNet-152
-- Classifier: **allows a single box to have multiple labels** instead of softmax:  each class gets its own sigmoid probability: `class_probs = sigmoid(class_logits)`, so a box can have probabilities: `Person: 0.97 Woman: 0.91 Athlete: 0.74 Dog: 0.01`.
-- Fixed a critical bug in YOLOv2 dataloading, mAP increased by 2% (😂)
+- Multiscale prediction: bounding boxes are predicted at 3 scales, similar to a feature pyramid. The paper notes that YOLO historically struggled with small objects, and multiscale prediction improved this substantially.
+- Better and bigger backbone: 53-layer Darknet-53, which uses residual connections and is more efficient than ResNet-101/152 in this context.
+- Classifier: **allows a single box to have multiple labels** instead of softmax. Each class gets its own sigmoid probability: `class_probs = sigmoid(class_logits)`, so one box can have probabilities like `Person: 0.97, Woman: 0.91, Athlete: 0.74, Dog: 0.01`.
+- Fixed a critical dataloading bug from YOLOv2, with about a 2% mAP improvement.
 
-On anchor and grid cell: 
+On anchors and grid cells:
 
-- **scale** means the size of the prediction grid. 
-- An anchor is a pre-chosen bounding box shape that the model uses as a starting guess. YOLO V3 decomposes an image into a 5x5 grid like the above ^.  YOLOv3 gives each grid cells a bounding box at a certain scale. 
+- **Scale** means the size of the prediction grid.
+- An anchor is a pre-chosen bounding box shape used as a starting guess. YOLOv3 predicts boxes at multiple grid scales, and each grid cell has anchor-based predictions.
 
 ```
 # anchors across different grid sizes 
@@ -210,28 +214,27 @@ On anchor and grid cell:
 "52x52": [(10,13), (16,30), (33,23)]
 ```
 
-Then during training / inference, for each scale, each cell and each anchor, 
-- the network would predict bounding box position adjustment: `tx, ty`,bounding box size adjustment: `tw, th`
-- The cell already knows cell position, like `(5,7)`. anchor height and width , like (156, 198). and stride (how many image pixels one grid step represents). 
-- Finally the model will output the pixel bounding box center `bx, by`, bounding box size: `bw, bh`, class and score
+During training and inference, for each scale/cell/anchor:
+- the network predicts center offsets `tx, ty` and size adjustments `tw, th`;
+- the cell location (for example, `(5, 7)`), anchor size (for example, `(156, 198)`), and stride are already known;
+- the final decoded output is box center `bx, by`, size `bw, bh`, class scores, and objectness.
+
+Training data here is primarily COCO.
 
 
-Datasets used was just COCO. 
+## [YOLOv4](https://arxiv.org/pdf/2004.10934) (Alexey Bochkovskiy, Chien-Yao Wang, Hong-Yuan Mark Liao, April 2020)
 
-
-## [YOLO V4](https://arxiv.org/pdf/2004.10934)(Alexey Bochkovskiy, Wang, Liao, April 2020)
-
-YOLOV4 is still a one-stage detector. The sparse prediction below could be Faster R-CNN, etc. The biggest improvement is the 3-part architecture: 
-- head: feature extraction, usually cross-layer CNN to learn features. Here they used CSPDarknet53 , it uses the CSPNet, [the Cross-Stage-Partial Network](https://sh-tsang.medium.com/review-cspnet-a-new-backbone-that-can-enhance-learning-capability-of-cnn-da7ca51524bf)  strategy Darknet-53
-- neck: Improved [spatial pyramid pooling (SPP)](https://arxiv.org/abs/1406.4729) and PAN (Path Aggregation Network) to improve granularity of feature extraction from multiple layers of features
-- head: YOLOv3's head to output anchor based? 
+YOLOv4 is still a one-stage detector. A key improvement is its three-part architecture:
+- Backbone: CSPDarknet53, using the [Cross Stage Partial (CSPNet)](https://arxiv.org/abs/1911.11929) strategy on top of Darknet-53.
+- Neck: improved [Spatial Pyramid Pooling (SPP)](https://arxiv.org/abs/1406.4729) and PAN (Path Aggregation Network) for richer multi-scale feature aggregation.
+- Head: YOLOv3-style anchor-based detection head.
 
 
 ![](https://i.postimg.cc/nzpxGc4q/Screenshot-from-2026-05-21-15-29-50.png)
 
 ### CSPNet (Cross Stage Partial)
 
-CSPNet paper argues that many CNN stages produce duplicate gradient information. Splitting / merging feature paths would make computation cheaper and gradients diverse.  For example, a  normal residual stage looks something like: 
+The CSPNet paper argues that many CNN stages produce duplicate gradient information. Splitting and merging feature paths can reduce compute while improving gradient diversity. For example, a normal residual stage looks like:
 
 ```python
 def normal_stage(x):
@@ -241,7 +244,7 @@ def normal_stage(x):
     return x
 ```
 
-If x has 256 channels, some gradients might be repeating 
+If `x` has 256 channels, some gradients can be repetitive:
 
 ```
 256 channels enter
@@ -249,7 +252,7 @@ If x has 256 channels, some gradients might be repeating
 256 channels exit
 ```
 
-Instead, CSP would split the input feature map into two groups. The first group goes through the heavy blocks, the second group skips them,. Finally concatenate these two groups together, like
+Instead, CSP splits the input feature map into two groups. The first group goes through heavier blocks while the second group skips them. Finally, the two groups are concatenated:
 
 ```python
 def csp_stage(x):
@@ -265,11 +268,11 @@ def csp_stage(x):
 ```
 
 
-So CSP is basically saying that not every channle needs to go through expensive transformation. Some channels can perserved the original information while the rest are transformed
+So CSP says not every channel needs expensive transformation. Some channels preserve original information while others are transformed.
 
 ### SPP (Spatial Pyramid Pooling)
 
-YOLO detectors do not usually use the original 2014 SPPNet style SPP. It uses a simpler version:
+YOLO detectors usually do not use the original 2014 SPPNet formulation. They use a simpler version:
 
 ```
 feature map
@@ -279,9 +282,9 @@ feature map
    └── concatenate all results
 ```
 
-This is because convolutional layers have limited receptive field. To augment the context, SPP helps by letting each location gather information from different neighborhood sizes. Maxpooling is a sliding window method with the same stride and padding across different maxpool kernel sizes, so the output feature maps are the same `HxW`
+Convolutional layers have limited receptive fields. SPP augments context by letting each location aggregate information from different neighborhood sizes. Because max pooling uses stride/padding settings chosen per kernel, outputs can keep the same `H x W` shape.
 
-For example, define maxpool kernels to be: `kernel_sizes = [5, 9, 13]`.  SPP will generate feature maps after maxpooling:
+For example, with `kernel_sizes = [5, 9, 13]`, SPP generates:
 
 ```
 x.shape = [B, 512, 13, 13]
@@ -290,31 +293,32 @@ p9  = maxpool(x, kernel_size=9,  stride=1, padding=4) # [B, 512, 13, 13]
 p13 = maxpool(x, kernel_size=13, stride=1, padding=6) # [B, 512, 13, 13]
 ```
 
-Then you concatenate them together: 
+Then concatenate them:
 ```
 y = concat([x, p5, p9, p13], dim="channels")
 y.shape = [B, 2048, 13, 13]
 ```
 
-Usually, people would do a `1x1` convolution to mix / compress the out tensor 
+Usually, a `1x1` convolution is applied to mix/compress the output tensor.
 
-An SPP always appear at the end of the backbone or at the start of a neck. Why? Because if placed earlier, SPP would aggregate low-level textures rather than high level textures, and it could be more expensive,. The end of the backbone usually outputs smaller and richer feature maps. SPP is cheaper and could encode more meaningful object level patterns
+SPP is typically placed at the end of the backbone or the start of the neck. If placed too early, it aggregates mostly low-level texture patterns and is more expensive. Late backbone features are smaller and semantically richer, so SPP is both cheaper and more meaningful there.
 
 
-## YOLO V5 (June 2020)
+## YOLOv5 (June 2020)
 
-[Code](https://github.com/ultralytics/yolov5) Same project as YOLO V8, and YOLO V11
+[Code](https://github.com/ultralytics/yolov5) (same Ultralytics ecosystem as YOLOv8 and YOLO11)
 
 Architecturally, YOLOv5 is closer to the YOLOv3/YOLOv4 generation than to YOLOv8: it uses a PyTorch implementation with a CSP-style backbone/neck and anchor-based detection, while YOLOv8 later introduced an anchor-free split Ultralytics head. YOLOv5’s popularity came from its practical tooling: **PyTorch implementation, clean training pipeline, pretrained model zoo, test-time augmentation, model ensembling, and easy export to deployment formats such as ONNX, CoreML, TensorRT, and TFLite**
 
 Training on your own data is an iterative loop: collect and label data, train, deploy, inspect failures/edge cases, add more examples, and retrain.
+
 1. Collect images, label objects with bounding boxes
 2. Organize the dataset into YOLO format, create a dataset YAML file listing train/validation
 3. Image paths and class names, then run YOLOv5’s `train.py` using a pretrained checkpoint such as `yolov5s.pt`
 4. After training, the best model is saved as something like `runs/train/exp/weights/best.pt`; you can validate it, run inference on new images, then export that trained checkpoint to a deployment format.
 
 
-#### SPPF (Spatial Pyramid Pooling - Fast), An Approximation to SPP 
+#### SPPF (Spatial Pyramid Pooling - Fast): An Approximation to SPP
 
 Instead of 
 
@@ -324,7 +328,7 @@ p2 = maxpool_9x9(x)
 p3 = maxpool_13x13(x)
 ```
 
-SPPF repeatedly apply a `5x5` max pool:
+SPPF repeatedly applies a `5x5` max pool:
 
 ```
 p1 = maxpool_5x5(x)  # 5x5 receptive field
@@ -335,19 +339,19 @@ out = concat([x, p1, p2, p3])
 ```
 
 
-## [YOLO V6](https://arxiv.org/pdf/2209.02976) (Meituan Inc, Sep 2022)
+## [YOLOv6](https://arxiv.org/pdf/2209.02976) (Meituan Inc, Sep 2022)
 
 [Code](https://github.com/meituan/YOLOv6/)
 
-YOLO V6 is a practical real-time object detection systems. It can run on commonly available hardware, such as NVIDIA Tesla T4 GPUs. For the backbone, it uses EfficientRep, a hardware-aware CNN design. Smaller models such as YOLOv6-N and YOLOv6-S use RepBlock, while larger models such as YOLOv6-M and YOLOv6-L use CSPStackRep Block to improve representational capacity. For the neck, YOLOv6 adopts Rep-PAN, which builds on the PAN-style feature aggregation used in earlier YOLO models and strengthens it with re-parameterized blocks. This allows the model to fuse features from different backbone levels more efficiently. For the detection head, YOLOv6 introduces an Efficient Decoupled Head, which separates classification and regression while simplifying the convolutional structure to reduce computational cost.
+YOLOv6 is a practical real-time object detection system. It runs well on commonly available hardware such as NVIDIA Tesla T4 GPUs. For the backbone, it uses EfficientRep, a hardware-aware CNN design. Smaller models (YOLOv6-N/S) use RepBlock, while larger models (YOLOv6-M/L) use CSPStackRep blocks to improve representational capacity. For the neck, YOLOv6 adopts Rep-PAN, which builds on PAN-style feature aggregation with re-parameterized blocks. For the detection head, YOLOv6 introduces an Efficient Decoupled Head that separates classification and regression while simplifying convolutions to reduce cost.
 
 ### Hardware-aware CNN
 
-“hardware-aware” mainly means the network is designed around operations that are fast and easy to optimize during inference. E.g., YOLOV6 uses RepBlock, inspired by **re-parameterization** ideas like RepVGG. During training, the block can have multiple branches, which helps the model learn better. During inference, those branches are mathematically fused into a simple convolutional structure. 
+"Hardware-aware" mainly means the network is designed around operations that are fast and easy to optimize during inference. For example, YOLOv6 uses RepBlock, inspired by **re-parameterization** ideas like RepVGG. During training, the block has multiple branches; during inference, those branches are mathematically fused into a simpler convolutional structure.
 
 ### RepBlock (Re-parameterized Block)
 
-Convolution is a linear operation, batch normalization `y = wx + b` is also linear. If we have 3x3, 1x1 and identity convolution,and batch normalization, can we combine all of them together? Yes. 
+Convolution is linear, and batch normalization can be folded into convolution at inference. If we have `3x3`, `1x1`, and identity branches (plus BN), can we combine them? Yes.
 Example: 
 
 For identity, 
@@ -376,7 +380,7 @@ K_final =
 [4, 2, 0]]
 ```
 
-So during training, we keep the three branches separately so we are explicitly keeping the original input, and 1x1. The identity branch is especially important. It gives the block an easy way to preserve the input signal. Early in training, a plain conv might distort features randomly. But with an identity branch, the model has a stable path that passes useful information through, which helps gradients flow and makes optimization easier, similar in spirit to residual connections. This helps to achieve K_final in a more stable way even though one can theoretically just keep 1  3x3 convolution block. 
+So during training, we keep the three branches separate. The identity branch is especially important because it preserves input signal and improves gradient flow, similar in spirit to residual connections. This makes optimization more stable, even though an equivalent fused `3x3` kernel can be used at inference.
 
 ```
 branch A: 3x3 Conv + BN
@@ -387,7 +391,7 @@ branch C: Identity + BN
 
 ### PAN (Path Aggregation Network)
 
-PAN is usually in a neck, which fuses early high resolution feature maps and  later low resolution feature maps
+PAN is usually in the neck, where it fuses early high-resolution feature maps with later low-resolution feature maps.
 
 ```
 Backbone outputs:
@@ -419,22 +423,24 @@ fused P3 ──downsample──► fused P4
                                             final P5
 ```
 
-- what is the head arch? 
+- Open question: what is the exact detection head architecture in this variant?
 
-## [YOLO V7](https://arxiv.org/pdf/2207.02696) (Jul 2022, Institute of Information Science, Academia Sinica Taiwan)
+## [YOLOv7](https://arxiv.org/pdf/2207.02696) (Jul 2022, Institute of Information Science, Academia Sinica Taiwan)
 
 [Code](https://github.com/WongKinYiu/yolov7)
 
 YOLOv7 is not a radical reinvention of the YOLO architecture, but rather a set of highly practical, fine-grained improvements designed to make real-time object detection more accurate without sacrificing speed. Its main contribution is the use of **trainable Bag-of-Freebies**: techniques that improve training and representation learning while keeping inference costs low. These include planned **re-parameterized convolutions,** **coarse-to-fine lead-guided label assignment**, and extended compound scaling strategies for detection models. In other words, YOLOv7 improves the balance between accuracy and efficiency not by simply making the model larger, but by making the training process and architecture design smarter. 
 
-### coarse-to-fine lead-guided label assignment
+### Coarse-to-Fine Lead-Guided Label Assignment
 
-In YOLOV7, an **auxiliary head is attached before the final lead head path is fully completed**, usually from an intermediate feature stage. It is meant to provide **deep supervision**: it gives earlier/shallow layers a stronger learning signal during training. The paper describes the lead head’s predictions plus ground truth as guidance for generating **coarse-to-fine hierarchical labels**, where coarse labels train the auxiliary head and fine labels train the lead head.
+In YOLOv7, an **auxiliary head is attached before the final lead-head path is fully completed**, usually from an intermediate feature stage. It provides **deep supervision**, giving earlier/shallow layers a stronger learning signal during training. The paper describes using lead-head predictions plus ground truth to generate **coarse-to-fine hierarchical labels**: coarse labels train the auxiliary head, and fine labels train the lead head.
 
-lead guided label assignment is like teacher-student style training strategy inside the detector. 
+Lead-guided label assignment is like a teacher-student strategy inside the detector.
  
 
-Ltotal​=Lleadfine​+λLauxcoarse​
+$$
+L_{total} = L_{lead}^{fine} + \lambda L_{aux}^{coarse}
+$$
 
 The lead head, which is responsible for the final prediction, is treated as the more reliable “teacher.” Its predictions are used together with the ground-truth boxes to generate soft labels. However, YOLOv7 does not give the same labels to every branch. The auxiliary head receives **coarser, more relaxed labels**, meaning more candidate boxes are treated as positives so the earlier layers get a stronger and easier learning signal. The lead head receives **finer, stricter labels**, focusing only on the best-matching candidates for precise final detection. In practice, this helps the model learn broadly first and refine later: the auxiliary branch improves recall and feature learning, while the lead branch sharpens precision. This is why the method is called **coarse-to-fine lead-guided label assignment**.
 
@@ -473,17 +479,17 @@ So the **auxiliary head** trains on:
 |Lead head|Fine|A, B|More precision, final detection quality|
 
 
-## [YOLO V8](https://github.com/ultralytics/ultralytics) (Jan 10, 2023, Ultralytics)
+## [YOLOv8](https://github.com/ultralytics/ultralytics) (Jan 10, 2023, Ultralytics)
 
  In spirit, YOLOv8 follows the same direction as YOLOv5: it emphasizes ease of use, fast deployment, and a strong balance between detection accuracy and inference speed.
  
 Architecturally, YOLOv8 introduces an **improved backbone and neck**, together with an **anchor-free detection head**. The anchor-free design removes the need for manually predefined anchor boxes, which simplifies the detection pipeline and can improve flexibility across datasets. Beyond detection, Ultralytics also provides YOLOv8 variants for instance segmentation, classification, pose/keypoint detection, and oriented object detection, making it a broader computer vision framework rather than only a single object detector.
 
-### improved backbone and neck
+### Improved Backbone and Neck
 
-YOLOv8 uses [**C2f modules** instead of the older YOLOv5-style **C3 modules**](https://deepwiki.com/DataXujing/YOLOv8/2-yolov8-architecture?utm_source=chatgpt.com). C2f roughly means **Cross Stage Partial with two convolutions / faster feature fusion**. It lets information flow through several lightweight bottleneck paths, then concatenates features together, so the network can preserve more gradient flow and feature diversity without becoming too expensive.
+YOLOv8 uses [**C2f modules** instead of older YOLOv5-style **C3 modules**](https://deepwiki.com/DataXujing/YOLOv8/2-yolov8-architecture). C2f roughly means **Cross Stage Partial with two convolutions / faster feature fusion**. It improves gradient flow and feature diversity through lightweight bottleneck paths and concatenation.
 
-### Decoupled Anchor-free detection heads
+### Decoupled Anchor-Free Detection Heads
 
 Problem: anchors are hand-designed or dataset-tuned. If your dataset has unusual object shapes, like long fish, tiny marine debris, or robot parts, anchor choices may not fit well.
 
@@ -531,11 +537,11 @@ Source: https://docs.ultralytics.com/models/yolov8, https://www.mdpi.com/2073-43
 ![](https://dfimg.dfrobot.com/enshop/image/cache3/Blog/13844/6.jpg)
 
 
-## [YOLO V9](https://arxiv.org/pdf/2402.13616) (Feb 2024, 3 bunch of Taiwanese Folks)
+## [YOLOv9](https://arxiv.org/pdf/2402.13616) (Feb 2024)
 
 [Code](https://github.com/WongKinYiu/yolov9)
 
-Instead of only improving the backbone, neck, label assignment, or detection head, YOLOV9 focuses on a deeper training problem: information loss inside deep neural networks. As an image passes through many layers of feature extraction and spatial transformation, some original input information is inevitably compressed or discarded. This can make the gradients used for learning less reliable.
+Instead of only improving the backbone, neck, label assignment, or detection head, YOLOv9 focuses on a deeper training problem: information loss inside deep networks. As an image passes through many layers of feature extraction and transformation, some original input information is compressed or discarded, which can make gradients less reliable.
 
 ### PGI
 
@@ -550,7 +556,7 @@ Importantly, this auxiliary branch helps during training and can be removed duri
 
 ![](https://i.postimg.cc/0QSVBVQf/d1a06386-6bb4-44d2-8daf-c026734c7167.png)
 
-Green arrows is gradient; purple arrows are **auxiliary reversible branch and multi-level auxiliary information connections**.
+Green arrows represent gradients; purple arrows represent the **auxiliary reversible branch and multi-level auxiliary information connections**.
 
 At the end of training: 
 ```
@@ -560,7 +566,7 @@ L_total = L_main + λ L_aux
 # So finally,
 ∂L_total/∂W = ∂L_main/∂W + λ ∂L_aux/∂W
 ```
-#### Revblock
+#### RevBlock
 
 A **Rev Block**, or reversible block, is a neural-network block designed so its input can be recovered from its output. Split the input into two parts:
 
@@ -576,7 +582,7 @@ def rev_block_forward(x):
     y = concat_channels(y1, y2)
     return y
 
-# This is NOT used in PGI, but rather a demonstration that there IS a way to recover x from output y. So the network COULD have an easier time infer that 
+# This is NOT used directly in PGI; it demonstrates that x can be recovered from y.
 def rev_block_reverse(y):
     y1, y2 = split_channels(y)
     # Reverse the second equation first:
@@ -589,7 +595,7 @@ def rev_block_reverse(y):
     return x
 ```
 
-in PGI, a **Rev Block** is not just “another convolution block.” It is a block in the auxiliary training branch that helps keep information available for gradient computation. PGI main mental model is 
+In PGI, a **RevBlock** is not just another convolution block. It is used in the auxiliary training branch to keep information available for gradient computation. A useful mental model is:
 
 ```
 # Main branch: used at inference
@@ -612,12 +618,12 @@ optimizer.step()
 # remove rev_branch + auxiliary_head
 ```
 
-### GELAN 
+### GELAN
 
 Alongside PGI, YOLOv9 introduces GELAN, or Generalized Efficient Layer Aggregation Network. GELAN can be understood as a more flexible version of ELAN: it is designed to improve information flow through the network while remaining lightweight and efficient. Its structure is based on gradient path planning, meaning the architecture is built with the backward learning signal in mind, not just the forward prediction path. 
 
 
-Gelan keeps the input because not every feature should be forced through deep computation.
+GELAN keeps part of the input path because not every feature should be forced through deep computation.
 
 ```python
 def forward(self, x):
@@ -654,9 +660,9 @@ Together, PGI and GELAN make YOLOv9 stand out because they shift attention from 
 
 ![](https://i.postimg.cc/cJTNBmjb/Screenshot-from-2026-05-21-22-34-54.png)
 
-YOLOv9 通过关注信息流和梯度质量，为目标检测提供了全新的视角。PGI 和 GELAN 的引入使 YOLOv9 有别于其前代产品。这种对深度神经网络中信息处理基础的关注，可以提高性能，并更好地解释目标检测中的学习过程。
+YOLOv9 emphasizes information flow and gradient quality. The introduction of PGI and GELAN differentiates it from earlier versions by improving training dynamics, not just inference-side architecture.
 
-## [YOLO V10](https://arxiv.org/pdf/2405.14458) (May 2024)
+## [YOLOv10](https://arxiv.org/pdf/2405.14458) (May 2024)
 
 [Code](https://github.com/THU-MIG/yolov10)
 
@@ -673,7 +679,7 @@ In addition, YOLOv10 introduces a holistic efficiency-accuracy driven design, in
 
 ### One-to-many head
 
-The **one-to-many head** is like normal YOLO training.For each ground-truth object, many nearby feature-map locations can be treated as positive examples.
+The **one-to-many head** is similar to standard YOLO training. For each ground-truth object, many nearby feature-map locations can be treated as positives.
 
 ```
 One object:
@@ -708,7 +714,7 @@ This is what makes NMS-free inference possible. If the model learns to assign on
 
 But one-to-one training alone can be weaker because for one object, only one location gets trained as positive. That means fewer positive gradients.
 
-So YOLOv10 combines both during training, and discard one-to-many head during inference. 
+So YOLOv10 combines both during training, and discards the one-to-many head during inference.
 
 ```python
 def train_step(image, ground_truths):
@@ -760,9 +766,9 @@ def matching_score(pred, gt, alpha=1.0, beta=6.0):
 
 ![](https://pica.zhimg.com/v2-6832eaba918ecb41b7615d66da3538d2_1440w.jpg)
 
-## YOLO V11 (Sep 10, 2024, Ultralytics)
+## YOLO11 (Sep 10, 2024, Ultralytics)
 
-[Code](https://github.com/THU-MIG/yolov10)
+[Code](https://github.com/ultralytics/ultralytics)
 
 YOLO11 made feature extraction more efficient while preserving or slightly improving accuracy. One important change is the introduction of the C3k2 block, an efficient CSP-style module that replaces many of the earlier C2f blocks used in YOLOv8-style designs. Conceptually, C3k2 keeps the benefits of partial feature reuse and gradient flow, but organizes the computation more efficiently so the model can achieve strong performance with fewer parameters and lower computational cost. 
 
@@ -788,20 +794,20 @@ So conceptually, it is not a totally new idea. The real difference is that a C3k
 
 ```python
 class C3k:
-	def forward(self, x):
-	    a = Conv1x1(x)      # processed path
-	    b = Conv1x1(x)      # short CSP path
-	
-	    a = bottleneck(a)
-	    a = bottleneck(a)
-	
-	    return Conv1x1(concat([a, b]))
-        
-## Whereas
+    def forward(self, x):
+        a = Conv1x1(x)  # processed path
+        b = Conv1x1(x)  # short CSP path
+
+        a = bottleneck(a)
+        a = bottleneck(a)
+
+        return Conv1x1(concat([a, b]))
+
+
+# Whereas:
 class Bottleneck:
-	# Bottleneck
-	def forward(x):
-	    return x + Conv(Conv(x))
+    def forward(self, x):
+        return x + Conv(Conv(x))
 ```
 
 ### C2PSA
@@ -859,17 +865,17 @@ class PSABlock:
 ```
 
 ---
-## YOLO 26 (September 2025, Ultralytics)
+## YOLO26 (September 2025, Ultralytics)
 
 [YOLO26: An Analysis of NMS-Free End to End Framework for Real-Time Object Detection](https://arxiv.org/abs/2601.12882) 
 
-AGAIN, **Non-Maximum Suppression (NMS)** is a PITA. YOLOv10 pioneered an NMS-free direction for YOLO, and YOLO26 further pushes this idea with a native end-to-end design that produces final predictions directly without a separate NMS stage. 
+Again, **Non-Maximum Suppression (NMS)** remains a practical pain point. YOLOv10 pioneered an NMS-free direction for YOLO, and YOLO26 further pushes this idea with a native end-to-end design that produces final predictions directly without a separate NMS stage.
 
-### 1. one-to-one prediction head
+### 1. One-to-One Prediction Head
 
 During training, the model is “taught” to predict only one most accurate box for each real object, so the model’s output is already the final result, requiring no additional filtering — clean and straightforward. This turns the inference process **into a deterministic mapping from input to output**, allowing latency to remain stable no matter how complex the scene is.
 
-### 2. DFL-Free head designed for edge deployment
+### 2. DFL-Free Head Designed for Edge Deployment
 
 Recent YOLO versions, such as YOLOv8, commonly use **Distribution Focal Loss (DFL)** to pursue higher accuracy. DFL treats coordinates as a probability distribution. Although this improves localization accuracy, the **Softmax operation it relies on can be very time-consuming on edge devices such as NPUs and DSPs**, and **it is difficult to quantize**. This creates a significant **“export gap”**: the model may run extremely fast on a GPU, but perform poorly once deployed on edge hardware.
   
@@ -881,11 +887,9 @@ YOLO26 decisively abandons DFL, as shown on the right side of the figure above, 
 
 This raises an important question: after removing two powerful tools, NMS and DFL, how can the model maintain accuracy and still train stably? YOLO26 addresses this with three major training techniques.
 
-**1. MuSGD optimizer**. [see this blogpost](https://ricojia.github.io/2026/04/19/muon-sgd/)
-
-**2. [STAL](https://ricojia.github.io/2026/04/16/stal/)
-
-**3. [ProgLoss](https://ricojia.github.io/2026/04/16/progloss/)**
+1. **MuSGD optimizer** ([blog post](https://ricojia.github.io/2026/04/19/muon-sgd/))
+2. **[STAL](https://ricojia.github.io/2026/04/16/stal/)**
+3. **[ProgLoss](https://ricojia.github.io/2026/04/16/progloss/)**
 
 
 YOLO26’s excellent architecture also makes it a unified multi-task framework. Beyond object detection, it natively supports instance segmentation, pose estimation, oriented bounding box detection, and even open-vocabulary detection through YOLOE-26, demonstrating its significant potential as a next-generation visual foundation model.
@@ -906,47 +910,52 @@ This shift may be more meaningful than performance numbers alone. After all, the
 
 ![](https://pic1.zhimg.com/v2-935cbb6b827311a9a95057f50cbbf0dc_1440w.jpg)
 
-What's the mental model of 
-And come up with 5 questions that exposes someone who deeply understand the subject vs someone just understands the fact. 
+Mental model focus:
+- **NMS-free inference**
+- **DFL removal**
+- **ProgLoss**
+- **STAL**
+- **MuSGD**
 
-**NMS-free inference**
-**DFL removal**, 
-**ProgLoss**
-**STAL**
-**MuSGD**, rather than a DETR-like Transformer redesign.
+Rather than following a DETR-style transformer redesign, these models emphasize deployment-friendly training objectives and decoding behavior.
 
-The use of attention in **PSA integration** and attention in the later/final stages of the network.So it does have **attention-like modules**, but these are targeted efficiency/feature-fusion additions, but not a full transformer encoder-decoder object detection framework
+YOLO families also use attention-like modules (for example, PSA), especially in later stages, but these are targeted feature-fusion/efficiency components, not full transformer encoder-decoder detection pipelines.
 
+Overall, this points to a fast front end for 2D detection, OBB, and segmentation tasks.
 
-Fast 2D / OBB / segmentation front-end
-## What YOLO does in an underwater Object Detection Dataset
+## What YOLO Does in an Underwater Object Detection Dataset
 
 For example, in an underwater robot dataset:
 
-```
-small object: distant fish / small toolmedium object: nearby marine animallarge object: diver / robot arm close to camera
+```text
+small object: distant fish / small tool
+medium object: nearby marine animal
+large object: diver / robot arm close to camera
 ```
 
 A deep feature map has strong semantic understanding but poor spatial detail. A shallow feature map has good spatial detail but weaker semantic understanding.
 
 The neck combines them:
 
-```
-shallow feature → where exactly is the object?deep feature    → what is the object?neck fusion     → detect it accurately
+```text
+shallow feature -> where exactly is the object?
+deep feature    -> what is the object?
+neck fusion     -> detect it accurately
 ```
 
 This is especially important for small objects because small objects can disappear in deep layers after repeated downsampling.
 
-
-
 ## Underwater Object Detection
 
-- [](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0311173)
+- [PLOS One underwater detection paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0311173)
+- <https://arxiv.org/html/2506.23505v1>
+- 2024: <https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10752531>
 
 ## Datasets
 
-- [URPC 2020](https://www.kaggle.com/datasets/lywang777/urpc2020?resource=download) (Underwater Robot Professional Contest, China):  5543 images that showcase four object types: holothurian, echinus, scallop, and starfish
-
-![](https://i.postimg.cc/Jhzq8rkz/001175.jpg)
+- [URPC 2020](https://www.kaggle.com/datasets/lywang777/urpc2020?resource=download) (Underwater Robot Professional Contest, China): 5543 images with four object types: holothurian, echinus, scallop, and starfish.
 
 - [DUO dataset](https://figshare.com/articles/dataset/DUO_zip/25370527?file=45670494)
+- [Shared dataset drive](https://drive.google.com/drive/folders/1Fv14CpnAjmN642m7lFjHL8yRfeyHYFCQ)
+- [Deep Fish](https://www.kaggle.com/datasets/vencerlanz09/deep-fish-object-detection)
+- [Fish4Knowledge](https://homepages.inf.ed.ac.uk/rbf/Fish4Knowledge/resources.htm)
