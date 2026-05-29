@@ -1,0 +1,42 @@
+---
+layout: post
+title: ROS2 - QoS
+date: 2025-1-13 13:19
+subtitle:
+header-img: img/post-bg-os-metro.jpg
+tags:
+  - Robotics
+  - ROS2
+comments: true
+---
+## Reliability
+
+Reliability controls what happens **while publisher and subscriber are already matched and communicating**.
+
+| Reliability   | Meaning                          | Behavior                                                                                                                     | Typical use                                   |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `reliable`    | Try to guarantee delivery        | DDS tracks missing samples and retries delivery when possible. Can increase latency or block/backpressure under packet loss. | Commands, maps, important state, `/tf_static` |
+| `best_effort` | Send without guaranteed delivery | Messages may be dropped. Subscriber gets what arrives. Usually lower latency and better for lossy/high-rate streams.         | LiDAR, camera, IMU, high-rate sensor data     |
+
+| Publisher reliability | Subscriber reliability | Compatible? | Result |
+| --------------------- | ---------------------- | ----------- | ------ |
+| `reliable` | `reliable` | Yes | Guaranteed delivery attempted |
+| `reliable` | `best_effort` | Yes | Subscriber accepts best-effort-style delivery |
+| `best_effort` | `best_effort` | Yes | Drops are allowed |
+| `best_effort` | `reliable` | **No** | They do not communicate |
+
+## Durability
+
+Durability controls what happens for **late joiners**, meaning subscribers that appear after the publisher already sent data.
+
+| Durability | Meaning | Behavior | Typical use |
+| ---------- | ------- | -------- | ----------- |
+| `volatile` | Do not retain old samples | A new subscriber only receives future messages. Anything already published is gone. | Most live sensor streams, normal topics |
+| `transient_local` | Publisher retains recent samples locally | A late subscriber can receive stored samples from the publisher, subject to history/depth settings. | `/tf_static`, latched-style config/state topics |
+
+| Publisher durability | Subscriber durability | Compatible? | Late joiner gets old samples? |
+| -------------------- | --------------------- | ----------- | ----------------------------- |
+| `transient_local` | `transient_local` | Yes | Yes, if sample is still retained |
+| `transient_local` | `volatile` | Yes | Usually communicates, but subscriber is not asking for retained history |
+| `volatile` | `volatile` | Yes | No |
+| `volatile` | `transient_local` | **No** | They do not communicate |
