@@ -435,7 +435,7 @@ Kalman Gain and Covariance matrix updates stay the same:
 $$
 \begin{gather*}
 \begin{aligned}
-& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T)
+& K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V + H_{k+1} P_{k+1}^{*} H_{k+1}^T)^{-1}
 
 \\ &
 P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1}^{*} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{*}

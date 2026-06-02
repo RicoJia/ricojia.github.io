@@ -84,9 +84,9 @@ $$
 \end{gather*}
 $$
 
-### Linearize $\delta \theta'$
+### Linearize $\delta \theta'$ TODO: error: did not consider bg. Suggestion: remove this example, and move this nice workflow to the full eskf article
 
-In ESKF, we apply Kalman Filtering on Linearized errors. To linearize $\delta \theta$ is, we first look at the true [2D rotation matrix](./2024-03-10-robotics-foundamentals-rotations.markdown):
+In ESKF, we apply Kalman Filtering on **Linearized errors**. To linearize $\delta \theta$, we first look at the true [2D rotation matrix](./2024-03-10-robotics-foundamentals-rotations.markdown):
 
 $$
 \begin{gather*}
@@ -153,7 +153,8 @@ $$
 
 ### Linearize $\delta p'$
 
-Using first order Taylor expansion $ Exp(\delta \theta) \approx I + \delta \theta$
+Using first order Taylor expansion $Exp(\delta \theta) \approx I + \delta \theta$
+
 $$
 \begin{gather*}
 \begin{aligned}
@@ -173,14 +174,14 @@ p' + \delta p' \approx R(I + \delta \theta)(\tilde{v} - \eta_v)
 \end{gather*}
 $$
 
-### Motion Model All Together & Motion Update
+### Motion Model All Together & Motion Updatem TODO: there are errors with F?
 
 $$
 \begin{gather*}
 \begin{aligned}
 & \delta p_{t+1} = \delta p_{t} + (R(\tilde{v} - \eta_v) \delta \theta_t) \Delta t- \eta_v
 \\ &
-\delta \theta_{t+1} = \delta \theta_{t}  - \eta_{\theta}
+\delta \theta_{t+1} = \delta \theta_{t}  - \eta_{g}
 \end{aligned}
 \end{gather*}
 $$

@@ -324,9 +324,11 @@ $$
         1. Assuming correct alignment, the transformed point should follow the distribution of the voxel:
 
             $$
+            \begin{gather*}
             e_i =  Rp_t + t - \mu
             \\
             \text{error}_i = e_i^T \Sigma^{-1} e_i
+            \end{gather*}
             $$
 
         2. Here, $\Sigma$ is the covariance matrix of the voxel. $\Sigma^{-1}$ is the information matrix, and because we are getting its inverse, in practice, we want to add a small value to it $\Sigma + 10^{-3}I$
@@ -354,9 +356,9 @@ $$
     \end{aligned}
     \end{gather*}
     $$
-    - $H = \sum_i J_i^T info J_i$
-    - $b = -\sum_i J_i^T info e_i$
-    - $\Chi^2 = \sum_i e_i^T info e_i$
+    - $H = \sum_i J_i^T \Sigma^{-1} J_i$
+    - $b = -\sum_i J_i^T \Sigma^{-1} e_i$
+    - $\chi^2 = \sum_i e_i^T \Sigma^{-1} e_i$
     - $dx = H^{-1} b$
 
 When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching.
