@@ -8,6 +8,7 @@ header-img: img/post-bg-infinity.jpg
 tags:
     - Deep Learning
 ---
+**
 
 ## Refresher: Floating Point Calculation
 

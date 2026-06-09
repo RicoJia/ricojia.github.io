@@ -1,18 +1,95 @@
 ---
 layout: post
 title: Robotics - General ESKF Hands-on Test Notes
-date: '2024-04-03 13:19'
-subtitle: 
+date: 2024-04-03 13:19
+subtitle: Covariance Update with $\Delta t$
 comments: true
-header-img: "img/post-bg-unix-linux.jpg"
+header-img: img/post-bg-unix-linux.jpg
 tags:
-    - Robotics
+  - Robotics
 ---
 
 ## Primers
 
 - Did you turn on the message debugging flag, or are you compiling with `PRINT_DEBUG_MSGS`?
 - Are you sure you are launching the right test?
+
+## Covariance Update with $\Delta t$
+
+In a Kalman filter, the covariance prediction step is usually written as:
+
+$$  
+P' = FPF^T + Q  
+$$
+
+where $F$ propagates the current uncertainty through the system dynamics, and $Q$ adds new uncertainty from process noise.,One detail is easy to miss: **the process noise must be scaled correctly by the time interval $\Delta t$**.
+
+A useful way to understand this is to start from a simple motion model:
+
+$$  
+\dot{p} = v, \qquad \dot{v} = a  
+$$
+
+Suppose the acceleration contains noise:
+
+$$  
+a = a_{\text{true}} + n, n \sim \mathcal{N}(0, \sigma^2)  
+  
+$$
+
+Over a small time interval $\Delta t$, this acceleration noise affects velocity and position as:
+
+$$  
+\Delta v = n \Delta t  , \Delta p = \frac{1}{2} n \Delta t^2  
+
+$$
+
+Think of time as scaling the covariance. we can use a basic covariance rule:
+
+$$  
+\begin{gather*}
+&
+\text{Cov}(cX) = c^2 \text{Cov}(X)  
+
+\\ &
+\text{Cov}(\Delta v)=\sigma^2 \Delta t^2  
+
+\\ &
+\text{Cov}(\Delta p) = \frac{1}{4}\sigma^2 \Delta t^4  
+
+\end{gather*}
+$$
+There is also a cross-covariance between position error and velocity error, because both come from the same acceleration noise source:
+
+ $$  
+\text{Cov}(\Delta p, \Delta v) E[\Delta p \Delta v]  = \text{Cov}(\Delta p, \Delta v)
+
+E\left[  
+\left(\frac{1}{2}n\Delta t^2\right)  
+\left(n\Delta t\right)  
+\right]  
+
+= \text{Cov}(\Delta p, \Delta v) \frac{1}{2}\sigma^2 \Delta t^3  
+$$
+
+So for a simple 1D position-velocity system affected by acceleration noise, the discrete process covariance has the structure:
+
+$$  
+Q =  
+\sigma^2  
+\begin{bmatrix}  
+\frac{1}{4}\Delta t^4 & \frac{1}{2}\Delta t^3 \  
+\frac{1}{2}\Delta t^3 & \Delta t^2  
+\end{bmatrix}  
+$$
+
+The same idea applies to orientation. If angular velocity contains gyro noise:
+
+$$  
+\omega = \omega_{\text{true}} + n_g  , \Delta \theta = n_g \Delta t => \text{Cov}(\Delta \theta)
+
+\sigma_g^2 \Delta t^2  
+$$
 
 ## IMU tools
 

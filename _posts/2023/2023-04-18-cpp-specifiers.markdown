@@ -1,12 +1,12 @@
 ---
 layout: post
 title: C++ - Specifiers
-date: '2024-04-16 13:19'
+date: 2024-04-18 13:19
 subtitle: Declaration-Only Specifiers
 comments: true
-header-img: "img/post-bg-alitrip.jpg"
+header-img: img/post-bg-alitrip.jpg
 tags:
-    - ROS
+  - ROS
 ---
 
 ## Declaration Only Specifiers

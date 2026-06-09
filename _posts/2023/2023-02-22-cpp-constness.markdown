@@ -1,12 +1,12 @@
 ---
 layout: post
 title: C++ - Constness
-date: '2023-02-01 13:19'
-subtitle: constexpr, if constexpr, consteval
+date: 2023-02-01 13:19
+subtitle: constexpr, if constexpr, consteval, const cast
 comments: true
-header-img: "img/post-bg-unix-linux.jpg"
+header-img: img/post-bg-unix-linux.jpg
 tags:
-    - C++
+  - C++
 ---
 
 ## `constexpr`
@@ -167,3 +167,21 @@ main:
     mov     DWORD PTR [rbp-4], 5
     ...
 ```
+
+## const cast and non-const cast
+
+In C++, a `const` member function can be called on both `const` and non-`const` objects, while a non-`const` member function can only be called on non-`const` objects. This is why a common pattern is to implement the `const` version of a getter first, then reuse it from the non-`const` overload.
+
+```cpp
+const Value* get(const Key& key) const {
+    return my_ptr_;
+}
+
+Value* get(const Key& key) {
+    return const_cast<Value*>(std::as_const(*this).get(key));
+}
+```
+
+Here, `std::as_const(*this)` treats the current object as `const`, forcing the compiler to call the `const` overload of `get`. That avoids duplicating the lookup logic. The result is a `const Value*`, which is then converted back to `Value*` using `const_cast`.
+
+The important rule is that this is only safe because the original object is non-`const`. We are not modifying an actually `const` object; we are simply reusing the `const` implementation inside the non-`const` overload. In other words, `const_cast` is being used to remove constness from a value that came from a non-`const` object in the first place.
