@@ -346,19 +346,26 @@ $$
 \delta x = Ky = PJ^T\left(JPJ^T+\Sigma\right)^{-1}(-e)
 $$
 Proof:
-$$
-\begin{gather*}
-\begin{aligned}
-&\left(P^{-1} + J^T \Sigma^{-1} J\right) P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= P^{-1}P J^T \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \Sigma^{-1}\Sigma \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \Sigma^{-1} \left(J P J^T + \Sigma\right) \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \Sigma^{-1} \\
-&\Rightarrow \left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}\left(-J^T\Sigma^{-1}e\right) = -PJ^T\left(JPJ^T+\Sigma\right)^{-1}e
 
+$$
+\begin{aligned}
+\left(P^{-1} + J^T \Sigma^{-1} J\right) P J^T \left(J P J^T + \Sigma\right)^{-1}
+&= P^{-1}P J^T \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1}\Sigma \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1} \left(J P J^T + \Sigma\right) \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1}
 \end{aligned}
-\end{gather*}
+$$
+
+Therefore,
+
+$$
+\left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}\left(-J^T\Sigma^{-1}e\right)
+= -PJ^T\left(JPJ^T+\Sigma\right)^{-1}e.
 $$
 
 ### Covariance Update
