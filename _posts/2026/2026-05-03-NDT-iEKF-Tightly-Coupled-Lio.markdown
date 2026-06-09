@@ -471,7 +471,19 @@ $$
 J_i = \begin{bmatrix} I_3 & -[\hat{R}\mathbf{p}_i]_\times \end{bmatrix} \in \mathbb{R}^{3\times 6}
 $$
 
-where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w.r.t. translation is $I_3$; w.r.t. rotation it is $-[\hat{R}\mathbf{p}_i]_\times$ (from the first-order approximation $R \approx \hat{R}(I + [\delta\boldsymbol{\theta}]_\times)$).
+where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian with respect to translation is $I_3$.
+
+The rotation Jacobian term is
+
+$$
+-[\hat{R}\mathbf{p}_i]_\times
+$$
+
+from the first-order approximation
+
+$$
+R \approx \hat{R}(I + [\delta\boldsymbol{\theta}]_\times).
+$$
 
 **Gauss-Newton normal equations** — stacking all $N$ correspondences:
 
@@ -537,7 +549,15 @@ $$
 \hat{x}^+_k = \hat{x}^-_k \oplus \delta x, \qquad P^+_k = (I - KJ)\,P^-_k
 $$
 
-**Why is this loosely coupled and less informative?** Yes — this *is* loosely coupled: LiDAR is processed independently by ICP, which produces a pose estimate that is then fused into the filter, exactly matching the loosely-coupled definition. ICP minimizes $\sum_i \lVert\mathbf{e}_i\rVert^2$ without any knowledge of $P^-_k$. The resulting $\delta x_\text{ICP}$ is optimal for the scan-matching problem *alone*, but it discards the individual residual structure of all $N$ point pairs. When handed to the ESKF as a single synthetic observation, the filter cannot exploit those $N$ independent constraints individually — making it less informative than if the raw point residuals were incorporated directly. That is what Alternative 2 does.
+**Why is this loosely coupled and less informative?** Yes — this *is* loosely coupled: LiDAR is processed independently by ICP, which produces a pose estimate that is then fused into the filter, exactly matching the loosely-coupled definition.
+
+ICP minimizes
+
+$$
+\sum_i \lVert\mathbf{e}_i\rVert^2
+$$
+
+without any knowledge of $P^-_k$. The resulting $\delta x_\text{ICP}$ is optimal for the scan-matching problem *alone*, but it discards the individual residual structure of all $N$ point pairs. When handed to the ESKF as a single synthetic observation, the filter cannot exploit those $N$ independent constraints individually — making it less informative than if the raw point residuals were incorporated directly. That is what Alternative 2 does.
 
 ---
 
