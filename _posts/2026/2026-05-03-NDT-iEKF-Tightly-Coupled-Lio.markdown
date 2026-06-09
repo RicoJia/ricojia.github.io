@@ -139,7 +139,7 @@ $$
 - Covariance propagation:
   - Linearize $\delta\theta'$:
     - $R_{wb}' = R_{wb}R_{bb} = R_{wb}\mathrm{Exp}(\delta\theta)$
-    - [Using $R' = R\omega^\land$](https://ricojia.github.io/2017/02/22/lie-group/), $R_{wb}' = \mathrm{Exp}[\delta\theta](\delta\theta')^\land$
+    - [Using $R^{\prime} = R\omega^{\wedge}$](https://ricojia.github.io/2017/02/22/lie-group/), $R_{wb}^{\prime} = \mathrm{Exp}\!\left((\delta\theta^{\prime})^{\wedge}\right)$
     - $(\delta\theta)' \approx -(\tilde{\omega}-b_g)^\land\delta\theta - \delta b_g - \eta_g$
   - Linearize $\delta v'$:
     - $\delta v' = -R(\tilde a - b_a)^\land\delta\theta - R\delta b_a - \eta_a + \delta g$
@@ -333,83 +333,33 @@ $$
 
 We want to show the information-form update
 
-$$  
+$$
 \delta x =
-
-\left(  
-P^{-1}  
-+  
-J^T\Sigma^{-1}J  
-\right)^{-1}  
-\left(  
--J^T\Sigma^{-1}e  
-\right)  
+\left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}
+\left(-J^T\Sigma^{-1}e\right)
 = (P^{-1} + A)^{-1} b
 $$
 
 is equivalent to the classic ESKF/Kalman update
 
-$$  
-\delta x = Ky  =
-PJ^T  
-\left(  
-JPJ^T+\Sigma  
-\right)^{-1} (-e)
+$$
+\delta x = Ky = PJ^T\left(JPJ^T+\Sigma\right)^{-1}(-e)
 $$
 Proof:
 $$
 \begin{gather*}
 \begin{aligned}
-&
-\left(P^{-1} + J^T \Sigma^{-1} J\right)
-P J^T
-\left(J P J^T + \Sigma\right)^{-1}
-\\
-&=
-P^{-1}P J^T
-\left(J P J^T + \Sigma\right)^{-1}
-+
-J^T \Sigma^{-1} J P J^T
-\left(J P J^T + \Sigma\right)^{-1}
-\\
-&=
-J^T
-\left(J P J^T + \Sigma\right)^{-1}
-+
-J^T \Sigma^{-1} J P J^T
-\left(J P J^T + \Sigma\right)^{-1}
-\\
-&=
-J^T \Sigma^{-1}\Sigma
-\left(J P J^T + \Sigma\right)^{-1}
-+
-J^T \Sigma^{-1} J P J^T
-\left(J P J^T + \Sigma\right)^{-1}
-\\
-&=
-J^T \Sigma^{-1}
-\left(J P J^T + \Sigma\right)
-\left(J P J^T + \Sigma\right)^{-1}
-\\
-&=
-J^T \Sigma^{-1}
-
-\\ & \Rightarrow
-\left(
-P^{-1}
-+
-J^T\Sigma^{-1}J
-\right)^{-1}
-\left(
--J^T\Sigma^{-1}e
-\right)
-=
--
-PJ^T
-\left(
-JPJ^T+\Sigma
-\right)^{-1}
-e
+&\left(P^{-1} + J^T \Sigma^{-1} J\right) P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= P^{-1}P J^T \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1}\Sigma \left(J P J^T + \Sigma\right)^{-1}
++ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1} \left(J P J^T + \Sigma\right) \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1} \\
+&\Rightarrow \left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}\left(-J^T\Sigma^{-1}e\right)
+= -PJ^T\left(JPJ^T+\Sigma\right)^{-1}e
 
 \end{aligned}
 \end{gather*}
@@ -419,53 +369,34 @@ $$
 
 In classic ESKF measurement update, the simplified covariance update is
 
-$$  
-P^+ =
-
-(I-KJ)\bar P,  
+$$
+P^+ = (I-KJ)\bar P
 $$
 
 Define
 
- $$  
-Q_k =
-
-(\bar P^{-1}+A)^{-1}.  
+$$
+Q_k = (\bar P^{-1}+A)^{-1}
 $$
 
 Then
 
-$$  
-Q_k  
-\left(  
-\bar P^{-1}+A  
-\right)
-
-= I.  
+$$
+Q_k\left(\bar P^{-1}+A\right)=I
 $$
 Expanding:
 
- $$  
-Q_k\bar P^{-1}  
-+  
-Q_kA
-
-=I.  
+$$
+Q_k\bar P^{-1} + Q_kA = I
 $$
 And get
-$$  
-Q_k =
-
-(I-Q_kA)\bar P.  
+$$
+Q_k = (I-Q_kA)\bar P
 $$
 Then one writes:
 
- $$  
-(I-Q_kA)\bar P
-
-= Q_k
-
-= (\bar P^{-1}+A)^{-1}.  
+$$
+(I-Q_kA)\bar P = Q_k = (\bar P^{-1}+A)^{-1}
 $$
 
 ### Update
@@ -529,7 +460,7 @@ $$
 
 The total cost is $\mathcal{C} = \frac{1}{2}\sum_i \lVert\mathbf{e}_i\rVert^2$.
 
-**Jacobian** — linearize $\mathbf{e}_i$ around the current nominal pose $(\hat{R}, \hat{\mathbf{t}})$ using the error state $\delta x = \lbrack\delta \mathbf{p},\; \delta\boldsymbol{\theta}\rbrack^T \in \mathbb{R}^6$:
+**Jacobian** — linearize $\mathbf{e}_i$ around the current nominal pose $(\hat{R}, \hat{\mathbf{t}})$ using the error state $\delta x = [\delta \mathbf{p},\; \delta\boldsymbol{\theta}]^T \in \mathbb{R}^6$:
 
 $$
 \mathbf{e}_i \approx \underbrace{(\hat{R}\mathbf{p}_i + \hat{\mathbf{t}} - \mathbf{q}_i)}_{\mathbf{e}_i^{(0)}} + J_i\,\delta x,
@@ -537,7 +468,7 @@ $$
 J_i = \begin{bmatrix} I_3 & -[\hat{R}\mathbf{p}_i]_\times \end{bmatrix} \in \mathbb{R}^{3\times 6}
 $$
 
-where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w.r.t. translation is $I_3$; w.r.t. rotation it is $-\lbrack\hat{R}\mathbf{p}_i\rbrack_\times$ (from the first-order approximation $R \approx \hat{R}(I + \lbrack\delta\boldsymbol{\theta}\rbrack_\times)$).
+where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w.r.t. translation is $I_3$; w.r.t. rotation it is $-[\hat{R}\mathbf{p}_i]_\times$ (from the first-order approximation $R \approx \hat{R}(I + [\delta\boldsymbol{\theta}]_\times)$).
 
 **Gauss-Newton normal equations** — stacking all $N$ correspondences:
 
@@ -589,7 +520,7 @@ $$
 \delta x_\text{ICP} = [\delta p_x,\; \delta p_y,\; \delta p_z,\; \delta\theta_x,\; \delta\theta_y,\; \delta\theta_z]^T
 $$
 
-**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian $J = \lbrack I_6 \mid 0_{6\times 12}\rbrack$ and noise covariance $R_\text{ICP}$:
+**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian $J = [I_6 \mid 0_{6\times 12}]$ and noise covariance $R_\text{ICP}$:
 
 $$
 K = P^-_k J^T \bigl(J P^-_k J^T + R_\text{ICP}\bigr)^{-1}
@@ -630,7 +561,7 @@ J^{(j)} = \begin{bmatrix} J^{(j)}_1 \\ \vdots \\ J^{(j)}_N \end{bmatrix} \in \ma
 \mathbf{r}_0^{(j)} = \begin{bmatrix} \mathbf{r}_1^{(j)} \\ \vdots \\ \mathbf{r}_N^{(j)} \end{bmatrix} \in \mathbb{R}^{3N}
 $$
 
-Each row-block $J^{(j)}_i = \begin{bmatrix} I_3 & -\lbrack\hat{R}^{(j)}\mathbf{p}_i\rbrack_\times & 0_{3\times 12} \end{bmatrix}$ (zeros for velocity, biases, gravity).
+Each row-block $J^{(j)}_i = \begin{bmatrix} I_3 & -[\hat{R}^{(j)}\mathbf{p}_i]_\times & 0_{3\times 12} \end{bmatrix}$ (zeros for velocity, biases, gravity).
 
 3. **Kalman gain and update** — let $\tilde{x}^{(j)} = \hat{x}^{(j)} \ominus \hat{x}^-_k$ denote the accumulated drift from the prior:
 
