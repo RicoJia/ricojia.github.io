@@ -139,7 +139,7 @@ $$
 - Covariance propagation:
   - Linearize $\delta\theta'$:
     - $R_{wb}' = R_{wb}R_{bb} = R_{wb}\mathrm{Exp}(\delta\theta)$
-    - [Using $R^{\prime} = R\omega^{\wedge}$](https://ricojia.github.io/2017/02/22/lie-group/), $R_{wb}^{\prime} = \mathrm{Exp}\!\left((\delta\theta^{\prime})^{\wedge}\right)$
+    - [Using $R^{\prime} = R\omega^{\wedge}$](https://ricojia.github.io/2017/02/22/lie-group/), $R_{wb}^{\prime} = \mathrm{Exp}\left((\delta\theta^{\prime})^{\wedge}\right)$
     - $(\delta\theta)' \approx -(\tilde{\omega}-b_g)^\land\delta\theta - \delta b_g - \eta_g$
   - Linearize $\delta v'$:
     - $\delta v' = -R(\tilde a - b_a)^\land\delta\theta - R\delta b_a - \eta_a + \delta g$
@@ -350,16 +350,12 @@ $$
 \begin{gather*}
 \begin{aligned}
 &\left(P^{-1} + J^T \Sigma^{-1} J\right) P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= P^{-1}P J^T \left(J P J^T + \Sigma\right)^{-1}
-+ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \left(J P J^T + \Sigma\right)^{-1}
-+ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
-&= J^T \Sigma^{-1}\Sigma \left(J P J^T + \Sigma\right)^{-1}
-+ J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= P^{-1}P J^T \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
+&= J^T \Sigma^{-1}\Sigma \left(J P J^T + \Sigma\right)^{-1} + J^T \Sigma^{-1} J P J^T \left(J P J^T + \Sigma\right)^{-1} \\
 &= J^T \Sigma^{-1} \left(J P J^T + \Sigma\right) \left(J P J^T + \Sigma\right)^{-1} \\
 &= J^T \Sigma^{-1} \\
-&\Rightarrow \left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}\left(-J^T\Sigma^{-1}e\right)
-= -PJ^T\left(JPJ^T+\Sigma\right)^{-1}e
+&\Rightarrow \left(P^{-1} + J^T\Sigma^{-1}J\right)^{-1}\left(-J^T\Sigma^{-1}e\right) = -PJ^T\left(JPJ^T+\Sigma\right)^{-1}e
 
 \end{aligned}
 \end{gather*}
