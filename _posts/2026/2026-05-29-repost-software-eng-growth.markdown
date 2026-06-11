@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Career Advice] REPOST: What 16 years of software engineering taught me about growth
+title: "[Career Advice] REPOST - What 16 years of software engineering taught me about growth
 date: 2026-05-29 13:19
 subtitle:
 comments: true
