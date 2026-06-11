@@ -64,3 +64,4 @@ For engineers, these four practices compound over a career. For engineering lead
 - **Are code reviews learning opportunities or gatekeeping exercises?**
 
 The engineers who **grow sustainably** aren’t necessarily the most technically gifted. They’re the ones **who stayed curious**, **built relationships**, **tried things outside their comfort zone**, and **kept moving despite the fear**.
+- 
