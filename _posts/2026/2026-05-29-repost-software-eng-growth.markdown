@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "[Career Advice] REPOST - What 16 years of software engineering taught me about growth
+title: "[Career Advice] REPOST - What 16 years of software engineering taught me about growth"
 date: 2026-05-29 13:19
-subtitle:
+subtitle: ""
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -64,4 +64,3 @@ For engineers, these four practices compound over a career. For engineering lead
 - **Are code reviews learning opportunities or gatekeeping exercises?**
 
 The engineers who **grow sustainably** aren’t necessarily the most technically gifted. They’re the ones **who stayed curious**, **built relationships**, **tried things outside their comfort zone**, and **kept moving despite the fear**.
-- 
