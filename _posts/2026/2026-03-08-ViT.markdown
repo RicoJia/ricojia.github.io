@@ -1,0 +1,15 @@
+---
+layout: post
+title: "ViT"
+date: 2026-03-08 13:19
+subtitle: 
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+ViT in short:
+
+Image -> 16x16 patches `[16 x 16 x 3]` -> project to [256/768] token embedding
+TODO
