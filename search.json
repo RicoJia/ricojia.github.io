@@ -1,14 +1,2564 @@
----
-layout: null
----
 [
-{% for post in site.posts %}
   {
-    "title"    : "{{ post.title | escape }}",
-    "subtitle" : "{{ post.subtitle | escape }}",
-    "tags"     : "{{ post.tags | join: ', ' }}",
-    "url"      : "{{ site.baseurl }}{{ post.url }}",
-    "date"     : "{{ post.date }}"
-  }{% unless forloop.last %},{% endunless %}
-{% endfor %}
+    "title": "[Career Advice] REPOST - What 16 years of software engineering taught me about growth",
+    "subtitle": "",
+    "tags": "Career Advice",
+    "url": "/2026/05/29/repost-software-eng-growth/",
+    "date": "2026-05-29 13:19"
+  },
+  {
+    "title": "[Robotics] From Market-Ready ROVs to Low-Cost AUVs: Building Practical Underwater Autonomy",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/05/08/revamping-rov-into-UAV/",
+    "date": "2026-05-08 13:19"
+  },
+  {
+    "title": "NDT-Tightly-Coupled-Lio",
+    "subtitle": "iEKF",
+    "tags": "Machine-Learning",
+    "url": "/2026/05/03/NDT-iEKF-Tightly-Coupled-Lio/",
+    "date": "2026-05-03 13:19"
+  },
+  {
+    "title": "Data Augmentation For Object Detection",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/30/data-augmentation-object-detection/",
+    "date": "2026-04-30 13:19"
+  },
+  {
+    "title": "Muon SGD",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/19/muon-sgd/",
+    "date": "2026-04-19 13:19"
+  },
+  {
+    "title": "Neural Processing Unit",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/16/NPU/",
+    "date": "2026-04-16 13:19"
+  },
+  {
+    "title": "Target Label Assignment (STAL)",
+    "subtitle": "TOOD",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/21/tal/",
+    "date": "2026-04-16 13:19"
+  },
+  {
+    "title": "Small Target Label Assignment (STAL)",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/23/stal/",
+    "date": "2026-04-16 13:19"
+  },
+  {
+    "title": "Progloss",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/26/progloss/",
+    "date": "2026-04-16 13:19"
+  },
+  {
+    "title": "[BEV] DETR3D",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/11/detr3d/",
+    "date": "2026-04-11 13:19"
+  },
+  {
+    "title": "[BEV] Feature Pyramid Network",
+    "subtitle": "",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/10/feature-pyramid-network/",
+    "date": "2026-04-10 13:19"
+  },
+  {
+    "title": "[BEV] BEV Ideas and View Transformation",
+    "subtitle": "Training pipelines, multiview geometry, and how to lift image features into BEV",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/08/bev-idea/",
+    "date": "2026-04-08 13:19"
+  },
+  {
+    "title": "[BEV] BEV Introduction: Tesla's Challenges and Architecture",
+    "subtitle": "Why per-camera detection falls short, and how BEV solves it",
+    "tags": "Machine-Learning",
+    "url": "/2026/04/05/bev-teslas-challenge/",
+    "date": "2026-04-05 13:19"
+  },
+  {
+    "title": "[BEV] BEV Introduction",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/04/02/bev-intro/",
+    "date": "2026-04-02 13:19"
+  },
+  {
+    "title": "MPPI And Motion Control On My Diff Drive",
+    "subtitle": "Remote Claude Code Setup",
+    "tags": "Machine-Learning",
+    "url": "/2026/03/25/MPPI-Motion-Planning-On-My-Diff-Drive/",
+    "date": "2026-03-25 13:19"
+  },
+  {
+    "title": "AI Agent Setup",
+    "subtitle": "Remote Claude Code Setup",
+    "tags": "Machine-Learning",
+    "url": "/2026/03/22/ai-agent/",
+    "date": "2026-03-22 13:19"
+  },
+  {
+    "title": "Model Parameter vs VRAM",
+    "subtitle": "VRAM",
+    "tags": "Machine-Learning",
+    "url": "/2026/03/05/model-param-vs-vram/",
+    "date": "2026-03-05 13:19"
+  },
+  {
+    "title": "[Point Cloud Compression] Draco",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/03/02/point-cloud-compression-draco/",
+    "date": "2026-03-02 13:19"
+  },
+  {
+    "title": "[ML] HuggingFace Trainer",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/02/28/ML-Huggingface-Trainer/",
+    "date": "2026-02-28 13:19"
+  },
+  {
+    "title": "[ML] Model Visualization",
+    "subtitle": "ONNX, Netron, Model Size",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/26/ML-Model-Visualization/",
+    "date": "2026-02-26 13:19"
+  },
+  {
+    "title": "[ML] PyTorch Functions",
+    "subtitle": "autograd Function, Convolution, Normalization, Sum, Torch Cache Emptying",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/23/PyTorch-functions/",
+    "date": "2026-02-23 13:19"
+  },
+  {
+    "title": "PyTorch Mixed Precision Training",
+    "subtitle": "torch.zeros, GradScaler, GradCheck",
+    "tags": "CUDA",
+    "url": "/2026/02/17/pytorch-mixed-precision-training/",
+    "date": "2026-02-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Mixed Floating Point Training",
+    "subtitle": "FP16, BF16, Mixed Precision Training",
+    "tags": "Deep Learning",
+    "url": "/2026/02/14/deep-learning-speedup-tricks-mixed-floating-point/",
+    "date": "2026-02-14 13:19"
+  },
+  {
+    "title": "[ML] Libraries For Point Cloud Compression",
+    "subtitle": "einops",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/12/point-cloud-compression-libraries/",
+    "date": "2026-02-12 13:19"
+  },
+  {
+    "title": "[ML] D-PCC Losses",
+    "subtitle": "Chamfer Loss, Density Loss, Point-Count Loss, Rate-Distortion Loss",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/11/point-cloud-compression-dpcc-loss/",
+    "date": "2026-02-11 13:19"
+  },
+  {
+    "title": "Entropy Bottleneck",
+    "subtitle": "Entropy Encoding, Range Encoding",
+    "tags": "CUDA",
+    "url": "/2026/02/08/ml-entropy-bottleneck/",
+    "date": "2026-02-08 13:19"
+  },
+  {
+    "title": "[ML] D-PCC Decoder Layers",
+    "subtitle": "isohedron, losses",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/06/point-cloud-compression-dpcc-decoder-layers/",
+    "date": "2026-02-06 13:19"
+  },
+  {
+    "title": "[ML] D-PCC Encoder-Layers",
+    "subtitle": "sub-pixel convolution",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/03/point-cloud-compression-dpcc-encoder-layers/",
+    "date": "2026-02-03 13:19"
+  },
+  {
+    "title": "[ML] Point Cloud Transformer",
+    "subtitle": "Vector Attention",
+    "tags": "Machine-Learning",
+    "url": "/2026/02/02/point-cloud-transformer/",
+    "date": "2026-02-02 13:19"
+  },
+  {
+    "title": "[ML] OpenClaw",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/02/01/openclaw/",
+    "date": "2026-02-01 13:19"
+  },
+  {
+    "title": "[ML] Data Formats",
+    "subtitle": "Pickle, pth, onnx",
+    "tags": "ML",
+    "url": "/2026/01/23/ml-data-formats/",
+    "date": "2026-01-23 13:19"
+  },
+  {
+    "title": "[CUDA - 6] CUDA Functions",
+    "subtitle": "attomicAdd, pragma unroll",
+    "tags": "CUDA",
+    "url": "/2026/01/21/cuda-Functions/",
+    "date": "2026-01-21 13:19"
+  },
+  {
+    "title": "[CUDA - 6] CUDA Inference Speedups",
+    "subtitle": "inference mode",
+    "tags": "CUDA",
+    "url": "/2026/01/23/CUDA-Inference-Speedups/",
+    "date": "2026-01-21 13:19"
+  },
+  {
+    "title": "[CUDA - 5] SIMT in CUDA",
+    "subtitle": "SIMD SIMT",
+    "tags": "CUDA",
+    "url": "/2026/01/19/cuda-simt/",
+    "date": "2026-01-19 13:19"
+  },
+  {
+    "title": "[CUDA - 4] My First CUDA Kernel - Chamfer Distance",
+    "subtitle": "First CUDA Program, JIT Compile",
+    "tags": "CUDA",
+    "url": "/2026/01/18/cuda-coding-my-first-program/",
+    "date": "2026-01-18 13:19"
+  },
+  {
+    "title": "[CUDA - 3] - Mixed Precision Training",
+    "subtitle": "AT_DISPATCH_FLOATING_TYPES_AND_HALF, gpuAtomicAdd",
+    "tags": "CUDA",
+    "url": "/2026/01/16/cuda-coding-mixed-precision-training/",
+    "date": "2026-01-16 13:19"
+  },
+  {
+    "title": "[CUDA - 2] CUDA Introduction",
+    "subtitle": "First CUDA Program, SIMD SIMT,",
+    "tags": "CUDA",
+    "url": "/2026/01/14/cuda-introduction/",
+    "date": "2026-01-14 13:19"
+  },
+  {
+    "title": "[CUDA - 2] Introduction to CUDA Coding",
+    "subtitle": "CUDA Programming Hierarchy",
+    "tags": "CUDA",
+    "url": "/2026/01/14/cuda-coding-introduction/",
+    "date": "2026-01-14 13:19"
+  },
+  {
+    "title": "[CUDA - 1]  GPU Architecture",
+    "subtitle": "GPU Architecture, Tensor Cores, Pinned Memory",
+    "tags": "Machine-Learning",
+    "url": "/2026/01/11/CUDA-GPU-Architecture/",
+    "date": "2026-01-11 13:19"
+  },
+  {
+    "title": "[Point Cloud Compression] - Sampling",
+    "subtitle": null,
+    "tags": "CUDA",
+    "url": "/2026/01/07/point-cloud-sampling/",
+    "date": "2026-01-07 13:19"
+  },
+  {
+    "title": "[ML] -Point-cloud-compression-1-Basic-Concepts",
+    "subtitle": "PSNR, Chamfer Distance",
+    "tags": "Machine-Learning",
+    "url": "/2026/01/05/point-cloud-compression-basic-concepts/",
+    "date": "2026-01-05 13:19"
+  },
+  {
+    "title": "[Rust Learning]-2-Variables",
+    "subtitle": "Ownership",
+    "tags": "Python",
+    "url": "/2025/11/03/Rust-Learning-2-Language-Basics/",
+    "date": "2025-11-03 13:19"
+  },
+  {
+    "title": "[Rust Learning]-1-Language Introduction",
+    "subtitle": "Why Rust",
+    "tags": "Python",
+    "url": "/2025/11/01/Rust-Learning-1-Language-Introduction/",
+    "date": "2025-11-01 13:19"
+  },
+  {
+    "title": "Python - Python 3.14",
+    "subtitle": null,
+    "tags": "Python",
+    "url": "/2025/10/26/python-3-14/",
+    "date": "2025-10-26 13:19"
+  },
+  {
+    "title": "Robotics - Moré-Thuente Line Search Algorithm",
+    "subtitle": null,
+    "tags": "Robotics",
+    "url": "/2025/04/17/Robotics-More-Thuente-Line-Search/",
+    "date": "2025-04-17 13:19"
+  },
+  {
+    "title": "Robotics - Gauss Newton (GN) and Levenberg Marquardt (LM) Optimizers",
+    "subtitle": "Newton's Method, GN, LM optimizers",
+    "tags": "Robotics",
+    "url": "/2025/04/14/Robotics-Gauss-Newton-LM/",
+    "date": "2025-04-14 13:19"
+  },
+  {
+    "title": "Underwater LiDAR: How Light-Based Sensing Works Beneath the Waves",
+    "subtitle": "",
+    "tags": "lidar, underwater, sensing, optics",
+    "url": "/2025/04/07/Underwater-Lidar/",
+    "date": "2025-04-07"
+  },
+  {
+    "title": "Robotics - [3D SLAM - 6] KISS ICP Review",
+    "subtitle": null,
+    "tags": "Robotics, SLAM",
+    "url": "/2025/03/17/KISS-ICP-Review/",
+    "date": "2025-03-17 13:19:00"
+  },
+  {
+    "title": "[ML] K-Nearest-Neighbor Using Heap With CUDA",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/01/09/point-cloud-compression-k-nn/",
+    "date": "2025-01-09 13:19"
+  },
+  {
+    "title": "[ML] -Point-cloud-compression-2-FPFH-Features",
+    "subtitle": null,
+    "tags": "Machine-Learning",
+    "url": "/2026/01/08/point-cloud-compression-FPFH-Features/",
+    "date": "2025-01-08 13:19"
+  },
+  {
+    "title": "Robotics - Spatial Hashing",
+    "subtitle": null,
+    "tags": "Robotics",
+    "url": "/2025/01/02/Spatial-Hashing/",
+    "date": "2025-01-02 13:19"
+  },
+  {
+    "title": "Robotics - A Short Introduction To Underwater Sonar Imaging Cameras",
+    "subtitle": "Beam Forming",
+    "tags": "Robotics, Oil and Gas",
+    "url": "/2024/12/24/sonar-imaging/",
+    "date": "2024-12-24 13:19"
+  },
+  {
+    "title": "AI - LLM Applications",
+    "subtitle": null,
+    "tags": "AI",
+    "url": "/2024/12/22/llm-applications/",
+    "date": "2024-12-22 13:19"
+  },
+  {
+    "title": "Robotics - A Survey On Oil Pipe Inspection Robotics (Revising)",
+    "subtitle": "Sonar Imaging, gradian",
+    "tags": "Robotics, Oil and Gas",
+    "url": "/2024/12/20/robotics-A-Survey-On-Oil-Pipe-Robots/",
+    "date": "2024-12-20 13:19"
+  },
+  {
+    "title": "Robotics - rviz2",
+    "subtitle": null,
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/17/robotics-ROS2-rviz2/",
+    "date": "2024-12-17 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Logging",
+    "subtitle": "Logging Level Tweaking",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/12/robotics-ROS2-logging/",
+    "date": "2024-12-12 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Behavior Tree Cpp",
+    "subtitle": "TransformListener",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/05/robotics-ROS2-behavior-tree-cpp/",
+    "date": "2024-12-05 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 TF2",
+    "subtitle": "Transform Listener",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/07/robotics-ROS2-tf2/",
+    "date": "2024-12-05 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Tools",
+    "subtitle": "Ros2 Doctor, Topic, Ros2 Multicast, package finder",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/10/robotics-ROS2-tools/",
+    "date": "2024-11-5 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Bags",
+    "subtitle": "use_sim_time",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/30/robotics-ROS2-ros2-bags/",
+    "date": "2024-11-30 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Miscellaneous Thingies",
+    "subtitle": "Name Spacing, Macros, Weird Issues",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/01/robotics-ROS2-misc-thingies/",
+    "date": "2024-11-30 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Colcon Mixins",
+    "subtitle": "Group colcon build arguments under a single name",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/03/robotics-ROS2-colcon-mixins/",
+    "date": "2024-11-30 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Tests",
+    "subtitle": "colcon test",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/10/robotics-ROS2-ros2-tests/",
+    "date": "2024-11-30 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Bags",
+    "subtitle": "use_sim_time",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/12/15/robotics-ROS2-ros2-tf/",
+    "date": "2024-11-30 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Rclpy Executor Callback Model",
+    "subtitle": "Rclpy Executors, Rate Object, Custom Node Destruction",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/27/robotics-ROS2-ros2-rclpy-executor-callback-model/",
+    "date": "2024-11-27 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Composition Instead Of Nodelets",
+    "subtitle": "Components, Zero-Copy Intra-Processing-Communication (IPC)",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/26/robotics-ROS2-ros2-composition-instead-of-nodelets/",
+    "date": "2024-11-26 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Rclcpp Executor Callback Model",
+    "subtitle": "Executor, Callbacks, Threading Model",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/25/robotics-ROS2-ros2-executor-callback-model/",
+    "date": "2024-11-25 13:19"
+  },
+  {
+    "title": "Robotics - ROS2 Service",
+    "subtitle": "How to Bring Up a Service, Common ROS2 Services",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/22/robotics-ROS2-ros2-service/",
+    "date": "2024-11-22 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation] Ros2 Parameters",
+    "subtitle": null,
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/28/robotics-ROS2-ros2-parameters/",
+    "date": "2024-11-22 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation 3] ROS2 Build System",
+    "subtitle": "colcon-build, interface package, dpkg, rosdep",
+    "tags": "Robotics, ROS2, Docker",
+    "url": "/2024/11/19/robotics-ROS2-foundation-ros2-build-system/",
+    "date": "2024-11-19 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation 2] ROS2 in Docker",
+    "subtitle": "Docker Networking, Multi-stage Build",
+    "tags": "Robotics, ROS2, Docker",
+    "url": "/2024/11/16/robotics-ROS2-foundation-Docker/",
+    "date": "2024-11-16 13:19"
+  },
+  {
+    "title": "Robotics - [ROS2 Foundation - 1] DDS Notes",
+    "subtitle": "DDS, Zeroconf, IDL, FastRTPS, ROS2 Messaging Mechanism",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/13/robotics-ROS2-foundation-DDS/",
+    "date": "2024-11-13 13:19"
+  },
+  {
+    "title": "Robotics General Design Notes",
+    "subtitle": "What's New In ROS2, Affordance",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/11/11/robotics-General-Design-Notes/",
+    "date": "2024-11-11 13:19"
+  },
+  {
+    "title": "Robotics - Eigen, Sophus And Their Quirks",
+    "subtitle": "Sophus",
+    "tags": "Robotics",
+    "url": "/2024/05/14/sophus-eigen-and-their-quirks/",
+    "date": "2024-10-22 13:19"
+  },
+  {
+    "title": "Robotics - EIGEN_MAKE_ALIGNED_OPERATOR_NEW",
+    "subtitle": "Eigen",
+    "tags": "Robotics",
+    "url": "/2024/05/17/eigen-alignment-new-macro/",
+    "date": "2024-10-22 13:19"
+  },
+  {
+    "title": "Robotics - 2024 3D Lidar Selection For Robotics",
+    "subtitle": "Livox, Unitree Lidars",
+    "tags": "Robotics",
+    "url": "/2024/10/22/robotics-3D-Lidar-Selection/",
+    "date": "2024-10-22 13:19"
+  },
+  {
+    "title": "Robotics - Robot State and Joint State Publisher",
+    "subtitle": "robot_state_publisher, joint_state_publisher, and the TF tree",
+    "tags": "Robotics, ROS2",
+    "url": "/2024/09/01/robotics-ROS2-TF-Jointstatepublisher/",
+    "date": "2024-09-01 13:19"
+  },
+  {
+    "title": "Robotics - Isaac SIM setup",
+    "subtitle": "Isaac SIM",
+    "tags": "Robotics",
+    "url": "/2024/08/25/robotics-isaac-sim-setup/",
+    "date": "2024-08-25 13:19"
+  },
+  {
+    "title": "RGBD SLAM - Amazon SageMaker Usage Notes",
+    "subtitle": "Amazon SageMaker, EC2 Instances",
+    "tags": "Deep Learning",
+    "url": "/2024/08/22/deep-learning-amazon-sagemaker-setup/",
+    "date": "2024-08-22 13:19"
+  },
+  {
+    "title": "RGBD SLAM - GPU Setup",
+    "subtitle": "Summary Of Nvidia Orin Nano Setup, Docker For General Machine Learning",
+    "tags": "RGBD Slam, CUDA, Deep Learning",
+    "url": "/2024/08/18/rgbd-slam-setup-nvidia-orin-nano/",
+    "date": "2024-08-18 13:19"
+  },
+  {
+    "title": "RGBD SLAM - Building A ROS 2 Docker Container For Object Detection",
+    "subtitle": "ROS 2 Docker Container For Object Detection Training And Inferencing",
+    "tags": "RGBD Slam, ROS2, Deep Learning",
+    "url": "/2024/08/01/rgbd-slam-building-a-docker-container-for-ros2-and-machine-learning/",
+    "date": "2024-08-01 13:19"
+  },
+  {
+    "title": "RGBD SLAM - What Deteriorates Its Performance",
+    "subtitle": "Lessons Learned From My RGBD SLAM Project. Updates Come In Anytime",
+    "tags": "RGBD Slam, Deep Learning",
+    "url": "/2024/07/15/rgbd-slam-what-deteriorates-performance/",
+    "date": "2024-07-15 13:19"
+  },
+  {
+    "title": "RGBD SLAM Bundle Adjustment Part 2",
+    "subtitle": "RGBD SLAM Backend, G2O",
+    "tags": "RGBD Slam",
+    "url": "/2024/07/12/rgbd-slam-bundle-adjustment-2/",
+    "date": "2024-07-12 13:19"
+  },
+  {
+    "title": "RGBD SLAM - Bundle Adjustment From Zero To Hero, Part 1, Theories",
+    "subtitle": "RGBD SLAM Backend Introduction",
+    "tags": "RGBD Slam",
+    "url": "/2024/07/11/rgbd-slam-bundle-adjustment/",
+    "date": "2024-07-11 13:19"
+  },
+  {
+    "title": "RGBD SLAM - The PnP Problem",
+    "subtitle": "Solving the PnP problem - turning pixels into 3D positions!",
+    "tags": "RGBD Slam",
+    "url": "/2024/07/09/rgbd-slam-pnp/",
+    "date": "2024-07-09 13:19"
+  },
+  {
+    "title": "More On Motion Estimation",
+    "subtitle": "5 Point Algorithm, How to solve DLT, and 8 point algorithm",
+    "tags": "RGBD Slam",
+    "url": "/2024/07/05/rgbd-slam-more-on-motion-estimation/",
+    "date": "2024-07-05 10:11"
+  },
+  {
+    "title": "Motion Estimation From Epipolar Constraints",
+    "subtitle": "This is an Introduction of Epipolar Constraints and 2D-2D Motion Estimation",
+    "tags": "RGBD Slam",
+    "url": "/2024/07/04/rgbd-slam-motion-estimation-from-epipolar-constraints/",
+    "date": "2024-07-04 10:11"
+  },
+  {
+    "title": "Copying Docker Images to Another Machine",
+    "subtitle": "local registry + SSH reverse tunnel",
+    "tags": "Docker, Linux",
+    "url": "/2018/06/16/docker-copy-to-another-machine/",
+    "date": "2024-06-16 13:19"
+  },
+  {
+    "title": "Docker Compose Profile",
+    "subtitle": "Multi-Container Workflow",
+    "tags": "Docker",
+    "url": "/2018/06/10/docker-compose-profile/",
+    "date": "2024-06-10 13:19"
+  },
+  {
+    "title": "Dockerd and Linux Futex",
+    "subtitle": "How Docker uses containerd, and how Linux futex works",
+    "tags": "Docker, Linux",
+    "url": "/2018/06/13/dockerd-futex/",
+    "date": "2024-06-10 13:19"
+  },
+  {
+    "title": "Docker Ignore",
+    "subtitle": null,
+    "tags": "Docker",
+    "url": "/2018/06/07/docker-ignore/",
+    "date": "2024-06-07 13:19"
+  },
+  {
+    "title": "Docker Workflow And Networking",
+    "subtitle": "VSCode Devcontainer",
+    "tags": "Docker",
+    "url": "/2018/06/05/docker-workflow-and-networking/",
+    "date": "2024-06-05 13:19"
+  },
+  {
+    "title": "Autonomous Vehicle Introduction",
+    "subtitle": null,
+    "tags": "Autonomous Vehicle",
+    "url": "/2024/06/04/autonomous-vehicle-intro/",
+    "date": "2024-06-04 10:11"
+  },
+  {
+    "title": "Computation Tools - Eigen Expression Templates and SIMD",
+    "subtitle": "Fused Computation",
+    "tags": "Eigen",
+    "url": "/2024/05/11/eigen-expression-templates/",
+    "date": "2024-05-11 13:19"
+  },
+  {
+    "title": "Computation Tools - OpenCV, PCL, PCD, NanoFLANN",
+    "subtitle": "A Running List of Computer Vision Tools",
+    "tags": "OpenCV",
+    "url": "/2024/05/09/Opencv-PCL-PCD-tools/",
+    "date": "2024-05-09 13:19"
+  },
+  {
+    "title": "Foundamental Structure of Programs",
+    "subtitle": "Callstack",
+    "tags": "Linux",
+    "url": "/2018/02/25/programming-foundations/",
+    "date": "2024-05-01 13:19"
+  },
+  {
+    "title": "Things About Leetcode Before That Coding Interview",
+    "subtitle": "Leetcode IDE Tips, Common Leetcode Problems, C++ Commands, String",
+    "tags": "Linux, Docker",
+    "url": "/2018/03/01/leetcode/",
+    "date": "2024-05-01 13:19"
+  },
+  {
+    "title": "C++ - Rounding",
+    "subtitle": null,
+    "tags": "ROS",
+    "url": "/2023/04/16/cpp-rounding/",
+    "date": "2024-04-18 13:19"
+  },
+  {
+    "title": "C++ - Specifiers",
+    "subtitle": "Ament CPP",
+    "tags": "ROS",
+    "url": "/2023/04/18/cpp-linters/",
+    "date": "2024-04-18 13:19"
+  },
+  {
+    "title": "C++ - Specifiers",
+    "subtitle": "Declaration-Only Specifiers",
+    "tags": "ROS",
+    "url": "/2023/04/18/cpp-specifiers/",
+    "date": "2024-04-18 13:19"
+  },
+  {
+    "title": "Robotics - [2D SLAM 1] Hands-On Mapping",
+    "subtitle": "Point-Point ICP, Point-Line ICP",
+    "tags": "Robotics, SLAM",
+    "url": "/2024/04/16/Robotics-2D-SLAM-Mapping-Hands-On/",
+    "date": "2024-04-16 13:19"
+  },
+  {
+    "title": "C++ - Filesystem",
+    "subtitle": null,
+    "tags": "ROS",
+    "url": "/2023/04/14/cpp-filesystem/",
+    "date": "2024-04-14 13:19"
+  },
+  {
+    "title": "Robotics - [2D SLAM 2] Map Generation",
+    "subtitle": "Submap Generation",
+    "tags": "Robotics, SLAM",
+    "url": "/2024/04/13/Robotics-2D-SLAM-Map-Generation/",
+    "date": "2024-04-13 13:19"
+  },
+  {
+    "title": "C++ - Segfaults",
+    "subtitle": "Out-of-bounds Iterator Access, Core Dump",
+    "tags": "ROS",
+    "url": "/2023/04/12/cpp-segfaults/",
+    "date": "2024-04-12 13:19"
+  },
+  {
+    "title": "C++ - Move Semantics, Perfect Fowarding",
+    "subtitle": "Universal Reference, `std::move` with Emplace",
+    "tags": "ROS",
+    "url": "/2023/04/10/cpp-move-perfect-forwarding/",
+    "date": "2024-04-10 13:19"
+  },
+  {
+    "title": "Robotics - [2D SLAM 1] Introduction and Scan Matching",
+    "subtitle": "Point-Point ICP, Point-Line ICP",
+    "tags": "Robotics, SLAM",
+    "url": "/2024/04/10/Robotics-2D-SLAM-Scan-Matching/",
+    "date": "2024-04-10 13:19"
+  },
+  {
+    "title": "Robotics - Point Cloud Processing and KNN Problem",
+    "subtitle": "Bruteforce KNN Search, KD Tree, OctoTree",
+    "tags": "Robotics",
+    "url": "/2024/04/07/Robotics-Pointcloud-Processing-KNN/",
+    "date": "2024-04-07 13:19"
+  },
+  {
+    "title": "Point Cloud Library",
+    "subtitle": null,
+    "tags": "ROS",
+    "url": "/2023/04/04/cpp-point-cloud-library/",
+    "date": "2024-04-04 13:19"
+  },
+  {
+    "title": "C++ - Datastructures",
+    "subtitle": "Priority Queue",
+    "tags": "ROS",
+    "url": "/2023/04/07/cpp-data-structures/",
+    "date": "2024-04-04 13:19"
+  },
+  {
+    "title": "Robotics - General ESKF Hands-on Test Notes",
+    "subtitle": "Covariance Update with $\\Delta t$",
+    "tags": "Robotics",
+    "url": "/2024/04/03/robotics-eskf-hands-on/",
+    "date": "2024-04-03 13:19"
+  },
+  {
+    "title": "Robotics - [IMU Pre-integration Model 4] IMU Pre-integration Optimization Implementation",
+    "subtitle": "IMU Pre-Integration, GNSS, UTM",
+    "tags": "Robotics",
+    "url": "/2024/04/02/robotics-imu-preintegration-4-optimization-implementation/",
+    "date": "2024-04-02 13:19"
+  },
+  {
+    "title": "Robotics - [IMU Pre-integration Model 3] Noise Model",
+    "subtitle": "Jacobian Derivation",
+    "tags": "Robotics",
+    "url": "/2024/04/01/robotics-imu-preintegration-model-3-noise-model/",
+    "date": "2024-04-01 13:19"
+  },
+  {
+    "title": "Robotics - [IMU Pre-integration Model 2] How To Update Pre-integration With Changing IMU Biases",
+    "subtitle": "Jacobian Derivation",
+    "tags": "Robotics",
+    "url": "/2024/03/29/robotics-imu-preintegration-model-2-jacobians/",
+    "date": "2024-03-29 13:19"
+  },
+  {
+    "title": "Robotics - [IMU Pre-integration Model 1] Definitions Of Pre-Integration Options",
+    "subtitle": "Pre-Integration Model Definitions",
+    "tags": "Robotics",
+    "url": "/2024/03/28/robotics-imu-preintegration-model-1-definitions/",
+    "date": "2024-03-28 13:19"
+  },
+  {
+    "title": "Robotics - [ESKF Series 3] Motivational Example Of Error-State Kalman Filter (ESKF)",
+    "subtitle": "ESKF",
+    "tags": "Robotics",
+    "url": "/2024/03/24/robotics-2d-eskf-example/",
+    "date": "2024-03-24 13:19"
+  },
+  {
+    "title": "Robotics - [ESKF Series 4] Full Error-State Kalman Filter (ESKF) in GNSS-Inertial Navigation System (GINS)",
+    "subtitle": "ESKF, GINS",
+    "tags": "Robotics",
+    "url": "/2024/03/25/robotics-full-eskf/",
+    "date": "2024-03-24 13:19"
+  },
+  {
+    "title": "Robotics - [ESKF Series 5] Why Using Error-State Kalman Filter (ESKF) For IMU",
+    "subtitle": "ESKF, GINS",
+    "tags": "Robotics",
+    "url": "/2024/03/27/robotics-why-eskf/",
+    "date": "2024-03-24 13:19"
+  },
+  {
+    "title": "Robotics - [ESKF Series 1] IMU Model",
+    "subtitle": "Specific Force, IMU model",
+    "tags": "Robotics",
+    "url": "/2024/03/22/robotics-imu-math/",
+    "date": "2024-03-22 13:19"
+  },
+  {
+    "title": "Robotics Fundamentals - Velocities",
+    "subtitle": "Velocities, Accelerations, Derivative of Rotations",
+    "tags": "Robotics",
+    "url": "/2024/03/15/robotics-foundamentals-velocities/",
+    "date": "2024-03-15 13:19"
+  },
+  {
+    "title": "Robotics - An Overview Of Kalman Filter, Extended Kalman Filter, and Error State Kalman Filter",
+    "subtitle": null,
+    "tags": "Robotics",
+    "url": "/2024/03/19/robotics-eskf-kalman-filter-to-eskf/",
+    "date": "2024-03-15 13:19"
+  },
+  {
+    "title": "Robotics Fundamentals - Kalman Filter",
+    "subtitle": "Kalman Filter Framework, Proofs With Minimizing Error Covariance",
+    "tags": "Robotics",
+    "url": "/2024/03/20/robotics-foundamentals-kalman-filter/",
+    "date": "2024-03-15 13:19"
+  },
+  {
+    "title": "Robotics Fundamentals - Extended Kalman Filter (EKF)",
+    "subtitle": "Kalman Filter Framework",
+    "tags": "Robotics",
+    "url": "/2024/03/21/robotics-foundamentals-extended-kalman-filter/",
+    "date": "2024-03-15 13:19"
+  },
+  {
+    "title": "Robotics - Quaternion Kinematics",
+    "subtitle": "Definition of Quaternion, Relationship Between Quaternion and Rotation Matrix",
+    "tags": "Robotics, Math",
+    "url": "/2024/03/13/quaternion/",
+    "date": "2024-03-13 13:19"
+  },
+  {
+    "title": "Robotics Fundamentals - Rotations",
+    "subtitle": "Representation of Rotations, Gimbal Lock, Properties",
+    "tags": "Robotics",
+    "url": "/2024/03/10/robotics-foundamentals-rotations/",
+    "date": "2024-03-10 13:19"
+  },
+  {
+    "title": "Robotics Fundamentals - [ESKF Series 2] GPS and Its Coordinate System",
+    "subtitle": "RTK GPS, UTM Coordinates",
+    "tags": "Robotics",
+    "url": "/2024/03/23/robotics-gps-utm/",
+    "date": "2024-03-10 13:19"
+  },
+  {
+    "title": "Computer Vision - Uzzle Solver",
+    "subtitle": "Checker Board Detection",
+    "tags": "None",
+    "url": "/2020/01/06/Uzzle-Detector/",
+    "date": "2024-01-06 13:19"
+  },
+  {
+    "title": "Robotics - ROS1 Build Systems",
+    "subtitle": "catkin build, catkin make",
+    "tags": "Robotics, ROS1, Build Systems",
+    "url": "/2020/01/03/robotics-ROS1-Build-Systems/",
+    "date": "2024-01-03 13:19"
+  },
+  {
+    "title": "Robotics - ROS1 Message Processing",
+    "subtitle": "Image Data",
+    "tags": "Robotics, ROS1",
+    "url": "/2020/01/03/robotics-ROS1-Message-Processing/",
+    "date": "2024-01-03 13:19"
+  },
+  {
+    "title": "C++ - Common General Sofware Design Pricinples",
+    "subtitle": "Common Pain Points, Coupling & Cohesion, Occam's Razor, Indempotency, Rico's Software Development Philosophy, Reading List",
+    "tags": "C++, Software Developer's Career Tips",
+    "url": "/2023/12/15/software-design-priciples/",
+    "date": "2023-12-15 13:19"
+  },
+  {
+    "title": "Web Devel - web-crawler-toyota-rav4-crawler",
+    "subtitle": "Google Drive",
+    "tags": "Web Devel",
+    "url": "/2023/11/03/web-crawler-toyota-rav4-crawler/",
+    "date": "2023-11-03 13:19"
+  },
+  {
+    "title": "C++ - Build A Reflection Configuration That Loads Fields From YAML Without Manual Loading",
+    "subtitle": "reflection",
+    "tags": "C++",
+    "url": "/2023/11/05/cpp-reflection-configuration/",
+    "date": "2023-11-03 13:19"
+  },
+  {
+    "title": "Web Devel - Storing Data on Google Drive",
+    "subtitle": "Google Drive",
+    "tags": "Web Devel",
+    "url": "/2023/11/01/data-google-drive-upload/",
+    "date": "2023-11-01 13:19"
+  },
+  {
+    "title": "Raspberry Pi 4B",
+    "subtitle": "Serial Setup, Ubuntu Core",
+    "tags": "Raspberry Pi",
+    "url": "/2023/10/10/rpi-4b/",
+    "date": "2023-10-10 13:19"
+  },
+  {
+    "title": "CMake - Concepts and Options",
+    "subtitle": "CMake Concepts, Compile Options, Commands, CMake-Format, Header-Only Library, Static Library, fPIC, CMake Syntax",
+    "tags": "C++, Build Systems",
+    "url": "/2023/10/01/cmake-concepts-options/",
+    "date": "2023-10-01 13:19"
+  },
+  {
+    "title": "ROS1 Infrastructure Notes",
+    "subtitle": "A Running List of ROS1 Infrastructure I found Useful",
+    "tags": "ROS",
+    "url": "/2024/10/01/ros-infrastructure/",
+    "date": "2023-10-01 13:19"
+  },
+  {
+    "title": "Point Cloud Processing",
+    "subtitle": null,
+    "tags": "Linux",
+    "url": "/2023/07/21/Point-Cloud-Processing/",
+    "date": "2023-07-21 13:19"
+  },
+  {
+    "title": "Apt",
+    "subtitle": null,
+    "tags": "Linux",
+    "url": "/2023/06/25/Bash Apt/",
+    "date": "2023-06-25 13:19"
+  },
+  {
+    "title": "C++ Serial Communication",
+    "subtitle": "select, read",
+    "tags": "Linux",
+    "url": "/2023/06/23/cpp-serial-comm/",
+    "date": "2023-06-23 13:19"
+  },
+  {
+    "title": "Bash Scripting",
+    "subtitle": null,
+    "tags": "Linux",
+    "url": "/2023/06/21/Bash Scripting/",
+    "date": "2023-06-21 13:19"
+  },
+  {
+    "title": "Bash File Management",
+    "subtitle": null,
+    "tags": "Linux",
+    "url": "/2023/06/19/bash-file-management/",
+    "date": "2023-06-19 13:19"
+  },
+  {
+    "title": "Bash Magic",
+    "subtitle": "Bash is great. Here is a list of bash tricks & knowledge points that I found magical",
+    "tags": "Linux",
+    "url": "/2023/06/15/bash-magic/",
+    "date": "2023-06-15 13:19"
+  },
+  {
+    "title": "Cpp Exceptions",
+    "subtitle": "Error Throwing",
+    "tags": "Linux",
+    "url": "/2023/06/13/cpp-exceptions/",
+    "date": "2023-06-13 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 7] Thread Policies",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/08/cpp-concurrency-7-Thread-Policy/",
+    "date": "2023-06-08 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 6] Memory Model",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/06/cpp-concurrency-6-memory-model/",
+    "date": "2023-06-06 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 5] Coroutine",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/05/cpp-concurrency-5-coroutine/",
+    "date": "2023-06-05 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 3] Promise, Future, Packaged_Tasks",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/02/cpp-concurrency-3-promise-future-tasks/",
+    "date": "2023-06-04 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 4] Various Concurrent Methods",
+    "subtitle": "Asynchonous Programming, Vectorization, `std::launch`, Lockless array writes, OpenMP, SIMD, SSE2",
+    "tags": "C++",
+    "url": "/2023/06/04/cpp-concurrency-4-concurrent-methods/",
+    "date": "2023-06-04 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 2] Conditional Variables, Jthread",
+    "subtitle": "Conditional Variables, Jthread",
+    "tags": "C++",
+    "url": "/2023/06/02/cpp-concurrency-2-conditional-variables-jthread/",
+    "date": "2023-06-02 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 1] Multithreaded Programming",
+    "subtitle": "`std::thread`, mutex, atomic_variables, Threading-Monitoring",
+    "tags": "C++",
+    "url": "/2023/06/01/cpp-concurrency-1-multithreaded-programming/",
+    "date": "2023-06-01 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 8] `std::this_thread::yield()`",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/09/cpp-concurrency-8-this-thread-yield/",
+    "date": "2023-06-01 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 9] Scoped Lock and `adopt_lock`",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/10/cpp-concurrency-9-scoped-lock/",
+    "date": "2023-06-01 13:19"
+  },
+  {
+    "title": "C++ - [Concurrency 10] Mutable  Variables",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/06/11/cpp-concurrency-10-mutables/",
+    "date": "2023-06-01 13:19"
+  },
+  {
+    "title": "C++ - [Memory Access - 1] Layout",
+    "subtitle": "Cache",
+    "tags": "C++",
+    "url": "/2023/05/27/cpp-memory-1-layout/",
+    "date": "2023-05-27 13:19"
+  },
+  {
+    "title": "C++ Tool Websites",
+    "subtitle": "CppInsights, Compiler Explorer, Conan",
+    "tags": "C++",
+    "url": "/2023/05/26/cpp-tool-websites/",
+    "date": "2023-05-26 13:19"
+  },
+  {
+    "title": "Perf",
+    "subtitle": "Perf",
+    "tags": "C++, CMake",
+    "url": "/2023/05/25/cpp-perf/",
+    "date": "2023-05-25 13:19"
+  },
+  {
+    "title": "C++ Profiling and Speed Ups",
+    "subtitle": "gprof, CMake Release and Debug BoilerPlate, CMake Settings",
+    "tags": "C++, CMake",
+    "url": "/2023/05/24/cpp-profiling-speed-ups/",
+    "date": "2023-05-24 13:19"
+  },
+  {
+    "title": "C++ - GTest",
+    "subtitle": "GTest For ROS",
+    "tags": "C++, ROS",
+    "url": "/2023/05/21/gtest/",
+    "date": "2023-05-21 13:19"
+  },
+  {
+    "title": "GDB, DDD (Data Display Debugger)",
+    "subtitle": "GDB for ROS, Core Dump",
+    "tags": "ROS, ROS2",
+    "url": "/2023/05/20/gdb/",
+    "date": "2023-05-20 13:19"
+  },
+  {
+    "title": "C++ - [Compilation 5] Compilation Speed Ups",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/05/13/cpp-compilation5-compilation-speedups/",
+    "date": "2023-05-13 13:19"
+  },
+  {
+    "title": "C++ - [Compilation 3] Linkage",
+    "subtitle": "In C++, Linkage is Either External Or Internal",
+    "tags": "C++",
+    "url": "/2023/05/07/cpp-compilation3-linkage/",
+    "date": "2023-05-07 13:19"
+  },
+  {
+    "title": "C++ - [Compilation 4] Name Mangling",
+    "subtitle": "nm",
+    "tags": "C++",
+    "url": "/2023/05/10/cpp-compilation4-name-mangling/",
+    "date": "2023-05-07 13:19"
+  },
+  {
+    "title": "C++ - [Compilation 2] Compiler Directives",
+    "subtitle": "Macros, Pragmas, Attributes",
+    "tags": "C++",
+    "url": "/2023/05/04/cpp-compiler2-compiler-directives/",
+    "date": "2023-05-04 13:19"
+  },
+  {
+    "title": "C++ - [Compilation 1] Compilation Model",
+    "subtitle": "Header Files, Translation Unit, One Definition Rule (ODR), Compiler Optimization, Compiler, ELF",
+    "tags": "C++",
+    "url": "/2023/05/01/cpp-compilation1-compilation-model/",
+    "date": "2023-05-01 13:19"
+  },
+  {
+    "title": "C++ - ABI Compatibility",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/05/18/cpp-abi-compatibility/",
+    "date": "2023-04-09 13:19"
+  },
+  {
+    "title": "C++ - [Pointers - 1] - Raw Pointer",
+    "subtitle": "Raw Pointers, Array, Casting",
+    "tags": "C++",
+    "url": "/2023/03/23/cpp-pointers/",
+    "date": "2023-03-23 13:19"
+  },
+  {
+    "title": "C++ - chrono",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/03/18/cpp-chrono/",
+    "date": "2023-03-18 13:19"
+  },
+  {
+    "title": "C++ - Streams",
+    "subtitle": "Stringstream, iostream, string",
+    "tags": "C++",
+    "url": "/2023/03/21/cpp-streams/",
+    "date": "2023-03-18 13:19"
+  },
+  {
+    "title": "C++ - [Pointers - 2] - Smart Pointers",
+    "subtitle": "unique_ptr, shared_ptr",
+    "tags": "C++",
+    "url": "/2023/03/24/cpp-smart-pointers/",
+    "date": "2023-03-18 13:19"
+  },
+  {
+    "title": "C++ - Pimpl Idiom",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/03/27/cpp-pimpl-idioms/",
+    "date": "2023-03-18 13:19"
+  },
+  {
+    "title": "C++ - Namespace",
+    "subtitle": "Anonymous Namespace",
+    "tags": "C++",
+    "url": "/2023/03/29/cpp-namespace/",
+    "date": "2023-03-18 13:19"
+  },
+  {
+    "title": "C++ - Manual Memory Garbage Collector",
+    "subtitle": "Boehm-Demers-Weiser (BDW) Collector",
+    "tags": "C++",
+    "url": "/2023/03/15/cpp-manual-memory-garbage-collector/",
+    "date": "2023-03-15 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Members",
+    "subtitle": "Member Attributes and Methods, Copy, Move, Static Members",
+    "tags": "C++",
+    "url": "/2023/03/06/cpp-oop-members/",
+    "date": "2023-03-06 13:19"
+  },
+  {
+    "title": "C++ - Iterators",
+    "subtitle": null,
+    "tags": "C++",
+    "url": "/2023/03/12/cpp-iterators/",
+    "date": "2023-03-06 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Polymorphism - Virtual Functions and Virtual Inheritance",
+    "subtitle": "Virtual is virtually complicated. Dynamic Dispatch, Dreadful Diamond Derivative (DDD) Problem ...",
+    "tags": "C++",
+    "url": "/2023/03/03/cpp-oop-polymorphism/",
+    "date": "2023-03-03 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Polymorphism Substitute - Curiously Recurring Template Pattern (CRTP)",
+    "subtitle": "static polymorphism",
+    "tags": "C++",
+    "url": "/2023/03/04/cpp-oop-polymorphism2-CRTP/",
+    "date": "2023-03-03 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Destruction",
+    "subtitle": "Destruction Ordering",
+    "tags": "C++",
+    "url": "/2023/03/02/cpp-oop-destruction/",
+    "date": "2023-03-02 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Initialization 2 - Ordering",
+    "subtitle": "Default Initialization, Memory Order, Ctor for Inheritance, Parsing and Construction",
+    "tags": "C++",
+    "url": "/2023/03/02/cpp-oop-initialization2-ordering/",
+    "date": "2023-03-02 13:19"
+  },
+  {
+    "title": "C++ - [OOP] Initialization 1 - Construction Basics",
+    "subtitle": "Conversion, Assignment, Copy",
+    "tags": "C++",
+    "url": "/2023/03/01/cpp-oop-initialization/",
+    "date": "2023-03-01 13:19"
+  },
+  {
+    "title": "C++ - Friends",
+    "subtitle": "Friend Class, Friend Function, Inner Class, Forward Declaration",
+    "tags": "C++",
+    "url": "/2023/02/28/cpp-friends/",
+    "date": "2023-02-28 13:19"
+  },
+  {
+    "title": "C++ - Coding Styles",
+    "subtitle": "Casing",
+    "tags": "C++",
+    "url": "/2023/02/16/cpp-coding-styles/",
+    "date": "2023-02-16 13:19"
+  },
+  {
+    "title": "C++ - Language Properties",
+    "subtitle": "Zero-Overhead Abstraction, Garbage-Collection-Free, Endianness Handling, One-Definition-Rule (ODR)",
+    "tags": "C++",
+    "url": "/2023/05/21/cpp-language-properties/",
+    "date": "2023-02-16 13:19"
+  },
+  {
+    "title": "C++ - Functions, Lambda",
+    "subtitle": "Lambda, Functors, Function Pointer",
+    "tags": "C++",
+    "url": "/2023/02/13/cpp-functions-lambda/",
+    "date": "2023-02-13 13:19"
+  },
+  {
+    "title": "C++ - [Templates 3] Template Deduction, Instantiation",
+    "subtitle": "Template Argument Deduction",
+    "tags": "C++",
+    "url": "/2023/02/12/cpp-template-deduction/",
+    "date": "2023-02-12 13:19"
+  },
+  {
+    "title": "C++ - [Templates 1] Template Parameters",
+    "subtitle": "Class Templates, Dependent Name Lookup, Non-Type Template Parameters, requires, concept",
+    "tags": "C++",
+    "url": "/2023/02/10/cpp-templates/",
+    "date": "2023-02-10 13:19"
+  },
+  {
+    "title": "C++ - [Templates 2] Dependent Names",
+    "subtitle": "Disambiguate Templates",
+    "tags": "C++",
+    "url": "/2023/02/11/cpp-templates2-dependent-names/",
+    "date": "2023-02-10 13:19"
+  },
+  {
+    "title": "C++ - Static Functions And Keyword",
+    "subtitle": "Static Functions And Keyword",
+    "tags": "C++",
+    "url": "/2023/02/06/cpp-static/",
+    "date": "2023-02-06 13:19"
+  },
+  {
+    "title": "C++ - Enum",
+    "subtitle": "Static Functions And Keyword",
+    "tags": "C++",
+    "url": "/2023/02/03/cpp-enum/",
+    "date": "2023-02-03 13:19"
+  },
+  {
+    "title": "C++ - Cpp14, 17, 20 Features",
+    "subtitle": "Lambda Capture",
+    "tags": "C++",
+    "url": "/2023/02/01/cpp-14-17-features/",
+    "date": "2023-02-01 13:19"
+  },
+  {
+    "title": "C++ - Constness",
+    "subtitle": "constexpr, if constexpr, consteval, const cast",
+    "tags": "C++",
+    "url": "/2023/02/22/cpp-constness/",
+    "date": "2023-02-01 13:19"
+  },
+  {
+    "title": "Common Robotics CPP Software Packages",
+    "subtitle": "TBB",
+    "tags": "Robotics",
+    "url": "/2024/02/01/common-robotics-cpp-software-packages/",
+    "date": "2023-02-01 13:19"
+  },
+  {
+    "title": "C++ - [Container 2] Sequence Containers",
+    "subtitle": "std::iota, std::generate, std::vector, std::array, std::list, std::deque, std::forward_list",
+    "tags": "C++",
+    "url": "/2023/01/29/cpp-container2-sequence-containers/",
+    "date": "2023-01-29 13:19"
+  },
+  {
+    "title": "C++ [Container 3] Container Adaptors",
+    "subtitle": "std::queue, std::stack, std::priority_queue",
+    "tags": "C++",
+    "url": "/2023/01/31/cpp-container3-container-adapters/",
+    "date": "2023-01-29 13:19"
+  },
+  {
+    "title": "C++ [Container 4] Strings",
+    "subtitle": "std::string_view",
+    "tags": "C++",
+    "url": "/2023/01/31/cpp-container4-string/",
+    "date": "2023-01-29 13:19"
+  },
+  {
+    "title": "C++ - [Container 1] Associative Container",
+    "subtitle": "std::set, std::unordered_set, std::map, std::unordered_map, std::multiset, std::unordered_multiset, std::unordered_multimap",
+    "tags": "C++",
+    "url": "/2023/01/28/cpp-associative-containers/",
+    "date": "2023-01-28 13:19"
+  },
+  {
+    "title": "C++ - BLAS and LAPACK",
+    "subtitle": "Scientific Computing Libraries",
+    "tags": "C++",
+    "url": "/2023/01/26/cpp-blas/",
+    "date": "2023-01-26 13:19"
+  },
+  {
+    "title": "C++ - Casting",
+    "subtitle": "Ever tried convincing your boss that your need for vacation is a 'const' by using const_cast? Welcome to C++ casting!",
+    "tags": "C++",
+    "url": "/2023/01/23/cpp-casting/",
+    "date": "2023-01-23 13:19"
+  },
+  {
+    "title": "C++ - <algorithm>, <numeric> Functions",
+    "subtitle": "minmax_element, min_element, reduce, transform, numeric",
+    "tags": "C++",
+    "url": "/2023/01/20/cpp-algorithm-functions/",
+    "date": "2023-01-20 13:19"
+  },
+  {
+    "title": "C++ - Numeric",
+    "subtitle": "NaN",
+    "tags": "C++",
+    "url": "/2023/01/21/cpp-numeric/",
+    "date": "2023-01-20 13:19"
+  },
+  {
+    "title": "C++ - Sizing and Type Conversion",
+    "subtitle": "Memory Alignment, Sizeof, Integral Promotion, decay_t",
+    "tags": "C++",
+    "url": "/2023/01/17/cpp-sizing-type-conversion/",
+    "date": "2023-01-17 13:19"
+  },
+  {
+    "title": "C++ - Control Flow",
+    "subtitle": "switch-case, cpp20 range, DSL",
+    "tags": "C++",
+    "url": "/2023/01/15/cpp-control-flow/",
+    "date": "2023-01-15 13:19"
+  },
+  {
+    "title": "C++ - Macros",
+    "subtitle": "Why Macros, Compiler Args",
+    "tags": "C++",
+    "url": "/2023/01/13/cpp-useful-macros/",
+    "date": "2023-01-13 13:19"
+  },
+  {
+    "title": "C++ - Operators",
+    "subtitle": "Basic Operators",
+    "tags": "C++",
+    "url": "/2023/01/10/cpp-operators/",
+    "date": "2023-01-10 13:19"
+  },
+  {
+    "title": "C++ - Lvalue and Rvalue Reference",
+    "subtitle": "Reference Lifetime",
+    "tags": "C++",
+    "url": "/2023/02/25/cpp-reference/",
+    "date": "2023-01-10 13:19"
+  },
+  {
+    "title": "C++ - Bit Operations",
+    "subtitle": "A Mumbo Jumbo List About Bit and Byte Operations",
+    "tags": "C++",
+    "url": "/2023/01/07/cpp-bit-operations/",
+    "date": "2023-01-07 13:19"
+  },
+  {
+    "title": "C++ - Erase Remove",
+    "subtitle": "An efficient in-place way to remove elements in a container",
+    "tags": "C++",
+    "url": "/2023/01/06/cpp-remove-erase/",
+    "date": "2023-01-06 13:19"
+  },
+  {
+    "title": "C++ - Datatypes",
+    "subtitle": "std::optional, structural binding, iostream, namespace, union, std::variant,  std::type_index, std::any, ptrdiff_t",
+    "tags": "C++",
+    "url": "/2023/01/05/cpp-datatypes/",
+    "date": "2023-01-05 13:19"
+  },
+  {
+    "title": "Control System Notes",
+    "subtitle": "slew rate limit",
+    "tags": "Deep Learning",
+    "url": "/2022/10/10/control-systems/",
+    "date": "2022-10-11 13:19"
+  },
+  {
+    "title": "Deep Learning - Designing Machine Learning Systems Notes",
+    "subtitle": null,
+    "tags": "Deep Learning",
+    "url": "/2022/10/01/deep-learning-Designing-Machine-Learning-Systems-Notes/",
+    "date": "2022-10-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Spatial Pyramid Pooling",
+    "subtitle": "SPP, Ablation Study",
+    "tags": "Deep Learning",
+    "url": "/2022/07/31/deep-learning-spatial-pyramid-pooling/",
+    "date": "2022-08-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Deeplab Series Theories",
+    "subtitle": "Deeplab, ASPP",
+    "tags": "Deep Learning",
+    "url": "/2022/08/01/deep-learning-deeplab-handson/",
+    "date": "2022-08-01 13:19"
+  },
+  {
+    "title": "Deep Learning - MobilenetV2 Hands-On",
+    "subtitle": "Inverted Skip Connection, Multiclass Classification",
+    "tags": "Deep Learning, Hands-On",
+    "url": "/2022/08/04/deep-learning-mobilenetv2-handson/",
+    "date": "2022-08-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Mask RCNN Hands-On",
+    "subtitle": "TODO",
+    "tags": "Deep Learning",
+    "url": "/2022/09/01/deep-learning-mask-RCNN/",
+    "date": "2022-08-01 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Profiling",
+    "subtitle": "PyTorch Profiler",
+    "tags": "Deep Learning",
+    "url": "/2022/07/53/pytorch-profiling/",
+    "date": "2022-07-25 13:19"
+  },
+  {
+    "title": "Deep Learning - Tools",
+    "subtitle": "wandb, tqdm",
+    "tags": "Deep Learning",
+    "url": "/2022/07/23/deep-learning-tools/",
+    "date": "2022-07-23 13:19"
+  },
+  {
+    "title": "Deep Learning - Voxel Fiftyone",
+    "subtitle": "TODO",
+    "tags": "Deep Learning",
+    "url": "/2022/09/30/deep-learning-voxel-fiftyone/",
+    "date": "2022-06-18 13:19"
+  },
+  {
+    "title": "Deep Learning - Knowledge Distillation",
+    "subtitle": "Knowledge Distillation",
+    "tags": "Deep Learning",
+    "url": "/2022/05/21/deep-learning-knowledge-distillation/",
+    "date": "2022-05-21 13:19"
+  },
+  {
+    "title": "Deep Learning - Model Deployment",
+    "subtitle": "Model Deployment",
+    "tags": "Deep Learning",
+    "url": "/2022/07/21/deep-learning-model-deployment/",
+    "date": "2022-05-21 13:19"
+  },
+  {
+    "title": "Deep Learning - Inferencing",
+    "subtitle": "Autograd Profiler",
+    "tags": "Deep Learning",
+    "url": "/2022/05/20/deep-learning-inferencing/",
+    "date": "2022-05-20 13:19"
+  },
+  {
+    "title": "Deep Learning - Strategies Part 1 Before Model Training",
+    "subtitle": "Error Metrics, Data Preparation Principles, Transfer Learning, Multi-Task Learning",
+    "tags": "Deep Learning",
+    "url": "/2022/05/01/deep-learning-Strategies-part1/",
+    "date": "2022-05-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Strategies Part 2 Training And Tuning",
+    "subtitle": "Bias And Variance, And Things To Try For Performance Improvement From My Experience",
+    "tags": "Deep Learning",
+    "url": "/2022/05/01/deep-learning-Strategies-part2/",
+    "date": "2022-05-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Common Oopsies",
+    "subtitle": "Underflow, Weight Manipulation",
+    "tags": "Deep Learning",
+    "url": "/2022/05/17/deep-learning-Common-Oopsies/",
+    "date": "2022-05-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Speedup Tricks",
+    "subtitle": "Torch Optimizer Tricks, Mixed Precision Training",
+    "tags": "Deep Learning",
+    "url": "/2022/05/17/deep-learning-speedup-tricks/",
+    "date": "2022-05-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Data Augmentations",
+    "subtitle": "Albumentations",
+    "tags": "Deep Learning",
+    "url": "/2022/05/14/deep-learning-data-augmentations/",
+    "date": "2022-05-14 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Data Loading",
+    "subtitle": "RESNET-50 Data Loading, Data Transforms, Custom Data Loading",
+    "tags": "Deep Learning",
+    "url": "/2022/05/11/deep-learning-pytorch-data-loading/",
+    "date": "2022-05-11 13:19"
+  },
+  {
+    "title": "Deep Learning - Bert",
+    "subtitle": null,
+    "tags": "Deep Learning",
+    "url": "/2022/04/10/deep-learning-bert/",
+    "date": "2022-04-10 13:19"
+  },
+  {
+    "title": "Deep Learning - Bert",
+    "subtitle": null,
+    "tags": "Deep Learning",
+    "url": "/2022/04/13/deep-learning-visual-transformer/",
+    "date": "2022-04-10 13:19"
+  },
+  {
+    "title": "Deep Learning - Neural Machine Translation",
+    "subtitle": "Hands-On Attention Project",
+    "tags": "Deep Learning",
+    "url": "/2022/04/07/deep-learning-neural-machine-translation/",
+    "date": "2022-04-07 13:19"
+  },
+  {
+    "title": "Deep Learning - Speech Recognition Hands On",
+    "subtitle": "GRU-Based Trigger Word Detection",
+    "tags": "Deep Learning, Hands-on",
+    "url": "/2022/04/05/deep-learning-speech-recognition-hands-on/",
+    "date": "2022-04-05 13:19"
+  },
+  {
+    "title": "Deep Learning - Speech Recognition",
+    "subtitle": "Audio Signal Processing, Spectogram",
+    "tags": "Deep Learning",
+    "url": "/2022/04/03/deep-learning-speech-recognition/",
+    "date": "2022-04-03 13:19"
+  },
+  {
+    "title": "Deep Learning - Transformer Series 5 - Transformer Hands On",
+    "subtitle": "Hands-On Transformer Training and Validation",
+    "tags": "Deep Learning",
+    "url": "/2022/04/01/deep-learning-transformer-5-transformer-hands-on/",
+    "date": "2022-04-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Neural Machine Translation",
+    "subtitle": "Hands-On Attention Project",
+    "tags": "Deep Learning",
+    "url": "/2022/04/04/deep-learning-neural-machine-translation/",
+    "date": "2022-04-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Transformer Series 4 - Transformer All Together",
+    "subtitle": "Encoder, Decoder",
+    "tags": "Deep Learning",
+    "url": "/2022/03/29/deep-learning-transformer-4-transformer-all-together/",
+    "date": "2022-03-29 13:19"
+  },
+  {
+    "title": "Deep Learning - Transformer Series 2 Vanilla Attention Mechanism",
+    "subtitle": "Attention Intuition, Query-Key-Value, Bahdanau Attention, Scaled-Dot Attention",
+    "tags": "Deep Learning",
+    "url": "/2022/03/27/deep-learning-transformer-2-attention-mechanism/",
+    "date": "2022-03-27 13:19"
+  },
+  {
+    "title": "Deep Learning - Transformer Series 3 - Multi-Head and Self Attention",
+    "subtitle": "Multi-Head Attention, Self Attention, Comparison of Self Attention Against CNN, RNN",
+    "tags": "Deep Learning",
+    "url": "/2022/03/28/deep-learning-transformer-3-multi-headed-self-attention/",
+    "date": "2022-03-27 13:19"
+  },
+  {
+    "title": "Deep Learning - Transformer Series 1 - Embedding Pre-Processing",
+    "subtitle": "Positional Encoding, Padding Mask, Look-ahead Mask, Tokenization",
+    "tags": "Deep Learning",
+    "url": "/2022/03/26/deep-learning-transformer-1-positional-encoding-and-masking/",
+    "date": "2022-03-26 13:19"
+  },
+  {
+    "title": "Deep Learning - Sequence to Sequence Models",
+    "subtitle": "seq2seq, encoder-decoder architecture, beam model, Bleu Score",
+    "tags": "Deep Learning, Hands-on",
+    "url": "/2022/03/25/deep-learning-seq2seq/",
+    "date": "2022-03-25 13:19"
+  },
+  {
+    "title": "Deep Learning - Word Emojifier Using Dense and LSTM Layers",
+    "subtitle": "Emojifier",
+    "tags": "Deep Learning, Hands-on",
+    "url": "/2022/03/23/deep-learning-word-embeddings-hands-on2/",
+    "date": "2022-03-23 13:19"
+  },
+  {
+    "title": "Deep Learning - Hands-On Embedding Similarity",
+    "subtitle": "Similarity and Debiasing",
+    "tags": "Deep Learning, Hands-on",
+    "url": "/2022/03/22/deep-learning-word-embeddings-hands-on/",
+    "date": "2022-03-22 13:19"
+  },
+  {
+    "title": "Deep Learning - Hands-On Dinosour Name Generator Using RNN",
+    "subtitle": null,
+    "tags": "Deep Learning, Hands-on",
+    "url": "/2022/03/19/deep-learning-rnn4-hands-on/",
+    "date": "2022-03-21 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Versioning And Memory Allocation",
+    "subtitle": "In-Place and Out-of_Place Matrix Ops, Gradient Checkpointing",
+    "tags": "Deep Learning",
+    "url": "/2022/03/21/deep-learning-pytorch-versioning/",
+    "date": "2022-03-21 13:19"
+  },
+  {
+    "title": "Deep Learning - Word Embeddings, Word2Vec",
+    "subtitle": "Word Representation",
+    "tags": "Deep Learning",
+    "url": "/2022/03/18/deep-learning-word-embeddings-word2vec/",
+    "date": "2022-03-18 13:19"
+  },
+  {
+    "title": "Deep Learning - RNN Part 3 LSTM, Bi-Directional RNN, Deep RNN",
+    "subtitle": null,
+    "tags": "Deep Learning",
+    "url": "/2022/03/15/deep-learning-rnn3-lstm/",
+    "date": "2022-03-15 13:19"
+  },
+  {
+    "title": "Deep Learning - RNN Part 2 GRU",
+    "subtitle": "Vanishing Gradients of RNN, GRU",
+    "tags": "Deep Learning",
+    "url": "/2022/03/12/deep-learning-rnn2-gru/",
+    "date": "2022-03-12 13:19"
+  },
+  {
+    "title": "Deep Learning - RNN",
+    "subtitle": "Sequence Models, RNN Architectures",
+    "tags": "Deep Learning",
+    "url": "/2022/03/09/deep-learning-rnn/",
+    "date": "2022-03-09 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Model For Inferencing",
+    "subtitle": "eval mode",
+    "tags": "Deep Learning",
+    "url": "/2022/03/07/deep-learning-pytorch-model-inference/",
+    "date": "2022-03-07 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Model Training",
+    "subtitle": "Checkpointing, Op Determinisim,  🤗 HuggingFace Trainer",
+    "tags": "Deep Learning",
+    "url": "/2022/03/06/deep-learning-pytorch-model-training/",
+    "date": "2022-03-06 13:19"
+  },
+  {
+    "title": "Deep Learning - Ensemble",
+    "subtitle": "Ensemble",
+    "tags": "Deep Learning",
+    "url": "/2022/03/03/deep-learning-ensemble/",
+    "date": "2022-03-03 13:19"
+  },
+  {
+    "title": "Deep Learning - Neural Style Transfer",
+    "subtitle": "What Conv Net Is Learning",
+    "tags": "Deep Learning",
+    "url": "/2022/03/01/deep-learning-Neural-Style-Transfer/",
+    "date": "2022-03-01 13:19"
+  },
+  {
+    "title": "Deep Learning - Face Recognition",
+    "subtitle": "Siamese Network, Deep Face",
+    "tags": "Deep Learning",
+    "url": "/2022/02/25/deep-learning-face-recognition/",
+    "date": "2022-02-25 13:19"
+  },
+  {
+    "title": "Deep Learning - Face Recognition Prelude",
+    "subtitle": "2D Frontalization, 3D Face Alignment",
+    "tags": "Deep Learning",
+    "url": "/2022/02/23/deep-learning-face-recognition-prelude/",
+    "date": "2022-02-23 13:19"
+  },
+  {
+    "title": "Deep Learning - Hands-On YOLO V1 Transfer Learning",
+    "subtitle": "YOLO V1 Theory & Transfer Learning",
+    "tags": "Deep Learning",
+    "url": "/2022/02/19/deep-learning-YOLOV1-Hands-On/",
+    "date": "2022-02-19 13:19"
+  },
+  {
+    "title": "Deep Learning - Hands-On UNet Image Segmentation From Scratch",
+    "subtitle": "UNet",
+    "tags": "Deep Learning",
+    "url": "/2022/02/27/deep-learning-UNet-Hands-On/",
+    "date": "2022-02-19 13:19"
+  },
+  {
+    "title": "Deep Learning - Performance Metrics",
+    "subtitle": "mean Average Precision (mAP), Precision, Recall, ROC Curve, F1 Score",
+    "tags": "Deep Learning",
+    "url": "/2022/02/15/deep-learning-performance-metrics/",
+    "date": "2022-02-15 13:19"
+  },
+  {
+    "title": "Deep Learning - Object Detection Notes Part 2",
+    "subtitle": "R-CNN",
+    "tags": "Deep Learning",
+    "url": "/2022/02/13/deep-learning-object-localization-part2/",
+    "date": "2022-02-13 13:19"
+  },
+  {
+    "title": "Deep Learning - Image Segmentation",
+    "subtitle": "Encoder-Decoder, Fully-Convolutional Networks (FCN), U-Net",
+    "tags": "Deep Learning",
+    "url": "/2022/02/17/deep-learning-image-segmentation/",
+    "date": "2022-02-13 13:19"
+  },
+  {
+    "title": "Deep Learning - Object Detection Notes Part 1",
+    "subtitle": "Convolution Implementation of Sliding Window, OverFeat",
+    "tags": "Deep Learning",
+    "url": "/2022/02/09/deep-learning-object-localization-part1/",
+    "date": "2022-02-09 13:19"
+  },
+  {
+    "title": "Deep Learning - Hands-On ResNet Transfer Learning For CIFAR-10 Dataset",
+    "subtitle": "Data Normalization, Conv Net Training",
+    "tags": "Deep Learning, Hands-On",
+    "url": "/2022/02/07/deep-learning-ResNet-Hands-On/",
+    "date": "2022-02-07 13:19"
+  },
+  {
+    "title": "Deep Learning - Classic CNN Models",
+    "subtitle": "LeNet-5, AlexNet, VGG-16, ResNet-50, One-by-One Convolution, Inception Network",
+    "tags": "Deep Learning",
+    "url": "/2022/02/03/deep-learning-Classic-CNN-Models/",
+    "date": "2022-02-03 13:19"
+  },
+  {
+    "title": "Deep Learning - CNN Applications",
+    "subtitle": "TensorFlow Keras Sequential and Functional Models",
+    "tags": "Deep Learning",
+    "url": "/2022/02/05/deep-learning-CNN-Applications/",
+    "date": "2022-02-03 13:19"
+  },
+  {
+    "title": "Deep Learning - Convolution Example",
+    "subtitle": "conv1d, conv2d, 1x1 convolution",
+    "tags": "Deep Learning",
+    "url": "/2022/02/03/deep-learning-convolution-example/",
+    "date": "2022-02-01 13:19"
+  },
+  {
+    "title": "Deep Learning - CNN Basics",
+    "subtitle": "Filters, Padding, Convolution and Its Back Propagation, Receptive Field",
+    "tags": "Deep Learning",
+    "url": "/2022/01/31/deep-learning-CNN-Basics/",
+    "date": "2022-01-31 13:19"
+  },
+  {
+    "title": "Deep Learning - PyTorch Basics",
+    "subtitle": "Neural Network Model Components, Common Operations",
+    "tags": "Deep Learning",
+    "url": "/2022/01/28/deep-learning-pytorch-basics/",
+    "date": "2022-01-28 13:19"
+  },
+  {
+    "title": "Deep Learning - Start Easy, Things I Learned From Training Small Neural Nets",
+    "subtitle": "Basic Torch Network With Some Notes on Syntax",
+    "tags": "Deep Learning",
+    "url": "/2022/01/30/deep-learning-Small-XOR-Net/",
+    "date": "2022-01-28 13:19"
+  },
+  {
+    "title": "Deep Learning - TensorFlow Basics",
+    "subtitle": "Nothing Fancy, Just A Basic TF Network",
+    "tags": "Deep Learning",
+    "url": "/2022/01/25/deep-learning-tensorflow-basics/",
+    "date": "2022-01-26 13:19"
+  },
+  {
+    "title": "Deep Learning - Softmax And Cross Entropy Loss",
+    "subtitle": "Logit, Softmax, Cross Entropy Loss, and MLE",
+    "tags": "Deep Learning",
+    "url": "/2022/01/24/deep-learning-softmax-crossentropy/",
+    "date": "2022-01-24 13:19"
+  },
+  {
+    "title": "Deep Learning - Hyper Parameter Tuning",
+    "subtitle": "It finally comes down to how much compute we have, actually...",
+    "tags": "Deep Learning",
+    "url": "/2022/01/22/deep-learning-param-tuning/",
+    "date": "2022-01-22 13:19"
+  },
+  {
+    "title": "Deep Learning - Batch Normalization (BN)",
+    "subtitle": "Internal Covariate Shift",
+    "tags": "Deep Learning",
+    "url": "/2022/01/20/deep-learning-batch-normalization/",
+    "date": "2022-01-20 13:19"
+  },
+  {
+    "title": "Deep Learning - Layer Normalization",
+    "subtitle": "Normalization For Sequential Data",
+    "tags": "Deep Learning",
+    "url": "/2022/01/20/deep-learning-layer-normalization/",
+    "date": "2022-01-20 13:19"
+  },
+  {
+    "title": "Deep Learning - Optimizations Part 1",
+    "subtitle": "Momentum, RMSProp, Adam, AdamW, Learning Rate Decay, Local Minima, Gradient Clipping",
+    "tags": "Deep Learning",
+    "url": "/2022/01/18/deep-learning-optimizations-1/",
+    "date": "2022-01-18 13:19"
+  },
+  {
+    "title": "Deep Learning - Exploding And Vanishing Gradients",
+    "subtitle": "When in doubt, be courageous, try things out, and see what happens! - James Dellinger",
+    "tags": "Deep Learning",
+    "url": "/2022/01/17/deep-learning-exploding-gradients/",
+    "date": "2022-01-17 13:19"
+  },
+  {
+    "title": "Deep Learning - Overfitting",
+    "subtitle": "Bias, Variance, Overfitting, Regularization, Dropout",
+    "tags": "Deep Learning",
+    "url": "/2022/01/16/deep-learning-overfitting/",
+    "date": "2022-01-16 13:19"
+  },
+  {
+    "title": "Deep Learning - Batch Gradient Descent",
+    "subtitle": "Batch Gradient Descent, Mini-Batch",
+    "tags": "Deep Learning",
+    "url": "/2022/01/14/deep-learning-batch-gradient-descent/",
+    "date": "2022-01-14 13:19"
+  },
+  {
+    "title": "Deep Learning - Loss Functions",
+    "subtitle": "Mean Squared Error, Mean Absolute Error, Hinge Loss, Huber Loss, L1 Loss, Cross Entropy Loss, NLL Loss, Sparse Entropy, IoU Loss, Dice Loss, Focal Loss, Cauchy Robust Kernel, DFL",
+    "tags": "Deep Learning",
+    "url": "/2022/01/11/deep-learning-Losses/",
+    "date": "2022-01-11 13:19"
+  },
+  {
+    "title": "Deep Learning - Activation",
+    "subtitle": "Sigmoid, ReLU, GELU Tanh",
+    "tags": "Deep Learning",
+    "url": "/2022/01/08/deep-learning-Activations/",
+    "date": "2022-01-08 13:19"
+  },
+  {
+    "title": "Deep Learning - Auto Differentiator From Scratch",
+    "subtitle": "Auto Diff Is The Dark Magic Of All Dark Magics Of Deep Learning",
+    "tags": "Deep Learning",
+    "url": "/2022/01/06/deep-learning-Auto-Diff/",
+    "date": "2022-01-06 13:19"
+  },
+  {
+    "title": "Deep Learning - Introduction",
+    "subtitle": "Why Do We Even Need Deep Neuralnets? Data Partition, ML Ops, Data Normalization",
+    "tags": "Deep Learning",
+    "url": "/2022/01/04/deep-learning-introduction/",
+    "date": "2022-01-04 13:19"
+  },
+  {
+    "title": "Deep Learning - Gradient Checking",
+    "subtitle": "First Step To Debugging A Neural Net",
+    "tags": "Deep Learning",
+    "url": "/2022/01/15/deep-learning-gradient-check/",
+    "date": "2022-01-04 13:19"
+  },
+  {
+    "title": "Computer Vision - Pinhole Camera Model",
+    "subtitle": "This Blog Shows How A Small Magic Peek Hole Captures The World",
+    "tags": "Computer Vision",
+    "url": "/2021/07/03/rgbd-slam-camera-model/",
+    "date": "2021-07-03 13:19"
+  },
+  {
+    "title": "Web Development - Reactive Design",
+    "subtitle": "React, Flask",
+    "tags": "Computer Vision",
+    "url": "/2021/06/03/web-development-reactive-design/",
+    "date": "2021-06-03 13:19"
+  },
+  {
+    "title": "Web Development - Flask",
+    "subtitle": "React, Flask",
+    "tags": "Computer Vision",
+    "url": "/2021/06/01/web-development-flask/",
+    "date": "2021-06-01 13:19"
+  },
+  {
+    "title": "Computer Vision - Random Tree",
+    "subtitle": "Random Tree",
+    "tags": "Classical Machine Learning",
+    "url": "/2021/04/24/machine-learning-random-tree/",
+    "date": "2021-04-24 13:19"
+  },
+  {
+    "title": "Computer Vision - Tessellation",
+    "subtitle": null,
+    "tags": "Computer Vision",
+    "url": "/2021/01/30/computer-vision-tessellation/",
+    "date": "2021-01-30 13:19"
+  },
+  {
+    "title": "Computer Vision - Ray Tracing, Ray Casting, Gaussian Splatting",
+    "subtitle": null,
+    "tags": "Computer Vision",
+    "url": "/2021/01/24/computer-vision-image-downsampling/",
+    "date": "2021-01-27 13:19"
+  },
+  {
+    "title": "Computer Vision - Image Downsampling",
+    "subtitle": "Bicubic, Bilinear, Nearest Neighbor Interpolation, Ringing Effect",
+    "tags": "Computer Vision",
+    "url": "/2021/01/27/computer-vision-image-ray-tracing-ray-casting/",
+    "date": "2021-01-24 13:19"
+  },
+  {
+    "title": "Robotics - [Motion Planning 1] Overview And A star Variants",
+    "subtitle": "A Star",
+    "tags": "Motion Planning",
+    "url": "/2021/03/01/motion-planning-minisnap/",
+    "date": "2021-01-24 13:19"
+  },
+  {
+    "title": "Computer Vision - ORB Features And Matching",
+    "subtitle": "This Blog Shows The Theory and Implementation From Scratch of ORB Features",
+    "tags": "Computer Vision",
+    "url": "/2021/01/22/computer-vision-ORB-Features-And-Matching/",
+    "date": "2021-01-22 13:19"
+  },
+  {
+    "title": "Computer Vision - Harris Corner Detector",
+    "subtitle": "Do Not Cut Corners on Corner Detector - It Will See It",
+    "tags": "Computer Vision",
+    "url": "/2021/01/20/computer-vision-harris-corner-detector/",
+    "date": "2021-01-20 13:19"
+  },
+  {
+    "title": "Computer Vision - Heuristic Algorithms",
+    "subtitle": "K Means",
+    "tags": "Computer Vision",
+    "url": "/2021/01/16/computer-vision-heuristic-algorithms/",
+    "date": "2021-01-13 13:19"
+  },
+  {
+    "title": "Computer Vision - Image Gradient",
+    "subtitle": "Sobel Operator, Signed Distance Field",
+    "tags": "Computer Vision",
+    "url": "/2021/01/10/computer-vision-image-gradient/",
+    "date": "2021-01-10 13:19"
+  },
+  {
+    "title": "Computer Vision - Warping",
+    "subtitle": "Affine Transformation, Perspective Warping, Non-Linear Warping.",
+    "tags": "Computer Vision",
+    "url": "/2021/01/07/computer-vision-warping/",
+    "date": "2021-01-07 13:19"
+  },
+  {
+    "title": "Computer Vision - Non Maximum Suppression",
+    "subtitle": "Non Maximum Suppression (NMS), Intersection over Union (IoU), TensorFlow non_max_suppression",
+    "tags": "Computer Vision",
+    "url": "/2021/01/05/computer-vision-non-maximum-suppression/",
+    "date": "2021-01-05 13:19"
+  },
+  {
+    "title": "Computer Vision - Blurring",
+    "subtitle": "Gaussian Blurring (Under Active Updates)",
+    "tags": "Computer Vision",
+    "url": "/2021/01/03/computer-vision-blurring/",
+    "date": "2021-01-03 13:19"
+  },
+  {
+    "title": "Python - Type hints",
+    "subtitle": "annotation",
+    "tags": "Python",
+    "url": "/2019/03/09/python-typehints/",
+    "date": "2019-03-11 13:19"
+  },
+  {
+    "title": "Python - Numpy View and Contiguous Array",
+    "subtitle": "View",
+    "tags": "Python",
+    "url": "/2019/03/06/numpy-view-contiguous/",
+    "date": "2019-03-06 13:19"
+  },
+  {
+    "title": "Arduino Notes",
+    "subtitle": "View",
+    "tags": "Python",
+    "url": "/2019/04/01/arduino/",
+    "date": "2019-03-06 13:19"
+  },
+  {
+    "title": "Compute Comparison",
+    "subtitle": "Arduino Uno vs Rpi Zero vs Rpi 4b+ vs Rpi 5 vs Nvidia Orin Nano Across Multiple Dimensions",
+    "tags": "Python",
+    "url": "/2019/04/01/compute-comparison/",
+    "date": "2019-03-06 13:19"
+  },
+  {
+    "title": "Python - Numpy and Pandas Operations",
+    "subtitle": "A Mumbo Jumbo Of Numpy and Pandas Operations and Examples",
+    "tags": "Python",
+    "url": "/2019/03/03/numpy-pandas-operations/",
+    "date": "2019-03-03 13:19"
+  },
+  {
+    "title": "Python - Python Subprocessing",
+    "subtitle": "Subprocess",
+    "tags": "Python",
+    "url": "/2019/02/09/python-subprocess/",
+    "date": "2019-02-09 13:19"
+  },
+  {
+    "title": "Python - Data Structures",
+    "subtitle": "Dict",
+    "tags": "Python",
+    "url": "/2019/02/12/python-data-structures/",
+    "date": "2019-02-09 13:19"
+  },
+  {
+    "title": "Python - Python Packaging System",
+    "subtitle": "Packaging, Pip",
+    "tags": "Python",
+    "url": "/2019/02/06/python-packaging/",
+    "date": "2019-02-06 13:19"
+  },
+  {
+    "title": "Python - Poetry Packaging System and Pip",
+    "subtitle": "Poetry, Pip",
+    "tags": "Python",
+    "url": "/2019/02/03/python-poetry/",
+    "date": "2019-02-03 13:19"
+  },
+  {
+    "title": "Python - How To Write Pytest",
+    "subtitle": "Pytest Is The New Black (Compared To Unittest)",
+    "tags": "Python",
+    "url": "/2019/02/01/python-pytest/",
+    "date": "2019-02-01 13:19"
+  },
+  {
+    "title": "Python - Functools",
+    "subtitle": "lru_cache",
+    "tags": "Python",
+    "url": "/2019/01/27/python-functools/",
+    "date": "2019-01-27 13:19"
+  },
+  {
+    "title": "Python - Python Mixin Classes",
+    "subtitle": "MRO",
+    "tags": "Python",
+    "url": "/2019/01/21/python-mixin/",
+    "date": "2019-01-21 13:19"
+  },
+  {
+    "title": "Python - Immutable And Memory View",
+    "subtitle": null,
+    "tags": "Python",
+    "url": "/2019/01/24/python-immutable-view/",
+    "date": "2019-01-21 13:19"
+  },
+  {
+    "title": "Python - File Management",
+    "subtitle": "os",
+    "tags": "Python",
+    "url": "/2019/01/18/python-file-management/",
+    "date": "2019-01-18 13:19"
+  },
+  {
+    "title": "Python - Enums, dataclass",
+    "subtitle": "Enum, IntEnum",
+    "tags": "Python",
+    "url": "/2019/01/15/python-enums-dataclass/",
+    "date": "2019-01-15 13:19"
+  },
+  {
+    "title": "Python - Jupyter Notebook Common Magic Commands",
+    "subtitle": "Jupyter Notebook Common Magic Commands",
+    "tags": "Python",
+    "url": "/2019/01/05/python-jupyter-notebook/",
+    "date": "2019-01-05 13:19"
+  },
+  {
+    "title": "Python - Python Iterables",
+    "subtitle": "Iterable, Itertools, Round Robin Counter",
+    "tags": "Python",
+    "url": "/2019/01/09/python-iterables/",
+    "date": "2019-01-05 13:19"
+  },
+  {
+    "title": "Python - Functions",
+    "subtitle": "Map-Reduce-Filter, Lambda (Under Active Updates)",
+    "tags": "Python",
+    "url": "/2019/01/03/python-functions/",
+    "date": "2019-01-03 13:19"
+  },
+  {
+    "title": "Python - Python Misc, os, shutil",
+    "subtitle": "Sys, Print, Argparse Path-Related Utils, HDF5",
+    "tags": "Python",
+    "url": "/2019/01/12/python-misc/",
+    "date": "2019-01-03 13:19"
+  },
+  {
+    "title": "Gitlab Misc.",
+    "subtitle": "Access Control, Gitlab CI",
+    "tags": "Linux",
+    "url": "/2018/08/08/gitlab-misc/",
+    "date": "2018-08-10 13:19"
+  },
+  {
+    "title": "Adoc",
+    "subtitle": null,
+    "tags": "Linux",
+    "url": "/2018/08/10/adoc/",
+    "date": "2018-08-10 13:19"
+  },
+  {
+    "title": "Git - Workflows",
+    "subtitle": "Git Test Runners, CI/CD, PyPi",
+    "tags": "Git",
+    "url": "/2018/08/08/git-workflows/",
+    "date": "2018-08-08 13:19"
+  },
+  {
+    "title": "Git and VCS",
+    "subtitle": "Gitalk, CI/CD, vcstools",
+    "tags": "Linux",
+    "url": "/2018/08/05/git-vcs/",
+    "date": "2018-08-05 13:19"
+  },
+  {
+    "title": "Git and VCS",
+    "subtitle": "Gitalk, CI/CD, vcstools",
+    "tags": "Linux",
+    "url": "/2018/08/05/git/",
+    "date": "2018-08-05 13:19"
+  },
+  {
+    "title": "Google Drive",
+    "subtitle": "Shortcuts",
+    "tags": "Linux",
+    "url": "/2018/08/03/google-drive/",
+    "date": "2018-08-03 13:19"
+  },
+  {
+    "title": "VSCode",
+    "subtitle": "Debugging ROS2 Projects, Remote SSH, Latex Support, Agentic Workflows",
+    "tags": "VSCode, ROS2",
+    "url": "/2018/08/01/vscode/",
+    "date": "2018-08-01 13:19"
+  },
+  {
+    "title": "Docker Image Management",
+    "subtitle": "Dockerfile, Image Building, Image Copying",
+    "tags": "Docker",
+    "url": "/2018/06/03/docker-image-building/",
+    "date": "2018-06-03 13:19"
+  },
+  {
+    "title": "Docker - Docker Basics",
+    "subtitle": "What is Docker, Basic Docker Operations, Docker Run, Docker Cp",
+    "tags": "Docker",
+    "url": "/2018/06/01/docker-basics/",
+    "date": "2018-06-01 13:19"
+  },
+  {
+    "title": "SSD",
+    "subtitle": "NVME, SATA",
+    "tags": "Linux, Docker",
+    "url": "/2018/05/05/SSD/",
+    "date": "2018-05-05 13:19"
+  },
+  {
+    "title": "USB",
+    "subtitle": "HID",
+    "tags": "Linux, Docker",
+    "url": "/2018/05/03/USB/",
+    "date": "2018-05-03 13:19"
+  },
+  {
+    "title": "Virtual Network Computing (VNC)",
+    "subtitle": "Graphical Desktop Environment",
+    "tags": "Linux, Docker",
+    "url": "/2018/05/01/vnc/",
+    "date": "2018-05-01 13:19"
+  },
+  {
+    "title": "Cyber Security - How SSL Works",
+    "subtitle": "nftables",
+    "tags": "Linux",
+    "url": "/2018/02/06/linux-navi/",
+    "date": "2018-02-06 13:19"
+  },
+  {
+    "title": "Linux - Networking 2 UDP Traffic Profiling",
+    "subtitle": "nftables",
+    "tags": "Linux",
+    "url": "/2018/02/02/linux-networking-UDP-Profiling/",
+    "date": "2018-02-02 13:19"
+  },
+  {
+    "title": "Cyber Security - How SSL Works",
+    "subtitle": "nftables",
+    "tags": "Linux",
+    "url": "/2018/02/04/How-SSL-Works/",
+    "date": "2018-02-02 13:19"
+  },
+  {
+    "title": "Linux - Process Signals SIGINT, SIGTERM, SIGKILL, SIGQUIT, and SIGTSTP Explained",
+    "subtitle": "NIC",
+    "tags": "Linux",
+    "url": "/2018/01/29/sigterm-sigint/",
+    "date": "2018-01-29 13:19"
+  },
+  {
+    "title": "Linux - Networking",
+    "subtitle": "NIC, Wireshark",
+    "tags": "Linux",
+    "url": "/2018/01/27/linux-networking/",
+    "date": "2018-01-27 13:19"
+  },
+  {
+    "title": "Linux - Power Loss Meltdown",
+    "subtitle": "initramfs",
+    "tags": "Linux",
+    "url": "/2018/01/25/linux-powerloss-meltdown/",
+    "date": "2018-01-25 13:19"
+  },
+  {
+    "title": "Linux - Provisioning of My Machine",
+    "subtitle": "fzf",
+    "tags": "Linux",
+    "url": "/2018/01/23/linux-machine-provisioning/",
+    "date": "2018-01-23 13:19"
+  },
+  {
+    "title": "Linux - Operating System",
+    "subtitle": "Paging, Concurrency, Time",
+    "tags": "Linux",
+    "url": "/2018/01/20/linux-operating-systems/",
+    "date": "2018-01-20 13:19"
+  },
+  {
+    "title": "Linux Miscellaneous Thingies",
+    "subtitle": "Window Focus, Screenshots, File System, Shortkeys, UART, Tmux, ffmpeg, Firefox, Chrome, Power Modes",
+    "tags": "Linux",
+    "url": "/2018/01/17/linux-misc/",
+    "date": "2018-01-17 13:19"
+  },
+  {
+    "title": "Linux - Packaging Systems",
+    "subtitle": "apt, dpkg",
+    "tags": "Linux",
+    "url": "/2018/01/16/linux-packaging-system/",
+    "date": "2018-01-16 13:19"
+  },
+  {
+    "title": "Linux - Programming And Toolchain",
+    "subtitle": "ldd",
+    "tags": "Linux",
+    "url": "/2018/01/13/linux-programming-and-toolchain/",
+    "date": "2018-01-13 13:19"
+  },
+  {
+    "title": "Linux - Filesystem",
+    "subtitle": "inode, soft/symbolic link, FIFO, File Lock",
+    "tags": "Linux",
+    "url": "/2018/01/10/linux-filesystems/",
+    "date": "2018-01-10 13:19"
+  },
+  {
+    "title": "Linux - Udev Rules, Systemd Services, inotify",
+    "subtitle": "Udev Rules Systemd Services, Inotify",
+    "tags": "Linux",
+    "url": "/2018/01/07/linux-udev-systemd/",
+    "date": "2018-01-07 13:19"
+  },
+  {
+    "title": "Linux - SSH and X Window System",
+    "subtitle": "X Window System, SSH, Static IP",
+    "tags": "Linux",
+    "url": "/2018/01/05/linux-ssh-xwindow/",
+    "date": "2018-01-05 13:19"
+  },
+  {
+    "title": "Electronics - General Science Facts",
+    "subtitle": "Adiabatic Cooling, Centripedal & Centrifugal Forces",
+    "tags": "Electronics",
+    "url": "/2017/07/01/general-science-facts/",
+    "date": "2017-07-01 13:19"
+  },
+  {
+    "title": "Literature - The Wealthy Barber Notes",
+    "subtitle": "Financial Literacy",
+    "tags": "Fun Reads",
+    "url": "/2017/12/05/literature-wealthy-barber/",
+    "date": "2017-06-05 13:19"
+  },
+  {
+    "title": "Electronics - General Electronics Notes",
+    "subtitle": "Encoders, Motors, Capacitors, IMU, Testing, Telecommunication",
+    "tags": "Electronics",
+    "url": "/2017/06/03/general-electronics/",
+    "date": "2017-06-03 13:19"
+  },
+  {
+    "title": "Electronics - EMF and Eddy Current",
+    "subtitle": null,
+    "tags": "Electronics",
+    "url": "/2017/06/01/electronics-eddy-current/",
+    "date": "2017-06-01 13:19"
+  },
+  {
+    "title": "Electronics - Communication Protocols",
+    "subtitle": "Encoding / Decoding, Error Checking (CRC), Base64, EtherCAT",
+    "tags": "Electronics",
+    "url": "/2017/06/05/electronics-communication/",
+    "date": "2017-06-01 13:19"
+  },
+  {
+    "title": "Electronics - Embedded Systems Notes",
+    "subtitle": "HAL",
+    "tags": "Electronics",
+    "url": "/2017/06/07/embedded-systems-notes/",
+    "date": "2017-06-01 13:19"
+  },
+  {
+    "title": "Math - Integration Approximations",
+    "subtitle": "Trapezoidal Rule",
+    "tags": "Math",
+    "url": "/2017/03/02/math-trapezoidal-rule 1/",
+    "date": "2017-03-02 13:19"
+  },
+  {
+    "title": "Math - Trace, Determinant, Frobenius Norm",
+    "subtitle": "Von-Neumann's Trace Inequality",
+    "tags": "Math",
+    "url": "/2017/02/28/math-trace-frobenius-norm/",
+    "date": "2017-02-28 13:19"
+  },
+  {
+    "title": "Math - Linear Fitting",
+    "subtitle": "Plane Fitting, Line Fitting, Isotropic Matrix, Condition Number of Covariance Matrix",
+    "tags": "Math",
+    "url": "/2017/02/25/math-plane-fitting/",
+    "date": "2017-02-25 13:19"
+  },
+  {
+    "title": "Math - Lie Group",
+    "subtitle": "Group Definition, Lie Group and Lie Algebras, Skew Matrices, Manifold, SO(3) Derivatives",
+    "tags": "Math",
+    "url": "/2017/02/19/lie-group/",
+    "date": "2017-02-22 13:19"
+  },
+  {
+    "title": "Math - SO(3) Perturbations",
+    "subtitle": "Left Perturbation, Right Perturbation, BCH Formula, Left Jacobian, Right Jacobian",
+    "tags": "Math",
+    "url": "/2017/02/22/math-so3-perturbations/",
+    "date": "2017-02-22 13:19"
+  },
+  {
+    "title": "Math - MAP(Maximum A-Posteriori) and MLE (Maximum Likelihood Estimate)",
+    "subtitle": "Likelihood vs Probabilities",
+    "tags": "Math",
+    "url": "/2017/02/13/math-MAP-MLE/",
+    "date": "2017-02-13 13:19"
+  },
+  {
+    "title": "Math - Multivariate Normal Distribution",
+    "subtitle": "PDF, Linear Transformation, Covariance Matrix",
+    "tags": "Math",
+    "url": "/2017/02/16/math-MultiVariate-Distribution/",
+    "date": "2017-02-13 13:19"
+  },
+  {
+    "title": "Math - Null Space and Singular Value Decomposition (SVD)",
+    "subtitle": "How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?",
+    "tags": "Math",
+    "url": "/2017/02/07/svd/",
+    "date": "2017-02-07 13:19"
+  },
+  {
+    "title": "Math - Approximation to SVD",
+    "subtitle": "How to find Null Space? How to implement that using Singular Value Decomposition (SVD)?",
+    "tags": "Math",
+    "url": "/2017/02/08/Newton Schulz/",
+    "date": "2017-02-07 13:19"
+  },
+  {
+    "title": "Math - t-SNE",
+    "subtitle": null,
+    "tags": "Math",
+    "url": "/2017/02/10/tsne/",
+    "date": "2017-02-07 13:19"
+  },
+  {
+    "title": "Math - Welford Algo for Cov Calculation",
+    "subtitle": null,
+    "tags": "Math",
+    "url": "/2017/02/05/stats-welford-algo-cov-calculation/",
+    "date": "2017-02-05 13:19"
+  },
+  {
+    "title": "Math - Lagrange Multiplier",
+    "subtitle": "Pontryagin's Minimum Principle",
+    "tags": "Math",
+    "url": "/2017/02/01/lagrange-multiplier/",
+    "date": "2017-02-04 13:19"
+  },
+  {
+    "title": "Math - Stats Basics Recap",
+    "subtitle": "Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Bessel Correction",
+    "tags": "Math",
+    "url": "/2017/02/04/stats-basic-recap/",
+    "date": "2017-02-04 13:19"
+  },
+  {
+    "title": "Math - Interpoloation",
+    "subtitle": "Linear, Cubic, Bicubic Splines, Slerp",
+    "tags": "Math",
+    "url": "/2017/01/26/interpolation/",
+    "date": "2017-01-26 13:19"
+  },
+  {
+    "title": "Math - Self-Adjoint Matrices",
+    "subtitle": "Robust Information Matrix",
+    "tags": "Math",
+    "url": "/2017/01/29/math-self-adjoint-matrices/",
+    "date": "2017-01-26 13:19"
+  },
+  {
+    "title": "Math - Distance Metrics",
+    "subtitle": "KL Divergence , Chi-Squared Similarity, Mahalanobis Distance, Geodesic Distance",
+    "tags": "Math",
+    "url": "/2017/01/23/math-distance-metrics/",
+    "date": "2017-01-23 13:19"
+  },
+  {
+    "title": "Math - Positive Definiteness and Cholesky Decomposition",
+    "subtitle": "A matrix is positive definite, if it always sees the glass as half full. But why does the matrix still go to therapy? To break down its issues with Cholesky decomposition. Just Joking.",
+    "tags": "Math",
+    "url": "/2017/01/20/positive-definiteness-cholesky-decomp/",
+    "date": "2017-01-20 13:19"
+  },
+  {
+    "title": "Math - Eigen Value, Eigen Vector, and Eigen Value Decomposition",
+    "subtitle": "Covariance Matrix, PCA",
+    "tags": "Math",
+    "url": "/2017/01/15/eigen-value-decomp/",
+    "date": "2017-01-15 13:19"
+  },
+  {
+    "title": "Math - Null Space Pseudo Inverse",
+    "subtitle": "Column, Row Spaces, Projection Matrix, Full Rank Factorization",
+    "tags": "Math",
+    "url": "/2017/01/11/math-matrix-null-space-pseudo-inverse/",
+    "date": "2017-01-11 13:19"
+  },
+  {
+    "title": "Math - Matrix Derivatives",
+    "subtitle": "Jacobian and Hessian, Vector-Vector Derivative",
+    "tags": "Math",
+    "url": "/2017/01/10/math-matrix-derivatives/",
+    "date": "2017-01-10 13:19"
+  },
+  {
+    "title": "Math - Different Types Of Convolutions",
+    "subtitle": "Transpose Convolution (U-Net), Dilated Convolution (DeepLab)",
+    "tags": "Math",
+    "url": "/2017/01/07/various-convolutions/",
+    "date": "2017-01-07 13:19"
+  },
+  {
+    "title": "Math - Gram Schmidt Orthogonolization And QR Decomposition",
+    "subtitle": "Gram Matrix; Super useful in finding forming an orthogonal vector basis, e.g., Singular Value Decomposition",
+    "tags": "Math",
+    "url": "/2017/01/05/gram-schmidt/",
+    "date": "2017-01-05 13:19"
+  },
+  {
+    "title": "Math - Various Useful Forms Of Matrix Multiplication",
+    "subtitle": "Inner & outer Product, Correlation Matrix, Matrix Inverse, Nilpotentency",
+    "tags": "Math",
+    "url": "/2017/01/03/various-forms-of-matrix-multiplication/",
+    "date": "2017-01-03 13:19"
+  }
 ]
