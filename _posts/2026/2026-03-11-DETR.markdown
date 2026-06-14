@@ -1,0 +1,32 @@
+---
+layout: post
+title: "DETR"
+date: 2026-03-11 13:19
+subtitle: 
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+
+Here is [the original Paper of DETR](https://arxiv.org/pdf/2005.12872)
+[Here is a well-written blog post on DETR](https://amaarora.github.io/posts/2021-07-26-annotateddetr.html)
+
+
+The general DETR idea in short: image `[B, 3, H]` -> CNN backbone feature map `[B, C_backbone, H, W]`-> -> 1x1 conv projection to Transformer hidden dim `[B, 256, H', W']` -> flatten into visual tokens `[B, H' * W', 256]` -> Transformer encoder `[B, H' * W', 256]` -> Decoder with learned 100 object queries `[B, 100, 256]` -> prediction head: one class + one bounding box / object query `class logits: [B, 100, num_class + 1], bbox: [B, 100, 4]`
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/FsFT2Sz2/2026-06-14-12-51-43ping-mu-jie-tu.png" height="300" alt=""/>
+    </figure>
+</p>
+</div>
+
+- `num_class` + 1 is dataset classes + no object
+- DETR uses a CNN backbone to yield a lower resolution feature map instead of cutting the original image into 16x16 patches. The flattened visual token can be thought of as a 256 feature embedding / token at one spatial location of the CNN feature map 
+
+- These embeddings will go through the encoder. Each object query bnecomes one object prediction slot. For every query, DETR predicts a class label, a confidence score, and bbox. 
+
+
+TODO
