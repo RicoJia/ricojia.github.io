@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[CUDA - 6] CUDA Inference Speedups"
-date: 2026-01-21 13:19
+date: 2026-03-12 13:19
 subtitle: inference mode, jit tracing, cuda graphs, tensor rt, optimize_for_inference
 comments: true
 header-img: img/post-bg-alibaba.jpg
