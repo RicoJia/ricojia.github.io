@@ -2,7 +2,7 @@
 layout: post
 title: C++ - [Concurrency 6] Memory Model
 date: '2023-06-06 13:19'
-subtitle: 
+subtitle: memory_order_relaxed means
 comments: true
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
@@ -93,5 +93,44 @@ By the C++ memory model:
 - Read / write to 8 byte `std::atomic<T>` is atomic, no guarantee to regular objects
 
 **Rule of thumb**: Ordinary RAM objects obey the C++ memory model; MMIO obeys the hardware datasheet + architecture I/O ordering rules.
+
+## `std::memory_order_relaxed`
+
+In this example, the progress callback is only used to count how many synchronized lidar/IMU batches have been processed:
+
+```cpp
+#include <atomic>
+#include <functional>
+#include <iostream>
+#include <thread>
+
+std::atomic<int> synchronized_batches{0};
+std::function<void()> progress_cb;
+
+void worker_loop() {
+    // Pretend we processed 5 synchronized lidar/IMU batches.
+    for (int i = 0; i < 5; ++i) {
+        // Finished processing one batch.
+        if (progress_cb) {
+            progress_cb();
+        }
+    }
+}
+
+int main() {
+    progress_cb = [&]() {
+        synchronized_batches.fetch_add(1, std::memory_order_relaxed);
+    };
+
+    std::thread worker(worker_loop);  // starts immediately
+    worker.join();
+
+    std::cout << "Processed batches: "
+              << synchronized_batches.load(std::memory_order_relaxed)
+              << "\n";
+}
+```
+
+The callback runs on the frontend’s worker thread after each synchronized measurement is processed. Since another thread may read `synchronized_batches`, the counter must be atomic. However, we do not need this counter to synchronize access to any other data. We only care that the increment itself is race-free and that the final count is eventually correct. That is exactly what `std::memory_order_relaxed` provides: atomicity without extra ordering constraints.
 
 
