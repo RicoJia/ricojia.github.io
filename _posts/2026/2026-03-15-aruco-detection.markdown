@@ -11,7 +11,7 @@ tags:
 
 ## Aruco Detection
 
-Aruco detection has two jobs:
+Aruco detection has three jobs:
 
 ```text
 1. Detection: find square marker candidates in the image.
@@ -148,7 +148,7 @@ q0 __________ q1
 q3|___________|q2
 ```
 
-This is a homography warp. For each detected image corners
+This is a homography warp. For each detected image corners in the image `[u,v]` space
 
 ```
 p0 = (u0, v0)
@@ -167,9 +167,9 @@ q3 = (0, N)
 We can solve for a 3×3 homography H to sample from the original image:
 
 ```text
-[ x_q ]   [ h00 h01 h02 ] [ x_p ]
-[ y_q ] = [ h10 h11 h12 ] [ y_p ]
-[ z_q ]   [ h20 h21 h22 ] [  1  ]
+[ x_q ]   [ h00 h01 h02 ] [ u ]
+[ y_q ] = [ h10 h11 h12 ] [ v ]
+[ z_q ]   [ h20 h21 h22 ] [ 1 ]
 
 x_p = x_q / z_q
 y_p = y_q / z_q
@@ -285,7 +285,7 @@ marker orientation
 correct corner ordering
 ```
 
-That corner ordering is important for pose. The clever thing here is because after the contour is found, the marker is already perspective-warped into a square. So it's sufficient to try 4 rotates to find the best matching contour
+The clever thing here is depite hamming distance is not rotation invariant, because after the contour is found, the marker is already perspective-warped into a square. So it's sufficient to try 4 rotates to find the best matching marker orientation. And therefore, **Corner ordering is important for pose estimation**
 
 ## Identify Marker ID Using Dictionary matching with Hamming distance
 
