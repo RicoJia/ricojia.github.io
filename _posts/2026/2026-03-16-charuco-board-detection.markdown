@@ -265,6 +265,8 @@ solvePnPRansac:
     find a pose while rejecting bad point matches
 ```
 
+**One heads up is that** PnP may accept weak RANSAC solutions: some frames had 20-40 detected ChArUco corners, but there are might be 8-10 RANSAC inliers clustering in a small patch of the board. Since the board is planar, that small clustered subset can support a plausible but wrong pose with low inlier reprojection error
+
 ## What `solvePnPRefineLM()` Does
 
 After RANSAC finds a good inlier set, you can refine the pose:
