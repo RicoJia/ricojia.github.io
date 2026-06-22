@@ -268,6 +268,13 @@ If you prefer a linear history (like I do), run:
 git rebase origin/master
 ```
 
+in an active git rebase, you do the below instead of `git commit` . Otherwise, you are still in an inactive rebase, and git push will not succeed
+
+```
+git add <resolved-files>
+git rebase --continue
+```
+
 ---
 
 ## Be Careful When Checking In Small MRs Based on a Large MR
@@ -308,8 +315,10 @@ git rebase origin/master
    - Add the SSH key to `ssh-agent`
    - Add the SSH key to GitLab
    - [GITLAB] if you already have a key, you can add the key to the repo:
- - Set repo to internal / public
- - Make sure in Deploy Keys, your machine's ssh key's SHA 256  is there. You can check by `ssh-keygen -lf ~/.ssh/id_rsa.pub`
+
+- Set repo to internal / public
+- Make sure in Deploy Keys, your machine's ssh key's SHA 256  is there. You can check by `ssh-keygen -lf ~/.ssh/id_rsa.pub`
+
 3. Verify your SSH connection:
 
    ```bash

@@ -48,3 +48,9 @@ publisher.publish(marker)
 ## Using Rviz2
 
 - Launching RViz multiple times: It won’t hurt, but you’ll get two separate RViz instances. Each instance runs independently, opens its own window, and subscribes to topics separately. This can be useful for debugging different views, but it also means extra CPU/GPU usage and duplicated subscriptions. In most cases, it’s cleaner to launch a single RViz instance and reuse it across your system.
+- If you want to visualize colored pointcloud, need to change color transformer to RGB8
+
+```
+Channel Name: rgb
+Color Transformer: RGB8
+```
