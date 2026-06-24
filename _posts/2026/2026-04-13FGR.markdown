@@ -1,0 +1,13 @@
+---
+layout: post
+title: "[ML] FGR"
+date: 2026-04-13 13:19
+subtitle: ""
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+## FGR
+
+Fine-Grained Recognition (FGR) is not necessarily a completely different type of neural network; it is usually a harder recognition task that requires the model to distinguish between very similar categories. In simple cases, a generic CNN or Vision Transformer can be trained with more detailed labels, such as specific species, defect types, or component conditions. However, because the visual differences are often subtle, FGR systems commonly use specialized strategies to improve performance. Architecturally, this may include part-based models or attention mechanisms that help the network focus on small discriminative regions. During training, instead of relying only on standard cross-entropy classification, FGR models may also use metric learning, contrastive loss, or part-level supervision so that visually similar classes become easier to separate in feature space.
