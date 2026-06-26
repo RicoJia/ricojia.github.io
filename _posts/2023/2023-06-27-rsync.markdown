@@ -1,0 +1,215 @@
+---
+layout: post
+title: rsync
+date: 2023-06-27 13:19
+subtitle:
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Linux
+---
+# A Practical Introduction to `rsync`
+
+`rsync` is one of the most useful Linux tools for copying and synchronizing files. At first, it looks like a better `cp`, but the real value is that it can compare a source and destination, skip files that are already copied, and resume or repair interrupted transfers.
+
+A common basic command looks like this:
+
+```bash
+rsync -avh --progress source/ dest/
+```
+
+The flags mean:
+
+```text
+-a          archive mode; preserve directory structure, permissions, timestamps, symlinks, etc.
+-v          verbose output
+-h          human-readable sizes
+--progress show transfer progress
+```
+
+One important detail **is the trailing slash**:
+
+```bash
+rsync -avh source/ dest/
+```
+
+This copies the contents of `source` into `dest`.Without the trailing slash:
+
+```bash
+rsync -avh source dest/
+```
+
+this copies the `source` directory itself into `dest`.
+
+## Why `rsync` is useful after an interrupted copy
+
+Suppose I started copying a directory with:
+
+```bash
+cp -r source/ dest/
+```
+
+Then I interrupted it halfway through. I can usually switch to `rsync` afterward:
+
+```bash
+rsync -avh --progress source/ dest/
+```
+
+`rsync` compares the source and destination and skips files that are already complete. The default quick check is roughly:
+
+```text
+same file path + same size + same modification time => skip
+otherwise => copy/update
+```
+
+So if `cp -r` already finished copying some files, `rsync` should not copy those files again. For a normal directory with many files, this makes `rsync` a good way to recover from interrupted copies.
+
+## How `rsync` writes files safely
+
+By default, `rsync` usually does not write directly into the final destination filename.
+
+Instead, for each file, it does roughly this:
+
+```text
+1. Write data into a hidden temporary file in the destination directory
+2. Finish writing the temp file
+3. Rename the temp file to the final filename
+```
+
+For example, you may see something like:
+
+```text
+.log-2026-06-24.md.3CVeGs  ->  log-2026-06-24.md
+```
+
+That hidden file is `rsync`’s temporary file.
+
+The final rename is supposed to be atomic. That means other programs should see either the old complete file or the new complete file, not a half-written file.
+
+This is safer than writing directly into the final file because an interrupted copy does not leave the final filename containing partial data.
+
+## Resuming large partial files
+
+One caveat is large files.
+
+If `cp -r` was interrupted in the middle of a large file, the destination may already contain a partial file. By default, `rsync` will usually retransmit that file because the size or timestamp does not match.
+
+To better handle partially copied large files, use:
+
+```bash
+rsync -avh --progress --partial --append-verify source/ dest/
+```
+
+The important options are:
+
+```text
+--partial
+    Keep partially transferred files if the transfer is interrupted.
+
+--append-verify
+    Assume the destination file is the beginning of the source file,
+    append the missing bytes, then verify the completed file.
+```
+
+This is useful when the destination file is truly the first part of the source file. That is usually the case after an interrupted sequential copy.
+
+## When `rsync` can fail on mounted cloud storage
+
+I ran into this error while copying logs:
+
+```bash
+rsync -av --progress --checksum \
+  ~/volume/tmp_flops_data/2026-06-24/ \
+  ~/augam_dir/searobotics/logs/2026-06-24/
+```
+
+The error was:
+
+```text
+rsync: [receiver] rename ".../.lj_log7.gz.dGPE5X" -> ".../lj_log7.gz": Input/output error (5)
+```
+
+The key clue is this part:
+
+```text
+[receiver] rename
+```
+
+That means the source copy was not the main issue. `rsync` had written a temporary file on the destination side and then failed while renaming it into the final filename.
+
+In my case, the destination path was under:
+
+```text
+~/augam_dir/searobotics
+```
+
+That directory was mounted through `rclone FUSE`.
+
+The root issue was that I was using `rsync` against a cloud remote pretending to be a local filesystem. `rsync` expects normal filesystem behavior, especially for temporary files and atomic renames. But an `rclone` FUSE mount may not behave exactly like a local disk, depending on the backend and mount behavior.
+
+So the error:
+
+```text
+Input/output error (5)
+```
+
+was coming from the destination mount layer, not from the source data.
+
+## Better solution for rclone remotes
+
+If the destination is really an `rclone` remote, it is usually better to bypass the FUSE mount and use `rclone copy` directly:
+
+```bash
+rclone copy \
+  ~/volume/tmp_flops_data/2026-06-24/ \
+  augam_autonsol_searobotics:searobotics/logs/2026-06-24/ \
+  --progress
+```
+
+This is usually faster and more reliable because `rclone` talks to the remote backend directly instead of going through a FUSE-mounted filesystem.
+
+Also, `rsync --checksum` is usually not the best choice on mounted cloud storage. It forces extra reads and checksum calculations on both sides, which can be slow and fragile over a FUSE mount.
+
+## What about `--inplace`?
+
+If the problem is specifically the temporary-file-then-rename behavior, you can tell `rsync` to write directly into the final destination file:
+
+```bash
+rsync -avh --progress --inplace source/ dest/
+```
+
+This may help with filesystems or mounts that do not handle renames well.
+
+But there is a tradeoff: if the transfer is interrupted, the final destination file itself may be partially updated or corrupted.
+
+So `--inplace` can be useful, but it is less failure-safe than the default `rsync` behavior.
+
+## Practical rule of thumb
+
+For normal local disks or SSH transfers:
+
+```bash
+rsync -avh --progress source/ dest/
+```
+
+For interrupted transfers with large partial files:
+
+```bash
+rsync -avh --progress --partial --append-verify source/ dest/
+```
+
+For cloud storage mounted with `rclone FUSE`, avoid treating it like a normal local filesystem. Prefer:
+
+```bash
+rclone copy source/ remote:path/ --progress
+```
+
+For weird filesystems where rename fails, `--inplace` may help, but use it carefully.
+
+The main mental model is simple:
+
+```text
+cp copies blindly.
+rsync compares, skips, repairs, and resumes.
+rclone copy is better when the destination is actually cloud storage.
+```

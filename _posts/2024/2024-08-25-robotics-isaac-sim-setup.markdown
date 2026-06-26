@@ -8,7 +8,6 @@ tags:
     - Robotics
 comments: true
 ---
-
 ## Installation
 
 Route 1: Native Execution
@@ -127,4 +126,50 @@ If STL is probably in **millimeters**. So in Isaac, we probably want scale = 0.0
 
 ```
 cp "$HOME/Downloads/J3 motor_sleeve.STL" ~/isaac_projects/assets/motor_sleeve.stl
+```
+
+---
+
+## Concepts
+
+[USD](https://docs.isaacsim.omniverse.nvidia.com/latest/omniverse_usd/open_usd.html?utm_source=chatgpt.com): Universal Scene Description is the language Isaac Sim uses to describe the robot and its environment. A USD scene can contain the robot, objects, lights, cameras, materials, transforms, physics properties, sensors, and scene hierarchy. It's basically a scene graph + asset format:
+
+```
+World
+├── Robot
+│   ├── base_link
+│   ├── arm_joint_1
+│   └── camera_sensor
+├── Table
+├── Object
+├── Lights
+└── Physics settings
+```
+
+A `.usd` file is not just a mesh like `.obj` or `.stl`. It can store or reference many types of scene information, including geometry, materialuiis, lighting, animation, and physics schemas. OpenUSD describes USD as a system for authoring, composing, and reading hierarchically organized 3D scene descriptions. In Isaac Sim, you use USD files to:
+
+- load robots and environments
+- import CAD or mesh assets
+- define object transforms and hierarchy
+- attach materials and textures
+- set collision and rigid-body properties
+- compose scenes from multiple referenced assets
+- reuse the same robot or object across simulations
+
+## Gotchas
+
+- The runscript creates several cache directories, like warp, ComputeCache, etc. but it doesn't mount /isaac-sim/.cache/ov/texturecache.
+ 	- The container can't create that directory since uid 1234 doesn't own the base path inside the container
+ 	- The simulation still runs; it just won't cache textures between sessions, meaning slightly slower texture loading on first use.
+
+```
+2026-06-24T12:41:34Z [120,073ms] [Error] [omni.rtx] ResourceManager: Failed to create the texture cache
+2026-06-24T12:41:34Z [120,073ms] [Error] [omni.rtx] Failed to create texture cache in /isaac-sim/.cache/ov/texturecache
+2026-06-24T12:41:34Z [120,073ms] [Error] [omni.rtx] Failed to create texture cache folder /isaac-sim/.cache/ov/texturecache
+```
+
+- You can run the above command `docker run --name isaac-sim --entrypoint bash` if the socket is shared with the host. The container talks directly to the host's daemon. The key line is in `docker-compose.yml`
+
+```yaml
+- /var/run/docker.sock:/var/run/docker.sock
 ```
