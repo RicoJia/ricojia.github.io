@@ -308,6 +308,100 @@ undefined reference to tbb::detail::r1::execution_slot(tbb::detail::d1::executio
 
 To link: do `g++ -O2 -std=c++17 omp_test.cpp -ltbb` (note, libraries like `-ltbb` appear after the filename)
 
+### `unpar_seq` is not necessarily faster, especially there is floating point arithmetics
+
+```cpp
+// compute_iekf
+    std::for_each(
+        std::execution::seq,
+        indices.begin(),
+        indices.end(),
+        [&](const auto &idx) {
+            const auto &pt = source_->points.at(idx);
+            const Vec3d q(pt.x, pt.y, pt.z);
+
+            // Transform LiDAR-frame point to IMU frame, then to world frame.
+            // q_imu = T_imu_lidar * q_lidar
+            // q_world = R_wi * q_imu + p_wi
+            const Vec3d q_imu = T_imu_lidar * q;
+            const Vec3d qs    = pose * q_imu;
+
+            const Vec3i coord =
+                get_grid_point_coord(qs, options_.resolution);
+            int i_neighbor = 0;
+            for (const auto &delta : neighbor_window_) {
+                const Vec3i dcoord = coord + delta;
+                const size_t real_idx =
+                    static_cast<size_t>(idx) *
+                        static_cast<size_t>(num_residual_per_point) +
+                    static_cast<size_t>(i_neighbor++);
+
+                auto voxel_ptr = lru_hashmap_.get(
+                    math::point_hash_func(
+                        dcoord[0], dcoord[1], dcoord[2]));
+
+                if (!voxel_ptr) {
+                    effect_pts[real_idx] = false;
+                    continue;
+                }
+                const Vec3d e = qs - voxel_ptr->mean_;
+
+                const double res = e.transpose() * voxel_ptr->info_ * e;
+
+                if (!std::isfinite(res) ||
+                    res > options_.opt_err_rejection_distance_sq) {
+                    effect_pts[real_idx] = false;
+                    continue;
+                }
+
+                Eigen::Matrix<double, 3, 18> J;
+                J.setZero();
+                J.block<3, 3>(0, 0) = Mat3d::Identity();
+                J.block<3, 3>(0, 6) =
+                    -pose.so3().matrix() * SO3::hat(q_imu);
+
+                jacobians[real_idx]   = J;
+                errors[real_idx]      = e;
+                infos[real_idx]       = voxel_ptr->info_;
+                effect_pts[real_idx]  = true;
+                source_has_match[idx] = 1;
+            }
+        });
+```
+
+
+| Metric            |    `seq` | `par_unseq` |
+| ----------------- | -------: | ----------: |
+| Calls             |    7,718 |      12,905 |
+| Loop time         | 1,535 ms |      444 ms |
+| Wall time         |    8.0 s |       9.0 s |
+| Time outside loop |    6.5 s |       8.6 s |
+
+In this example, the loop itself **is faster** with `par_unseq`: 444 ms. But `par_unseq` makes floating point addition undeterministic, making convergence slower, so there are more loops in total. And the logic outside the loop makes total walltime slower than par_unseq.
+
+However, a good place to use `par_unseq` is where there is no arithmatic addition:
+
+```cpp
+    std::for_each(
+        std::execution::par_unseq,
+        point_cloud_hash_lookup.begin(), point_cloud_hash_lookup.end(), [&](const auto &key_data_pair) {
+            const auto &dq_vec3d = point_cloud_hash_lookup.at(key_data_pair.first);
+            if (dq_vec3d.size() < options_.min_pts_in_voxel)
+                return;
+            auto voxel_ptr = lru_hashmap_.get(key_data_pair.first);
+            if (voxel_ptr == nullptr) {
+                rclcpp_error(rclcpp::get_logger("incrementalndt3d"), "voxel does not exist, there's a bug!");
+            }
+            if (voxel_ptr->size_ >= options_.max_pts_in_voxel) {
+                return;
+            }
+            voxeldata voxel_data(key_data_pair.first, key_data_pair.second);
+            voxel_ptr->update_existing_voxel_data(voxel_data);
+        });
+```
+
+
+
 ------------------------------------------------------------
 
 ## [Method 4] `std::async` (Optimization Impact: ⭐️⭐⭐️️️⚪⚪)

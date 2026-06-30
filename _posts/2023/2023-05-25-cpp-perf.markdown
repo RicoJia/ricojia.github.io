@@ -109,6 +109,28 @@ sudo sysctl --system
 | **CPU Time** | User+system CPU time; can exceed elapsed when multithreaded | `/usr/bin/time -p/-v`, `getrusage(RUSAGE_SELF)`, `clock_gettime(CLOCK_PROCESS_CPUTIME_ID)` |
 | **Peak RSS** | Peak physical memory resident (not virtual) | `/usr/bin/time -v`, `/proc/<pid>/status` (`VmHWM`/`VmRSS`), `ps -o rss`, `smem` |
 
+#### Clock Types
+
+```
+using Clock = std::chrono::steady_clock;
+auto t0 = Clock::now();
+// do work
+std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+auto t1 = Clock::now();
+```
+
+your timer will report about **100 ms**, even though CPU time is almost zero. For actual CPU time, you would use things like: `std::clock()`
+
+- `std::chrono::steady_clock` : monotonically increasing clock, doesn't change if system clock changes
+- `std::chrono::high_resolution_clock`: walltime
+- `clock_gettime(CLOCK_MONOTONIC, ...)`: wall time
+- `clock_gettime(CLOCK_PROCESS_CPUTIME_ID, ...)` cpu timee of the whole process
+
+#### Is CPU time always shorter than wall time?
+
+No. For a **single-threaded** program, CPU time is usually: `CPU time <= wall time`, But for a **multi-threaded** program, process CPU time can be **greater** than wall time, because CPU time is summed across cores.
+
 ### CPU Performance Counter Metrics
 
 These require hardware perf counters to be enabled (may show "n/a" otherwise).
