@@ -2,7 +2,7 @@
 layout: post
 title: AI Agent Setup
 date: 2026-03-22 13:19
-subtitle: Remote Claude Code Setup
+subtitle: Remote Claude Code Setup, Claude Session
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -16,3 +16,18 @@ tags:
 3. To see password for access `cat ~/.config/code-server/config.yaml`
 4. Start byobu / tmux. Bring up your claude code. `claude code` If you are developing in a container, do so in the container
 5. Access remotely by opening a web browser, connect to tailscale on your remote machine, go to the tailscale ip, and type in the password above. Then, find the byobu / tmux page and start coding 😊
+
+## Claude Session
+
+Each claude session has a Claude session ID. Each project has a project folder `.claude`  . Each slack thread is for a claude session.
+
+Sessions are saved conversations tied to a project directory, and they can be resumed with `--continue`, `--resume`, or a specific session ID. They also mention using `claude -p --resume <session-id>` from scripts to ask follow-up questions and capture structured output.
+
+```
+project_root/
+    CLAUDE.md
+    .claude/
+        build.md
+        docker.md
+        known_issues.md
+```
