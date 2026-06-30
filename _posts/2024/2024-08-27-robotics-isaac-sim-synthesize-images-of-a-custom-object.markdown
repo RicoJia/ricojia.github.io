@@ -8,6 +8,8 @@ tags:
   - Robotics
 comments: true
 ---
+## Isaac / Omniverse
+
 ## Synthesize Images using Isaac Sim
 
 Here is a minimal pipeline to synthesize images given the CAD of an object, in the YOLO dataset format
@@ -26,10 +28,14 @@ Tools being used:
 
 - **Isaac Sim 6.0 / SimulationApp**: This is the main Omniverse/Isaac Sim app in headless mode that we use.
 - **Omniverse Replicator** `omni.replicator.core`: Creates camera, render product, **RGB annotator**, semantic segmentation annotator. RGB annotater outputs RGB images; semantic segmentation annotator gives per-pixel object / class IDs
+	- Replicator randomizers: randomize poses, lights, materials, textures, colors, backgrounds
+- MDL / MaterialX / PBR materials  → realistic material definitions: metal, plastic, rubber, wood, concrete, etc.
 - **USD / Pixar pxr** `Usd`, `UsdGeom`, `UsdShade`, `Gf`, `Sdf`: Creates/edits scene objects, materials, lights, meshes, transforms. USD (universal scene description) is a 3D framework for complex lightweight scenes and rendering, whereas CAD stores exact, highly accurate physical dimensions.
- 	- USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
- 	- CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
+	- USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
+	- CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
+- RTX Renderer  → turns geometry + lights + materials + camera into RGB images
 - **Isaac Sim semantics utils**: Adds semantic class labels to the motor sleeve prim/mesh
+- Custom extensions / shaders / post-process  → underwater, fog, turbidity, sensor noise, blur, distortion
 - **Warp**: GPU kernel backend used internally by Replicator; script redirects cache to `/tmp`
 
 ### Sample workflow (skipping operations that are less relevant)
