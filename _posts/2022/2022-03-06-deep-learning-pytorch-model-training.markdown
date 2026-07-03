@@ -27,6 +27,8 @@ class MyModel(nn.Module):
 
 checkpointing can be used on functions as well.
 
+A full training checkpoint may also include weights, optimizer state, epoch, scheduler, etc. PyTorch recommends saving more than just the model state when resuming training.
+
 ## Op Determinisim
 
 Here is [a good reference on Op Determinism](https://www.tensorflow.org/versions/r2.9/api_docs/python/tf/config/experimental/enable_op_determinism). Below is how this story goes

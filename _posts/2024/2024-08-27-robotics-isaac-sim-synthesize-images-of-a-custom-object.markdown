@@ -8,7 +8,52 @@ tags:
   - Robotics
 comments: true
 ---
-## Isaac / Omniverse
+## Prepare Object
+
+### Convert STL to USD
+
+The path is:
+
+```
+STL
+  -> convert to USD
+  -> load USD into Isaac stage
+  -> attach semantic label: motor_sleeve
+  -> create camera + light + table
+  -> BasicWriter saves RGB + 2D bbox
+```
+
+If STL is probably in **millimeters**. So in Isaac, we probably want scale = 0.001. Then,
+
+```
+cp "$HOME/Downloads/J3 motor_sleeve.STL" ~/isaac_projects/assets/motor_sleeve.stl
+```
+
+### Image Bounding Box Dataset
+
+```
+# class_id, bbox X, bbox Y, bbox width, bbox height
+0 0.498437 0.482292 0.648438 0.966667
+```
+
+We describe distance as object extent: `extent = max(max_x - min_x, max_y - min_y, max_z - min_z)`. so camera distance that's 2.5x will be 2.5 * largest_object_extent
+
+The basic objects you see are from `UsdGeom.mesh`,  USD/pixar mesh primititive class imported from `pxr` in Isaac Sim python. It's a largef 4-vertex quad positioned under the object each frame by `randomize_background()`.
+
+Isaac Sim replicator (SDG, Synthetic Data Generation / perception pipeline). has annotators, writers, sensor simuatliopn, and can randomizing scale, texture, lguiting, and background. We don't label chairs, tables, etc. and they are just distractors (cuz they are not important to our mission). You can find assets in content browser for
+
+```
+environments/  
+ bathroom.usd  
+ living_room.usd  
+ warehouse.usd  
+ lab_table.usd  
+distractors/  
+ bottle.usd  
+ laptop.usd  
+ box.usd  
+ tools.usd
+```
 
 ## Synthesize Images using Isaac Sim
 
@@ -28,11 +73,11 @@ Tools being used:
 
 - **Isaac Sim 6.0 / SimulationApp**: This is the main Omniverse/Isaac Sim app in headless mode that we use.
 - **Omniverse Replicator** `omni.replicator.core`: Creates camera, render product, **RGB annotator**, semantic segmentation annotator. RGB annotater outputs RGB images; semantic segmentation annotator gives per-pixel object / class IDs
-	- Replicator randomizers: randomize poses, lights, materials, textures, colors, backgrounds
+ 	- Replicator randomizers: randomize poses, lights, materials, textures, colors, backgrounds
 - MDL / MaterialX / PBR materials  → realistic material definitions: metal, plastic, rubber, wood, concrete, etc.
 - **USD / Pixar pxr** `Usd`, `UsdGeom`, `UsdShade`, `Gf`, `Sdf`: Creates/edits scene objects, materials, lights, meshes, transforms. USD (universal scene description) is a 3D framework for complex lightweight scenes and rendering, whereas CAD stores exact, highly accurate physical dimensions.
-	- USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
-	- CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
+ 	- USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
+ 	- CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
 - RTX Renderer  → turns geometry + lights + materials + camera into RGB images
 - **Isaac Sim semantics utils**: Adds semantic class labels to the motor sleeve prim/mesh
 - Custom extensions / shaders / post-process  → underwater, fog, turbidity, sensor noise, blur, distortion
@@ -94,3 +139,13 @@ for i in NUM_FRAME:
 ```
 
 Most important aspect is camera pose randomization. We randomize the camera pose on a hypothetical sphere ( the azimuth - elevation - radius model, a.k.a spherical coordinates).
+
+Here is [an example workflow](https://docs.isaacsim.omniverse.nvidia.com/latest/replicator_tutorials/tutorial_replicator_sdg_workflows.html#workflow-1-physics-based-object-settling) of physics based object settling simulation.
+
+![](https://docs.isaacsim.omniverse.nvidia.com/latest/_images/isim_6.0_replicator_tut_external_workflow_1.webp)
+
+- `randomize_dome_light` - chooses an HDR texture and intensity for the dome light.
+- `randomize_distractors` - samples positions, rotations, scales, and display colors for the distractor prims
+- `randomize_pallet` - picks one of the pre-created materials and binds it to the pallet.
+- `randomize_camera` - samples an orbit position around the pallet and points the camera back at it.
+- `randomize_boxes` - writes per-box poses just before the timeline plays so PhysX settles the boxes over `NUM_SIMULATION_FRAMES` ticks.

@@ -19,7 +19,8 @@ tags:
 	- An idiom to check for package, then install if necessary is:
 		- `dpkg -s <pkg> >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install <pkg>)`
 - `ssh -o StrictHostKeyChecking=accept-new` will **automatically accept the host key without prompting**, even for a fresh container. This option was introduced in OpenSSH 7.6 and automatically adds unknown host keys to `~/.ssh/known_hosts` without user interaction.
-
+- create multiple dirs using shell brace expansion, not an array: {}, command `mkdir -p ~/docker/isaac-sim/{cache/main,cache/computecache,config,data,logs,pkg}`
+	- mkdir -p won't overwrite a dir if it already exists
 - Quick for loop:
 
 ```bash

@@ -9,118 +9,24 @@ tags:
     - Deep Learning
 ---
 
-## Terminology
 
-### Area Under Curve
+## Area Under Curve
 
 Area Under Curve = AUC.
 
-### True Positives, False Positives, True Negatives, False Negatives
+## True Positives, False Positives, True Negatives, False Negatives
 
-Suppose a class has 10 students, 5 boys and 5 girls. You use a machine to find the girls, and the machine returns the following results:
+Let’s take an example to illustrate how recall and precision are calculated. Below are images showing objects with ground truth boxes on the left and predictions on the right, and the IoU threshold set to 0.5.
 
-```
-| Boy | Girl | Girl | Boy | Girl | Boy |
-```
-
-Mathematically,
-
-- Positives: The 6 results returned by the machine (these are called Positives because the machine identified them as "girls").
-- Negatives: The 4 remaining students who were not returned by the machine are considered Negatives.
-
-So,
-
-- **True Positives**: These are the items (students) that the machine classified as "girls" and are actually girls. In this case, the machine correctly identified 3 out of the 5 girls:
-
-- **False Positives (FP)**: These are the items the machine classified as "girls," but they are actually boys. In this case, the machine wrongly classified 3 boys as "girls".
-
-- **False Negatives (FN)**: These are the actual girls that the machine missed (classified as "boys"). Since there are 5 actual girls and the machine found 3 of them, it missed 2 girls
-
-- **True Negatives (TN)**: These are the boys that the machine correctly classified as "boys." Since the class has 5 boys in total, and the machine incorrectly labeled 3 as girls, it correctly identified 2 boys as boys:
-
-### Confusion Matrix
-
-A confusion matrix shows how often an example whose label is one class ("actual" class) is mislabeled by the algorithm with a different class ("predicted" class). This measures how "confused" a binary classifier is in predictions
-
-| | Predicted Positive | Predicted Negative |
-| -------- | -------- | -------- |
-| Actual Positive | |
-| Actual Negative | |
-
-## ROC (Receiver Operating Characteristic Curve)
+When multiple boxes detect the same object, the box with the highest IoU is considered TP, while the other boxes are FP.
+If the object is present and the predicted box has an IoU < threshold with the ground truth box, the prediction is considered an FP. More importantly, because no box was detected properly, it also counts as an FN.
+If the object isn't present in the image but the model detects one, the prediction counts as an FP.
+Recall and precision are then computed for each class using the formulas above, by accumulating the counts of TP, FP, and FN.
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/929f74c6-ef03-42f4-9ecf-8b14f63920e8" height="200" alt=""/>
-        <figcaption><a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">Source </a></figcaption>
-    </figure>
-</p>
-</div>
-
-ROC curve measures the performance of a binary classifier at different decision threshold (TODO what is decision threshold?).
-
-The y axis is True Positive Rate: "what percentage of the positives have you classified" This is the same as "recall" as below
-
-$$
-\begin{gather*}
-\frac{TP}{TP + FN}
-\end{gather*}
-$$
-
-The x axis is False Positive Rate: "what percentage of the negatives have you classified".
-
-$$
-\begin{gather*}
-\frac{FP}{FP + TN}
-\end{gather*}
-$$
-
-A decision threshold of a binary classifier is the threshold of probability or confidence above which a class can be identified as true. **A ROC curve is made when the decision threshold is varied.**
-
-- A random classfier would have equal FPR and TPR rates.
-
-Why it's called **ROC**: In World War II, the ROC curve was used by the radar operators to detect enemies. Receiver means "radar receiver equipment", and the curve measures the radar receiver's ability to distinguish enemies, out of all the enemies, versus false signals like flying objects like birds out of all non-enemy flying objects.
-
-In general, people uses AUC to describe a ROC curve. **Pitfalls** of ROC include:
-
-- In imbalanced datasets, when positives are rare, even good models might easily have a low TPR, which results in a low ROC value. An example is medical imaging where the positive (disease) could be rare.
-- So, negative predicted value should be measured along with ROC
-
-$$
-\begin{gather*}
-NPV = \frac{TN}{TN + FN}
-\end{gather*}
-$$
-
-- Precision should be measured along with ROC, see below
-
-The Area-Under-Curve (AUC) of a ROC is always used in plotting the **performance of different thresholds** of a classifier. The best point on a ROC is `(0,1)` meaning the True Positive is 1, False Positive is 0. However, **people say AUC=1** means a model is good. My question is, what if a model is so good, that its data points clutter around `(0,1)`? The AUC would be small in that case.
-
-## mean Average Precision (mAP)
-
-### Precision (查准率) and Recall (查全率)
-
-The precision is: 3/6 = 0.5. Interpretation: It is "#accurate items / #items being returned"
-The recall is: 3/5 = 0.6. Interpretation: This is "#accurate items / #total number of target items", like how many of the total items you've "recalled" into your search.
-
-$$
-\begin{gather*}
-\text{Precision} = \frac{TP}{TP+FP}
-\\
-\text{Recall} = \frac{TP}{TP+FN}
-\end{gather*}
-$$
-
-#### AP Definition in Image Detection
-
-In the case of object detection, **True Positive is the intersecting area, False Positive is the rest of the detected box, False Negative is the rest of the object box.**
-
-<div style="text-align: center;">
-<p align="center">
-    <figure>
-        <img src="https://github.com/user-attachments/assets/034d4ba7-d217-4a8c-a92a-51d8506b1120" height="200" alt=""/>
-        <figcaption><a href="https://www.kdnuggets.com/2020/08/metrics-evaluate-deep-learning-object-detectors.html">Source</a></figcaption>
+        <img src="https://cdn.prod.website-files.com/62cd5ce03261cb3e98188470/68a347a5d57dfa7c9850ddc0_AD_4nXftUbRPYwHfylswEAYL9JBLM1-FHnOsgIJ7BIjGIoNNLs-EMy-ugVxzu8BoFG0PIU1VdX_yAs-yb9xQqXwu5gBdBE602WtccYaGLq9hFg2Z9cPalTEeMVWx5InpLWINcgv90UKKw4w0sX2efFpOyt8.png" height="600" alt=""/>
     </figure>
 </p>
 </div>
@@ -151,6 +57,14 @@ In this real world example, we have found 7 bounding boxes. We sort them by thei
 
 Average Precision (AP) is the **AUC of the precision-recall curve.** In real life, we want a fast way to calculate an approximate of that. Because precision and recall are values in `[0, 1]`, the final AP is also `[0, 1]`
 
+Mean Average Precision mAP is to take the mean of Average Precion across all classes
+
+$$
+mAP = \frac{\sum_C AP(c)}{C}
+$$
+
+- AP 50:95: In COCO style object detection evaluation, we take the average of precisions with IoU over 50%. In the case above it will be `mean(0.94 + 0.96 + 1.0 + 1.0 + 1.0)`
+
 #### PASCAL VOC (Visual Object Classes) 11-Point Interpolation, Pre-2010
 
 PASCAL VOC is a common dataset for object detection. Pre-2010, AP is calculated by taking the mean of the highest value in intervals `[0.0, 0.1, ... 1.0]`. This method is called **Interpolated AP**
@@ -165,95 +79,125 @@ PASCAL VOC is a common dataset for object detection. Pre-2010, AP is calculated 
 </div>
 
 $$
-\begin{gather*}
 AP = \frac{1}{11} \sum_{r \in [0.0, 0.1, 0.2...]}(P_{interpolated}(r))
-\end{gather*}
 $$
 
 where
 
 $$
-\begin{gather*}
-P_{interpolated}(r) = max(P_{r > \tilde{r}}(r))
-\end{gather*}
+P_{interpolated}(r) = \max_{\tilde{r} \ge r} P(\tilde{r})
 $$
 
-so when `r=0.9`, $$P_{interpoloated}=max(0.96,1.0, 1.0) = 1.0$; `r=0.8, ...`,  will get the same $P_{interpoloated}$. The final AP is `(1.0 + 1.0 + ...)/11=1.0`. The intuition comes from that normally, **as recall goes up, precision goes down.**
+so when `r=0.9`, $P_{interpolated}=\max(0.96,1.0,1.0)=1.0$; when `r=0.8, ...`, we get the same $P_{interpolated}$. The final AP is `(1.0 + 1.0 + ...)/11=1.0`. The intuition comes from that normally, **as recall goes up, precision goes down.**
 
 #### PASCAL VOC (Visual Object Classes) Post-2010
 
 $$
-\begin{gather*}
+\begin{aligned}
 AP = \sum_r (r_{n+1}-r_{n})P_{interpolated}(r_{n+1})
 \\
-P_{interpolated}(r_{n+1}) = max(P_{r \in \tilde{r}}(r))
-\end{gather*}
+P_{interpolated}(r_{n+1}) = \max_{\tilde{r} \ge r_{n+1}} P(\tilde{r})
+\end{aligned}
 $$
 
 So one difference from PASCAL VOC pre-2010 is we are calculating for **every recall level.** instead of calculating for the 10 fixed intervals.
 
-#### COCO Dataset mAP
+### Average Recall
+
+| Metric        | Meaning                                                         |
+| ------------- | --------------------------------------------------------------- |
+| **AR@1**      | Average recall when keeping only the top 1 prediction per image |
+| **AR@10**     | Average recall when keeping top 10 predictions                  |
+| **AR@100**    | Average recall when keeping top 100 predictions                 |
+| **AR_small**  | Recall for small objects                                        |
+| **AR_medium** | Recall for medium objects                                       |
+| **AR_large**  | Recall for large objects                                        |
+
+Average Recall at top 100 means "when allowing maximum 100 predictions per image, how many of the objects are detected"
+
+---
+
+## Confusion Matrix
+
+A confusion matrix shows how often an example whose label is one class ("actual" class) is mislabeled by the algorithm with a different class ("predicted" class). This measures how "confused" a binary classifier is in predictions
+
+| | Predicted Positive | Predicted Negative |
+| -------- | -------- | -------- |
+| Actual Positive | |
+| Actual Negative | |
+
+## ROC (Receiver Operating Characteristic Curve)
 
 <div style="text-align: center;">
 <p align="center">
     <figure>
-        <img src="https://github.com/user-attachments/assets/b55a7b51-97e2-42b8-9699-7004b5a518b5" height="300" alt=""/>
-        <figcaption><a href="https://cocodataset.org/#detection-eval">Source </a></figcaption>
+        <img src="https://github.com/user-attachments/assets/929f74c6-ef03-42f4-9ecf-8b14f63920e8" height="200" alt=""/>
+        <figcaption><a href="https://medium.com/@ilyurek/roc-curve-and-auc-evaluating-model-performance-c2178008b02">Source </a></figcaption>
     </figure>
 </p>
 </div>
 
-COCO has its own metrics. The primary metric is AP `AP[.50:.05:.95]`. They are APs of images with IoUs from `[0.5, 0.95]` with 0.05 interval sizes. So they are:
+ROC curve measures the performance of a binary classifier at different decision threshold (TODO what is decision threshold?).
+
+The y axis is True Positive Rate: "what percentage of the positives have you classified" This is the same as "recall" as below
 
 $$
-\begin{gather*}
-AP = \frac{1}{10} \sum_{n=0}^{n=9}AP[0.5, 0.5+0.05n]
-\end{gather*}
+\frac{TP}{TP + FN}
 $$
 
-And each $AP$ is taken over 101 recall levels.
-
-### Mean Average Precision (mAP)
-
-Finally, mean Average Precision mAP is to take the mean of Average Precion across all classes
+The x axis is False Positive Rate: "what percentage of the negatives have you classified".
 
 $$
-\begin{gather*}
-mAP = \frac{\sum_C AP(c)}{C}
-\end{gather*}
+\frac{FP}{FP + TN}
 $$
+
+A decision threshold of a binary classifier is the threshold of probability or confidence above which a class can be identified as true. **A ROC curve is made when the decision threshold is varied.**
+
+- A random classfier would have equal FPR and TPR rates.
+
+Why it's called **ROC**: In World War II, the ROC curve was used by the radar operators to detect enemies. Receiver means "radar receiver equipment", and the curve measures the radar receiver's ability to distinguish enemies, out of all the enemies, versus false signals like flying objects like birds out of all non-enemy flying objects.
+
+In general, people uses AUC to describe a ROC curve. **Pitfalls** of ROC include:
+
+- In imbalanced datasets, when positives are rare, even good models might easily have a low TPR, which results in a low ROC value. An example is medical imaging where the positive (disease) could be rare.
+- So, negative predicted value should be measured along with ROC
+
+$$
+NPV = \frac{TN}{TN + FN}
+$$
+
+- Precision should be measured along with ROC, see below
+
+The Area-Under-Curve (AUC) of a ROC is always used in plotting the **performance of different thresholds** of a classifier. The best point on a ROC is `(0,1)` meaning the True Positive is 1, False Positive is 0. However, **people say AUC=1** means a model is good. My question is, what if a model is so good, that its data points clutter around `(0,1)`? The AUC would be small in that case.
 
 ## F1 Score
 
 Having a single-value metric makes evaluation intuitive. An F1 score is the "harmonic average" of Precision, and Recall
 
 $$
-\begin{gather*}
 F1 = \frac{2}{\frac{1}{precision} + \frac{1}{recall}}
-\end{gather*}
 $$
 
 F1 score unfortunately is NOT a loss, because it's NOT differentiable. This is because precion and recall are not differentiable either: **each false prediction will contribute either 0 or 1 to the loss, so the loss is calculated discretely, not continuously**. To make it continuous, one can use make it a [soft F1 Score loss](https://www.kaggle.com/code/rejpalcz/best-loss-function-for-f1-score-metric):
 
 $$
-\begin{gather*}
+\begin{aligned}
 TP = \sum (y_{\text{true}} \cdot y_{\text{pred}})
 \\
 TN = \sum \left((1 - y_{\text{true}}) \cdot (1 - y_{\text{pred}})\right)
 \\
 FP = \sum \left((1 - y_{\text{true}}) \cdot y_{\text{pred}}\right)
-\end{gather*}
 \\
 FN = \sum \left(y_{\text{true}} \cdot (1 - y_{\text{pred}})\right)
-
-\\ =>
+\\
+\Rightarrow
 \\
 P = \frac{TP}{TP + FP + \epsilon}
 \\
 R = \frac{TP}{TP + FN + \epsilon}
 \\
 F1 = \frac{2 \cdot P \cdot R}{P + R + \epsilon}
-
+\end{aligned}
 $$
 
 ### F1 Score Implementation

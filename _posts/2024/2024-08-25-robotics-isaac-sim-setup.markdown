@@ -113,20 +113,17 @@ docker run --name isaac-sim --entrypoint bash -it --gpus all --rm --network=host
   nvcr.io/nvidia/isaac-sim:6.0.0
 ```
 
-The path is:
-
-STL
-  -> convert to USD
-  -> load USD into Isaac stage
-  -> attach semantic label: motor_sleeve
-  -> create camera + light + table
-  -> BasicWriter saves RGB + 2D bbox
-
-If STL is probably in **millimeters**. So in Isaac, we probably want scale = 0.001. Then,
+In the container,
 
 ```
-cp "$HOME/Downloads/J3 motor_sleeve.STL" ~/isaac_projects/assets/motor_sleeve.stl
+cd /isaac-sim
+./runheadless.sh -v
 ```
+
+Until you see `Isaac Sim Full Streaming App is loaded.` Then open **Isaac Sim WebRTC Streaming Client** on the same machine and connect to:  `127.0.0.1`
+If connecting from another laptop over LAN/Tailscale, use your host IP instead:
+
+Then, download isaac sim webrtc: <https://docs.isaacsim.omniverse.nvidia.com/6.0.1/installation/download.html#isaac-sim-latest-release>, and start a webrtc client
 
 ---
 
@@ -159,8 +156,8 @@ A `.usd` file is not just a mesh like `.obj` or `.stl`. It can store or referenc
 ## Gotchas
 
 - The runscript creates several cache directories, like warp, ComputeCache, etc. but it doesn't mount /isaac-sim/.cache/ov/texturecache.
- 	- The container can't create that directory since uid 1234 doesn't own the base path inside the container
- 	- The simulation still runs; it just won't cache textures between sessions, meaning slightly slower texture loading on first use.
+  - The container can't create that directory since uid 1234 doesn't own the base path inside the container
+  - The simulation still runs; it just won't cache textures between sessions, meaning slightly slower texture loading on first use.
 
 ```
 2026-06-24T12:41:34Z [120,073ms] [Error] [omni.rtx] ResourceManager: Failed to create the texture cache

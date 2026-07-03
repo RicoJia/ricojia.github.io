@@ -112,6 +112,18 @@ This allows a local user to access Xterminal
 4. do `xclock` in the docker. The GUI should pop up on the client machine.
     - **A catch to this method is**, because `$DISPLAY=system76-pc:10.0`, the GUI will be launched there even if you launch the GUI on the server.
 
+## `export DISPLAY:=1`
+
+If a container was started remotely, when you go back to your workstation, you might need to do `export DISPLAY=:1` so a GUI app can show up properly. It tells GUI programs to connect to X display number 1. (through x 11 server)
+
+```
+DISPLAY=:0
+DISPLAY=:1
+DISPLAY=localhost:10.0
+```
+
+`:` separates the machine name from the display number.
+
 ### VPN Software
 
 - tailscale
