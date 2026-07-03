@@ -73,11 +73,11 @@ Tools being used:
 
 - **Isaac Sim 6.0 / SimulationApp**: This is the main Omniverse/Isaac Sim app in headless mode that we use.
 - **Omniverse Replicator** `omni.replicator.core`: Creates camera, render product, **RGB annotator**, semantic segmentation annotator. RGB annotater outputs RGB images; semantic segmentation annotator gives per-pixel object / class IDs
- 	- Replicator randomizers: randomize poses, lights, materials, textures, colors, backgrounds
+  - Replicator randomizers: randomize poses, lights, materials, textures, colors, backgrounds
 - MDL / MaterialX / PBR materials  → realistic material definitions: metal, plastic, rubber, wood, concrete, etc.
 - **USD / Pixar pxr** `Usd`, `UsdGeom`, `UsdShade`, `Gf`, `Sdf`: Creates/edits scene objects, materials, lights, meshes, transforms. USD (universal scene description) is a 3D framework for complex lightweight scenes and rendering, whereas CAD stores exact, highly accurate physical dimensions.
- 	- USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
- 	- CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
+  - USD stores meshes, transforms, object hierachy, materials, textures, cameras, lights, joints.. properties of multiple objects in a scene
+  - CAD stores extrudes / cuts/ fillets, precise dimensions, exact geometry like cylinders  instead of meshes
 - RTX Renderer  → turns geometry + lights + materials + camera into RGB images
 - **Isaac Sim semantics utils**: Adds semantic class labels to the motor sleeve prim/mesh
 - Custom extensions / shaders / post-process  → underwater, fog, turbidity, sensor noise, blur, distortion
@@ -149,3 +149,59 @@ Here is [an example workflow](https://docs.isaacsim.omniverse.nvidia.com/latest/
 - `randomize_pallet` - picks one of the pre-created materials and binds it to the pallet.
 - `randomize_camera` - samples an orbit position around the pallet and points the camera back at it.
 - `randomize_boxes` - writes per-box poses just before the timeline plays so PhysX settles the boxes over `NUM_SIMULATION_FRAMES` ticks.
+
+---
+
+## Domain Randomization
+
+Synthetic data often suffers from a **sim-to-real gap**, where models trained in simulation do not perform as well on real-world images. This gap usually comes from two main sources:
+
+### Appearance Gap
+
+The **appearance gap** refers to pixel-level differences between synthetic and real images.
+
+- Different object materials, textures, colors, or surface details.
+- Unrealistic lighting, shadows, reflections, or exposure.
+- Simplified rendering that does not fully match real camera behavior.
+
+This gap can be reduced by:
+
+- Improving rendering fidelity. like adding photorealistic materials, lighting, and camera effects.
+
+### Content Gap
+
+The **content gap** refers to differences in scene composition between synthetic and real-world environments.
+
+- Too few object types or scene variations.
+- Limited object poses, scales, and placements.
+- Missing background details or environmental context.
+- Synthetic scenes that are too clean or repetitive.
+
+This gap can be reduced by increasing scene diversity during dataset generation.
+
+**Domain randomization** intentionally varies simulation parameters so the model learns to handle a wide range of conditions instead of overfitting to one synthetic setup.
+
+Useful parameters to randomize include:
+
+- Object appearance: texture, color, material, roughness.
+- Object pose: position, rotation, scale, and viewpoint.
+- Lighting: brightness, direction, shadows, reflections.
+- Camera settings: focal length, noise, blur, exposure.
+- Backgrounds: floors, walls, clutter, outdoor or indoor scenes.
+
+By exposing the model to many simulated variations, domain randomization helps it generalize better to real-world images and unseen environments.
+
+### NVIDIA Isaac Sim Replicator
+
+NVIDIA Isaac Sim includes **Replicator**, a core Omniverse extension for synthetic data generation and domain randomization.
+
+Replicator supports on-the-fly randomization of scene attributes, such as:
+
+- Materials
+- Textures
+- Lighting
+- Camera poses
+- Object placement
+- Background elements
+
+Because these changes can be applied without repeatedly reloading assets, Replicator makes large-scale randomized dataset generation more efficient.
