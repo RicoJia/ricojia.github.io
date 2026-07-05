@@ -150,6 +150,40 @@ $$
 \end{gather*}
 $$
 
+TODO
+// We preintegrate the raw IMU measurements once using the bias linearization point
+// bg_hat / ba_hat. This produces the nominal measurement:
+//
+//     dR_hat, dV_hat, dP_hat
+//
+// and the cached bias Jacobians:
+//
+//     J_R_bg, J_V_bg, J_V_ba, J_P_bg, J_P_ba
+//
+// During optimizer iterations, we usually do not re-preintegrate with the new bias
+// values. Therefore, the stored nominal measurement and its preintegration Jacobians
+// are treated as constant inside this edge.
+//
+// However, the bias-corrected measurement used in the residual does change because
+// bg_i and ba_i are graph variables:
+//
+//     dR(bg_i) ≈ dR_hat *Exp(J_R_bg* (bg_i - bg_hat))
+//     dV(bg_i, ba_i) ≈ dV_hat + J_V_bg *(bg_i - bg_hat)
+//                            + J_V_ba* (ba_i - ba_hat)
+//     dP(bg_i, ba_i) ≈ dP_hat + J_P_bg *(bg_i - bg_hat)
+//                            + J_P_ba* (ba_i - ba_hat)
+//
+// This is the core idea of IMU preintegration: use cached first-order bias
+// Jacobians to cheaply correct the preintegrated measurement, instead of
+// reintegrating every raw IMU sample at every optimizer iteration.
+//
+// Note: the cached preintegration Jacobian J_R_bg is constant, but the residual
+// Jacobian wrt bg_i is not constant. It is recomputed during linearization because
+// it depends on the current Ri, Rj, error_R, and delta_bg.
+//
+// If the bias update becomes too large, the first-order correction may become
+// inaccurate. In that case, we can re-preintegrate using a new bg_hat / ba_hat.
+
 ### Jacobians of the Velocity Part
 
 Since:
