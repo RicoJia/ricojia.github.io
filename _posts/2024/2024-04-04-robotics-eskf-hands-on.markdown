@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Robotics - General ESKF Hands-on Test Notes
-date: 2024-04-03 13:19
+date: 2024-04-04 13:19
 subtitle: Covariance Update with $\Delta t$
 comments: true
 header-img: img/post-bg-unix-linux.jpg

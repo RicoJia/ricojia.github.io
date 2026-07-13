@@ -143,6 +143,54 @@ bind -x '"\C-f": navi'
 if command -v lcov > /dev/null  # makes it go to null
 ```
 
+### pgrep
+
+## `pgrep -af "ros2 bag|"`
+
+`pgrep` searches the process table directly, similar to searching through `ps aux`, but it does **not literally run `ps aux`**.
+
+With flags:
+
+```
+pgrep -af "ros2 bag"
+```
+
+means:
+
+- `-a`  print PID + full command line
+- `-f`  match against the full command line, not just process name
+
+```
+ps -a
+```
+
+means:
+
+- show all processes attached to a terminal,
+- except session leaders,
+- and exclude processes without a controlling TTY. A **controlling TTY** means the terminal that owns/interacts with the process. For example, processes launched from your shell usually have a TTY:
+
+More explicitly:
+included:
+
+- processes with a controlling terminal / TTY
+
+excluded:
+
+- session leaders
+- daemons/background services without a TTY
+- many container/system processes
+
+```
+ps aux
+```
+
+shows processes:
+
+- a = show processes from all users with a TTY
+- u = user-oriented format
+- **x = also show processes without a controlling TTY** This is why `ps aux` show it.
+
 ---
 
 ## Variables

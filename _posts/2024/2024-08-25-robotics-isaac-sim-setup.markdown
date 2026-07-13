@@ -170,3 +170,30 @@ A `.usd` file is not just a mesh like `.obj` or `.stl`. It can store or referenc
 ```yaml
 - /var/run/docker.sock:/var/run/docker.sock
 ```
+
+## IsaacSim vs Blender
+
+| Category                    | Isaac Sim                                                             | Blender                                                                                                                 |
+| --------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Main purpose                | Robotics simulation, synthetic data, robot testing                    | 3D modeling, animation, rendering, asset creation                                                                       |
+| Synthetic labels            | Built-in Replicator annotators: RGB, bbox, segmentation, depth, etc.  | Possible, but you usually build/export scripts yourself                                                                 |
+| Robotics physics            | Built around robotics sim, PhysX/Newton, robot import, sensors, ROS 2 | Has physics, but not robotics-stack oriented                                                                            |
+| USD support                 | Native foundation; Isaac Sim scene language is OpenUSD                | Can import/export USD, but Blender docs note some USD composition features like layers/references are not fully handled |
+| Materials                   | USD/MDL/Omniverse materials, RTX renderer                             | Excellent materials in Blender/Cycles/Eevee, but translation to USD/Isaac may be imperfect                              |
+| Rendering                   | RTX/Omniverse renderer, good for synthetic robotics data              | Cycles is excellent for photorealistic rendering                                                                        |
+| Headless dataset generation | Strong                                                                | Also possible with Python CLI, but labels require more custom work                                                      |
+| Learning curve              | Heavy, more brittle, GPU/driver/container issues                      | Easier to use interactively, great community/tools                                                                      |
+| Best file format            | USD/USDZ                                                              | `.blend`, but can import/export many formats including USD/OBJ/FBX/STL                                                  |
+Blender can render beautiful images, but if you want object detector labels, you usually need extra scripting. Blender is better for **asset preparation**.
+
+- fix mesh normals
+- decimate high-poly CAD
+- repair bad geometry
+- assign UVs
+- make textures
+- make nicer materials
+- create background rooms
+- create clutter objects
+- convert/export OBJ/FBX/STL/USD
+
+IsaacSim is also better at randomizing things like camera pose, lighting, etc.

@@ -185,3 +185,45 @@ guess.linear() = svd.matrixU() * svd.matrixV().transpose();
 SVD is like "Data Driven Generalization of Fourier Transform". It's one of the transformations used in **the last generation computational science tools, which maps a system into a new coordinates**. In a system like facial recognition, we have a bunch of data but no off-the-shelf mathematical model for Fourier Tranformation. SVD allows us to tailor a model with those data to the specific problem.
 
 - It can be used in PCA to form a basis for a reduced-dimension coordinate system. This is used in Google Page Rank, facial recognition algorithms (eigen faces), recommender systems in Aamazon and facebook; It's a very money-making tool ;).
+
+## Gotcha - SVD Could Create a Reflection When Solving For a Rigid Transform
+
+Find R that aligns source points P (3xn) to target poin ts Q (3xn). Usually, we put [x,y,z; x2, y2, z2] *[qx, qy, qz; ...] = sum(q_i* p_i ^T) so it's still 3x3 = Q * P^T
+
+Then SVD: H = U Σ V^T. Unconstrained optimal orthogonal transform is R = U V^T, but R is only guaranteed to be normal: R^T R = I. In the mean time, a pure rotation must satisfy det(R) = 1, but reflection has det(R) = -1 . This is because det(R) = det(U V^T) = det(U) det (V^T). either determinant could be 1 or -1.
+
+```
+D = diag(1, 1, det(U Vᵀ))
+R = U D Vᵀ
+```
+
+A reflection matrix has det(R) = -1, like U = [-1 0 0 1]. above, `det(U Vᵀ) = -1`
+
+Or, think about how SVD solved for U and V. U columns are eigen vectors of H HT.
+
+```
+U = I
+
+U = [1 0 0
+     0 1 0
+     0 0 1]
+
+det(U) = +1
+```
+
+if we flip a column (which is still a valid eigen vector), we get a flipped determinant
+
+```
+U' = [1  0  0
+      0  1  0
+      0  0 -1]
+
+det(U') = -1
+```
+
+To fix, you flip the last column and try again:
+
+```
+det(U Vᵀ) = 1
+R = U D Vᵀ
+```

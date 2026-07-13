@@ -54,3 +54,5 @@ publisher.publish(marker)
 Channel Name: rgb
 Color Transformer: RGB8
 ```
+
+- if rviz2 listens for TF, then it will bring up a ROS2 node `/transform_listener_impl_618e37bfdb30`.

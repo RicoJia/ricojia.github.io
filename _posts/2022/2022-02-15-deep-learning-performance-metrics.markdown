@@ -1,14 +1,21 @@
 ---
 layout: post
 title: Deep Learning - Performance Metrics
-date: '2022-02-15 13:19'
-subtitle: mean Average Precision (mAP), Precision, Recall, ROC Curve, F1 Score
+date: 2022-02-15 13:19
+subtitle: mean Average Precision (mAP), Precision, Recall, ROC Curve, F1 Score, EMA Weights
 comments: true
-header-img: "img/home-bg-art.jpg"
+header-img: img/home-bg-art.jpg
 tags:
-    - Deep Learning
+  - Deep Learning
 ---
 
+## GIoU
+
+![](https://i0.wp.com/python-ai-learn.com/wp-content/uploads/2021/01/GIoU1.png?resize=390%2C259&ssl=1)
+
+$$
+\mathrm{GIoU} = \mathrm{IoU} - \frac{\left|\,C \setminus (A \cup B)\,\right|}{\left|\,C\,\right|}
+$$
 
 ## Area Under Curve
 
@@ -222,6 +229,51 @@ print(f"f1 score: {f1}")
 ### Satisficing Metric
 
 Satisficing here means "satisfying a certain metric suffices". It's a kind of metric that we set a minumum requirement for, but do not care so much afterwards. For example, in a classifier, as long as recall is over 90%, we don't care about it as much; or in a recommendation system, we set a minimum for speed, but after that we care a lot more on the accuracy.
+
+---
+
+## Cardinality error
+
+Cardinality = number of elements in a set. Cardinality error = number of objects that are mis-classified
+
+Example:
+
+```text
+GT objects:        2
+model predicts:    4
+cardinality error: |4 - 2| = 2
+```
+
+This is usually **for logging**, not a main optimization loss.
+
+---
+
+## EMA Weights
+
+EMA means **Exponential Moving Average** of model weights.
+
+Instead of using only the latest weights:
+
+```text
+current_model_weights
+```
+
+training also maintains smoothed weights:
+
+```text
+ema_weights = mostly old stable weights + small amount of latest weights
+```
+
+EMA often gives better validation results because it smooths noisy training updates.
+
+So compare:
+
+```text
+val/mAP_50_95
+val/ema_mAP_50_95
+```
+
+If EMA is better, use the EMA checkpoint for inference if available.
 
 ## References
 
