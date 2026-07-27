@@ -2,7 +2,7 @@
 layout: post
 title: Bash Scripting
 date: 2023-06-21 13:19
-subtitle:
+subtitle: stdout, file descriptor, source
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -127,6 +127,26 @@ _find_pkg_path(){
 - `set -e` will exits the parent shell immediately upon an error
 - `trap 'echo "Error occurred, but shell will not close"; return 1' ERR` will terminate the current shell, but won't terminate the parent shell
 
+#### Nounset mode
+
+`set -u` enables the nounset mode, where using an undefined variable is treated as an error: 
+
+```bash
+set -u
+echo "$NAME"
+```
+If `NAME` was never defined: `bash: NAME: unbound variable` 
+
+In this case, the second case will still fault because we need an extra assignment: `POSE_ESTIMATE_INSTALL_TRT="${POSE_ESTIMATE_INSTALL_TRT:-1}"`, or fallback assignment`${VAR:=value}  # fallback and assignment` : 
+
+```bash
+unset POSE_ESTIMATE_INSTALL_TRT
+
+echo "${POSE_ESTIMATE_INSTALL_TRT:-1}"  # prints 1
+echo "$POSE_ESTIMATE_INSTALL_TRT"       # error: unbound variable
+```
+
+
 ## Built-ins
 ### Test
 
@@ -161,4 +181,59 @@ Though a most variables (except for arrays) can be defined directly `VAR=123`, I
 ### Operators
 
 `for ((i=1; i < 100; ++i))` : `(())`is arithmatic evaluation. `()` is just grouping 
+
+## Stdout and file descriptor
+
+`[[ -t FD ]]` is to check if the terminal is connected to a file descriptor. Normally, 
+
+- FD = 0; stdin 
+- FD = 1: stdout
+- FD = 2: stdout. 
+
+Therefore, one use case is to skip emitting ANSI escape codes when output is redirected
+
+```bash
+# print_msg_in_blue "hello" > log.txt
+
+print_msg_in_blue() {
+    if [[ -t 1 ]]
+        printf '\033[34m%s\033[0m\n' "$*"
+    else 
+        printf '%s\n' "$*" 
+    fi
+}
+```
+
+
+## Source vs executing
+
+```bash
+export PATH="/something:$PATH"
+cd /some/directory
+```
+
+`./setup_env.sh` executes a file in a new shell process. Environment variables disappear when the script finishes.   However, if you do `source ./setup_env.sh` , the changes remain because the file is executed in the current shell. 
+
+One can check if a script is sourced or executed:
+```
+[[ -n "${BASH_SOURCE[0]-}" && "${BASH_SOURCE[0]}" != "$0" ]]
+```
+
+`BASH_SOURCE` is an array container the source filenames involved in the current call stack. `$0` is the originally executed program or shell. 
+- In `./setup_env.sh`, the values are: 
+```
+BASH_SOURCE[0] = ./setup_env.sh
+$0             = ./setup_env.sh
+```
+
+- However, in `source setup_env.sh`, the values are 
+```
+BASH_SOURCE[0] = setup_env.sh
+$0             = bash
+```
+or in an interactive shell:
+```
+BASH_SOURCE[0] = setup_env.sh
+$0             = -bash
+```
 

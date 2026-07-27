@@ -224,3 +224,9 @@ You can split it like this:
 ```bash
 IFS='|' read -ra OVERLAP_ARRAY <<< "$OVERLAPS"
 ```
+
+## Check container ubunut
+
+```
+cat /etc/os-release
+```

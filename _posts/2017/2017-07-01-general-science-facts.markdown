@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Electronics - General Science Facts
-subtitle: Adiabatic Cooling, Centripedal & Centrifugal Forces
-date: '2017-07-01 13:19'
-header-img: "img/bg-material.jpg"
+subtitle: Adiabatic Cooling, Centripedal & Centrifugal Forces, Photonics
+date: 2017-07-01 13:19
+header-img: img/bg-material.jpg
 tags:
-    - Electronics
+  - Electronics
 ---
 
 ## Adiabatic Cooling
@@ -42,3 +42,14 @@ $γ$ is the adiabatic index. A practical example of this is air rising in the at
 - Is this true? "not all usb-c cables are data cables". Yes, usb-c is just a shape. Some of them are charge-only. Also, What is DP? (display port)
 - What is MTU? It's "maximum transmission unit" in bytes
 - What is a fathom? A traditional unit to measure depth in nautical context. 1 fathom = 6 ft
+
+## Photonics
+
+Albedo is how much incidence energy gets reflected:
+
+$$
+albedo = \frac{reflection}{incidence}
+$$
+
+- albedo = 0: super dark, absorbs most light
+- albedo = 1: super reflective, reflects most light

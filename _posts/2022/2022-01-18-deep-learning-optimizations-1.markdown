@@ -321,6 +321,16 @@ Here is an illustration of the difference between Adam and AdamW:
     </p>
 </div>
 
+In code:
+
+```python
+torch.optim.AdamW(
+    net.parameters(),
+    lr=1e-3,
+    weight_decay=1e-4,
+)
+```
+
 ## Gradient Clipping
 
 One simple method is: if gradint surpasses a simple threshold, we clip the gradient to the threshold.

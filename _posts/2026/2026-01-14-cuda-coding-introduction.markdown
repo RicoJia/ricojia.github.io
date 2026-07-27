@@ -2,7 +2,7 @@
 layout: post
 title: "[CUDA - 2] Introduction to CUDA Coding"
 date: 2026-01-14 13:19
-subtitle: CUDA Programming Hierarchy
+subtitle: CUDA Programming Hierarchy, Jetpack, MPS
 comments: true
 header-img: img/post-bg-alibaba.jpg
 tags:
@@ -31,6 +31,15 @@ So this means
 - It provides `at::Tensor`, core tensor operations, device CPU/CUDA handling, and backend dispatch mechanism
 - `#include <ATen/ATen.h>`
 - In PyTorch/ATen extensions **you usually work with `at::Tensor` on the host** and **pass raw pointers (`tensor.data_ptr<T>()`) into CUDA kernels**; ATen handles *CPU/CUDA dispatch and memory details*.
+
+### Gotcha - cuda version is in /usr/local/cuda
+
+  `nvidia-smi` shows the installed NVIDIA driver’s maximum supported CUDA runtime API version: 13.0. The wrapper build uses the local CUDA toolkit at /usr/local/cuda—compiler, headers, and CMake files—which is 12.2.
+
+```
+readlink -f /usr/local/cuda # see /usr/local/cuda-12.2
+nvcc --version
+```
 
 ---
 
@@ -218,3 +227,93 @@ __global__ void nearest_neighbor_kernel( const float* __restrict__ src_points)
 - `__managed__` : unified memory (accessible from CPU & GPU; managed migration)
 - `__restrict__` is a **promise to the compiler** about pointers: "for the lifetime of the pointer, it does not overlap with the memory of any other `__restrict__` pointers"
   - Without it, the compiler would become conservative and add extra loads / stores, fewer reorderings.
+
+---
+
+## Jetpack
+
+Jetpack: whole NVIDIA software stack for **Jetson**, not just GPU
+
+```
+JetPack = Ubuntu-based Jetson Linux
+        + kernel / drivers / BSP
+        + CUDA
+        + cuDNN
+        + TensorRT
+        + VPI / DLA / multimedia / camera stack
+        + Nsight tools
+        + containers / dev tools
+```
+
+Jetpack is not on the GPU only, it affects:
+
+- CPU: ubuntu, kernel, drivers
+- GPU: CUDA, cuDNN, TensorRT, graphics
+- camera / video: GStreamer, Argus
+
+## MPS
+
+Here MPS means **CUDA Multi-Process Service**. It lets multiple CUDA processes share the GPU more efficiently. NVIDIA says MPS is a **lightweight runtime service** for cooperative CUDA multi-process workflows, with:
+
+- nvidia-cuda-mps-control
+- nvidia-cuda-mps-server
+- libcuda.so client runtime
+
+Without MPS, the GPU has to time slice with more context switches:
+
+- process A CUDA context
+- process B CUDA context
+- process C CUDA context
+
+With MPS:
+
+- process A \
+- process B  -> MPS server -> GPU
+- process C /
+
+The MPS server **multiplexes** CUDA work from multiple processes into a shared context. That can allow kernels from A/B/C to **overlap** on the GPU when there are enough free GPU resources.
+
+```
+Process A launches small kernel using 20% of SMs
+Process B launches small kernel using 30% of SMs
+Process C launches small kernel using 10% of SMs
+```
+
+GPU may run concurrently:
+
+```
+time →
+A: [kernel AAAAA]
+B:   [kernel BBBBBBB]
+C:     [kernel CCC]
+GPU: overlapping work
+```
+
+But if one process launches a big kernel that uses most of the GPU:
+
+```
+Process A launches huge RF-DETR kernel using most SMs
+Process B launches FoundationPose kernel
+```
+
+```
+time →
+A: [huge kernel AAAAAAAAAAAAA]
+B:                         [kernel BBB]
+```
+
+So MPS reduces context-switch overhead and enables overlap, but it does not magically make one GPU become three GPUs.
+
+### Runtime Checks
+
+You can check mps with:
+
+```
+which nvidia-cuda-mps-control
+```
+
+And start it:
+
+```
+nvidia-cuda-mps-control -d
+```

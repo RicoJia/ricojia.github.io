@@ -98,3 +98,33 @@ poetry config pypi-token.pypi your_pypi_token_here
 ```bash
 pip install --user <PKG>
 ```
+
+### pip constraint file
+
+```
+pip install -r requirements.txt
+```
+
+installs everything in there, but `constraints.txt` does not install packages unless they have to be installed in `pip install`.
+
+`constraints.txt`:
+
+```
+numpy==2.1.0
+```
+
+If you do:
+
+```
+PIP_CONSTRAINT=constraints.txt pip install requests
+```
+
+does **not** install NumPy, because `requests` does not require it.
+
+But
+
+```
+PIP_CONSTRAINT=constraints.txt pip install numpy
+```
+
+installs exactly `numpy==2.1.0`.
