@@ -85,7 +85,7 @@ Not every operation becomes a Triton kernel. Inductor may:
 - preserve a registered custom operator;
 - place unsupported code outside the compiled region.
 
-## 3. Example: kernel fusion
+### 2 - 1 Examples : kernel fusion
 
 Consider:
 
@@ -119,7 +119,29 @@ Fusion can reduce:
 This is one reason a compiler can improve performance without changing the
 model's mathematical definition.
 
-## 4. Graph breaks
+Similarly, fuse ordinary PyTorch operations
+
+```python
+def preprocess(x):
+    x = (x - mean) / std
+    return torch.clamp(x, 0, 1)
+```
+
+Eager PyTorch may launch several kernels:
+
+```text
+subtract → divide → clamp
+```
+
+TorchInductor may generate one fused Triton kernel:
+
+```text
+load x → subtract mean → divide by std → clamp → store
+```
+
+This is useful for custom PyTorch logic, including preprocessing and postprocessing—not just standard neural-network layers.
+
+### 2 - 2 Graph breaks
 
 `torch.compile` does not necessarily capture an entire Python program as one
 graph.
@@ -147,7 +169,7 @@ compiled region 2
 Graph breaks do not necessarily change correctness, but they reduce the
 compiler's optimization scope and may add overhead.
 
-## 5. Guards and recompilation
+### 2 - 3 Guards and recompilation
 
 `TorchDynamo` creates **guards** for assumptions made while capturing a graph.
 Examples include:
@@ -169,7 +191,7 @@ This matters in vision pipelines where:
 
 Stable shapes generally make compilation and benchmarking easier.
 
-## 6. Why the first call is slow
+### 2 - 4 Why the first call is slow
 
 The first compiled call may perform:
 
@@ -199,7 +221,7 @@ torch.cuda.synchronize()
 Because CUDA execution is asynchronous, **synchronize immediately before and**
 **after the timed region when measuring GPU latency**.
 
-## 7. What TensorRT does
+## 3. What TensorRT does
 
 TensorRT is an **inference optimizer and runtime** for NVIDIA GPUs. It consumes a
 supported inference graph and builds a serialized engine.
@@ -250,7 +272,28 @@ artifact constrained by factors such as:
 
 See the current [NVIDIA TensorRT documentation](https://docs.nvidia.com/deeplearning/tensorrt/latest/index.html).
 
-## 8. Torch-TensorRT
+### 3-1 TensorRT example: optimize a convolution block
+
+Given:
+
+```text
+Convolution → Bias → BatchNorm → ReLU
+```
+
+TensorRT can:
+
+1. Fold BatchNorm parameters into the convolution weights and bias.
+2. Fuse the remaining operations where supported.
+3. Choose the fastest convolution implementation, called a **tactic**, for the GPU and input shape.
+4. Run it in FP16 or INT8 when configured and supported.
+
+The resulting engine may effectively execute:
+
+```text
+one optimized FP16 convolution block
+```
+
+### 3-3 Torch-TensorRT
 
 `Torch-TensorRT` connects PyTorch with TensorRT. Depending on the workflow, it can
 compile supported model regions for TensorRT and integrate them with PyTorch
@@ -279,7 +322,7 @@ compiled_model = torch.compile(
 `torch.compile` is the front-end entry point in both examples, but the selected
 backend determines how captured graphs are lowered and executed.
 
-## 9. TorchInductor versus TensorRT
+## 3-4 TorchInductor versus TensorRT
 
 | Question | TorchInductor | TensorRT |
 | --- | --- | --- |
@@ -300,144 +343,29 @@ PyTorch graph
     └──► TensorRT ───────► optimized inference engine
 ```
 
-## 10. Which one should you use?
-
-### Prefer `torch.compile` with TorchInductor when
-
-- you want to remain inside PyTorch;
-- the model is still changing frequently;
-- you need training acceleration;
-- exporting the graph is difficult;
-- unsupported Python or custom operations must remain in the pipeline;
-- avoiding a separate engine-build and deployment process matters.
-
-### Prefer TensorRT when
-
-- inference performance is the primary objective;
-- the model and input profiles are stable;
-- NVIDIA-only deployment is acceptable;
-- the graph is well supported;
-- reduced precision is acceptable and validated;
-- maintaining serialized engines and plugins is reasonable.
-
-### Use both selectively when
-
-- TensorRT can accelerate a stable neural-network subgraph;
-- preprocessing, postprocessing, or unsupported operations remain in PyTorch;
-- end-to-end measurements show that partitioning is worth its complexity.
-
-The best choice cannot be made from model latency alone. Export and partition
-boundaries can introduce:
-
-- synchronization;
-- tensor copies;
-- layout conversions;
-- memory ownership transitions;
-- additional maintenance.
-
-Measure the complete pipeline.
-
-## 11. Can TensorRT work with Triton?
-
-The answer depends on which Triton you mean.
-
-### TensorRT with NVIDIA Triton Inference Server: yes
-
-This is a standard serving arrangement:
-
-```
-Application or client
-          │
-          ▼
-NVIDIA Triton Inference Server
-          │
-          ├──► TensorRT backend ──────► TensorRT engine
-          ├──► PyTorch backend ───────► PyTorch model
-          ├──► ONNX Runtime backend ──► ONNX model
-          └──► Python backend ────────► custom Python logic
-```
-
-The server handles model serving, scheduling, and batching. TensorRT performs
-optimized inference within the TensorRT backend.
-
-### TensorRT with Triton-language kernels: not as a simple native pipeline
-
-TensorRT does not generally accept an arbitrary Triton-language kernel as a
-normal native engine layer.
-
-Practical options include:
-
-1. Execute a Triton kernel before or after the TensorRT engine.
-2. Partition the framework graph so TensorRT handles supported regions.
-3. Implement a TensorRT plugin for a custom operation.
-4. Keep the complete workload under TorchInductor when the integration cost
-   exceeds the expected TensorRT gain.
-
-The short answer is:
-
-```text
-TensorRT + NVIDIA Triton Inference Server     Yes, directly
-TensorRT + Triton-language kernels            Can coexist around boundaries,
-                                              but not simple native composition
-```
-
-## 12. Applying this to RF-DETR and FoundationPose
-
-For an RF-DETR plus FoundationPose pipeline:
-
-- RF-DETR PyTorch model: Benchmark both torch.compile and TensorRT.
-- FoundationPose refiner and scorer: Strong TensorRT candidates when their shapes and operations are stable.
-- Existing TensorRT refiner/scorer engines: Already optimized by TensorRT; wrapping engine execution in torch.compile, normally adds little.
-- `nvdiffrast` and custom CUDA operations: May remain separate operations or introduce graph/export boundaries.
-- Python cropping, detection filtering, and ROS handling: Usually remain outside the compiled tensor graph unless expressed as traceable tensor operations.
-
-For fixed image and crop sizes, start with:
-
-```python
-compiled_model = torch.compile(
-    model,
-    backend="inductor",
-    mode="default",
-)
-```
-
-Then test `mode="reduce-overhead"` if Python and kernel-launch overhead are
-important. Test `mode="max-autotune"` only when its additional compilation time
-is acceptable.
-
-Compare:
-
-```text
-1. eager PyTorch FP16
-2. torch.compile with Inductor FP16
-3. TensorRT FP16
-```
-
-Measure:
-
-- compilation or engine-build time;
-- first-request latency;
-- warmed model latency;
-- end-to-end pipeline latency;
-- **peak GPU memory;**
-- numerical and accuracy differences;
-- graph breaks and recompilations;
-- behavior across real input shapes.
-
-## Final takeaway
+## 4. Which one should you use?
 
 ```text
 torch.compile
-    PyTorch's high-level compilation entry point.
+    PyTorch's high-level compilation entry point - optimizes executable PyTorch code and can generate kernels for custom combinations of tensor operations.
 
 TorchInductor
     The default compiler backend, often generating Triton GPU kernels.
 
 TensorRT
-    An NVIDIA inference optimizer and runtime that builds deployable engines.
+    An NVIDIA inference optimizer and runtime that builds deployable engines. Optimizes a supported inference graph and selects highly tuned NVIDIA implementations for its layers.
 
 NVIDIA Triton Inference Server
     A serving system that can host TensorRT engines and other model formats.
 ```
 
-For a stable production inference graph, `TensorRT` is often the strongest candidate. `torch.compile` is attractive when you want optimization while retaining PyTorch flexibility. The correct decision comes from measuring the complete applicationâ€”not merely comparing isolated model calls.
+For a stable production inference graph, `TensorRT` is often the strongest candidate. `torch.compile` is attractive when you want optimization while retaining PyTorch flexibility. The correct decision comes from measuring the complete application, not merely comparing isolated model calls. A practical example could be:
+
+```text
+torch.compile:
+    Fuse crop normalization, masking, and tensor transformations.
+
+TensorRT:
+    Optimize and package the FoundationPose scorer/refiner network
+    into a fixed inference engine.
+```
