@@ -476,7 +476,7 @@ where $\times$ denotes the skew-symmetric (cross-product) matrix. The Jacobian w
 The rotation Jacobian term is
 
 $$
--[\hat{R}\mathbf{p}_i]_\times
+-[\hat{R}   \mathbf{p}_i]_\times
 $$
 
 from the first-order approximation
@@ -535,12 +535,28 @@ $$
 \delta x_\text{ICP} = [\delta p_x,\; \delta p_y,\; \delta p_z,\; \delta\theta_x,\; \delta\theta_y,\; \delta\theta_z]^T
 $$
 
-**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian $J = [I_6 \mid 0_{6\times 12}]$ and noise covariance $R_\text{ICP}$:
+**Step 3 — ESKF correction.** Treat $\delta x_\text{ICP}$ as a direct observation of the pose error state with observation Jacobian
+
+$$
+\boxed{
+J_i=
+\begin{bmatrix}
+I_3&
+0_{3\times3}&
+J_{R,i}&
+0_{3\times3}&
+0_{3\times3}&
+0_{3\times3}
+\end{bmatrix}.
+}
+$$
+
+and noise covariance $R_\text{ICP}$:
 
 $$
 K = P^-_k J^T \bigl(J P^-_k J^T + R_\text{ICP}\bigr)^{-1}
 $$
-
+We get:
 $$
 \delta x = K\,(\delta x_\text{ICP} - J\cdot 0) = K\,\delta x_\text{ICP}
 $$
