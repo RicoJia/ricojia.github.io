@@ -1,0 +1,17 @@
+---
+layout: post
+title: Fast Lio 2
+date: 2026-05-06 13:19
+subtitle:
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Machine-Learning
+---
+TODO
+
+## Remarks
+
+- For observation update, FAST-LIO uses ikd-tree point-to-plane residuals instead of NDT residuals.
+- The version above is a more teaching-style tightly coupled LIO view.
+- FAST-LIO2 uses an incremental ikd-tree map.
