@@ -119,6 +119,28 @@ corr(AB) = \frac{cov(AB)}{\sigma_A \sigma_B}
 $$
     - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $[-1, 1]$. If $A=kB$ after mean normalization, then correlation will be a perfect 1
 
+### Covariance of Function
+
+For a simple nonlinear function
+
+$$  
+y=f(x),  
+$$
+
+linearized around (x_0),
+
+$$  
+y \approx f(x_0)+f'(x_0)\delta x.  
+$$
+
+If (x) has covariance (P_x), then the covariance of (y) is approximately
+
+$$  
+\boxed{  
+P_y=f'(x_0)P_xf'(x_0)^\top.  
+}  
+$$
+
 ## Regression
 
 Regression in statistics means "estimating the relationship model between dependent variables and independent variables." For example, linear regression models the relationship of `Y` and its independent variables, `x1, x2 ...`.
@@ -135,7 +157,7 @@ A random process $R(t)$ is basically a collection of random variables that vary 
 
 ### Gaussian Random Process
 
-A Gaussain Random Process is 
+A Gaussain Random Process is
 
 $$
 \begin{gather*}
@@ -171,7 +193,6 @@ $$
 the covariance $\sigma$ does not change across time. Between different times, `t, t'`, there's no correlation between them, and they are independent.
 $\delta(t - t')$ is "Dirac Delta Distribution."  It's a probability distribution, where everywhere is 0 except for at time `t'`. Also, $\int_{-\infty}^{\infty} \delta(t-t')f(t) = f(t')$
 
-
 <div style="text-align: center;">
 <p align="center">
     <figure>
@@ -180,11 +201,9 @@ $\delta(t - t')$ is "Dirac Delta Distribution."  It's a probability distribution
 </p>
 </div>
 
-
-
 ### Power Spectral Density
 
-In signal procesisng, if we view a signal `x(t)` as a random process, then we can find its power across all frequencies. This is called "power spectral density" (PSD). 
+In signal procesisng, if we view a signal `x(t)` as a random process, then we can find its power across all frequencies. This is called "power spectral density" (PSD).
 
 <div style="text-align: center;">
 <p align="center">

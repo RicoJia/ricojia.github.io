@@ -343,7 +343,7 @@ This gives
 
 $$  
 \boxed{  
-\delta x =
+\delta x = K(z-h) =
 
 \left(  
 \bar P^{-1}  
@@ -374,27 +374,35 @@ $$
 
 #### 4-3-2 Later iterations
 
-After the first correction,
+After the first iteration,
 
 $$  
 \hat x_k\neq\hat x^-.  
 $$
 
-Define the displacement from the propagated state as
+Let $x_0$ be the original propagated IMU state and ($x_k$) the state at IEKF iteration (k). Define $d_k$ to be delta x w.r.t $x_0$:
 
 $$  
-d_k =
-
-\hat x_k\boxminus\hat x^-.  
+d_k=x_k\boxminus x_0.  
 $$
 
-Let $T_k$ map an error in the current tangent space into the tangent space of the propagated state:
+Now consider a small perturbation $\delta x_{k,\text{raw}}$ around $x_k$. Expressed back in the tangent space of $x_0$, we accumulate it:
 
 $$  
-(\hat x_k\boxplus\delta x)  
-\boxminus\hat x^-  
+d_{k+1}  
 \approx  
-d_k+T_k\delta x.  
+d_k+T_k\delta x_{k,\text{raw}},  
+$$
+
+where  $T_k$ is essentially the local Jacobian that maps perturbations from the tangent space at $x_k$ back to the tangent space at $x_0$.
+
+ $$  
+\boxed{  
+T_k =
+
+\frac{\partial(\text{perturbation expressed at }x_0)}  
+{\partial(\text{perturbation expressed at }x_k)}.  
+}  
 $$
 
 The correct objective is therefore
@@ -427,33 +435,9 @@ $$
 \Big]\delta x_k  
 ={}&  
 -(T_k)^\top\bar P^{-1}d_k\  
-&-(J_k)^\top\Sigma^{-1}e_k.  
+-(J_k)^\top\Sigma^{-1}e_k.  
 \end{aligned}  
 $$
-
-The first term on the right keeps the current iterate consistent with the original IMU prediction. It becomes zero only during the first iteration.
-
-FAST-LIO2 expresses the same idea by transporting the prior covariance into the current tangent space and including the displacement between the current iterate and the propagated state in every correction. ([ar5iv](https://ar5iv.labs.arxiv.org/html/2107.06829 "[2107.06829] FAST-LIO2: Fast Direct LiDAR-inertial Odometry"))
-
-Note, $T_k$ is a Jacobian that relates the tangent space of the current nominal state, $\hat x_k$ and the tangent space of the propagated IMU state $\hat x^-$. For position, velocity, biases, and gravity, the state change is additive. so the projection of the state change is identity. Rotation is a bit more complicated, I haven't fully gotten that yet, but this looks like a right Jacobian using BCH:
-
-$$  
-\boxed{  
-T_k =
-
-\operatorname{diag}  
-\left(  
-I,,  
-I,,  
-J_r^{-1}(\phi_k),,  
-I,,  
-I,,  
-I  
-\right).  
-}  
-$$
-
-### 4-3-3 Equivalent transported-prior form
 
 Define
 
@@ -473,7 +457,7 @@ $$
 -(T_k)^{-1}d_k.  
 $$
 
-Then
+Then the above becomes:
 
 $$  
 
@@ -501,21 +485,62 @@ $$
 
 so this reduces to the simpler equation derived earlier.
 
----
+FAST-LIO2 expresses the same idea by transporting the prior covariance into the current tangent space and including the displacement between the current iterate and the propagated state in every correction. ([ar5iv](https://ar5iv.labs.arxiv.org/html/2107.06829 "[2107.06829] FAST-LIO2: Fast Direct LiDAR-inertial Odometry"))
 
-### 4.4 Final Covariance Update
-
-The covariance should be updated using the Jacobian at the converged state because **covariance describes the local uncertainty around the final estimate**. In a nonlinear measurement model, the residual and Jacobian depend on the current pose:
+Note, $T_k$ is a Jacobian that relates the tangent space of the current nominal state, $\hat x_k$ and the tangent space of the propagated IMU state $\hat x^-$. For position, velocity, biases, and gravity, the state change is additive. so the projection of the state change is identity. Rotation is a bit more complicated, I haven't fully gotten that yet, but this looks like a right Jacobian using BCH:
 
 $$  
-e_k=e(x_k),  
-\qquad  
-J_k=\left.\frac{\partial e}{\partial \delta x}\right|_{x_k}.  
+\boxed{  
+T_k =
+
+\operatorname{diag}  
+\left(  
+I,,  
+I,,  
+J_r^{-1}(\phi_k),,  
+I,,  
+I,,  
+I  
+\right).  
+}  
 $$
 
-During the IEKF iterations, $x_k$, the NDT correspondences, and J_k may all change. A Jacobian computed at an early iteration describes the measurement geometry around an intermediate—and possibly inaccurate—state. After convergence, the final Jacobian $J$ provides the best local linear approximation around the accepted state $x$. Therefore, the posterior covariance is computed once as
+#### 4-3-3 Covariance Update In One Shot
 
-Let ($P_k$) be the propagated covariance transported into the tangent space of the converged state. Define
+For a simple nonlinear function
+
+$$  
+y=f(x),  
+$$
+linearized around $x_0$,
+
+$$  
+y \approx f(x_0)+f'(x_0)\delta x.  
+$$
+
+If (x) has covariance $P_x$, then the covariance of $y$ is approximately
+
+$$  
+\boxed{  
+P_y=f'(x_0)P_xf'(x_0)^\top.  
+}  
+$$
+
+The same idea applies in the IEKF, except that the state may lie on a $SO(3)$ manifold .
+
+The propagated covariance $\bar P$ is the covariance matrix at $x_0$. To express the same uncertainty around $x_k$, we need the inverse mapping:
+
+ $$  
+\boxed{  
+P_k =
+
+T_*^{-1}\bar P T_*^{-\top}.  
+}  
+$$
+
+This step only **changes the coordinates of the prior covariance**. It does not add measurement information.
+
+Finally, the LiDAR/NDT measurement causes the actual Kalman covariance reduction. Let ($P_k$) be the propagated covariance transported into the tangent space of the converged state. Define
 
 $$  
 A_k =
@@ -538,25 +563,23 @@ P^+ =
 }  
 $$
 
-Equivalently (Rico: you can plugin k and realize that below is the same as the above),
+Equivalently (Rico: you can plugin k and realize that below is the same as the above), **this is the final covariance**
 
 $$  
-K_k =
-
-P_k(J_k)^\top  
-\left(  
-J_k P_k(J_k)^\top+\Sigma  
-\right)^{-1},  
+\boxed{  
+P^+=(I-K_* J_*)P_*.  
+}  
 $$
 
-and
+**So the overall flow is simply**
 
 $$  
-
 \boxed{  
-P^+ =
-
-(I-K_k J_k)P_k.  
+\bar P  
+\overset{\text{iterations}}{\longrightarrow}  
+P_*  
+\overset{\text{ekf fusion}}{\longrightarrow}  
+P^+.  
 }  
 $$
 
@@ -641,20 +664,3 @@ This is the key intuition:
 - The fused problem is better conditioned, even though global drift is still possible over long time scales.
 
 This example is deliberately simplified. In a real LIO system, the state includes position, orientation, velocity, and IMU biases, so $H$ is much larger than $2 \times 2$. But the conditioning story is the same: the lidar block may be weak in some directions, and the IMU terms help stabilize the update.
-
----
-
-### 5 - 1 Why tightly coupled LIO helps
-
-In a tightly coupled LIO system, lidar residuals and inertial constraints are fused in a single estimator. This is the main advantage:
-
-- The IMU constrains short-term motion very strongly.
-- Gravity makes roll and pitch observable in normal operation.
-- Velocity and bias evolution provide additional temporal constraints between scans.
-- As a result, the combined system is usually much better conditioned than lidar-only scan matching.
-
-However, tightly coupled fusion does not remove every unobservable mode.
-
-- Absolute global position is still unobservable without external references such as GNSS, loop closure, or landmarks with known coordinates.
-- Yaw is not directly observed by the accelerometer; it is constrained only through gyroscope integration, motion, and environment geometry.
-- In a highly degenerate environment, even a tightly coupled system can still become weakly constrained.
