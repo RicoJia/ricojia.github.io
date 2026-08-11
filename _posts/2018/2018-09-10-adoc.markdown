@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Adoc
-date: '2018-08-10 13:19'
-subtitle: 
+date: 2018-09-10 13:19
+subtitle:
 comments: true
 tags:
-    - Linux
+  - Linux
 ---
 
 ## 📄 What is AsciiDoc?

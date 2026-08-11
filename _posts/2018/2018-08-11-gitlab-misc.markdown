@@ -1,11 +1,11 @@
 ---
 layout: post
 title: Gitlab Misc.
-date: '2018-08-10 13:19'
+date: 2018-08-11 13:19
 subtitle: Access Control, Gitlab CI
 comments: true
 tags:
-    - Linux
+  - Linux
 ---
 
 ## Basic Navigation

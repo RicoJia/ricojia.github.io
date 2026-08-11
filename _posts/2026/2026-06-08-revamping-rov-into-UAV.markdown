@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Robotics] From Market-Ready ROVs to Low-Cost AUVs: Building Practical Underwater Autonomy"
-date: 2026-05-08 13:19
+date: 2026-06-08 13:19
 subtitle:
 comments: true
 header-img: img/post-bg-infinity.jpg

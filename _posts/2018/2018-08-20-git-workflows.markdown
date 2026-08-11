@@ -1,14 +1,13 @@
 ---
 layout: post
 title: Git - Workflows
-date: '2018-08-08 13:19'
+date: 2018-08-20 13:19
 subtitle: Git Test Runners, CI/CD, PyPi
 comments: true
-header-img: "img/post-bg-alitrip.jpg"
+header-img: img/post-bg-alitrip.jpg
 tags:
-    - Git
+  - Git
 ---
-
 ## Local Git Repo Setup
 
 - Copy ssh key to Github
@@ -183,6 +182,9 @@ git config pull.rebase true   # Rebase
 git config pull.ff only       # Fast-forward only
 ```
 
+
+
+
 ### Confirming the Divergence
 
 1. View commits on **remote** since the last common base:
@@ -347,3 +349,30 @@ git rebase --continue
    ```
 
    (Verbose output helps identify issues.)
+
+
+
+
+---
+
+
+---
+
+
+---
+
+
+---
+
+
+---
+
+
+---
+
+---
+
+
+---
+
+---
