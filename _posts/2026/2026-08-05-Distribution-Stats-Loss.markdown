@@ -2,7 +2,7 @@
 layout: post
 title: "[ML] Loss For Distribution Stats"
 date: 2026-08-02 13:19
-subtitle: losss for standard devations
+subtitle: loss for standard devations
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
