@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "[CUDA - 6] CUDA Inference Speedups"
+title: "[CUDA - 67 CUDA Inference Speedups"
 date: 2026-03-12 13:19
-subtitle: inference mode, jit tracing, cuda graphs, tensor rt, optimize_for_inference
+subtitle: inference mode, jit tracing, cuda graphs, tensor rt, optimize_for_inference, warp
 comments: true
 header-img: img/post-bg-alibaba.jpg
 tags:
@@ -477,3 +477,46 @@ But for a real-time pose pipeline, calling it every frame is usually not an opti
 ### inference mode()
 
 `torch.inference_mode()` disables autograd bookkeeping during inference. Compared with normal execution, PyTorch does not build gradient graphs, and it also disables extra tracking such as view tracking and version counter updates. That usually means **lower memory use** and **faster execution** for pure prediction code. PyTorch notes that `inference_mode` does **not** automatically call `model.eval()`, so you still need `model.eval()` for dropout/batchnorm behavior.
+
+---
+
+## Nvidia Warp
+
+Nvidia Warp is a Python framework that takes regular Python functions and JIT compiles them to efficient kernel code that can run on the CPU or GPU. It comes with a rich set of primitives for physics simulation, robotics, geometry processing, and more. Warp kernels are differentiable and can be used as part of machine-learning pipelines with frameworks such as PyTorch, JAX and Paddle.
+
+Requirements: its precompiled GPU library was built using a CUDA 12 toolchain. Therefore its current wheels are built with CUDA 12.x. Its CPUbackend remains usable without CUDA
+
+To install,
+
+```
+pip install warp-lang
+```
+
+Example:
+
+```python
+import warp as wp
+wp.init()
+
+
+@wp.kernel
+def add_one(values: wp.array(dtype=wp.float32)):
+  i = wp.tid()# thread id
+ values[i] = values[i] + 1.0
+ 
+values = wp.array(
+ [10.0, 20.0, 30.0],
+    dtype=wp.float32,
+    device="cuda",
+)
+
+wp.launch(
+ kernel = add_one,
+ dim = 3  # start 3 parallel workers
+ inputs = [values]
+ device="cuda"
+)
+
+wp.synchronize()
+print(values.numpy())
+```

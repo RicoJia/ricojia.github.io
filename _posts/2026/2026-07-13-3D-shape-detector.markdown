@@ -2,7 +2,7 @@
 layout: post
 title: "[Robotics] 3D-shape-detection-from-point-clouds"
 date: 2026-07-13 13:19
-subtitle: CenterPoint
+subtitle: BEV, Model Training Experience
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -84,19 +84,37 @@ pr_c = pr[
 
 ---
 
-## Model Training Experience
+## 2. Model Training Experience
 
-We actually tried creating hand-crafted features, then feeding them into the BEV network. It was basically early-stage work that helped us identify key elements in noise for data synthesis and quickly bring up a semi-working model.
+### 2-1 Handcrafted Features Are Good First Pass Mechanism. Later Should be Replaced By A Learned Encoder
 
-1. Debuggability.
- 1. Hand-crafted 8-channel features (p90 height, relief, shadow density, etc.) are interpretable
-  1. every diagnostic this session ran (debris-field FP root-cause, "removing height collapses the detector," real-negative crushing weak signal) worked because I could point at a specific channel and reason about it. **This indeed helped with ablation-testing with noise synthesis**
-  2. The root causes it actually diagnosed are properties of the data, not obviously fixable by a better encoder.  
-   1. the ~9-11x real-domain noise gap,
-   2. real-negative training crushing the weak close-range signal
-   3. the need for real background noise
- 2. A learned encoder is a black box until it's trained; early on you can't tell if a failure is architecture, data, or training. But it turned out to be better :)
- 3. The PointPillars README said this explicitly going in:  It could easily have just reproduced the same failure with extra steps.
-2. Faster iteration loop.
- 1. Hand-crafted features get precomputed once into features.bin, so training is a flat-file read (~1 min/epoch).
- 2. PointPillars builds pillars on-the-fly per frame (plane fit + point sorting every epoch) — took far longer than the precomputed-feature runs
+We actually tried creating hand-crafted features, then feeding them into the BEV network. It was basically early-stage work that helped us identify key elements in noise for data synthesis and quickly bring up a semi-working model:
+
+- Hand-crafted 8-channel features (p90 height, relief, shadow density, etc.) are interpretable
+- Hand-crafted features get precomputed once into features.bin, so training is a flat-file read (~1 min/epoch).
+
+However later we realized that the model has plateaued. Switching to af learned CNN encoder helped.
+
+### 2-2. Downsampling & Upsampling Can Learn Spatial Correlation
+
+Real sonar isn't equally noisy everywhere. Long range is noisier than short. Grazing angles are noisier than perpendicular. Dark regions are noisier than bright. So the noise level must vary across the image in a spatially correlated way
+
+This didn't work well:
+
+```python
+self.head = nn.Conv2d(width, 4, 1)     # 1x1 conv, full 128x128 resolution
+```
+
+**A 1×1 convolution at full resolution means every pixel's amplitude is set independently.** Nothing couples neighbours. So the network can — and does — make one pixel 100× louder than the one beside it
+
+One remedy is to predict $A$ at low resolution, then upsample.
+
+```python
+#amplitude/gain describe sensor geometry -> low-frequency by construction
+coarse = F.adaptive_avg_pool2d(features, 8)          # 128x128 -> 8x8
+params = self.head(coarse)                            # 1x1 conv on 8x8
+params = F.interpolate(params, size=(128, 128),
+                       mode="bilinear", align_corners=False)
+```
+
+With an 8×8 grid upsampled bilinearly, $A$ can only vary on a ~16-pixel scale. A single-pixel amplitude spike is impossible.

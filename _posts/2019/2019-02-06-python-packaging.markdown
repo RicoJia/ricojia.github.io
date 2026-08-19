@@ -1,12 +1,12 @@
 ---
 layout: post
 title: Python - Python Packaging System
-date: '2019-02-06 13:19'
-subtitle: Packaging, Pip
+date: 2019-02-06 13:19
+subtitle: Packaging, Pip, wheels
 comments: true
-header-img: "img/post-bg-2015.jpg"
+header-img: img/post-bg-2015.jpg
 tags:
-    - Python
+  - Python
 ---
 
 ## Setuptools
@@ -53,3 +53,8 @@ PEP 668 formalizes this: an “externally managed” Python cannot be modified b
 - What is a "core python library"? Does this mean i can't use pip?
 
 So, one can install using apt: `sudo apt install python3-ipykernel`
+
+## Wheels
+
+A Python wheel is a ready to install python package. Its file name ends in `.whl`. When running `pip install warp-lang`, pip searches for a wheel compatible with your computer
+`warp_lang-1.8.1-cp310-cp310-manylinux_aarch64.whl`, then install them in the right location
