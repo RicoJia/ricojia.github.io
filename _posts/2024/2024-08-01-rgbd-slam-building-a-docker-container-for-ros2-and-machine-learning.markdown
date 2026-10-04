@@ -41,3 +41,13 @@ docker push <MY_USERNAME>/<MY_IMAGE>:latest
 ```
 
 - Docker Hub requires images to be pushed to the repo that corresponds to our Docker Hub username. So, we need to **tag** the image with the proper username.
+
+## Machine Learning Docker on Jetson
+
+To fully unleash the power of an Nvidia Jetson Machine for machine learning, there are multiple ways to set up the environment. A common way is to set up conda. In my application though, I prefer to use an Docker image so I can hook up my ML application with ROS / ROS2 applications. To do that, we need to set up a CUDA image properly, then select the correct pytorch version.
+
+Luckily, [dusty-nv and others have created a nice Github package to streamline this process](https://github.com/dusty-nv/jetson-containers). This package is a small Docker build system that creates the final desired Docker image through multi-stage builds (like a chain). E.g., one can build an image with `pytorch`, `ROS Noetic` and `Jupyterlab`.
+
+If you don't want much hassle like me, this could be a good starting point. But just in case you are curious, here is the place to [check for the Pytorch version](https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048)
+
+For flashing the Jetson itself, see [Flashing the Orin Nano](https://ricojia.github.io/2024/08/18/rgbd-slam-setup-nvidia-orin-nano/).

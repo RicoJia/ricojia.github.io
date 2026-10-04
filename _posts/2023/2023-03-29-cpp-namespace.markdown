@@ -8,7 +8,28 @@ header-img: img/post-bg-alitrip.jpg
 tags:
   - C++
 ---
-# C++ Anonymous Namespaces: The Modern Way to Hide File-Local Code
+## Nested Namespace
+
+In C++17 and later, nested namespace can be condensed: 
+
+```cpp
+namespace halo {
+namespace optimizers {
+
+	...
+
+}  // namespace optimizers
+}  // namespace halo
+
+// equivalent
+namespace halo::optimizers {
+	...
+}  // namespace halo::optimizers
+```
+
+
+
+## C++ Anonymous Namespaces: The Modern Way to Hide File-Local Code
 
 In C and C++, it is common to write helper functions or file-local variables that should only be used inside a single source file. These helpers are implementation details. They are not part of the public API, and other `.cpp` files should not be able to reference them.
 
@@ -20,13 +41,13 @@ static int helper_function() {    return 42;}
 
 For free functions and global variables, `static` gives the symbol **internal linkage**, meaning it is only visible within that translation unit, usually a single `.cpp` file.
 
-In modern C++, the preferred approach is often an **anonymous namespace**. Everything declared inside `namespace { ... }` is placed in an unnamed, file-local namespace. The effect is similar to using `static`: the names are only visible within that `.cpp` file. An anonymous namespace gives **internal linkage** to the things declared inside it. For example, two `.cpp` files can both have a function named `helper()` inside anonymous namespaces. They do not conflict at link time because each one is local to its own translation unit.
+In modern C++, the preferred approach is often an **anonymous namespace**. Everything declared inside `namespace { ... }` is placed in an unnamed, file-local namespace. The effect is similar to using `static`: **the names are only visible within that `.cpp` file**. An anonymous namespace gives **internal linkage** to the things declared inside it. For example, two `.cpp` files can both have a function named `helper()` inside anonymous namespaces. They do not conflict at link time because each one is local to its own translation unit.
 
 ```cpp
 namespace {  
   
 int helper_function() {  
-return 42;  
+	return 42;  
 }  
   
 int cached_value = 10;  
