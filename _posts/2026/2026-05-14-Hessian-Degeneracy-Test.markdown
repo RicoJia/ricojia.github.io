@@ -612,7 +612,10 @@ It is the RMS (root-mean-square) range rather than the plain average, because th
 
 ### Related work 
 
-Making rotation and translation comparable with a length scale is an established idea. 
+Making rotation and translation comparable with a length scale is an established yet still common method
+
 1. In robot kinematics, Angeles and López-Cajún (1992) introduced a *characteristic length* that makes a manipulator Jacobian dimensionally homogeneous, so that its condition number is meaningful. 
-2. For LiDAR degeneracy, [DCReg](https://arxiv.org/abs/2509.06285) (2025) analyzes this rotation-translation scale disparity and decouples the two subspaces with Schur complements.
-3. [Degeneracy-Resilient Teach and Repeat with FMCW Lidar](https://arxiv.org/abs/2603.10248) (2026) uses block scaling with a scaling factor $\ell$, detects degeneracy in the scaled space, and maps the solution back, as in this post.
+2. For ICP, [Gelfand, Ikemoto, Rusinkiewicz, and Levoy (2003), "Geometrically Stable Sampling for the ICP Algorithm"](https://www.cs.princeton.edu/~smr/papers/stabicp/) already did this. Before computing the eigenvalues and condition number of the $6\times6$ ICP covariance matrix, they shift the points to their centroid and scale them "so that the average distance of points from the origin is 1", which equalizes the displacement a point gets from rotation ("torque") and from translation ("force"). That is $L$ = mean point distance, a close cousin of the RMS-based $L$ above.
+3. Zhang, Kaess, and Singh (2016), "On Degeneracy of Optimization-based State Estimation Problems",, the degeneracy test behind LOAM, thresholds the eigenvalues of the raw Hessian without such a scaling, which is the problem this part addresses.
+4. For LiDAR degeneracy, [DCReg](https://arxiv.org/abs/2509.06285) (2025) analyzes this rotation-translation scale disparity and decouples the two subspaces with Schur complements.
+5. [Degeneracy-Resilient Teach and Repeat with FMCW Lidar](https://arxiv.org/abs/2603.10248) (2026) uses block scaling with a scaling factor $\ell$, detects degeneracy in the scaled space, and maps the solution back, as in this post.
