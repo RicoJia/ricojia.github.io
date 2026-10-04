@@ -70,6 +70,16 @@ A suitable footnote is:
 
 > Jetson AGX Orin uses shared LPDDR5 memory for the CPU and GPU. The reported footprint represents the stated memory measurement, not dedicated VRAM usage.
 
+## Storage: Work on NVMe, Not eMMC (smaller and slower)
+
+On my **Jetson Xavier**, the root filesystem (everything under `/`, including the home directory) lives on the built-in eMMC. The NVMe SSD is mounted separately on `/storage`.  eMMC is roughly 100-300MB/s while NVMe can reach 1-7GB/s, and the eMMC is much smaller too.
+
+So for testing, keep repos, datasets, and build outputs under `/storage/<REPO>`, not under `~`. To confirm a directory is on the NVMe:
+
+```bash
+df -hT /storage/rico        # -> /dev/nvme0n1p1 ext4 1.8T, mounted on /storage
+```
+
 ## Wifi Pitfall
 
 `network-manager` is a quite wonky. Sometimes the dhcp registration would suddenly drop on my Wifi, and ethernet doesn't work either. After a LOT of trial and error, this is the solution I came up with. It's quite painless, all you need to do is to paste this in `~/.bashrc`, source it, and type in the console `wifi_orin_connect`
