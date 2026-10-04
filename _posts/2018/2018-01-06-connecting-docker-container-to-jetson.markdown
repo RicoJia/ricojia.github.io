@@ -1,12 +1,117 @@
 ---
 layout: post
-title: Linux - Connecting Docker Container To Jetson Over Ethernet
+title: Linux - Connecting to a Jetson Over Ethernet
 date: 2018-01-05 13:19
-subtitle: X Window System, SSH, Static IP
+subtitle: Finding the Jetson's IP address, and letting Docker containers reach it
 comments: true
 tags:
   - Linux
+  - Jetson
 ---
+
+## How To Find Jetson Xavier's Address Over Ethernet
+
+My Jetson Xavier is connected to my laptop through Ethernet.
+
+### 1. Find Your Computer's Ethernet Connection
+
+```bash
+ip -br addr
+# or
+ip addr
+# or
+ip a
+```
+
+- `ip` manages and displays Linux networking information.
+- `-br` means brief output.
+- `addr` shows the IP addresses assigned to your network interfaces.
+
+An **interface** is a network connection, such as Ethernet or Wi-Fi. You might see:
+
+```
+enp0s31f6    UP      192.168.10.200/24
+eth0         DOWN
+wlp147s0     UP      ...
+```
+
+Here, `enp0s31f6` is your active Ethernet interface, and **`192.168.10.200` is your computer's address**, not the Jetson's. Names starting with `en` are Ethernet and `wl` are Wi-Fi; see [how interface names are built](https://ricojia.github.io/2018/01/27/linux-networking/#ethernet-and-nic).
+
+The `/24` (CIDR notation) specifies the subnet: the first 24 bits identify the network. Devices on the same subnet can talk directly without a router. In this case:
+
+| Address                         | Meaning                |
+| ------------------------------- | ---------------------- |
+| `192.168.10.0`                  | Network address        |
+| `192.168.10.1`–`192.168.10.254` | Usual device addresses |
+| `192.168.10.255`                | Broadcast address      |
+
+So now we search `192.168.10.x`, **assuming the Jetson is configured on that same subnet**. Plugging in an Ethernet cable doesn't automatically guarantee matching IP settings. In my case the laptop's interface is set to NetworkManager's "Shared to other computers" mode (see [below](#letting-docker-containers-reach-a-jetson-over-ethernet)), which runs a DHCP server that hands the Jetson an address on this subnet.
+
+### 2. Look For Devices On That Connection
+
+First, check your computer's neighbor table:
+
+```bash
+ip neigh show dev enp0s31f6
+
+```
+
+I see:
+
+```
+192.168.10.175 lladdr 48:b0:2d:3a:9f:66 REACHABLE
+```
+
+Or for short, use the command `ip neigh`,
+
+```
+192.168.10.175 dev enp0s31f6 lladdr 48:b0:2d:3a:9f:66 DELAY 
+192.168.1.230 dev wlp147s0 FAILED 
+```
+
+On an IPv4 Ethernet network, Linux uses **ARP** (Address Resolution Protocol) to ask:
+
+> "Who has this IP address? Tell me your Ethernet hardware address."
+
+The neighbor table caches those IP-to-hardware-address mappings (as shown above):
+
+- **IP:** `192.168.10.175`
+- **MAC address:** `48:b0:2d:3a:9f:66`, the Ethernet hardware address. The first three bytes identify the manufacturer, and `48:b0:2d` belongs to NVIDIA, which is a good hint that this is the Jetson.
+- **`REACHABLE`:** Linux recently confirmed that neighbor was reachable
+
+Then I logged onto this device and verified that it was the Jetson:
+
+```bash
+ssh <USER>@192.168.10.175
+hostname
+```
+
+However, this table **isn't a complete inventory**. A device may be connected without having an entry yet, because entries only appear after your computer has talked to it. Next, actively probe the subnet by pinging every address in parallel:
+
+```bash
+for i in $(seq 1 254); do
+    (
+        ping -c 1 -W 1 "192.168.10.$i" >/dev/null 2>&1 &&
+        echo "up 192.168.10.$i"
+    ) &
+done
+wait
+```
+
+You might get:
+
+```
+up 192.168.10.200
+up 192.168.10.175
+```
+
+`.200` is your own computer; `.175` is another device.
+
+A device whose firewall drops pings won't show up in this loop. Two tools can scan more thoroughly:
+
+- `sudo arp-scan --interface=enp0s31f6 --localnet` sends ARP requests on layer 2. ARP only works within the local subnet and only for IPv4, but a device can't usually ignore ARP and still communicate, so firewalls rarely hide it.
+- `sudo nmap -sn 192.168.10.0/24` does host discovery without a port scan. On a local Ethernet subnet with `sudo`, nmap also uses ARP; across a router it falls back to ICMP pings and TCP probes on layer 3.
+
 ## Letting Docker Containers Reach a Jetson Over Ethernet
 
 I connected a Jetson to my laptop over Ethernet:

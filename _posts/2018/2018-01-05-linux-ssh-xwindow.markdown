@@ -169,7 +169,7 @@ The default port on Linux is 22. Changing port number to another number will mak
 - Copy ssh onto a remote machine: `ssh-copy-id username@remote_host`
   - You will be prompted for the password of the remote machine. All your public keys will then land in `~/.ssh/authorized_keys`.
 
-- `sudo nmap -sn 192.168.1.0/24`: uses ICMP echo requests (ping), TCP (SYN) packets on OSI layer 3 (the network layer). This is more robust than `sudo arp-scan -l` because the latter uses ARP (Address Resolution Protocol) protocol on layer 2 (the local subnet). Some devices may not respond due to its firewall settings. Also, ARP is an IPv4 protocol. IPv6 devices may also avoid using it.
+- To find a device's IP address before SSH-ing into it, see [Finding a Jetson's address over Ethernet](https://ricojia.github.io/2018/01/05/connecting-docker-container-to-jetson/#how-to-find-jetson-xaviers-address-over-ethernet), which covers the neighbor table, a ping sweep, `arp-scan`, and `nmap`.
 
 - Check login history:
   - `who` display the last 3 logins

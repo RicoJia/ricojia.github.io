@@ -50,8 +50,7 @@ en[p]<bus-number>s<slot-number>[f<function>]
 
 So `enp3s0` means “Ethernet adapter located on PCI bus 3, slot 0, function 0”.  On another PC you might see names like `enp5s0` or `eno1`. The NIC can be configured to an IP `192.168.1.xxx/24`.
 
-    - A subnet mask is the `/24`. Devices with the same subnet mask can talk directly without a router
-    - `/24 is the ‘CIDR notation`
+- The `/24` is the subnet in CIDR notation. For what it means and how to find other devices on the same subnet, see [Finding a Jetson's address over Ethernet](https://ricojia.github.io/2018/01/05/connecting-docker-container-to-jetson/#how-to-find-jetson-xaviers-address-over-ethernet).
 
 ### Case Study: Connecting Livox Mid 360
 
