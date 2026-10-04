@@ -54,12 +54,10 @@ $$
 \begin{bmatrix}
 u & v
 \end{bmatrix}
-
 \begin{bmatrix}
 I_x^2(x,y) & I_x(x,y)I_y(x,y) \\
 I_x(x,y)I_y(x,y) & I_y^2(x,y)
 \end{bmatrix}
-
 \begin{bmatrix}
 u \\
 v
@@ -83,13 +81,10 @@ Counting the smoothing window in, the total **summed of squared difference** is
 $$
 \begin{gather*}
 E(u,v) = \sum_{X,Y} w(x,y)
-
 \begin{bmatrix}
 u & v
 \end{bmatrix}
-
 M
-
 \begin{bmatrix}
 u \\
 v
@@ -114,17 +109,14 @@ $$
 \begin{bmatrix}
 x & y
 \end{bmatrix}
-
 \begin{bmatrix}
 a & b \\
 b & c
 \end{bmatrix}
-
 \begin{bmatrix}
 x \\
 y
 \end{bmatrix}
-
 \end{gather*}
 $$
 

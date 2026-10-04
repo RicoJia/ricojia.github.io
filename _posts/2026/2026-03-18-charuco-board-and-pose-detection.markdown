@@ -226,7 +226,6 @@ The fitting score can be:
 
 $$  
 E_{cad}
-
 \left(  
 \min_{q \in P_{observed}}  
 | T_{checker_object} p_{cad} - q |  
@@ -296,7 +295,6 @@ So:
 
  $$  
 t_{checker_object}
-
 \begin{bmatrix}  
 x_{center} \  
 y_{center} \  

@@ -36,7 +36,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \tilde{a} = R^T (a - g)
-
 \\
 & \tilde{w} = w
 \end{aligned}
@@ -49,10 +48,8 @@ $$
 \begin{gather*}
 \begin{aligned}
 & R' = Rw^{\land}
-
 \\
 & p' = v
-
 \\
 & v' = a
 \end{aligned}
@@ -72,7 +69,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \tilde{a} = R^T(a - g) + b_a + \eta_a
-
 \\
 & \tilde{w} = w + b_g + \eta_g
 \end{aligned}
@@ -87,7 +83,6 @@ $$
 & b_a'(t) \sim \mathcal{gp}(0, \sigma_{ba}^2 \delta(t - t') )
 \\
 & b_g'(t) \sim \mathcal{gp}(0, \sigma_{bg}^2 \delta(t - t') )
-
 \\
 & \eta_a \sim \mathcal{gp}(0, \sigma_{\eta a}^2 \delta(t - t') )
 \\
@@ -120,7 +115,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \eta_g(k) \sim \mathcal{N(0, \frac{1}{\Delta t}Cov(\eta_g))}
-
 \\ & \eta_a(k) \sim \mathcal{N(0, \frac{1}{\Delta t}Cov(\eta_a))}
 \end{aligned}
 \end{gather*}
@@ -132,7 +126,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & b_g(k) \sim \mathcal{N(0, \Delta t Cov(b_g))}
-
 \\ & b_a(k) \sim \mathcal{N(0, \Delta t Cov(b_a))}
 \end{aligned}
 \end{gather*}
@@ -190,10 +183,8 @@ $$
 \begin{gather*}
 \begin{aligned}
 & p(t + \Delta t) = p(t) + v(t) \Delta t + \frac{1}{2}[R(t) (\tilde{a} - b_a) + g]^2 \Delta t^2
-
 \\ & 
 R(t + \Delta t) = R(t) Exp((\tilde{w} - b_g) \Delta t)
-
 \\ &
 v(t + \Delta t) = v(t) + R[\tilde{a} - b_a + g] \Delta t
 \end{aligned}
@@ -232,7 +223,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \tilde{a} = R^T(a - g) + b_a + \eta_a
-
 \\
 & \tilde{w} = w + b_g + \eta_g
 \end{aligned}
@@ -247,7 +237,6 @@ $$
 & mean(\tilde{w}) = b_g
 \\ &
 \tilde{a} = b_a - g
-
 \end{aligned}
 \end{gather*}
 $$

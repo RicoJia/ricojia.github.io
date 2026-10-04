@@ -30,6 +30,7 @@ $$
 ### Cross Correlation vs Convolution
 
 In signal processing, a filter convolves with an image by reversing the filter horizontally and vertically.
+
     $$
     \begin{bmatrix}
     1 & 2\\
@@ -197,6 +198,7 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
 - For bias gradient, there is only 1 bias value per output channel; so, we apply it to all elements of one channel. Its gradient is the sum across all channels, so its output gradient $\sum_c \frac{\partial J}{\partial y_c}$
 
 - For input gradient, $\frac{J}{X}$, it's actually convolution: $k \circledast \frac{\partial J}{\partial y}$
+
     $$
     \begin{gather*}
     \frac{J}{x_{11}} = \frac{J}{y_{11}}k_{11}

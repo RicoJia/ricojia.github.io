@@ -52,16 +52,13 @@ $$
 \begin{bmatrix}
 f(-1) \\ f(0) \\ f(1) \\f(2)
 \end{bmatrix}
-
 =
-
 \begin{bmatrix}
 -1 & 1 & -1 & 1 \\
 0 & 0 & 0 & 1 \\
 1 & 1 & 1 & 1 \\
 8 & 4 & 2 & 1
 \end{bmatrix}
-
 \begin{bmatrix}
 a \\ b \\ c \\d
 \end{bmatrix}
@@ -70,20 +67,16 @@ $$
 Then,
 
 $$
-
 \begin{bmatrix}
 d \\ c \\b \\a
 \end{bmatrix}
-
 =
-
 \frac{1}{6} \begin{bmatrix}
 0 & 6 & 0 & 0 \\
 -2 & -3 & 6 & -1 \\
 3 & -6 & 3 & 0 \\
 -1 & 3 & -3 & 1
 \end{bmatrix}
-
 \begin{bmatrix}
 f(-1) \\ f(0) \\ f(1) \\f(2)
 \end{bmatrix}
@@ -96,11 +89,9 @@ estimate =
 \begin{bmatrix}
 a \\ b \\ c \\d
 \end{bmatrix}^T
-
 \begin{bmatrix}
 x^3 \\ x^2 \\ x \\ 1
 \end{bmatrix}^T
-
 $$
 
 voila!
@@ -153,6 +144,7 @@ $$
 
 If you think of $q_0, q_1$ as rotation matrices $(R_0, R_1 \in SO(3))$,
 then slerp is equivalent to
+
 $$
 R(t) = R_0 \exp\!\Bigl( t \,\log\!\bigl(R_0^\top R_1\bigr) \Bigr).
 $$

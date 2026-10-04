@@ -37,12 +37,11 @@ $$
 Then for each observed point $q_j \in Q$, find its nearest transformed CAD point:
 
 $$  
-i^*(j)
-
+i^*(j) =
 \arg\min_i  
-\left|  
+\left\|  
 q_j - p_i^{checker}  
-\right|_2  
+\right\|_2  
 $$
 
 This gives correspondence pairs:
@@ -57,9 +56,9 @@ $$
 The code then rejects correspondences whose distance is too large:
 
 $$  
-\left|  
+\left\|  
 q_j - p_{i^*(j)}^{checker}  
-\right|_2  
+\right\|_2  
 \le d_{max}  
 $$
 
@@ -87,9 +86,9 @@ We want to find a rigid transform $(R, t)$ that best maps the source points to t
 $$  
 \min_{R,t}  
 \sum_{k=1}^{N}  
-\left|  
+\left\|  
 R a_k + t - b_k  
-\right|^2  
+\right\|^2  
 $$
 
 subject to:
@@ -106,17 +105,15 @@ This is the classic point-to-point rigid alignment problem.
 
 ## Step 1: Compute centroids
 
- $$  
+$$
 \bar{a} =
-
 \frac{1}{N}  
 \sum_{k=1}^{N}  
 a_k  
 $$
 
- $$  
+$$
 \bar{b} =
-
 \frac{1}{N}  
 \sum_{k=1}^{N}  
 b_k  
@@ -158,7 +155,6 @@ Mathematically:
 
 $$  
 H =
-
 \sum_{k=1}^{N}  
 \tilde{a}_k  
 \tilde{b}_k^T  
@@ -168,7 +164,6 @@ or in matrix form:
 
 $$  
 H =
-
 A^T B  
 $$
 
@@ -279,7 +274,7 @@ So the incremental transform is:
 $$  
 \Delta T =  
 \begin{bmatrix}  
-R & t \  
+R & t \\
 0 & 1  
 \end{bmatrix}  
 $$
@@ -287,7 +282,7 @@ $$
 Then ICP updates the current object pose by left-multiplying:
 
 $$  
-T \leftarrow \Delta T \ T  
+T \leftarrow \Delta T \, T  
 $$
 
 In your code:
@@ -355,51 +350,34 @@ That is why your code generates many yaw candidates first. The coarse yaw search
 
 A Jacobian-based point-to-point ICP would define residuals:
 
-# $$  
-
-r_k(\xi)
-
-R(\xi) a_k + t(\xi) - b_k  
+$$
+r_k(\xi) = R(\xi) a_k + t(\xi) - b_k
 $$
 
 where $\xi \in \mathfrak{se}(3)$ is a small pose update.
 
 Then it linearizes:
 
-$$  
-r_k(\xi + \delta \xi)  
-\approx  
-r_k(\xi) + J_k \delta \xi  
+$$
+r_k(\xi + \delta \xi) \approx r_k(\xi) + J_k \delta \xi
 $$
 
 and solves:
 
-# $$  
-\delta \xi
-
-\arg\min_{\delta \xi}  
-\sum_k  
-\left|  
-r_k + J_k \delta \xi  
-\right|^2  
+$$
+\delta \xi^* = \arg\min_{\delta \xi} \sum_k \left\| r_k + J_k \delta \xi \right\|^2
 $$
 
-which leads to normal equations:
+which leads to the normal equations:
 
-# $$  
-
-\left(  
-\sum_k J_k^T J_k  
-\right)  
-\delta \xi
-
-\sum_k J_k^T r_k  
+$$
+\left( \sum_k J_k^T J_k \right) \delta \xi = - \sum_k J_k^T r_k
 $$
 
 Then:
 
-$$  
-T \leftarrow \exp(\delta \xi^\wedge) T  
+$$
+T \leftarrow \exp(\delta \xi^\wedge) T
 $$
 
 Your code does **not** do this. It does not compute $J$, $J^T J$, or a Lie algebra update. It directly solves $(R,t)$ from point correspondences using SVD.

@@ -175,7 +175,6 @@ $$
 & \frac{\partial}{\partial K_k} \left[ (I - K_k C_k) P_k^* (I - K_k C_k)^T \right] = -C_k P_k^* (I - K_k C_k)^T - (I - K_k C_k) P_k^* C_k^T
 \\
 &
-
 \end{aligned}
 \end{gather*}
 $$
@@ -280,13 +279,10 @@ $$
 & \frac{\partial J_k}{\partial x_k} = -2 C_k^T R^{-1} (z_k - C_k x_{k}) + 2(P_k^*)^{-1} (x_k - A_k x_{k-1}) = 0
 \\
 & \Rightarrow \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k - \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k \mathbf{x}_k + (\mathbf{P}_k^{*})^{-1} \mathbf{x}_k - (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*} = 0
-
 \\
 & \Rightarrow (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k + (\mathbf{P}_k^{*})^{-1}) \mathbf{x}_k = \mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k + (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*}
-
 \\
 & \Rightarrow \mathbf{x}_k = (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{C}_k + (\mathbf{P}_k^{*})^{-1})^{-1} (\mathbf{C}_k^\top \mathbf{R}^{-1} \mathbf{z}_k + (\mathbf{P}_k^{*})^{-1} \hat{\mathbf{x}}_k^{*})
-
 \end{aligned}
 \end{gather*}
 $$
@@ -364,10 +360,8 @@ $$
 \begin{gather*}
 \begin{aligned}
 & P_k^* = A_k^T P_{k-1} A_k + R \Rightarrow  P_k^* = \frac{\partial f}{\partial x} P_{k-1} \frac{\partial f^T}{\partial x} + R
-
 \\
 & K_k = P_k^{*} C_k^{T}(R^{-1} + C_k P_k^{*} C_k^T) \Rightarrow K_k = P_k^{*} \frac{\partial h}{\partial x}^{T} (R^{-1} + \frac{\partial h}{\partial x} P_k^{*} \frac{\partial h}{\partial x}^T)
-
 \end{aligned}
 \end{gather*}
 $$
@@ -378,7 +372,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & x_k = x_k^* + K_k(z_k - C_k x_k^*) \Rightarrow x_k = x_{k-1} + K(z_t - h(x_k^*))
-
 \\
 & P_k = P_k^{*} - K_k C_k P_k^{*} \Rightarrow P_k = P_k^{*} - K_k \frac{\partial h}{\partial x} P_k^{*}
 \end{aligned}

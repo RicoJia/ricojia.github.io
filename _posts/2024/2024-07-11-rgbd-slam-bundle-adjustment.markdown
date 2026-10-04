@@ -54,8 +54,8 @@ $$
 \begin{gather*}
 e_{ij} =
 \begin{bmatrix}
-x_j - (x_i + d_i*cos(\theta_i + \psi_i)), \\
-y_j - (y_i + d_i*sin(\theta_i + \psi_i))
+x_j - (x_i + d_i \cos(\theta_i + \psi_i)), \\
+y_j - (y_i + d_i \sin(\theta_i + \psi_i))
 \end{bmatrix}
 \end{gather*}
 $$
@@ -64,7 +64,7 @@ We can formulate our cost of this trajectory:
 
 $$
 \begin{gather*}
-F(X) = \sum_{i \leq 6, j \leq 6} (e_{ij})^T \Omega e_{ij}
+F(X) = \sum_{ij} (e_{ij})^T \Omega e_{ij}
 \end{gather*}
 $$
 
@@ -95,10 +95,9 @@ Then, we given an initial set of estimate $X$, we want to apply a step size $\De
 $$
 \begin{gather*}
 \begin{aligned}
-& \text{Approximating F(x) to find its minimum more easily:}
-
+& \text{Approximating } F(X) \text{ to find its minimum more easily:}
 \\ &
-F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
+F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)
 \\ &
 \approx (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
 \\ &
@@ -140,7 +139,7 @@ The above is quadratic!! How nice. The minimum is achieved when
 
 $$
 \begin{gather*}
-\Delta x = -H_{ij}^{-1} b
+\Delta X = -H^{-1} b
 \end{gather*}
 $$
 
@@ -224,7 +223,6 @@ $$
 I & -EC^{-1} \\
 0 & I
 \end{bmatrix}
-
 \begin{bmatrix}
 B & E \\
 E^T & C
@@ -234,7 +232,6 @@ E^T & C
 \Delta X_l
 \end{bmatrix}
 =
-
 \begin{bmatrix}
 I & -EC^{-1} \\
 0 & I
@@ -254,13 +251,11 @@ $$
 B -EC^{-1}E^T & 0 \\
 E^T & C
 \end{bmatrix}
-
 \begin{bmatrix}
 \Delta X_r \\
 \Delta X_l
 \end{bmatrix}
 =
-
 \begin{bmatrix}
 v -EC^{-1}w\\
 w
@@ -272,27 +267,28 @@ So, we get a single equation for solving for $\Delta X_r$
 
 $$
 \begin{gather*}
-(B -EC^{-1}E^T)^{-1} \Delta X_r = v -EC^{-1}w
+(B -EC^{-1}E^T) \Delta X_r = v -EC^{-1}w
 \end{gather*}
 $$
 
-Note that $C$ is diagonal, so $C^{-1}$ is easy to get. $(B -EC^{-1}E^T)^{-1}$ is still something we need to brute-force invert, but its dimension is the same as the robot pose (which is much smaller than the original $H$).
+Note that $C$ is diagonal, so $C^{-1}$ is easy to get. $S = B -EC^{-1}E^T$ is still something we need to brute-force invert, but its dimension is the same as the robot pose (which is much smaller than the original $H$).
 
 A side note about $S$'s sparsity: without proof, the an off-diagonal non-zero item $S_{mn}$ means there's at least 1 landmark observation between camera pose `m` and `n`. In general, we want $S$ to be dense, such that there will be constraints between camera poses to improve our estimates. In non-sliding window methods, such as ORB-SLAM, we may have a background thread running as the backend, so we could disgard frames that do not share many landmarks together.
 
 ### Solve for Delta x Using Cholesky Decomposition
 
 After applying Schur's trick, we converted the original $H\Delta x = b$ into:
+
 $$
 \begin{gather*}
-[B − EC^{−1} E^T] \Delta x_{r} = S \Delta x_{r} = v − EC^{-1} w = g'
+[B - EC^{-1} E^T] \Delta X_{r} = S \Delta X_{r} = v - EC^{-1} w = g'
 \end{gather*}
 $$
 
-**$S$ is called "Schur's compliment"**. $S$ is still semi-positive-definite and symmetric. So, using Cholesky Decompistion, $S=LL^T$ where $L$ is a lower triangular matrix. So now,
+**$S$ is called "Schur's compliment"**. $S$ is still positive semi-definite and symmetric. So, using Cholesky Decompistion, $S=LL^T$ where $L$ is a lower triangular matrix. So now,
 
 1. Solve for $y$ in $Ly = g'$ because a lower triangular matrix's inverse is easier to solve
-2. Solve for $\Delta x_{c}$ in $L^T \Delta x_{c} = y$
+2. Solve for $\Delta X_{r}$ in $L^T \Delta X_{r} = y$
 
 The system $Ax=b$ is always called "linear", **so its solver is called a "linear solver".**
 
@@ -302,7 +298,7 @@ This is to assume:
 
 ### Wrap Up
 
-After solving for $\Delta X_r$, one can use it to solve $\Delta X_p$. That gives the full step size $\Delta X$ for the optimizer.
+After solving for $\Delta X_r$, one can use it to solve $\Delta X_l$. That gives the full step size $\Delta X$ for the optimizer.
 
 ONEEEEEE LAST THINGGGGGG: wait a second, poses are in $SE(3)$.  $F(X + \Delta X) \approx F(X) + J\Delta X$ does NOT hold, especially the rotation matrix part in $SO(3)$. What do we do?? Well, the Lie Algebra of $SE(3)$, $se(3)$, DOES support addition:
 

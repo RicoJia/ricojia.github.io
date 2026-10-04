@@ -111,6 +111,7 @@ g2o is widely used in SLAM algorithms such as ORB-SLAM. [👉 Example: Bundle Ad
     \end{aligned}
     \end{gather*}
     $$
+
     - The Jacobian is:
 
     $$
@@ -122,6 +123,7 @@ g2o is widely used in SLAM algorithms such as ORB-SLAM. [👉 Example: Bundle Ad
     $$
 
 3. Construct Hessian Matrix
+
     $$
     \begin{gather*}
     \begin{aligned}

@@ -66,17 +66,21 @@ Fast generates LOTS OF FEATURES even with the threshold and non maximum suppresi
 3. Orientation Identification (Not in FAST)
     - Select a patch that centers the corner.
     - Compute the image moments of the patch, then compute the intensity centroid. That is done on a circular image patch (according to the OpenCV page ). The patch's radius is the same "half patch size" used in fast feature detection. Use the center of the patch as the origin $O$
+
         $$
         m_{pq} = \sum_{x,y} x^{p} y^{q} I(x,y)
         \\
         C = [\frac{m_{10}}{m_{00}}, \frac{m_{01}}{m_{00}}]
         $$
+
         - So, $x, y \in [-3, 3]$ for the entire image patch. $p, q \in [0,1]$ for the zeroth and first order image moments.
     - This can be rapidly calculated by `cv::integral`.
     - Calculate orientation of $\vec{OC}$ using **the quadrant-aware** atan2
+
         $$
         \theta = atan2 (m_{01}, m_{10})
         $$
+
     - One thing to note is the "chirality" of cordinate sysmtes. Image coordinates in computer vision is usually Y pointing up, X pointing right. This however, is not coherent with regular mathematical coordinates. So in any orientation-critical applications, it's worth the effort to operate on the regular coordinate system we use.
 
 4. Represent the descriptor in steered BRIEF
@@ -84,9 +88,11 @@ Fast generates LOTS OF FEATURES even with the threshold and non maximum suppresi
         - In Rublee et al's paper, a large number of images were used to compare the image intensitiy of these selected pixels of keypoints.
         They mapped out the mean of all these image pairs, and the correlation within each pair.
     - Steer the descriptor. From the "normalized image" to the rotated one (the patch we have):
+
         $$
         S = R[\theta](x_1,y_1; ... x_n, y_n)
         $$
+
     - Compare their intensities. If $I(p1) > I(p2)$ then you get a 1, else 0. Put it in a 256-bit array
 
 5. Repeat the same process in an image pyramid for scale invariance. This is needed because some features are not ORB features anymore if you zoom in/out.

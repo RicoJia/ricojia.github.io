@@ -45,6 +45,7 @@ $$
 \sum_{i=1}^{N}  
 \left\| p_i - \hat{p}_i \right\|^2  
 $$  
+
 Colored PSNR: For attribute (color) distortion:  
   
 - $\mathrm{MAX} = 255$ (for 8-bit color channels).  
@@ -109,16 +110,19 @@ Is Chamfer Distance Differentiable?  **Short answer**:
 ### Step 1: Forward Pass Nearest-neighbor (NN) assignment  
 
 Define the (squared-distance) NN index for each reference point:  
+
 $$  
 j^*(i) \;=\; \arg\min_{j} \|p_i - \hat p_j\|^2.  
 $$  
   
 Then the loss can be written *with the discrete assignment made explicit*:  
+
 $$  
 \mathcal{L}_{P\to \hat P}  
 =  
 \frac{1}{N}\sum_{i=1}^{N} \|p_i - \hat p_{j^*(i)}\|^2.  
 $$  
+
 This is the key idea: **during the backward pass we treat the current NN assignments as fixed** (they are recomputed each forward pass, but within a given forward/backward evaluation they are constants).  You can compute the Jacobian with respect to point positions:  
   
 $$  
@@ -128,6 +132,7 @@ $$
 $$  
   
 So in the graph?, the jacobian of the final cost w.r.t a contributing point is:  
+
 $$  
 \frac{\partial \mathcal{L}_{P\to \hat P}}{\partial \hat p_k}  
 =  
@@ -147,6 +152,7 @@ $$
 +  
 \frac{1}{M}\sum_{j=1}^{M} \min_{i} \|\hat{p}_j - p_i\|^2.  
 $$
+
 To compute the gradient with respect to a reconstructed point $\hat{p}_k$, we consider the second term (reconstructed → original). Let $S_k$ be the set of original points for which $\hat{p}_k$ is the nearest neighbor. Then the gradient is:  
   
 $$  
@@ -168,6 +174,7 @@ $$
 [\hat p_1^\top,\hat p_2^\top,\dots,\hat p_M^\top]^\top  
 \in \mathbb{R}^{3M}.  
 $$
+
 For a single term $\|p_i - \hat p_{j^*(i)}\|^2$, the gradient w.r.t. $\hat{\mathbf{x}}$ is zero everywhere except in the block corresponding to $j^*(i)$:  
   
 - For block $k = j^*(i)$:  
@@ -187,6 +194,7 @@ $$
 =  
 0  
 $$
+
 Thus, the Jacobian is **block-sparse**: each reference point contributes to exactly one reconstructed point (for this one-way term).
 
 ### Step 4: Aggregating Over All Points  
@@ -200,6 +208,7 @@ $$
 \sum_{i=1}^{N}  
 \|p_i - \hat p_{j^*(i)}\|^2,  
 $$
+
 the gradient for a reconstructed point $\hat p_k$ becomes:  
   
 $$  
@@ -239,9 +248,11 @@ $$
 As you move $\hat p_j$'s continuously, most of the time the identity of the minimizer stays the same, so $j^*(i)$ is constant locally and the loss is a smooth quadratic in that region.  
   
 A change happens only when two candidates tie:  
+
 $$  
 \|p_i-\hat p_a\|^2 = \|p_i-\hat p_b\|^2,  
 $$  
+
 which defines a boundary of measure zero in continuous space. That’s the “assignment switch” event.  
   
 At those boundaries:  

@@ -61,7 +61,6 @@ $$
 \begin{gather*}
 W_{a} = [W_{aa}, W_{ax}]
 \\
-
 a^{t} = g_0(W_{a}[a^{t-1}, x^{t}]^T + b_a)
 \end{gather*}
 $$

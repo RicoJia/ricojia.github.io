@@ -49,7 +49,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & f(x) = x^2 - m = 0
-
 \\
 & \rightarrow x_{n+1} = x_{n} - \frac{x_n^2 - m}{2 x_n} = \frac{x_n}{2} + \frac{m}{2 x_n}
 \end{aligned}
@@ -97,16 +96,13 @@ We think of it as:
 $$
 \begin{gather*}
 \begin{aligned}
-
 \text{Taylor Expansion:}
 \\
 & f(x + \Delta x) \approx f(x_0) + f'(x_0) \Delta x + \frac{1}{2} (f''(x_0))^2 \Delta x^2
-
 \\
 \text{Optimum: }
 \\
 & \frac{\partial f(x_0 + \Delta x)}{\partial \Delta x} = 0
-
 \\
 & \rightarrow f(x + \Delta x)' = f'(x_0) + f''(x_0) \Delta x = 0
 \\
@@ -156,17 +152,14 @@ $$
 & c(x) = |f(x)^2|
 \\
 & x* = argmin(|f(x)^2|)
-
 \\
 \text{First order Taylor Expansion:}
 \\
 & argmin_{\Delta x}(|f(x + \Delta x)^2|)
 \\
 &= argmin_{\Delta x}[(f(x_0) + J_0 \Delta x)^T (f(x_0) + J_0 \Delta x)]
-
 \\
 & = argmin_{\Delta x}[f(x_0)^T f(x_0) + f(x_0)^T J_0 \Delta x + (J_0 \Delta x)^T f(x_0) + (J_0 \Delta x)^T (J_0 \Delta x)]
-
 \\
 & = argmin_{\Delta x}[f(x_0)^T f(x_0) + 2 f(x_0)^T J_0 \Delta x + (J_0 \Delta x)^T (J_0 \Delta x)]
 \end{aligned}
@@ -179,10 +172,8 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial f(x + \Delta x)^2}{\partial \Delta x} = 2J_0^T f(x_0) + [(J_0^TJ_0) + (J_0^TJ_0)^T]\Delta x
-
 \\
 & = 2J_0^T f(x_0) + 2(J_0^TJ_0) \Delta x
-
 \\
 & = 0
 \end{aligned}

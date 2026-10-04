@@ -34,14 +34,12 @@ Suppose the acceleration contains noise:
 
 $$  
 a = a_{\text{true}} + n, n \sim \mathcal{N}(0, \sigma^2)  
-  
 $$
 
 Over a small time interval $\Delta t$, this acceleration noise affects velocity and position as:
 
 $$  
 \Delta v = n \Delta t  , \Delta p = \frac{1}{2} n \Delta t^2  
-
 $$
 
 Think of time as scaling the covariance. we can use a basic covariance rule:
@@ -50,25 +48,21 @@ $$
 \begin{gather*}
 &
 \text{Cov}(cX) = c^2 \text{Cov}(X)  
-
 \\ &
 \text{Cov}(\Delta v)=\sigma^2 \Delta t^2  
-
 \\ &
 \text{Cov}(\Delta p) = \frac{1}{4}\sigma^2 \Delta t^4  
-
 \end{gather*}
 $$
+
 There is also a cross-covariance between position error and velocity error, because both come from the same acceleration noise source:
 
  $$  
 \text{Cov}(\Delta p, \Delta v) E[\Delta p \Delta v]  = \text{Cov}(\Delta p, \Delta v)
-
 E\left[  
 \left(\frac{1}{2}n\Delta t^2\right)  
 \left(n\Delta t\right)  
 \right]  
-
 = \text{Cov}(\Delta p, \Delta v) \frac{1}{2}\sigma^2 \Delta t^3  
 $$
 
@@ -87,7 +81,6 @@ The same idea applies to orientation. If angular velocity contains gyro noise:
 
 $$  
 \omega = \omega_{\text{true}} + n_g  , \Delta \theta = n_g \Delta t => \text{Cov}(\Delta \theta)
-
 \sigma_g^2 \Delta t^2  
 $$
 

@@ -101,6 +101,7 @@ B\in\mathbb{R}^{d_{\text{out}}\times r},
 \qquad
 r\ll\min(d_{\text{in}},d_{\text{out}}).
 $$
+
 Because
 
 $$

@@ -72,32 +72,21 @@ The gram schmidt process:
 $$
 \begin{equation*}
 \begin{aligned}
-
 \mathbf{u}_1 = \mathbf{a}_1 = (1, 1, 0),
-
 \\
-
 \mathbf{e}_1 = \frac{\mathbf{u}_1}{\|\mathbf{u}_1\|} = \frac{1}{\sqrt{2}} (1, 1, 0) = \left( \frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}}, 0 \right),
-
 \\
-
 \mathbf{u}_2 = \mathbf{a}_2 - (\mathbf{a}_2 \cdot \mathbf{e}_1)\mathbf{e}_1 = (1, 0, 1) - \frac{1}{\sqrt{2}} \left(1, 1, 0\right) = \left(1 - \frac{1}{\sqrt{2}}, -\frac{1}{\sqrt{2}}, 1\right),
-
 \\
 \mathbf{e}_2 = \frac{\mathbf{u}_2}{\|\mathbf{u}_2\|} = \frac{1}{\sqrt{3/2}} \left( \frac{1}{2}, -\frac{1}{2}, 1 \right) = \left( \frac{1}{\sqrt{6}}, -\frac{1}{\sqrt{6}}, \frac{2}{\sqrt{6}} \right),
-
 \\
 \mathbf{u}_3 = \mathbf{a}_3 - (\mathbf{a}_3 \cdot \mathbf{e}_1)\mathbf{e}_1 - (\mathbf{a}_3 \cdot \mathbf{e}_2)\mathbf{e}_2
-
 \\
 = (0, 1, 1) - \frac{1}{\sqrt{2}} \left(1, 1, 0\right) - \frac{1}{\sqrt{6}} \left(1, -1, 2\right)
-
 \\
 = \left(0 - \frac{1}{\sqrt{2}} - \frac{1}{\sqrt{6}}, 1 - \frac{1}{\sqrt{2}} + \frac{1}{\sqrt{6}}, 1 - \frac{2}{\sqrt{6}}\right) = \left(-\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}\right),
-
 \\
 \mathbf{e}_3 = \frac{\mathbf{u}_3}{\|\mathbf{u}_3\|} = \left( -\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}} \right).
-
 \end{aligned}
 \end{equation*}
 $$
@@ -200,7 +189,6 @@ $$
 V = \begin{bmatrix}
 v_1 & v_2 & ... & v_n
 \end{bmatrix}
-
 \\
 G = V^TV
 \\ => 

@@ -23,7 +23,6 @@ L_{\text{dist}} = \sum_{k \in \text{scale}}
 w_k  
 \left(  
 \log s_k^{\text{gen}}
-
 =\log s_k^{\text{real}}  
 \right)^2  
 +  
@@ -31,7 +30,6 @@ w_k
 w_k  
 \left(  
 s_k^{\text{gen}}
-
 s_k^{\text{real}}  
 \right)^2.  
 $$
@@ -66,7 +64,6 @@ The first thing we may care about is simply how large the residual noise is. A c
 
 $$  
 L_2 =
-
 \left(  
 E|x|^2  
 \right)^{1/2}.  
@@ -76,18 +73,17 @@ For our example,
 
 $$  
 L_2 =
-
 \sqrt{  
 \frac{  
 1^2 + 1^2 + 1^2 + 4^2  
 }{4}  
 }.  
 $$
+
 Therefore,
 
 $$  
 L_2 =
-
 \sqrt{4.75}  
 \approx  
 2.18  
@@ -110,10 +106,8 @@ the generated noise amplitude is roughly twice as large as it should be. Because
 
 $$  
 L_{\sigma} =
-
 \left(  
 \log \sigma_{\text{gen}}
-
 \log \sigma_{\text{real}}  
 \right)^2.  
 $$
@@ -126,7 +120,6 @@ Noise amplitude is not enough. Two residual distributions can have the same stan
 
 $$  
 L_1 =
-
 E|x|.  
 $$
 
@@ -140,11 +133,11 @@ L_1 = \frac{
 1.75  
 \text{ mm}.  
 $$
+
 We then divide by $L_2$:
 
 $$  
 \frac{L_1}{L_2} =
-
 \frac{1.75}{2.18}  
 \approx  
 0.80.  
@@ -173,7 +166,6 @@ To pay more attention to large residuals, we increase the exponent. Define
 
 $$  
 L_4 =
-
 \left(  
 E|x|^4  
 \right)^{1/4}.  
@@ -183,7 +175,6 @@ For our example,
 
 $$  
 L_4 =
-
 \left(  
 \frac{  
 1^4+1^4+1^4+4^4  
@@ -201,7 +192,6 @@ we obtain
 
 $$  
 L_4 =
-
 \left(  
 \frac{259}{4}  
 \right)^{1/4}  
@@ -214,7 +204,6 @@ Therefore,
 
 $$  
 \frac{L_4}{L_2} =
-
 \frac{2.84}{2.18}  
 \approx  
 1.30.  
@@ -239,11 +228,11 @@ The selected pixel can also change abruptly when residual values reorder. By con
 
 $$  
 L_p =
-
 \left(  
 E|x|^p  
 \right)^{1/p}  
 $$
+
 depends on all of the residual values. The gradient is still weighted toward large residuals for large $p$, but the objective is much smoother than a hard quantile. This gives a useful division of labor:
 
 $$  
@@ -308,12 +297,10 @@ These measure how strongly residuals are correlated at different spatial offsets
 
 $$  
 P_{\text{eq}}
-
 = E_{\text{adjacent pairs}}  
 \left[  
 \exp  
 \left(
-
 \left(  
 \frac{\Delta R}{\epsilon}  
 \right)^2  
@@ -369,7 +356,6 @@ A practical version of the statistics loss is therefore
 
 $$  
 L_{\text{stats}} =
-
 L_{\text{scale}}  
 +  
 L_{\text{shape}}.  
@@ -394,7 +380,6 @@ L_{\text{scale}} = \sum_{k \in \text{scale}}
 w_k  
 \left(  
 \log s_k^{\text{gen}}
-
 \log s_k^{\text{real}}  
 \right)^2.  
 $$
@@ -425,12 +410,10 @@ These can be compared directly:
 
 $$  
 L_{\text{shape}}
-
 = \sum_{k \in \text{shape}}  
 w_k  
 \left(  
 s_k^{\text{gen}}
-
 s_k^{\text{real}}  
 \right)^2.  
 $$
@@ -440,12 +423,10 @@ The complete loss is
  $$  
 \boxed{  
 L_{\text{dist}}
-
 = \sum_{k \in \text{scale}}  
 w_k  
 \left(  
 \log s_k^{\text{gen}}
-
 = \log s_k^{\text{real}}  
 \right)^2  
 +  
@@ -453,7 +434,6 @@ w_k
 w_k  
 \left(  
 s_k^{\text{gen}}
-
 s_k^{\text{real}}  
 \right)^2  
 }  

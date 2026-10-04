@@ -80,15 +80,12 @@ w_{1, 1} & ... & w_{1, 256} \\
 ... \\
 w_{256,1} & ... & w_{256, 256}
 \end{bmatrix}
-
 \begin{bmatrix}
 x_1 \\
 ... \\
 x_{256}
 \end{bmatrix}
-
 =
-
 \begin{bmatrix}
 y_1 \\
 ... \\

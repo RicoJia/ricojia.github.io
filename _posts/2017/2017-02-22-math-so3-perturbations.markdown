@@ -13,6 +13,7 @@ tags:
 Imagine we have a world frame, a car frame, and a pedestrian. Now the car has rotated from the `car1` pose to the `car2` pose. We assume the pedestrain has not moved:
 
 In `car1` and `car2` poses, the pedestrian is at
+
 $$
 \begin{gather*}
 p_1 = R_{c1w}p_w
@@ -84,16 +85,13 @@ B = \begin{bmatrix}
 0 & -b  \\
 b & 0
 \end{bmatrix}
-
 \\ &
 [A, B] = AB - BA = 0
-
 \\ &
 C = A + B + \frac{1}{2}[A, B] = \begin{bmatrix}
 0 & -(a+b)  \\
 a+b & 0
 \end{bmatrix}
-
 \end{aligned}
 \end{gather*}
 $$
@@ -156,13 +154,11 @@ $$
 \begin{aligned}
 &
 J_{l}(A) = \frac{\partial{e^{A^{\land}}}}{\partial{A}} = \frac{sin \theta}{\theta} I + (1 - \frac{sin \theta}{\theta}) aa^T + \frac{1 - cos\theta}{\theta} a^{\land}
-
 \\ &
 \rightarrow
 C = ln(exp((\Delta A)^{\land})exp(A^{\land}) )
 \\ &
 = J_l^{-1}(B) \Delta A + B
-
 \end{aligned}
 \end{gather*}
 $$
@@ -176,6 +172,7 @@ $$
 $$
 
 And the right Jacobian is:
+
 $$
 \begin{gather*}
 \begin{aligned}

@@ -94,7 +94,6 @@ $$
 \\ & 
 ...
 \\ & 
-
 \nabla f(x,y) = \lambda_k \nabla g_k(x, y)
 \\ &
 \Rightarrow \nabla f(x,y) + \sum_k \lambda_k g_k(x, y) = 0 
@@ -108,6 +107,7 @@ $$
 If f(x,y, t) is a function of time, we will have "costates" $\lambda_k(t)$. So:
 
 If we define our state transition to be: 
+
 $$
 \begin{gather*}
 \begin{aligned}

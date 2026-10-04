@@ -40,9 +40,7 @@ It's easy to find the intersection between two such parabolas:
 
 $$
 (p-q_1)^2 + f(q_1) - ((p-q_2)^2 + f(q_2))
-
 \\
-
 \Rightarrow
 \\
 p = \frac{f(q_1) + q_1^2 - f(q_2) - q_2^2}{2(q_1 - q_2)}
@@ -108,14 +106,17 @@ def distance_tf_1d(f):
 The beauty of this algorithm is that for N-dimensions, you can apply this algorithm independently.
 
 Assume that we have a 2D map. First, apply 1D Distance Transform along each row (x axis). Then, for the rows with obstacles, each cell has a distance value to their nearest row obstacle.
+
 $$
 D(x,y) = min ((x - i) ^ 2 + F(i,y))
 $$
 
 Now, apply distance transform along each column.
+
 $$
 D(x,y) = min_j((y - j)^2 + G(x,j) )
 $$
+
 You scan through voxels along this column, which already provide distance values there. Still clear as mud? Let's walk through an example:
 
 In this grid, let the **only obstacle be at (2,1)**.
@@ -164,6 +165,7 @@ y=0:  INF  INF  INF
 $$
 D(x,y) = (x - 2)^2 + (y-1)^2
 $$
+
 Column 1 is
 
 ```
@@ -209,6 +211,7 @@ Instead, they use **trajectory optimization**. They represent a trajectory as a 
 $$
 x(t)
 $$
+
 and minimize a cost of the form:
 
 $$
@@ -227,11 +230,13 @@ Consider a single point on the trajectory: $x_k$. Suppose it is slightly inside 
 $$
 \phi(x_k) < 0
 $$
+
 We define a collision penalty:
 
 $$
 J_{collision}(x_k) = \frac{1}{2} max(0, d_{safe} - \phi(x_k))^2
 $$
+
 The optimizer moves the trajectory by following the gradient of the cost.
 
 $$
@@ -243,6 +248,7 @@ $\nabla \phi(x)$ is the gradient of the signed distance field. It points outward
 $$
 x_k = x_k - \alpha \nabla J = x_k + \alpha(d_{safe} - \phi (x_k)) \nabla \phi(x_k)
 $$
+
 $x_k$  will be pushed outward, too. **Therefore, if we do NOT use negative distances within obstacles, $\phi(x) = 0$, so $x_k$ gets stuck and won't be pushed out**
 
 ## References

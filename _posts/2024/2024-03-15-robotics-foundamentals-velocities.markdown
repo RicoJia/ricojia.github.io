@@ -56,10 +56,8 @@ $$
 \begin{aligned}
 & \frac{\partial Ra}{\partial R} =
 \lim_{\theta \rightarrow 0} \frac{R exp(\theta^{\land}) a}{\theta}
-
 \\
 & \approx \lim_{\theta \rightarrow 0} \frac{R (I + \theta^{\land}) a}{\theta} = \lim_{\theta \rightarrow 0} \frac{ 0 + R (\theta^{\land}) a}{\theta}
-
 = \lim_{\theta \rightarrow 0} \frac{ R (-a^{\land}) \theta}{\theta}
 \\
 & = -Ra^{\land}
@@ -185,20 +183,16 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{(Rexp(\phi^{\land}))^{-1} p - R^{-1}p}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{exp(\phi^{\land})^{-1} R^{-1} p - R^{-1}p}{\phi}
 \\
 & = \lim_{\phi \rightarrow 0} \frac{exp(-\phi^{\land}) R^{-1} p - R^{-1}p}{\phi}
 \\
 & \approx \lim_{\phi \rightarrow 0} \frac{(I - \phi^{\land}) R^{-1} p - R^{-1}p}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{- \phi^{\land} R^{-1} p}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{(R^{-1} p)^{\land} \phi}{\phi}
-
 \\
 & = (R^{-1} p)^{\land}
 \end{aligned}
@@ -213,15 +207,12 @@ $$
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{(exp(\phi^{\land}) R)^{-1}p - R^{-1}p }{\phi}
 \\
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} exp(\phi^{\land})^{-1} p - R^{-1}p}{\phi}
-
 \\
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} exp(-\phi^{\land}) p - R^{-1}p}{\phi}
 \\
 & \frac{\partial R^{-1}p}{\partial R} \approx \lim_{\phi \rightarrow 0} \frac{R^{-1} (I - \phi^{\land}) p - R^{-1}p}{\phi}
-
 \\
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{-R^{-1} \phi^{\land} p }{\phi}
-
 \\
 & \frac{\partial R^{-1}p}{\partial R} = \lim_{\phi \rightarrow 0} \frac{R^{-1} p^{\land} \phi }{\phi}
 \\
@@ -239,23 +230,17 @@ When differentiating a rotation matrix w.r.t another rotation matrix, we assume 
 $$
 \begin{gather*}
 \begin{aligned}
-
 & \frac{\partial R_1R_2^{-1}}{\partial R_2} = \lim_{\phi \rightarrow 0} \frac{Log(R_1 (R_2 exp(\phi^{\land}))^{-1}) - Log(R_1R_2)^{-1}}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 exp(\phi^{\land})^{-1} R_2^{-1})- Log(R_1R_2)^{-1}}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 exp(-\phi^{\land})R_2^{-1})- Log(R_1R_2)^{-1}}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 R_2^T R_2exp(-\phi^{\land})R_2^{T}) - Log( R_1R_2^{T})}{\phi}
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 R_2^T exp(-R_2 \phi^{\land})) - Log(R_1R_2^{T})}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 R_2^T) - J_r^{-1}(R_1 R_2^T)R_2\phi - Log(R_1R_2^{T})}{\phi}
-
 \\
 & = J_r^{-1}(R_1 R_2^T)R_2
 \end{aligned}
@@ -267,9 +252,7 @@ Left Perturbation:
 $$
 \begin{gather*}
 \begin{aligned}
-
 & \frac{\partial R_1R_2^{-1}}{\partial R_2} = \lim_{\phi \rightarrow 0} \frac{Log(R_1 (exp(\phi^{\land}))^{-1} R_2) - Log(R_1R_2)^{-1}}{\phi}
-
 \\
 & = \lim_{\phi \rightarrow 0} \frac{Log(R_1 R_2^{-1} exp(-\phi^{\land})) - Log(R_1R_2^{-1})}{\phi}
 \\

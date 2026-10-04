@@ -23,6 +23,7 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
     - Note, we use $\eta_g$ to represent angular velocity noise
 
 - The cone detector can give us the range and bearing of each cone from the robot: `d`, $\beta$. **The goal is to estimate the $[x, y, \theta]$ of the vehicle.**
@@ -46,7 +47,6 @@ $$
 & x_{t+1} = x_t - \frac{\omega}{v} \sin(\theta_t) + \frac{\omega}{v} \sin(\theta_t + \omega \Delta t) + \eta_x, \\
 & y_{t+1} = y_t + \frac{\omega}{v} \cos(\theta_t) - \frac{\omega}{v} \cos(\theta_t + \omega \Delta t) + \eta_y, \\
 & \theta_{t+1} = \theta_t + \omega \Delta t + \eta_\theta.
-
 \\ & \Rightarrow
 \\ & x_{t+1} = f(x_t, u, \eta)
 \end{aligned}
@@ -136,13 +136,10 @@ $$
 \begin{gather*}
 \begin{aligned}
 & Exp(\delta \theta) [\delta \theta']^{\land} = Exp(\delta \theta)(\tilde{w} - \eta_g)^{\land} - [\tilde{w}]^{\land}Exp(\delta \theta)
-
 \\&
 = Exp(\delta \theta)(\tilde{w} - \eta_g)^{\land} - Exp[\delta \theta](\tilde{w})^{\land}
-
 \\&
 = -Exp[\delta \theta](\eta_g)^{\land}
-
 \\
 \Rightarrow
 \\ &
@@ -159,14 +156,11 @@ $$
 \begin{gather*}
 \begin{aligned}
 & p_{true}' = p' + \delta p' = R_{true} (\tilde{v} - \eta_v)
-
 \\ &
 p' = R \tilde{v}
-
 \\ \Rightarrow
 \\ &
 p' + \delta p' \approx R(I + \delta \theta)(\tilde{v} - \eta_v)
-
 \\ \Rightarrow
 \\ &
 \delta p' \approx R(\tilde{v} - \eta_v) \delta \theta - R \eta_v
@@ -200,7 +194,6 @@ $$
 I_2 & R(\tilde{v} - \eta_v) \Delta t    \\
 0_1 & I_1
 \end{bmatrix}
-
 \end{aligned}
 \end{gather*}
 $$
@@ -265,7 +258,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial h}{\partial x} =
-
 \begin{bmatrix}
 \frac{x - c_x}{d} & \frac{y - c_y}{d} & 0 \\
 \frac{c_y - y}{d^2} & \frac{x - c_x}{d^2} & -1
@@ -320,14 +312,11 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial h}{\partial \delta x} =
-
 \begin{bmatrix}
 \frac{x - c_x}{d} & \frac{y - c_y}{d} & 0 \\
 \frac{c_y - y}{d^2} & \frac{x - c_x}{d^2} & -1
 \end{bmatrix}
-
 I_3
-
 \end{aligned}
 \end{gather*}
 $$

@@ -25,6 +25,7 @@ DeepFace introduced a 3D alignment step that projects 2D face images into a fron
 - [1] stated that 2D frontalization is bad for out-of-plane rotation (pitch and yaw)
 
 The estimation is:
+
 $$
 \begin{gather*}
 x_j^{anchor} = sR x_J^{source} + t_x

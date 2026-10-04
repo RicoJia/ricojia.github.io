@@ -144,6 +144,7 @@ The output is a $C$-dimensional feature vector.  For each channel $c$, the aggre
 $$
 y_i^{c} = \sum_{k \in \mathcal{N}(i)} \alpha_{ik}^{c} \, v_k^{c},
 $$
+
 where $\alpha_{ij}^{c}$ denotes the attention weight assigned to neighbor $j$ for channel $c$, and $v_j^{c}$ is the $c$-th channel of the value feature at point $j$.
 
 **Main benefit for using vector attention is per-channel (where a channel is a feature dimension) weighted sum of attention weight and feature vector**.
@@ -181,6 +182,7 @@ $$
 $$
 
 Attention Tensor (Vector Attention): each channel has its own attention distribution over neighbors:
+
 $$
 \boldsymbol{\alpha} =  
 \begin{bmatrix}  
@@ -198,7 +200,9 @@ where row $c$ contains the attention weights for channel $c$, and column $k$ cor
 $$
 \mathbf{y} = \sum_{k=1}^{K} \boldsymbol{\alpha}_{:,k} \odot \mathbf{v}_{:,k}.
 $$
+
 Equivalently, channel-wise:
+
 $$
 y_c = \sum_{k=1}^{K} \alpha_{c k} \, v_{c k}.
 $$
@@ -211,9 +215,12 @@ $$
   
 Channel 1:  
 
-$$y_1 = 0.90 \cdot 10 + 0.10 \cdot 20 = 11  
+$$
+y_1 = 0.90 \cdot 10 + 0.10 \cdot 20 = 11  
 $$  
+
 Final output vector:
+
 $$
 \mathbf{y} =  
 \begin{bmatrix}  

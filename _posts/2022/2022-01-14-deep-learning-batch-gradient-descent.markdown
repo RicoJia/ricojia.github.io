@@ -84,7 +84,6 @@ Ideally, we feed the entire batch of training set into the network and optimize 
 
 $$
 \begin{gather*}
-
 J = -\frac{1}{m} \sum_{m}^{M} (y^{(m)} log(\hat{y}^{(m)}) + (1-y^{(m)})log(1-\hat{y}^{(m)}))
 \\
 w = w - \sum_{m}^{M}\lambda\nabla{J^{(m)}} = w - \frac{1}{m} \sum_{m}^{M} \lambda(\hat{y}^{(m)} - y^{(m)})x^{(m)}
@@ -177,6 +176,7 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         \frac{\partial{J}}{\partial{z^{L}}} = \frac{\partial{J}}{\partial{a}^L} \frac{\partial{a}}{\partial{z}^L}
         \end{gather*}
         $$
+
         - $y, a, z$ are `mxp` matrices.
 
 2. For non-output layers,
@@ -186,7 +186,6 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         \begin{gather*}
         \frac{\partial{J}}{\partial{a^{L}_j}} = \sum_q^Q\frac{\partial{J}}{\partial{z^{L+1}_q}} \frac{\partial{z^{L+1}_q}}{\partial{a^{L}_q}}
         = \sum_q^Q\frac{\partial{J}}{\partial{z^{L+1}_q}} w^{L+1}_{q,j}  \text{,if L is not an output layer}
-
         \\
         \frac{\partial{J}}{\partial{z^{L}_j}} = \frac{\partial{J}}{\partial{a^{L}_j}} \frac{\partial{a^{L}_q}}{\partial{z^{L}_q}}
         = \frac{\partial{J}}{\partial{a^{L}_j}} \dot{\sigma{(z^{L})}}

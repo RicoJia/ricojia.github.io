@@ -24,6 +24,7 @@ W_{D6},
 W_{\text{head}}  
 }.  
 $$
+
 Now suppose training allows two resolutions: $320\times320$ or $640\times640$. For simplicity, suppose patch size is fixed at $p=16$.  Suppose the original image is large - RF-DETR chooses $r=320$ for the batch and resizes the images. The input tensor is:
 
 $$  
@@ -31,14 +32,16 @@ X
 \in  
 \mathbb{R}^{B\times3\times320\times320}.  
 $$
+
 Now divide it into `16x16` patches: along one dimension, each patch gets
+
 $$  
 320/16=20.  
 $$
+
 Per side, then each patch gets $20\times20=400$ image tokens. Then, 400 tokens -> ViT -> 300 queries -> decoder layers
 
 $$  
-
 X_{320}  
 \rightarrow  
 \boxed{W_{\text{patch}}}  
@@ -70,7 +73,9 @@ $$
 X  
 \in  
 \mathbb{R}^{B\times3\times640\times640}.  
-$$With the same patch size,
+$$
+
+With the same patch size,
 
 $$  
 640/16=40.  

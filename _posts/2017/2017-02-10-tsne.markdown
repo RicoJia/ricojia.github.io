@@ -65,6 +65,7 @@ To calculate the similarity between point A and C,
 
     1. calculate their L2 Distance, `d_{AC}`
     2. Then, plug `d` into a gaussian distribution with a known standard deviation $\sigma_A$? and get an "unscaled similarity"
+
     $$
     \begin{gather*}
     exp(-d_{AC}^2/2\sigma_A^2)

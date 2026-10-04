@@ -19,6 +19,7 @@ output size = \frac{i + 2p - k}{s} + 1
 $$
 
 Where: `i` is the input size, `p` is padding, `k` is the kernel size, s is the stride.  So for transpose convolution,
+
 $$
 output size = (i - 1)s + k - 2p
 $$
@@ -52,7 +53,6 @@ So the first 3 items are: $2 \times [1,2,3] = [2,4,6]$ So the output matrix beco
 
 $$
 \begin{gather*}
-
 \begin{bmatrix}
 2 & 4 & 6 & 0 & 0
 \end{bmatrix}

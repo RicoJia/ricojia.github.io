@@ -55,6 +55,7 @@ In practice a simplified binary assignment (using +1 and -1) produces similar re
 2. Iterate through the likelihood field pyramid, from the lowest resolution to the highest:
     1. Build a graph of the pose estimate (vertex) and distance errors of scan points (edges)
     2. Set $\delta$ in $\Chi^2$ of an edge. Above $\delta^2$, a g2o edge is considered an outlier in the data. Then these large errors will be downweighted:
+
         $$
         \begin{gather*}
         \begin{aligned}
@@ -64,6 +65,7 @@ In practice a simplified binary assignment (using +1 and -1) produces similar re
         \end{aligned}
         \end{gather*}
         $$
+
         ```cpp
         auto rk = new g2o::RobustKernelHuber;
         rk->setDelta(delta);

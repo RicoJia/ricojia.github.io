@@ -44,20 +44,23 @@ so $x_1$ must be removed. However, we cannot simply delete $x_1$. The measuremen
 
 $$  
 p(x_2,x_3,x_4) = 
-
 \int  
 p(x_1,x_2,x_3,x_4)  
 ,dx_1  
 $$
 
 In the linearized optimization problem, this marginalization is performed using the **Schur complement**. The result is a new **marginalized prior** on the states that remain. Because $x_1$ was connected to both $x_2$ and $x_3$, this prior generally couples $x_2$ and $x_3$. So the graph
+
 $$  
 x_1-x_2-x_3-x_4  
 $$
+
 with the additional edge
+
 $$  
 x_1-x_3  
 $$
+
 becomes
 
 $$  
@@ -121,9 +124,9 @@ J =
 $$
 
 The corresponding information matrix is
+
  $$  
 \Lambda = 
-
 \begin{bmatrix}  
 3 & -1 & -1 & 0 \\  
 -1 & 2 & -1 & 0 \\  
@@ -142,7 +145,6 @@ and we want to eliminate $x_1$. Partition the information matrix as
 
 $$  
 \Lambda = 
-
 \begin{bmatrix}  
 \Lambda_{11} & \Lambda_{1r} \\  
 \Lambda_{r1} & \Lambda_{rr}  
@@ -157,7 +159,6 @@ $$
 
  $$  
 \Lambda_{1r} = 
-
 \begin{bmatrix}  
 -1 & -1 & 0  
 \end{bmatrix}  
@@ -165,7 +166,6 @@ $$
 
 $$  
 \Lambda_{r1} = 
-
 \begin{bmatrix}  
 -1 \\  
 -1 \\  
@@ -177,7 +177,6 @@ and
 
 $$  
 \Lambda_{rr} = 
-
 \begin{bmatrix}  
 2 & -1 & 0 \\  
 -1 & 3 & -1 \\  
@@ -189,18 +188,16 @@ The Schur complement eliminates $x_1$:
 
 $$  
 \Lambda_{\text{new}} =
-
 \Lambda_{rr}
-
 \Lambda_{r1}  
 \Lambda_{11}^{-1}  
 \Lambda_{1r}  
 $$
+
 Therefore,
 
 $$  
 \Lambda_{\text{new}} = 
-
 \begin{bmatrix}  
 \frac{5}{3} & -\frac{4}{3} & 0 \\  
 -\frac{4}{3} & \frac{8}{3} & -1 \\  
@@ -226,7 +223,6 @@ has information matrix
 
 $$  
 \Lambda_{\text{remain}} = 
-
 \begin{bmatrix}  
 1 & -1 & 0 \\  
 -1 & 2 & -1 \\  
@@ -238,7 +234,6 @@ After marginalizing $x_1$,
 
 $$  
 \Lambda_{\text{new}} = 
-
 \Lambda_{\text{remain}}  
 +  
 \Lambda_{\text{prior}}  
@@ -248,7 +243,6 @@ Therefore,
 
 $$  
 \Lambda_{\text{prior}} = 
-
 \begin{bmatrix}  
 \frac{2}{3} & -\frac{1}{3} & 0 \\  
 -\frac{1}{3} & \frac{2}{3} & 0 \\  
@@ -264,6 +258,7 @@ $$
 -\frac{1}{3} & \frac{2}{3}  
 \end{bmatrix}  
 $$
+
 on
 
 $$  

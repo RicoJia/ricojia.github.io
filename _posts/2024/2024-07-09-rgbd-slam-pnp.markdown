@@ -24,17 +24,16 @@ Naively, when we have the 3D coordinates of points in the camera frame and the w
 $$
 \begin{gather*}
 K^{-T}z[u,v] =
-
 \begin{bmatrix}
 t_1 & t_2 & t_3 & t_4 \\
 t_5 & t_6 & t_7 & t_8 \\
 t_9 & t_{10} & t_{11} & t_{12} \\
 \end{bmatrix}
-
 \end{gather*}
 $$
 
 So each point gives:
+
 $$
 \begin{gather*}
 u_1 = \frac{t_1 X + t_2 Y + t_3 Z + t_4}{t_9 X + t_{10} Y + t_{11} Z + t_{12}}, \quad

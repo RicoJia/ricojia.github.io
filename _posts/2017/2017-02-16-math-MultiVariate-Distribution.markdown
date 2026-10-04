@@ -58,7 +58,6 @@ $$
 1.14 & -0.29 \\
 -0.29 & 0.57
 \end{bmatrix}
-
 \end{aligned}
 \end{gather*}
 $$

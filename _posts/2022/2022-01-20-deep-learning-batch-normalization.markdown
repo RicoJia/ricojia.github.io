@@ -55,10 +55,8 @@ $$
 \\
 \sigma^2_r= \beta_v * \sigma^2_r + (1 - \beta_v) * \sigma^2
 \\
-
 ==>
 \\
-
 z_{norm} = \frac{x-\mu}{\sqrt{\sigma^2 + \epsilon}}
 \\
 \tilde{z} = \gamma z_{norm} + \beta

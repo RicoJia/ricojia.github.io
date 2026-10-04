@@ -125,14 +125,12 @@ $$
 \frac{\partial e_i}{\partial y} = [0, 1]
 \\ &
 \frac{\partial e_i}{\partial \theta} = [-r_i sin(\phi_i + \theta), r_i cos(\phi_i + \theta)]
-
 \\ &
 \Rightarrow
  \frac{\partial e_i}{\partial x} = \begin{bmatrix}
  1 & 0 & -r_i sin(\phi_i + \theta) \\
  0 & 1 & r_i cos(\phi_i + \theta) \\
  \end{bmatrix}
-
 \end{aligned}
 \end{gather*}
 $$
@@ -211,7 +209,6 @@ $$
 & \frac{\partial e}{\partial x} = \begin{bmatrix}
 a & b & -a*r_i sin(\phi_i + \theta) + b * r_i cos(\phi_i + \theta)
 \end{bmatrix}
-
 \\
 \Rightarrow
 \\ &

@@ -41,7 +41,6 @@ l_{21} & l_{22} & \cdots & 0 \\
 l_{n1} & l_{n2} & \cdots & l_{nn}
 \end{pmatrix}
 \begin{gather*}
-
 \end{gather*}
 $$
 
@@ -58,7 +57,6 @@ L = \begin{bmatrix}
 l_{11} & 0 \\
 L_{21} & L_{22}
 \end{bmatrix}
-
 ,
 L^T = \begin{bmatrix}
 l_{11} & L_{21}^T \\
@@ -109,19 +107,16 @@ A = LDL^T =
 L_{21} & 1 & 0 \\
 L_{31} & L_{32} & 1
 \end{bmatrix}
-
 \begin{bmatrix}
 D_1 & 0 & 0 \\
 0 & D_2 & 0 \\
 0 & 0 & D_3
 \end{bmatrix}
-
 \begin{bmatrix}
 1 & L_{21} & L_{31} \\
 0 & 1 & L_{32} \\
 0 & 0 & 1
 \end{bmatrix}
-
 \end{gather*}
 $$
 
@@ -228,14 +223,12 @@ L = \begin{bmatrix}
 L_{11} & 0^T \\
 S & \hat{L}
 \end{bmatrix}
-
 \end{gather*}
 $$
 
 - From $A=LL^T$, we get:
 
 $$
-
 \begin{gather*}
 A_{11} = L_{11}L_{11}^T => L_{11} = chol(A_{11}) [1]
 \\

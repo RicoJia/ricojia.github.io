@@ -26,8 +26,8 @@ $$
 From counting, we find that $q(x_i)=0$ for a certain value $x_i$, technically,
 
 $$
-D_{KL}(p(x) | q(x)) = \sum_X p(x) ln(\frac{p(x)}{0}) = \inf
-$$.
+D_{KL}(p(x) | q(x)) = \sum_X p(x) ln(\frac{p(x)}{0}) = \infty
+$$
 
 However, this could cause a lot of issues. instead, we can assume $q(x) = \epsilon = 10^{-3}$ in this case to avoid numerical errors
 

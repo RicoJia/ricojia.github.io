@@ -253,7 +253,6 @@ $$
 \hat{y}_j = \frac{e^{z_j}}{\sum_{K} e^{z_k}}
 \\
 \frac{\partial \hat{y}_j}{\partial z_j} = \frac{\partial}{\partial z_j} \left( \frac{e^{z_j}}{\sum_{k=1}^{C} e^{z_k}} \right)
-
 \end{gather*}
 $$
 
@@ -263,10 +262,8 @@ $$
 \begin{gather*}
 \frac{\partial \hat{y}_j}{\partial z_j} = \frac{\left(\sum_{k=1}^{C} e^{z_k}\right) \cdot \frac{\partial e^{z_j}}{\partial z_j} - e^{z_j} \cdot \frac{\partial}{\partial z_j} \left(\sum_{k=1}^{C} e^{z_k}\right)}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
 \end{gather*}
-
 \\
 = \frac{e^{z_j} \cdot \sum_{k=1}^{C} e^{z_k} - e^{z_j} \cdot e^{z_j}}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
-
 \\
 = \frac{e^{z_j} \cdot \left(\sum_{k=1}^{C} e^{z_k} - e^{z_j}\right)}{\left(\sum_{k=1}^{C} e^{z_k}\right)^2}
 $$

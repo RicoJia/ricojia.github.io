@@ -33,10 +33,13 @@ For each query point `p`:
 2. For each point p ​:
 
     - Compute squared distance:
+
   $$
   d_i^2 = (q - p_i)^2
   $$
+
     - If:
+
   $$
   d_i^2 < \text{heap}[0]
   $$

@@ -17,6 +17,7 @@ tags:
 ## Hadamard (Schur) Product
 
 Hadamard (Schur) Product is Elementwise Product
+
 $$
 A \circ B = [A1*B1, A2*B2...]
 $$
@@ -96,9 +97,7 @@ $$
 \begin{bmatrix}
 \mathbf{x}_1 & \mathbf{x}_2 & \cdots & \mathbf{x}_m
 \end{bmatrix}
-
 \\=>
-
 \begin{gather*}
 \mathbf{X}^T \mathbf{X} =
 \begin{bmatrix}

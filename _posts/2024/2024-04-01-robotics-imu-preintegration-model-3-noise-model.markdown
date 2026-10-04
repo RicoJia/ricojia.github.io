@@ -58,27 +58,22 @@ $$
 Exp \left( -J_{r,i} \eta_{gd,i} \Delta t \right)
 \underbrace{Exp \left( (\tilde{\omega}_{i+1} - b_{g,i}) \Delta t \right)}_{\Delta \tilde{R}_{i+1,i+2}}
 Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right)\cdots ,
-
 \\ &
 = \Delta \tilde{R}_{i,i+1}
 Exp \left( -J_{r,i} \eta_{gd,i} \Delta t \right)
 \Delta \tilde{R}_{i+1,i+2}
 Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right) \cdots ,
-
 \\ &
 = \Delta \tilde{R}_{i,i+2}
 Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
 Exp \left( -J_{r,i+1} \eta_{gd,i} \Delta t \right) \cdots ,
-
 \\ &
 = \Delta \tilde{R}_{i,i+2}
 Exp \left( -\Delta \tilde{R}_{i+1,i+2}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
 \Delta \tilde{R}_{i+2,i+3} \cdots .
-
 \\ &
 = \Delta \tilde{R}_{i,j} \prod_{k=i}^{j-1}
 Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) \cdots
-
 \\ &
 = \Delta \tilde{R}_{i,j} Exp \left(-\delta \phi_{i,j} \right)
 \end{aligned}
@@ -105,31 +100,22 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \Delta v_{ij} := R_i^T(v_j - v_i - g_k \Delta t_{ij}) = \sum_{k=i}^{j-1} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
-
 \\ &
 = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} Exp \left(-\delta \phi_{i,k} \right) (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
-
 \\ &
 \approx \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (I -\delta \phi_{i,k}) (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t
-
 \\&
 = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t + \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} - \eta_{ad, k})^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k}
-
 \\ &
 \text{Defining velocity observation:}
-
 \\ &
 \Delta \tilde{v_{ij}} = \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k}(\tilde{a_k} - b_{a,k})  \Delta t
-
 \\ &
 \text{Omitting second order term} - \eta_{ad, k}^{\land} \phi_{i,k},
-
 \\ &
 \rightarrow = \Delta \tilde{v_{ij}} +  \sum_{k=i}^{j-1} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k} )^{\land} \phi_{i,k} \Delta t - \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t
-
 \\ &
 =  \Delta \tilde{v_{ij}} - \delta v_{i,j}
-
 \end{aligned}
 \end{gather*}
 $$
@@ -143,29 +129,20 @@ $$
 \begin{aligned}
 &
 \Delta p_{ij} := R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) =
-
 \\ &
-
 = \sum_{k=i}^{j-1} \Delta v_{ik} \Delta t + \frac{1}{2} \Delta R_{ik} (\tilde{a_k} - b_{a,k} - \eta_{ad, k}) \Delta t^2
-
 \\ &
 = \sum_{k=i}^{j-1} (\Delta \tilde{v_{ij}} - \delta v_{i,j} )\Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2
-
 \\ &
 - \delta v_{ik} \Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 - \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
-
 \\ &
 \text{Define accumulated position part observation:}
-
 \\ &
 \Delta \tilde{p_{i,j}} = \sum_{k=i}^{j-1}[\Delta v_{i,k} \Delta t] + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})\Delta t^2
-
 \\ &
 \text{The above becomes:}
-
 \\ &
 = \Delta \tilde{p_{i,j}} + \sum_{k=i}^{j-1} - \delta v_{ik} \Delta t + \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 - \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
-
 \\ &
 := \Delta \tilde{p_{i,j}} - \delta p_{i,j}
 \end{aligned}
@@ -178,11 +155,8 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \Delta \tilde{R_{ij}} := R_i^T R_j Exp(\delta \phi_{ij})
-
 \\ &
-
 \Delta \tilde{v_{ij}} =  R_i^T(v_j - v_i - g_k \Delta t_{ij}) + \delta v_{i,j}
-
 \\ &
 \Delta \tilde{p_{i,j}} = R_i^T(p_j - p_i - v_i \Delta t_{ij} - \frac{1}{2} g_k \Delta t_{ij}^2) + \delta p_{i,j}
 \end{aligned}
@@ -200,7 +174,6 @@ $$
 \begin{aligned}
 & Exp \left(-\delta \phi_{i,j} \right) = \prod_{k=i}^{j-1}
 Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right)
-
 \end{aligned}
 \end{gather*}
 $$
@@ -243,17 +216,12 @@ $$
 & \phi_{ij} \approx \sum_{k=i}^{j} \Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t
 \\ &
 = \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + \underbrace{\Delta R_{j,j}^{\top}}_{=I} J_{r,j-1} \eta_{gd,j-1} \Delta t,
-
 \\ &
-
 = \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + J_{r,j-1} \eta_{gd,j-1} \Delta t,
-
 \\ & \text{Since:}
 \tilde{\Delta R}_{k+1,j}^{\top} = \left( \tilde{\Delta R}_{k+1,j-1} \tilde{\Delta R}_{j-1,j} \right)^{\top}
-
 \\ &
 = \tilde{\Delta R}_{j-1,j}^{\top} \sum_{k=i}^{j-2} \tilde{\Delta R}_{k+1,j}^{\top} J_{r,k} \eta_{gd,k} \Delta t + J_{r,j-1} \eta_{gd,j-1} \Delta t,
-
 \\ &
 = \tilde{\Delta R}_{j-1,j}^{\top} \delta \phi_{i,j-1} + J_{r,j-1} \eta_{gd,j-1} \Delta t.
 \end{aligned}
@@ -280,14 +248,10 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \delta v_{ij} = \sum_{k=i}^{j-1} - \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land} \phi_{i,k} \Delta t + \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t
-
 \\ &
 = \sum_{k=i}^{j-2} \left[ -\tilde{\Delta R}_{ik} (\tilde{a}_k - b_{a,i})^\wedge \delta \phi_{ik} \Delta t + \tilde{\Delta R}_{ik} \eta_{ad,k} \Delta t \right]
-
 \\ &
-
 \quad - \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t + \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t,
-
 \\ &
 = \delta v_{i,j-1} - \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t + \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t.
 \end{aligned}
@@ -302,13 +266,10 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \delta p_{i,j} =  \sum_{k=i}^{j-1}  \delta v_{ik} \Delta t - \frac{1}{2} \Delta \tilde{R}_{i,k} (\tilde{a_k} - b_{a,k})^{\land}\delta \phi \Delta t^2 + \frac{1}{2} \Delta \tilde{R}_{i,k} \eta_{ad, k} \Delta t^2
-
 \\ &
 = \sum_{k=i}^{j-2} \left[ \delta v_{ik} \Delta t - \frac{1}{2} \tilde{\Delta R}_{ik} (\tilde{a}_k - b_{a,i})^\wedge \delta \phi_{ik} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{ik} \eta_{ad,k} \Delta t^2 \right]
-
 \\ &
 \quad + \delta v_{i,j-1} \Delta t - \frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t^2,
-
 \\ &
 = \delta p_{i,j-1} + \delta v_{i,j-1} \Delta t - \frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \delta \phi_{i,j-1} \Delta t^2 + \frac{1}{2} \tilde{\Delta R}_{i,j-1} \eta_{ad,j-1} \Delta t^2.
 \end{aligned}
@@ -367,7 +328,6 @@ $$
 -\tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \Delta t & I & 0 \\
 -\frac{1}{2} \tilde{\Delta R}_{i,j-1} (\tilde{a}_{j-1} - b_{a,i})^\wedge \Delta t^2 & \Delta t I & I
 \end{bmatrix},
-
 B_{j-1} =
 \begin{bmatrix}
 J_{r,j-1} \Delta t & 0 \\

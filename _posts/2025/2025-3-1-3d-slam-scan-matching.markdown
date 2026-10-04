@@ -343,6 +343,7 @@ $$
             \end{aligned}
             \end{gather*}
             $$
+
     4. We also consider neighbor cells as well, because the point might actually belong to one of them. So we repeat step 3 for those voxels.
 
 4. Maximum Likelihood Estimate (MLE):
@@ -356,6 +357,7 @@ $$
     \end{aligned}
     \end{gather*}
     $$
+
     - $H = \sum_i J_i^T \Sigma^{-1} J_i$
     - $b = -\sum_i J_i^T \Sigma^{-1} e_i$
     - $\chi^2 = \sum_i e_i^T \Sigma^{-1} e_i$
@@ -392,7 +394,6 @@ $$
 \begin{aligned}
 & \prod_I f((T^{*})^{-1} x_i')
 \\ & \text{where f(x) is the pdf of the target cloud points}
-
 \\ & f(x) = \frac{1}{(2\pi)^{d/2} |\Sigma_t|^{1/2}} \exp\left( -\frac{1}{2} (\mathbf{x} - \boldsymbol{\mu}_t)^\top \Sigma_t^{-1} (\mathbf{x} - \boldsymbol{\mu}_t) \right)
 \end{aligned}
 \end{gather*}
@@ -450,7 +451,6 @@ $$
 \Rightarrow \mathbb{E}_T\left[\ln(f(\mathbf{X}'))\right]
 = \mathbb{E}_T\left[\ln\left(f(T^{-1} \mathbf{x}_i')\right)\right]
 = \int f\left((T^*)^{-1} \mathbf{x}_i'\right) \ln\left(T^{-1}f(\mathbf{x}_i')\right) \, d\mathbf{x}
-
 \\ &
 = f_{T^*}(\mathbf{x}_i) \ln\left( f_T(\mathbf{x}_i) \right)
 \end{aligned}

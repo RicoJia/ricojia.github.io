@@ -81,12 +81,10 @@ $$
 V = \begin{bmatrix}
 v_1 & v_2
 \end{bmatrix},
-
 \Lambda = \begin{bmatrix}
 \lambda_1 & 0 \\
 0 & \lambda_2
 \end{bmatrix}
-
 \\ =>
 A = V \Lambda V^{-1}
 \end{gather*}

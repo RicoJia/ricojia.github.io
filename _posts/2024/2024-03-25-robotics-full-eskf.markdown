@@ -140,7 +140,6 @@ exp(\delta \theta^{\land})' = exp(\delta \theta^{\land})\theta^{\land}
 \Rightarrow
 \\&
 R (\tilde{w} - b_g)^{\land} exp(\delta \theta^{\land}) + R exp(\delta \theta^{\land}) (\delta \theta^{\land})' = R exp(\delta \theta)(\tilde{w} - b_{gt} - \eta_{g})^{\land}
-
 \\ &
 \text{using: } \phi^{\land}R = R(R^{T}\phi)^{\land}
 \\ &
@@ -157,16 +156,13 @@ $$
 \begin{gather*}
 \begin{aligned}
 & v_t' = v' + \delta v' := R_t(\tilde{a} - b_{at} - \eta_a) + g_t
-
 \\ &
 \rightarrow v' + \delta v' := R(\tilde{a} - b_a) + g + \delta v'
-
 \\ &
 \rightarrow R_t(\tilde{a} - b_{at} - \eta_a) + g_t = R exp(\delta \theta)(\tilde{a} - b_{a} - \delta b_a - \eta_a) + g + \delta g
 \\ & \approx R(I + \delta \theta^{\land} )(\tilde{a} - b_{a} - \delta b_a - \eta_a) + g + \delta g
 \\ & \approx R \tilde{a} - Rb_{a} - R\delta b_a - R\eta_a + R\delta \theta^{\land} \tilde{a} - R\delta \theta^{\land}b_{a} + g + \delta g
 \\ & = R \tilde{a} - Rb_{a} - R\delta b_a - R\eta_a - R\tilde{a}^{\land}\delta \theta +  Rb_{a}^{\land}\delta \theta + g + \delta g
-
 \\ & \text{Using: }  R\eta_a = \eta_a
 \\ &
 \Rightarrow \delta v' = - R(\tilde{a} - b_a)^{\land}\delta \theta - R\delta b_a - \eta_a + \delta g
@@ -191,7 +187,6 @@ $$
 \delta b_a' = \eta_{ba}
 \\ &
 \delta g = 0
-
 \tag{2}
 \end{gather*}
 $$
@@ -204,7 +199,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \delta p_{k+1} = \delta p_{k} + \delta v \Delta t
-
 \\ &
 \delta v_{k+1} = \delta v_{k} + (- R(\tilde{a} - b_a)^{\land}\delta \theta - R\delta b_a + \delta g) \Delta t - \eta_v
 \\ &
@@ -219,10 +213,11 @@ $$
 \end{gather*}
 $$
 
-Why
+Why is the following true?
+
 $$
-(\delta \theta)_{k+1} \approx exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}
-$$?
+(\delta \theta)_{k+1} \approx \exp(-(\tilde{w} - b_{g}) \Delta t)\delta \theta - \delta b_g \Delta t - \eta_{\theta}
+$$
 
 - Because if in continuous time we have:
 
@@ -277,13 +272,10 @@ So it's easy to write out the motion prediction:
 
 $$
 \begin{gather*}
-
 \delta x_{k+1}^* = F \delta x_{k}
-
 \\
 \Rightarrow
 \\
-
 \begin{bmatrix}
 \delta p_{k+1}*\\
 \delta v_{k+1}* \\
@@ -292,9 +284,7 @@ $$
 \delta  b_{a, k+1}*\\
 \delta g_{k+1}* \\
 \end{bmatrix}
-
 =
-
 \begin{bmatrix}
 I & I\Delta t & 0 & 0 & 0 &0 \\
 0 & I & -R(\tilde{a}-b_a)^{\land}\Delta t & 0 & -R \Delta t & I\Delta t \\
@@ -303,7 +293,6 @@ I & I\Delta t & 0 & 0 & 0 &0 \\
 0 & 0 & 0 & 0 & I & 0 \\
 0 & 0 & 0 & 0 & 0 & I \\
 \end{bmatrix}
-
 \begin{bmatrix}
 \delta p_{k} \\
 \delta v_{k} \\
@@ -312,7 +301,6 @@ I & I\Delta t & 0 & 0 & 0 &0 \\
 \delta  b_{a, k} \\
 \delta g_{k} \\
 \end{bmatrix}
-
 \end{gather*}
 $$
 
@@ -346,7 +334,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & z = H \cdot \delta x + v
-
 \\ &
 \Rightarrow
 \\ &
@@ -436,7 +423,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V + H_{k+1} P_{k+1}^{*} H_{k+1}^T)^{-1}
-
 \\ &
 P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1}^{*} - K_{k+1} \frac{\partial h}{\partial x} P_{k+1}^{*}
 \end{aligned}
@@ -444,6 +430,7 @@ P_{k+1} = P_{k+1}^{*} - K_{k+1} C_{k+1} P_{k+1}^{*} \Rightarrow P_{k+1} = P_{k+1
 $$
 
 And
+
 $$
 \begin{gather*}
 \begin{aligned}
@@ -523,7 +510,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & K_{k+1} = P_{k+1}^{*} H_{k+1}^{T}(V^{-1} + H_{k+1} P_{k+1}^{*} H_{k+1}^T)
-
 \\ &
 P_{k+1} = P_{k+1}^{*} - K_{k+1} H P_{k+1}^{*}
 \\ &
@@ -574,16 +560,13 @@ $$
 \begin{gather*}
 \begin{aligned}
 & R_k exp(\delta \theta_k) exp(\delta \theta^+ ) = R_k exp(\delta \theta)
-
 \\ \rightarrow
 \\ & exp(\delta \theta) = exp(\delta \theta_k ) exp(\delta \theta^+ )
-
 \\ &
 \rightarrow exp(\delta \theta^+ ) = exp(-\delta \theta_k )exp(\delta \theta)
 \\&
 \text{Using BCH:}
 \theta^+ \approx -\delta \theta_k + \delta \theta - \frac{1}{2} \delta \theta_k^{\land} \delta \theta + o((\delta \theta_k )^2)
-
 \\ &
 \rightarrow \frac{\partial \theta^+}{\partial \delta \theta} = I-\frac{1}{2} \delta \theta_k^{\land}
 \end{aligned}

@@ -167,17 +167,13 @@ $$
 \begin{gather*}
 \begin{aligned}
 \text{Prior covariance update: } \mathbf P_k^- = \mathbf F_k,\mathbf P_{k-1},\mathbf F_k^\top + \mathbf Q_k
-
 \\
 \text{Kalman Gain: } \mathbf K_k = \mathbf P_k^-,\mathbf H_k^\top\bigl(\mathbf H_k,\mathbf P_k^-,\mathbf H_k^\top + \mathbf R_k\bigr)^{-1}
 \end{aligned}
-
 \\
 \text{Innovation: } \tilde{\mathbf y}_k = \mathbf z_k - h\bigl(\hat{\mathbf x}_k^-\bigr)
-
 \\
 \text{Correction: } \hat{\mathbf x}_k = \hat{\mathbf x}_k^- + \mathbf K_k\tilde{\mathbf y}_k
-
 \\
 \text{Posterior covariance update: } \mathbf P_k = (\mathbf I-\mathbf K_k\mathbf H_k),\mathbf P_k^-,(\mathbf I-\mathbf K_k\mathbf H_k)^\top + \mathbf K_k\mathbf R_k\mathbf K_k^\top
 \end{gather*}

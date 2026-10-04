@@ -19,7 +19,6 @@ $$
 \text{unbiased variance} = \frac{\sum (x - \bar{x})}{n-1}
 \\
 \text{biased variance} = \frac{\sum (x - \bar{x})}{n}
-
 \end{gather*}
 $$
 
@@ -48,6 +47,7 @@ $$
 \sigma^2 = \frac{1}{N} \sum_N (x - \mu)^2
 \end{gather*}
 $$
+
     - Where `N` is the whole popilation's size, $\mu$ is the population mean
 
 - Sample variance:
@@ -57,6 +57,7 @@ $$
 s^2 = \frac{1}{n} \sum_n (x - \bar{x})^2
 \end{gather*}
 $$
+
     - Where `n` is the batch size, $\bar{x}$ is the batch mean
 
 The sample variance has a slight bias because $\bar{x}$ is a random variable dependent on the sample. The population mean is slightly larger, so we divide by $N-1$ instead of $N$.
@@ -117,6 +118,7 @@ $$
 corr(AB) = \frac{cov(AB)}{\sigma_A \sigma_B}
 \end{gather*}
 $$
+
     - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $[-1, 1]$. If $A=kB$ after mean normalization, then correlation will be a perfect 1
 
 ### Covariance of Function
@@ -173,7 +175,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & m(t) = E[R(t)]
-
 \\
 & k(t, t') = E[(R(t) - m(t))(R(t') - m(t'))]
 \end{aligned}
@@ -252,7 +253,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & W(t + \Delta t) = W(t) + \Delta W
-
 \\
 & \Delta W \sim \mathcal{N}(0, \Delta t)
 \end{aligned}

@@ -218,6 +218,7 @@ FMCW LiDAR emits a continuous wave that is frequency-modulated over time (e.g., 
 The frequency difference of waves when emitted and received is the beat frequency. This beat frequency is directly related to the distance to the object (since it corresponds to the time delay) and the velocity. This is called the **Doppler Effect**.
 
 Beat freuncy is determined by:
+
 $$
 f_b = 2 \frac{d}{c} S + 2 \frac{v}{\lambda}
 $$

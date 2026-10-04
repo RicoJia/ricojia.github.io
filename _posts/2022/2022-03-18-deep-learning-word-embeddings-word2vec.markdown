@@ -86,7 +86,6 @@ $$
 \end{bmatrix}
 \\
 & x = [0, 0, 0, 1, 0]^T
-
 \\
 & \rightarrow embedding = Ex
 \end{gather*}

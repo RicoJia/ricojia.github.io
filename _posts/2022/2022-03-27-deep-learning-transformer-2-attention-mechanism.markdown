@@ -265,19 +265,16 @@ At timestep `t`, Padding at in an input sentence start at `t`. When we train the
 $$
 \begin{gather*}
 QK^T =
-
 \begin{bmatrix}
 q_1^T \\
 q_2^T \\
 \vdots \\
 q_n^T \\
 \end{bmatrix}
-
 \begin{bmatrix}
 k_1 & k_2 & \dots &k_m
 \end{bmatrix}
 =
-
 \begin{bmatrix}
 q_1^T k_1 & q_1^Tk_2 & \dots & q_1^Tk_m \\
 q_2^T k_1 & q_2^Tk_2 & \dots & q_2^Tk_m \\
@@ -292,7 +289,6 @@ The look ahead mask looks like:
 $$
 \begin{gather*}
 \begin{bmatrix}
-
 0 & -10^{-9} & -10^{-9}& -10^{-9} & \dots& -10^{-9} \\
 0 & 0 & -10^{-9} & -10^{-9} & \dots & -10^{-9}  \\
 0 & 0 & 0 & -10^{-9} & \dots & -10^{-9} \\

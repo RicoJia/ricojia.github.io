@@ -42,7 +42,6 @@ x_1, 1 \\
 x_2, 1 \\
 \cdots
 \end{bmatrix}
-
 & \tilde{n} = \begin{bmatrix}
 n_x \\
 n_y \\
@@ -192,7 +191,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial f_k^2}{\partial p_0} = -2(\mathbf{x}_k - \mathbf{p_0}) + 2 \left( (\mathbf{x}_k - \mathbf{p_0})^\top \mathbf{d} \right) \mathbf{d},
-
 \\ & \text{Scalar =>} = \mathbf{d}^\top (\mathbf{x}_k - \mathbf{p_0})
 \\ & = (-2)(I - \mathbf{d} \mathbf{d}^\top)(\mathbf{x}_k - \mathbf{p_0}).
 \end{aligned}
@@ -205,7 +203,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial \sum_{k=1}^{n} f_k^2}{\partial p} = \sum_{k=1}^{n} (-2)(I - \mathbf{d} \mathbf{d}^\top)(\mathbf{x}_k - \mathbf{p}),
-
 \\&
 = (-2)(I - \mathbf{d} \mathbf{d}^\top) \sum_{k=1}^{n} (\mathbf{x}_k - \mathbf{p}).
 \end{aligned}

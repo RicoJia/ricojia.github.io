@@ -102,6 +102,7 @@ $$
 In 1981, Longuet-Higgins proposed the famous "8-point algorithm" in Nature to estimate E, and solve for R and t. Since usually $K$ is known, we can operate on the canonical points
 
 E is a 3x3 matrix:
+
 $$
 E=\begin{bmatrix}
 e_1 & e_2 & e_3
@@ -159,6 +160,7 @@ This propose-and-pick-best is called **"Random Sample Consensus", or RANSAC**. I
 ## Step 3 How To Solve For R, And t?
 
 E could be singular decomposed into:
+
 $$
 E = U \Sigma V^T
 $$

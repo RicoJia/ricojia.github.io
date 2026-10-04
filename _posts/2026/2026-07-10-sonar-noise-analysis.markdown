@@ -20,19 +20,19 @@ Below, section 1 - 7 details the rationale behind applying gamma speckle multipl
 
 Euler’s formula of a single complex number
 
-$$  
+$$
 e^{jx}=\cos x+j\sin x.  
 $$
 
 A sinusoidal echo can therefore be represented by the complex number
 
-$$  
+$$
 z=X+jY=Ae^{j\phi}=A(\cos\phi+j\sin\phi),  
 $$
 
 where
 
-$$  
+$$
 A=\sqrt{X^2+Y^2},  
 \qquad  
 \phi=\operatorname{atan2}(Y,X).  
@@ -40,7 +40,7 @@ $$
 
 For example, with (X=3) and (Y=4),
 
-$$  
+$$
 z=3+4j,  
 \qquad  
 A=\sqrt{3^2+4^2}=5,  
@@ -50,24 +50,22 @@ $$
 
 The physical waveform is the real part of the rotating complex signal:, whose frequency is fixed $\omega$:
 
-$$  
+$$
 s(t)=\operatorname{Re}[(3+4j)e^{j\omega t}].  
 $$
 
 Expanding the above:
+
  $$  
 (3+4j)e^{j\omega t} =
-
 (3+4j)\bigl(\cos(\omega t)+j\sin(\omega t)\bigr)  
-
 =3\cos(\omega t)-4\sin(\omega t)  
 =5\cos(\omega t+53.1^\circ).  
-
 $$
 
 **So any sinusoid can be represented as the real part of a complex phasor, a compact representation.**
 
-$$  
+$$
 s(t)=A\cos(\omega t+\phi).  
 $$
 
@@ -75,13 +73,13 @@ $$
 
 A Rayleigh distribution describes the **magnitude of a 2D vector whose two components are independent zero-mean Gaussian random variables**. A sonar echo can be represented as a phasor:
 
-$$  
+$$
 z = X + jY  
 $$
 
 **Assume X and Y have the same standard deviation (important assumption)**:
 
-$$  
+$$
 X \sim \mathcal N(0,\sigma^2),  
 \qquad  
 Y \sim \mathcal N(0,\sigma^2)  
@@ -89,7 +87,7 @@ $$
 
 The measured echo envelope is the magnitude is:
 
-$$  
+$$
 A = |z| = \sqrt{X^2+Y^2}  
 $$
 
@@ -105,7 +103,7 @@ That magnitude (A) follows **a Rayleigh distribution.** Suppose one sonar resolu
 
 Notice that  Gaussian components can be positive or negative, but **the magnitude cannot be negative**:
 
-$$  
+$$
 A \ge 0  
 $$
 
@@ -113,7 +111,6 @@ A follows the Rayleigh probability density:
 
  $$  
 f_A(a) =
-
 \frac{a}{\sigma^2}  
 \exp\left(-\frac{a^2}{2\sigma^2}\right),  
 \qquad a\ge0  
@@ -153,7 +150,7 @@ $$
 
 For ($\sigma=1$):
 
-$$  
+$$
 f_A(a)=r\exp\left(-\frac{r^2}{2}\right)  
 $$
 
@@ -163,38 +160,34 @@ $$
 
 For a Rayleigh random variable,
 
-$$  
+$$
 E[A] =
-
 \sigma\sqrt{\frac{\pi}{2}}  
 $$
 
 and:
 
-$$  
+$$
 \operatorname{std}(A) =
-
 \sigma\sqrt{\frac{4-\pi}{2}}  
 $$
 
 For ($\sigma=1$):
 
-$$  
+$$
 E[A]\approx1.253  
 $$
 
-$$  
+$$
 \operatorname{std}(A)\approx0.655  
 $$
 
 Therefore, coefficient of variation (CV) doesn't depend on $\sigma$:
 
-$$  
+$$
 CV =
-
 \frac{\operatorname{std}(A)}{E[A]}  = \frac{0.655}{1.253}  
 \approx0.523  
-
 $$
 
 ---
@@ -212,7 +205,7 @@ sand grain 3 → small echo with phase 290°
 
 Their complex echoes add:
 
-$$  
+$$
 z=\sum_k a_k e^{j\phi_k} = a_1e^{j\phi_1}  
 +  
 a_2e^{j\phi_2}  
@@ -224,18 +217,17 @@ $$
 
 When there are many scatterers with roughly random phases, the real and imaginary parts of (z) become approximately Gaussian. The real and imaginary parts of the sum become approximately Gaussian:
 
-$$  
+$$
 X\sim\mathcal N(0,\sigma^2),  
 \qquad  
 Y\sim\mathcal N(0,\sigma^2)  
 $$
+
 For example, if a Rayleigh-distributed amplitude has $CV \approx 0.523$,
 
  $$  
 CV_A =
-
 \frac{\sigma_A}{\mu_A}
-
 \sqrt{\frac{4-\pi}{\pi}}  
 \approx 0.523  
 $$
@@ -248,51 +240,49 @@ It means: If the logged sonar value is the raw linear echo amplitude from one in
 
 Define intensity or power as
 
-$$  
+$$
 i=r^2.  
 $$
-For a transformation of random variables,
-$$  
-f_I(i) =
 
+For a transformation of random variables,
+
+$$
+f_I(i) =
 f_R\left(\sqrt{i}\right)  
 \left|  
 \frac{d\sqrt{i}}{di}  
 \right|.  
 $$
+
 Where the derivative is:
 
  $$  
 \frac{d\sqrt{i}}{di} =
-
 \frac{1}{2\sqrt{i}}.  
 $$
+
 Substitute the Rayleigh PDF:
 
-$$  
+$$
 f_I(i) =
-
 \frac{\sqrt{i}}{\sigma^2}  
 \exp\left(-\frac{i}{2\sigma^2}\right)  
 \frac{1}{2\sqrt{i}}
-
 =
-
 \frac{1}{2\sigma^2}  
 \exp\left(-\frac{i}{2\sigma^2}\right),  
 \qquad i\ge0.  
-
 $$
 
 This is an exponential distribution with mean
 
-$$  
+$$
 E[I]=2\sigma^2.  
 $$
 
 Therefore,
 
-$$  
+$$
 \boxed{  
 R\sim\operatorname{Rayleigh}(\sigma)  
 \quad\Longrightarrow\quad  
@@ -304,16 +294,16 @@ $$
 
 On the other hand, A Gamma-distributed random variable (G) with shape (k) and scale ($\theta$) has PDF
 
-$$  
+$$
 \boxed{  
 f_G(g) =
-
 \frac{1}{\Gamma(k)\theta^k}  
 g^{k-1}  
 \exp\left(-\frac{g}{\theta}\right),  
 \qquad g\ge0.  
 }  
 $$
+
 Here:
 
 - (k>0) is the **shape** parameter;
@@ -322,22 +312,24 @@ Here:
 
 For positive integers,
 
-$$  
+$$
 \Gamma(k)=(k-1)!.  
 $$
+
 The mean and variance are
 
-$$  
+$$
 E[G]=k\theta,  
 $$
-$$  
+
+$$
 \operatorname{Var}(G)=k\theta^2.  
 $$
+
 The coefficient of variation is
 
-$$  
+$$
 CV = \frac{\sqrt{\operatorname{Var}(G)}}{E[G]}
-
 = \frac{1}{\sqrt{k}}.  
 $$
 
@@ -345,14 +337,14 @@ $$
 
 Set
 
-$$  
+$$
 k=1.  
 $$
 
 The Gamma PDF becomes
-$$  
-f_G(g) =
 
+$$
+f_G(g) =
 \frac{1}{\Gamma(1)\theta}  
 g^0  
 \exp\left(-\frac{g}{\theta}\right).  
@@ -360,15 +352,16 @@ $$
 
 Since
 
-$$  
+$$
 \Gamma(1)=1,
 g^0=1
 $$
 
-we obtain $$  
+we obtain
+
+$$
 f_G(g)
 =
-
 \frac{1}{\theta}  
 \exp\left(-\frac{g}{\theta}\right).  
 $$
@@ -381,64 +374,71 @@ That is exactly the exponential PDF.
 
 Suppose the sonar takes (L) independent measurements of the same underlying return:
 
-$$  
+$$
 I_1,I_2,\ldots,I_L.  
 $$
 
 Each single-look intensity is exponential:
 
-$$  
+$$
 I_\ell  
 \sim  
 \operatorname{Gamma}(1,\theta).  
 $$
-Their sum is
-$$  
-T =
 
+Their sum is
+
+$$
+T =
 \sum_{\ell=1}^{L}I_\ell.  
 $$
 
 The sum of (L) independent Gamma variables with the same scale is
 
-$$  
+$$
 \boxed{  
 T  
 \sim  
 \operatorname{Gamma}(L,\theta).  
 }  
 $$
-Its PDF is $$  
-f_T(t) =
 
+Its PDF is
+
+$$
+f_T(t) =
 \frac{1}{\Gamma(L)\theta^L}  
 t^{L-1}  
 \exp\left(-\frac{t}{\theta}\right).  
 $$
+
 So the chain is
 
-$$  
+$$
 (I_1+\cdots+I_L)  
 \sim  
 \operatorname{Gamma}(L,\theta).  
 $$
+
 Usually the sonar averages the measurements:
+
  $$  
 \bar I =
-
 \frac{1}{L}  
 \sum_{\ell=1}^{L}I_\ell.  
 $$
+
 If
 
-$$  
+$$
 I_\ell  
 \sim  
 \operatorname{Gamma}(1,\theta),  
 $$
+
 then
 
-$$  
+$$
 \boxed{  
 \bar I  
 \sim  
@@ -448,29 +448,30 @@ L,\frac{\theta}{L}
 \right).  
 }  
 $$
+
 Its variance becomes
 
-$$  
+$$
 \operatorname{Var}(\bar I) = L\left(\frac{\theta}{L}\right)^2
-
 = \frac{\theta^2}{L}.  
-$$Therefore, average more measurements reduces the relative fluctuation.
+$$
 
-$$  
+Therefore, average more measurements reduces the relative fluctuation.
+
+$$
 CV_{\bar I} = \frac{\theta/\sqrt L}{\theta}
-
 = \boxed{\frac{1}{\sqrt L}}.  
 $$
 
 At pixel location ((r,c)), let the underlying clean intensity be
 
-$$  
+$$
 I_{\text{clean}}[r,c]=\theta[r,c].  
 $$
 
 A single-look measured intensity is modeled as
 
-$$  
+$$
 I_\ell[r,c]  
 \sim  
 \operatorname{Gamma}  
@@ -478,29 +479,26 @@ I_\ell[r,c]
 1,\theta[r,c]  
 \right),  
 $$
+
 where the second parameter is the **scale**. Because shape (=1), this is an exponential distribution with
 
-$$  
+$$
 E[I_\ell[r,c]] =
-
 \theta[r,c] =
-
 I_{\text{clean}}[r,c].  
 $$
 
 Now  we want to look at the normalized intensity distribution:
 
-$$  
+$$
 S[r,c] =
-
 \frac{\bar I[r,c]}  
 {I_{\text{clean}}[r,c]}.  
 $$
 
 Then it's
 
-$$  
-
+$$
 S[r,c]  
 \sim  
 \operatorname{Gamma}  
@@ -510,7 +508,6 @@ L,
 \frac{I_{\text{clean}}[r,c]}{L}  
 \right)
 =
-
 \operatorname{Gamma}  
 \left(  
 L,\frac{1}{L}  
@@ -541,24 +538,25 @@ L → ∞   Concentrates around 1
 
 Therefore, if we measured $CV \in [0.41, 0.49]$  corresponds approximately to
 
-$$  
+$$
 L=\frac{1}{CV^2}  \approx4.2\text{–}5.9.  
-
 $$
 
 ## 7 - Apply Gamma Distributed Noise Multiplicatively On the Same Beam
 
-Gaussian additive noise would say $$  
-I_{\text{measured}} =
+Gaussian additive noise would say
 
+$$
+I_{\text{measured}} =
 I_{\text{clean}}+\epsilon.  
 $$
+
 That implies the same absolute noise strength for dark and bright returns and can produce negative intensities.
 
 Gamma speckle says:
-$$  
-I_{\text{measured}} =
 
+$$
+I_{\text{measured}} =
 I_{\text{clean}}S.  
 $$
 
@@ -587,12 +585,13 @@ observed_intensity = clean_intensity * speckle
 
 Suppose you start with white noise independently at every cell.:
 
-$$  
+$$
 w[r,c]\sim\mathcal N(0,1)  
 $$
+
 Then filter it:
 
-$$  
+$$
 g = K*w,  
 $$
 
@@ -617,11 +616,11 @@ can create different correlation strengths in the two grid directions.
 
 Then we add directly additive range noise:
 
-$$  
+$$
 R_{\text{observed}} =
-
 R_{\text{clean}}+g.  
 $$
+
 One characteristic here is sonar signals are "heavy-tailed".  A regular gaussian noise is: `0.03, -0.04, 0.02, 0.06, -0.05`, but a heavy tailed one is  `0.03, -0.04, 0.02, 2.50, 0.06.`  "Tail" refers to the shape of the probability distribution, instead of its physical location.
 
 ![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdTyHBQ2qFzR9gK1ncfSsDQN5Dg0oOcamXWu1koT3a7lHiMZznljpNJSs&s=10)
@@ -650,35 +649,37 @@ noise = base * amplitude
 
 TVG means **time-varying gain**. For synthetic data, TVG variation should usually be modeled as a **smooth range-dependent multiplier**, not independent random noise per pixel.
 
-$$  
+$$
 I_{\mathrm{output}}(r) =
-
 I_{\mathrm{raw}}(r)G_{\mathrm{TVG}}(r).  
 $$
 
 Substituting gives
-$$  
-I_{\mathrm{synthetic}}[r,c] =
 
+$$
+I_{\mathrm{synthetic}}[r,c] =
 I_{\mathrm{clean}}[r,c]  
 \left(\frac{r_0}{R[r,c]}\right)^p,  
 $$
+
 where (p) is a residual exponent. For example:
 
-$$  
+$$
 p=1.2,  
 \qquad  
 r_0=10\text{ m}.  
 $$
+
 Then:
 
 - at (10) m, multiplier (=1);
 - at (20) m, multiplier is
 
-$$  
+$$
 \left(\frac{10}{20}\right)^{1.2}  
 \approx0.435;  
 $$
+
 This means farther returns remain dimmer because TVG has not completely compensated the range loss.
 
 ```python
@@ -704,7 +705,6 @@ If the real data suggests gain drift or automatic gain adjustment, evolve parame
 
  $$  
 p_t =
-
 0.98p_{t-1}  
 +  
 0.02\mu_p  

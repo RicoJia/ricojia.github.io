@@ -12,7 +12,6 @@ The Sherman-Morrison-Woodbury Equation is:
 $$  
 \boxed{  
 AB(D+CAB)^{-1} = 
-
 \left(A^{-1}+BD^{-1}C\right)^{-1}BD^{-1}  
 }  
 $$
@@ -52,7 +51,6 @@ Therefore,
 
 $$  
 X = 
-
 \left(A^{-1}+BD^{-1}C\right)^{-1}  
 BD^{-1}.  
 $$
@@ -68,10 +66,10 @@ we obtain
 $$  
 \boxed{  
 AB(D+CAB)^{-1}
-
 \left(A^{-1}+BD^{-1}C\right)^{-1}BD^{-1}  
 }.  
 $$
+
 ## Connection to the Kalman filter
 
 Substitute
@@ -94,7 +92,6 @@ $$
 \boxed{  
 \left(P^{-1}+H^\top R^{-1}H\right)^{-1}  
 H^\top R^{-1} = 
-
 PH^\top(HPH^\top+R)^{-1}  
 }.  
 $$
@@ -106,13 +103,13 @@ $$
 K=PH^\top(HPH^\top+R)^{-1}  
 }.  
 $$
+
 Computing the inverse of `NxN` is hard!
 
 Starting from the least-squares problem,
 
 $$  
 J(x) = 
-
 \frac{1}{2}(x-\bar{x})^\top P^{-1}(x-\bar{x})  
 +  
 \frac{1}{2}(z-Hx)^\top R^{-1}(z-Hx),  
@@ -130,7 +127,6 @@ Setting the gradient to zero gives
 
 $$  
 \left(P^{-1}+H^\top R^{-1}H\right)\delta x = 
-
 H^\top R^{-1}r.  
 $$
 
@@ -138,8 +134,8 @@ Therefore,
 
 $$  
 \delta x =
-
 \left(P^{-1}+H^\top R^{-1}H\right)^{-1}  
 H^\top R^{-1}r.  
 $$
+
 Computing the inverse of`18x18` and is easier!

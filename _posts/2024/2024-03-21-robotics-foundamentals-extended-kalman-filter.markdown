@@ -70,6 +70,7 @@ x \\ y \\ \theta
 $$
 
 And we deem the linear and angular velocities as control input ,$u$:
+
 $$
 \begin{gather*}
 \begin{aligned}
@@ -113,7 +114,6 @@ $$
 & x_{t+1} = x_t - \frac{\omega}{v} \sin(\theta_t) + \frac{\omega}{v} \sin(\theta_t + \omega \Delta t) + \eta_x, \\
 & y_{t+1} = y_t + \frac{\omega}{v} \cos(\theta_t) - \frac{\omega}{v} \cos(\theta_t + \omega \Delta t) + \eta_y, \\
 & \theta_{t+1} = \theta_t + \omega \Delta t + \eta_\theta.
-
 \\ & \Rightarrow
 \\ & x_{t+1} = f(x_t, u, \eta)
 \end{aligned}
@@ -156,15 +156,14 @@ $$
 \end{aligned}
 \end{gather*}
 $$
+
 2. Linearize the deviation $\delta x$
 
 $$
 \begin{gather*}
 \begin{aligned}
 & x_{t+1}^* = f(\bar{x_t}, u_t)
-
 \\ \Rightarrow
-
 \\ &
 x_{t+1, true} = f(\bar{x_t} + \delta x) \approx x_{t+1}^* + J_x (x_{t + 1} - \bar{x_t}) = J_x x_{t + 1} + b
 \end{aligned}
@@ -181,14 +180,12 @@ $$
 \begin{gather*}
 \begin{aligned}
 x_{t+1} \approx 
-
 \begin{bmatrix}
 1 & 0 & -\frac{w}{v} \cos(\theta_t) + \frac{w}{v}\cos(\theta_t + \Delta t) \\
 0 & 1 & -\frac{w}{v} \sin(\theta_t) + \frac{w}{v}\sin(\theta_t + \Delta t) \Delta t \\
 0 & 0 & 1
 \end{bmatrix}
 x_{t + 1} + b
-
 \end{aligned}
 \end{gather*}
 $$
@@ -228,9 +225,7 @@ $$
 \begin{gather*}
 \begin{aligned}
 & h(x_{t+1, true}) \approx h(x_{t+1}^*) + h(x)'|_{x=x_{t+1}^*}(x_{t+1} - x_{t+1}^*) 
-
 \\ & =  h(x_{t+1}^*) + H(x) (x_{t+1} - x_{t+1}^*) 
-
 \\ & 
 \Rightarrow
 \\ & 
@@ -276,15 +271,12 @@ $$
 \begin{gather*}
 \begin{aligned}
 & x_{t+1}^* = f(\bar{x_{t}}, u_t) = 
-
 \begin{bmatrix}
 x_t - \frac{\omega}{v} \sin(\theta_t) + \frac{\omega}{v} \sin(\theta_t + \omega \Delta t) \\
 y_t + \frac{\omega}{v} \cos(\theta_t) - \frac{\omega}{v} \cos(\theta_t + \omega \Delta t) \\
 \theta_t + \omega \Delta t
-
 \\
 \end{bmatrix}
-
 \\ &
 P_{t+1}^{*} = F_t P_t F_t^\top + Q,
 \end{aligned}

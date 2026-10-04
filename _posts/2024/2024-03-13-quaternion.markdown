@@ -15,7 +15,6 @@ Quaternions can be represented as:
 
 $$
 \begin{gather*}
-
 q = [s, x, y, z] = s + xi + yj + zk = s + v
 v = (i, j, k)
 \end{gather*}
@@ -229,6 +228,7 @@ tr(R) = tr (v v^{T} + s^2 I + 2sv^{\land}) + tr((v^{\land})^2)
 $$
 
 Since
+
 $$
 \begin{gather*}
 v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
@@ -236,6 +236,7 @@ v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
 $$
 
 We have the trace of $(v^{\land})^2$:
+
 $$
 \begin{gather*}
 tr((v^{\land})^2) =  |v|^2 (1 - 3) = -2 |v|^2
@@ -243,6 +244,7 @@ tr((v^{\land})^2) =  |v|^2 (1 - 3) = -2 |v|^2
 $$
 
 So ultimately,
+
 $$
 \begin{gather*}
 tr(R) = (v_1^2 + v_2^2 + v_3^2) + 3s^2 + 0 - 2(v_1^2 + v_2^2 + v_3^2)
@@ -298,7 +300,6 @@ $$
 \\ = \frac{v}{\sqrt{1 - s^2}}
 \\ =>
 \\ [n_x, n_y, n_y] = \frac{v}{sin(\frac{\theta}{2})}
-
 \end{gather*}
 $$
 
@@ -325,12 +326,12 @@ So we can see that $q^{*}q'$ must be a **pure imaginary number** $q^{*}q' = \bar
 ### 2. Purely Imaginary Quaternion's Exponential $Exp(\bar{w})$ is A Unit Quaternion
 
 With pure imaginary $\bar{w} = [0, w]$, the derivative of the rotation quaternion is
+
 $$
 \begin{gather*}
 q^{*}q' = \bar{w} => (qq^{*})q' = q \bar{w}
 \\
 => q' = q \bar{w}
-
 \end{gather*}
 $$
 
@@ -484,7 +485,6 @@ $$
 exp(\bar{w} \Delta t) = [cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2})]
 \\
 q(t) = q(t_0)exp(\bar{w} \Delta t) = q[t_0](cos(\frac{\theta^i}{2}), u sin (\frac{\theta^i}{2}))
-
 \end{gather*}
 $$
 

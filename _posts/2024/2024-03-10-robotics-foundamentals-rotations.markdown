@@ -55,6 +55,7 @@ In the robotics community:
 ### Multiple Rotations Leads To One Rotation
 
 The final rotation of 3 rotations about fixed axes is
+
 $$
 \begin{gather*}
 R = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x)
@@ -295,7 +296,6 @@ R_0 \, \operatorname{Exp}(X) \, R_0^{-1}
 &= \operatorname{Exp}\!\big(R_0 X R_0^{-1}\big)
 \quad \text{(adjoint action for $SO(3)$ is conjugation)}.
 \end{aligned}
-
 $$
 
 In particular with $X=\widehat{w}$ for $w\in\mathbb{R}^3$,
@@ -372,7 +372,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 &  \prod_{k=1}^{n} \operatorname{Exp}(\varepsilon^\wedge_k) =
-
 \operatorname{Exp} \!\Bigl(\sum_{k=1}^{n} \varepsilon^\wedge_k  \Bigr)
 \end{aligned}
 \end{gather*}

@@ -102,7 +102,6 @@ The main difference, however, is in `add_frame`:
     \sum_i (x_i - \mu_a)(\mu_a - \mu)^T = 0 = \sum_i (\mu_a - \mu)(x_i - \mu_a)^T
     \\ & \Rightarrow
     \sum_i (x_i - \mu)(x_i - \mu)^T = m \Sigma_a
-
     \\ & \text{So ultimately:}
     \\ & \Sigma = \frac{1}{m+n}[m (\Sigma_a + (\mu_a - \mu)(\mu_a - \mu)^T) + n(\Sigma_b + (\mu_b - \mu)(\mu_b - \mu)^T)]
     \end{aligned}

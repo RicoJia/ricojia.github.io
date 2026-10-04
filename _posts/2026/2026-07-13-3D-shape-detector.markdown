@@ -59,6 +59,7 @@ $$
 \sin(2\theta),\cos(2\theta)  
 ].  
 $$
+
 The code predicts the heat map directly:
 
 ```python

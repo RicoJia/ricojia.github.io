@@ -35,7 +35,6 @@ J =
 \vdots
 \\
 \frac{\partial f_m}{\partial x_0} & \dots & \frac{\partial f_m}{\partial x_n}
-
 \end{bmatrix}
 \end{aligned}
 \end{gather*}
@@ -62,10 +61,8 @@ $$
 \begin{bmatrix}
 \frac{\partial^2 f}{\partial x_0 x_0} & \frac{\partial^2 f}{\partial x_0 x_1} & \dots & \frac{\partial^2 f}{\partial x_0x_n}
 \\
-
 \vdots
 \\
-
 \frac{\partial^2 f}{\partial x_n x_0} & \frac{\partial^2 f}{\partial x_n x_1} & \dots & \frac{\partial^2 f}{\partial x_n x_n}
 \end{bmatrix}
 \end{aligned}
@@ -83,21 +80,16 @@ b = Ra
 = \begin{bmatrix}
 R_1 & R_2 & R_3
 \end{bmatrix}
-
 \begin{bmatrix}
 a_1 \\ a_2 \\ a_3
 \end{bmatrix}
-
 \\
-
 = \begin{bmatrix}
 R_1a_1 + R_2a_2 + R_3a_3
 \end{bmatrix}
-
 = \begin{bmatrix}
 b_1 \\ b_2 \\ b_3
 \end{bmatrix}
-
 \end{gather*}
 $$
 
@@ -114,7 +106,6 @@ $$
 = \begin{bmatrix}
 \frac{R_1a_1}{a_1} & \frac{R_2a_2}{a_2} & \frac{R_3a_3}{a_3}
 \end{bmatrix}
-
 \\
 = \begin{bmatrix}
 R_1 & R_2 & R_3

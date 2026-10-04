@@ -17,22 +17,17 @@ $$
 \begin{gather*}
 \begin{aligned}
 & F(X) = \sum_{i \leq 6, j \leq 6} (r_{ij})^T \Omega r_{ij}
-
 \\ &
 \text{Approximating F(x) to find its minimum more easily:}
-
 F(X + \Delta X) = e(X+\Delta X)^T \Omega e(X+\Delta X)^T
 \\ &
 \approx (e(X) + J \Delta X)^T \Omega (e(X) + J \Delta X)
 \\ &
 = C + 2b \Delta X + \Delta X^T H \Delta X
-
 \\ &
 \text{Where:}
-
 \\ &
 J = \frac{\partial r_{ij}}{\partial(X)}
-
 \\ &
 H = \sum_{ij} H_{ij} = \sum_{ij} J^T_{ij} \Omega J_{ij} \text{(Gauss Newton)}
 \\ &
@@ -97,7 +92,6 @@ r_{\Delta R_{ij}}(R_i \operatorname{Exp}(\phi_i)) &= \log \left( \Delta \tilde{R
 &= \log \left( \Delta \tilde{R}_{ij} R_i^{\top} R_j \operatorname{Exp}(-R_i^{\top} R_j \phi_i) \right), \\
 &= r_{\Delta R_{ij}} - J_r^{-1}(r_{\Delta R_{ij}}) R_j^{\top} R_i \phi_i.
 \end{aligned}
-
 \end{aligned}
 \end{gather*}
 $$
@@ -119,7 +113,6 @@ $$
 \begin{gather*}
 \begin{aligned}
 & \frac{\partial r_{\Delta R_{ij}}}{\partial \phi_i} = - J_r^{-1}(r_{\Delta R_{ij}}) R_j^{\top} R_i
-
 \\ &
 \frac{\partial r_{\Delta R_{ij}}}{\partial \phi_j} = J_r^{-1}(r_{\Delta R_{ij}})
 \end{aligned}

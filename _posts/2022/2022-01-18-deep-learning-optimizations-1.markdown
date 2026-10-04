@@ -146,12 +146,10 @@ V_{db} = \beta_1 V_{db} + (1-\beta_1) db \\
 \\
 S_w = \beta_2 S_w + (1-\beta_2)(dW)^2 \\
 S_b = \beta_2 S_b + (1-\beta_2)(db)^2 \\
-
 \text{Weight Update}
 \\
 W = W - \lambda \frac{V_{dw}}{\sqrt{S_w + \epsilon}} \\
 b = b - \lambda \frac{V_{dw}}{\sqrt{S_b + \epsilon}}  \\
-
 \end{gather*}
 $$
 
@@ -282,7 +280,6 @@ $$
 & \text{L2 regularization: } L = L_{criterion} + \frac{a}{2} \sum(w_j^2)
 \\
 & \text{Weight Update: } g = \frac{\partial L}{\partial w_j} =  \frac{\partial L_{criterion}}{\partial w} + aw_j = g^{loss} + aw_j
-
 \\
 & \text{Weight Decay: } \rightarrow w_j = w_j - \eta g  = (1-p)w_j - k g^{loss}
 \end{aligned}

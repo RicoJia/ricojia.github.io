@@ -61,14 +61,17 @@ Given:
 We want to find the unknown receiver position $ \mathbf{x} = $x, y, z$ $.
 
 For each satellite, we have:
+
 $$
 \|\mathbf{x} - \mathbf{S}_i\|^2 = r_i^2.
 $$
 
 Subtract satellite 4’s equation from others:
+
 $$
 \|\mathbf{x} - \mathbf{S}_i\|^2 - \|\mathbf{x} - \mathbf{S}_4\|^2 = r_i^2 - r_4^2.
 $$
+
 Expanding and simplifying:
 
 $$
@@ -77,6 +80,7 @@ $$
 $$
 
 This yields a linear system:
+
 $$
 A \mathbf{x} = \mathbf{b},
 $$
@@ -87,6 +91,7 @@ where:
 - $ \mathbf{b} \in \mathbb{R}^3 $ is the simplified right-hand side.
 
 If overdetermined or noisy, solve using the pseudoinverse:
+
 $$
 \hat{\mathbf{x}} = A^\dagger \mathbf{b}.
 $$

@@ -45,6 +45,7 @@ The IMU measurements are
 $$  
 \omega_m=\omega+b_g+n_g,  
 $$
+
 $$  
 a_m=R_{bw}(a_w-g)+b_a+n_a.  
 $$
@@ -54,31 +55,32 @@ Therefore, using the current bias estimates,
 $$  
 \hat\omega=\omega_m-\hat b_g,  
 $$
+
 $$  
 \hat a_w =
-
 R_{wb}(a_m-\hat b_a)+\hat g.  
 $$
 
 The nominal state is propagated as
+
 $$  
 p_{k+1} =
-
 p_k+v_k\Delta t+\frac12\hat a_w\Delta t^2,  
 $$
+
 $$  
 v_{k+1} =
-
 v_k+\hat a_w\Delta t,  
 $$
+
 $$  
 R_{k+1} =
-
 R_k\operatorname{Exp}  
 \left(  
 [\hat\omega]_\times\Delta t  
 \right).  
 $$
+
 The biases and gravity are kept constant during nominal propagation:
 
 $$  
@@ -110,21 +112,22 @@ For a right rotation error, the continuous-time linearized dynamics are approxim
 $$  
 \delta\dot p=\delta v,  
 $$
+
 $$  
 \delta\dot v =
-
 -R[a_m-\hat b_a]_\times\delta\theta  
 -R\delta b_a  
 +\delta g  
 -Rn_a,  
 $$
+
 $$  
 \delta\dot\theta =
-
 -[\omega_m-\hat b_g]_\times\delta\theta  
 -\delta b_g  
 -n_g,  
 $$
+
 $$  
 \delta\dot b_g=n_{bg},  
 \qquad  
@@ -139,7 +142,6 @@ $$
 
 $$
 \delta x_{k+1} =
-
 F_k\delta x_k+G_dw_k.  
 $$
 
@@ -173,7 +175,6 @@ The predicted covariance is
 $$  
 \boxed{  
 P_{k+1}^{-} =
-
 F_kP_k^{+} F_k^\top  
 +  
 G_dQ_wG_d^\top  
@@ -191,7 +192,6 @@ and write
 $$  
 \boxed{  
 P_{k+1}^{-} =
-
 F_kP_k^{+} F_k^\top+Q_d.  
 }  
 $$
@@ -254,7 +254,6 @@ $$
 \frac{\partial e_i}{\partial \delta p}=I,  
 \qquad  
 \frac{\partial e_i}{\partial \delta\theta}
-
 -R[p_i]_\times.  
 $$
 
@@ -330,7 +329,6 @@ Therefore, the prior error has zero mean, and the optimization is
 
 $$  
 \delta x^* =
-
 \arg\min_{\delta x}  
 \left[  
 \lVert\delta x\rVert_{\bar P^{-1}}^2  
@@ -344,7 +342,6 @@ This gives
 $$  
 \boxed{  
 \delta x = K(z-h) =
-
 \left(  
 \bar P^{-1}  
 +  
@@ -399,7 +396,6 @@ where  $T_k$ is essentially the local Jacobian that maps perturbations from the 
  $$  
 \boxed{  
 T_k =
-
 \frac{\partial(\text{perturbation expressed at }x_0)}  
 {\partial(\text{perturbation expressed at }x_k)}.  
 }  
@@ -410,7 +406,6 @@ The correct objective is therefore
 $$  
 \boxed{  
 \delta x_{k} ^* =
-
 \arg\min_{\delta x}  
 \left[  
 \left|  
@@ -443,7 +438,6 @@ Define
 
 $$  
 P_k =
-
 (T_k)^{-1}  
 \bar P  
 (T_k)^{-\top},  
@@ -453,17 +447,14 @@ and the prior mean in the current tangent space:
 
 $$  
 \mu_k =
-
 -(T_k)^{-1}d_k.  
 $$
 
 Then the above becomes:
 
 $$  
-
 \boxed{  
 \delta x_k =
-
 \left[  
 (P_k)^{-1}+A_k  
 \right]^{-1}  
@@ -492,7 +483,6 @@ Note, $T_k$ is a Jacobian that relates the tangent space of the current nominal 
 $$  
 \boxed{  
 T_k =
-
 \operatorname{diag}  
 \left(  
 I,,  
@@ -512,6 +502,7 @@ For a simple nonlinear function
 $$  
 y=f(x),  
 $$
+
 linearized around $x_0$,
 
 $$  
@@ -533,7 +524,6 @@ The propagated covariance $\bar P$ is the covariance matrix at $x_0$. To express
  $$  
 \boxed{  
 P_k =
-
 T_*^{-1}\bar P T_*^{-\top}.  
 }  
 $$
@@ -544,7 +534,6 @@ Finally, the LiDAR/NDT measurement causes the actual Kalman covariance reduction
 
 $$  
 A_k =
-
 (J_k)^\top  
 \Sigma^{-1}  
 J_k.  
@@ -553,10 +542,8 @@ $$
 The posterior covariance is
 
 $$  
-
 \boxed{  
 P^+ =
-
 \left[  
 (P_k)^{-1}+A_k  
 \right]^{-1}.  

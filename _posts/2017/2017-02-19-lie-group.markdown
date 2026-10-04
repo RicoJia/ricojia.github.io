@@ -124,13 +124,11 @@ R_x(\gamma) = \begin{bmatrix}
 0 & \cos \gamma & -\sin \gamma \\
 0 & \sin \gamma & \cos \gamma
 \end{bmatrix}
-
 R_y(\beta) = \begin{bmatrix}
 \cos \beta & 0 & \sin \beta \\
 0 & 1 & 0 \\
 -\sin \beta & 0 & \cos \beta
 \end{bmatrix}
-
 R_z(\alpha) = \begin{bmatrix}
 \cos \alpha & -\sin \alpha & 0 \\
 \sin \alpha & \cos \alpha & 0 \\
@@ -180,6 +178,7 @@ $$
 $$
 
 Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $\phi(t)^{\land}$ with it.**
+
 $$
 \begin{gather*}
 R'R^TR = R' = \phi(t)^{\land} R
@@ -233,6 +232,7 @@ $$
 - One trick for the second formula is: $a^{\land} (a^{\land} a^{\land}) = a \times (aa^T - I) = -a^{\land}$
 
 So,
+
 $$
 \begin{gather*}
 \begin{aligned}
