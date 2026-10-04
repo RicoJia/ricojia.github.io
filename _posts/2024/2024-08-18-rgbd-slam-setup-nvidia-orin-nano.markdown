@@ -18,8 +18,7 @@ This is part 1 of my Jetson notes. Part 2, [Running the Orin: Power Modes, Bench
 - Jetson Orin Nano Developer Kit (8GB)
 - Storage: a MicroSD card (128GB) or an NVMe SSD
   - My microSD card's read and write speed can reach up to 140MB/s. An NVMe SSD could be 1500MB/s or more. So **try with an SSD if speed has become a bottle neck**
-  - NVMe (Non-Volatile Memory Express) is a high performance SSD interface, roughly 1-7GB/s. It's usually a removable M.2 module over PCIe.
-  - For comparison, eMMC (Embedded MultiMediaCard) is a chip soldered onto the motherboard that uses the MMC interface, roughly 100-300MB/s. You can find eMMC on phones, low cost laptops, embedded systems, etc.
+  - For how NVMe, SATA, and eMMC differ, see [Linux - Storage](https://ricojia.github.io/2018/05/05/SSD/).
 - **A data capable USB-C cable**
 - Complete datasheet (very lengthy, feel free to skip)
   - [Jetpack SDK](https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/index.html) Jetpack SDK includes accelerated software libraries, APIs, sample applications, developer tools and documentation.

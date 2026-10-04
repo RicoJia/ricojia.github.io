@@ -219,8 +219,7 @@ Most zip tools have checksum check built in, even though checksum is not part of
 Balanced (or Default):
 
 - Ubuntu dynamically adjusts CPU frequency based on load, but still biases toward saving battery when idle.
-  - A [Hard Disk Drive rotates to access all bits on it](https://www.youtube.com/watch?v=wteUW2sL7bc)
-    - A bit is a small patch on HDD that has a magnetic field alignment
+  - For how hard disk drives store bits, see [Linux - Storage](https://ricojia.github.io/2018/05/05/SSD/#storage-interfaces)
 
 Power Saving:
 

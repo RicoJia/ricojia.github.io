@@ -72,13 +72,16 @@ A suitable footnote is:
 
 ## Storage: Work on NVMe, Not eMMC (smaller and slower)
 
-On my **Jetson Xavier**, the root filesystem (everything under `/`, including the home directory) lives on the built-in eMMC. The NVMe SSD is mounted separately on `/storage`.  eMMC is roughly 100-300MB/s while NVMe can reach 1-7GB/s, and the eMMC is much smaller too.
+On my **Jetson Xavier**, the root filesystem (everything under `/`, including the home directory) lives on the built-in eMMC. The NVMe SSD is mounted separately on `/storage`. The eMMC is much smaller and slower: roughly 100-300MB/s, while NVMe can reach several GB/s. See [Linux - Storage](https://ricojia.github.io/2018/05/05/SSD/) for why.
 
 So for testing, keep repos, datasets, and build outputs under `/storage/<REPO>`, not under `~`. To confirm a directory is on the NVMe:
 
 ```bash
 df -hT /storage/rico        # -> /dev/nvme0n1p1 ext4 1.8T, mounted on /storage
 ```
+
+- `-h` prints human-readable sizes
+- `-T` prints the filesystem type, such as `ext4`
 
 ## Wifi Pitfall
 
