@@ -32,7 +32,7 @@ $$
 \end{gather*}
 $$
 
-If we stack `x_k` together, and introduce $\tilde{n}$
+If we stack `x_k` together, and introduce $$\tilde{n}$$
 
 $$
 \begin{gather*}
@@ -52,7 +52,7 @@ d
 \end{gather*}
 $$
 
-X is overdetermined. Also, since we are interested in the direction $[n_x, n_y, n_z]$, we can normalize $\tilde{n}$, which normalizes d as well but would not affect the result of the fitting. Then we can write the above as:
+X is overdetermined. Also, since we are interested in the direction $$[n_x, n_y, n_z]$$, we can normalize $$\tilde{n}$$, which normalizes d as well but would not affect the result of the fitting. Then we can write the above as:
 
 $$
 \begin{gather*}
@@ -79,11 +79,11 @@ $$
 \end{gather*}
 $$
 
-Here, we pack eigen values and eigen vectors of $X$ into: $\Lambda = diag(\lambda_1^2, \lambda_2^2, \cdots)$. $V = [v_1, v_2 ..., v_n]$. 
+Here, we pack eigen values and eigen vectors of $$X$$ into: $$\Lambda = diag(\lambda_1^2, \lambda_2^2, \cdots)$$. $$V = [v_1, v_2 ..., v_n]$$. 
 
-In the meantime, since V is a vector basis in $R^n$, we can represent $n = \alpha_1 v_1 + \cdots \alpha_n v_n$:
+In the meantime, since V is a vector basis in $$R^n$$, we can represent $$n = \alpha_1 v_1 + \cdots \alpha_n v_n$$:
 
-After plugging the above into $n^T  V \Lambda V^{-1} n$, we see that:
+After plugging the above into $$n^T  V \Lambda V^{-1} n$$, we see that:
 
 $$
 \begin{gather*}
@@ -94,7 +94,7 @@ $$
 \end{gather*}
 $$
 
-Because $\|\tilde{n}\| = 1$, assuming eigen values are in descending order through $\lambda_1 \cdots \lambda_k$:
+Because $$\|\tilde{n}\| = 1$$, assuming eigen values are in descending order through $$\lambda_1 \cdots \lambda_k$$:
 
 $$
 \begin{gather*}
@@ -104,7 +104,7 @@ $$
 \end{gather*}
 $$
 
-This corresponds to $a_1 = 1$, $a_2 = \cdots = a_n = 0$. The total error is minimized.
+This corresponds to $$a_1 = 1$$, $$a_2 = \cdots = a_n = 0$$. The total error is minimized.
 
 ### Singular Value Decomposition
 
@@ -118,7 +118,7 @@ $$
 \end{gather*}
 $$
 
-Where `U` and `V` are `mxm, nxn` singular vectors, which are also orthonormal basis. Specifically, `V` is the eigen basis of `X`. $Sigma = diag(\lambda_1, \lambda_2, \cdots)$, which is a mxn diagonal matrix with eigen values of $X^TX$. So the above gives us:
+Where `U` and `V` are `mxm, nxn` singular vectors, which are also orthonormal basis. Specifically, `V` is the eigen basis of `X`. $$Sigma = diag(\lambda_1, \lambda_2, \cdots)$$, which is a mxn diagonal matrix with eigen values of $$X^TX$$. So the above gives us:
 
 $$
 \begin{gather*}
@@ -143,7 +143,7 @@ $$
 \end{gather*}
 $$
 
-But the above needs Gauss Newton because $e_{ij}$ is non linear w.r.t the pose of the robot. In a 2D pose estimation scenario, it would be:
+But the above needs Gauss Newton because $$e_{ij}$$ is non linear w.r.t the pose of the robot. In a 2D pose estimation scenario, it would be:
 
 $$
 \begin{gather*}
@@ -157,9 +157,9 @@ y_j - (y_i + d_i*sin(\theta_i + \psi_i))
 \end{gather*}
 $$
 
-Gauss-Newton iteratively linearizes the neighbor landscape of the cost $F$ so it can estimate the cost jacobian, which gives the minimum cost, w.r.t the pose variables.
+Gauss-Newton iteratively linearizes the neighbor landscape of the cost $$F$$ so it can estimate the cost jacobian, which gives the minimum cost, w.r.t the pose variables.
 
-In plane fitting, $X$ is a single matrix, which makes it a linear-least-square minimization. In that case, we don't need to iteratively linearize the cost landscape. So Gauss Newton is not needed.
+In plane fitting, $$X$$ is a single matrix, which makes it a linear-least-square minimization. In that case, we don't need to iteratively linearize the cost landscape. So Gauss Newton is not needed.
 
 ## Line Fitting
 
@@ -173,7 +173,7 @@ $$
 \end{gather*}
 $$
 
-`t` here is a variable. We want to find 2 variables: $p_0$ and $d$, either is a 3x1 vector. To find the best line parameters, we find the minimum total distance from points to the line. By linking a point to $p_0$, we can use the Pythogorean Theorem to solve it:
+`t` here is a variable. We want to find 2 variables: $$p_0$$ and $$d$$, either is a 3x1 vector. To find the best line parameters, we find the minimum total distance from points to the line. By linking a point to $$p_0$$, we can use the Pythogorean Theorem to solve it:
 
 $$
 \begin{gather*}
@@ -209,7 +209,7 @@ $$
 \end{gather*}
 $$
 
-We can make it zero by having $p_0$ be the center of the point cloud:
+We can make it zero by having $$p_0$$ be the center of the point cloud:
 
 $$
 \begin{gather*}
@@ -219,7 +219,7 @@ $$
 \end{gather*}
 $$
 
-**With known $p_0$**, we can now find $d$. Let $y_k = x_k - p$:
+**With known $$p_0$$**, we can now find $$d$$. Let $$y_k = x_k - p$$:
 
 $$
 \begin{gather*}
@@ -230,7 +230,7 @@ $$
 \end{gather*}
 $$
 
-We can stack $y_k$ together:
+We can stack $$y_k$$ together:
 
 $$
 \begin{gather*}
@@ -254,7 +254,7 @@ $$
 
 Then, we can solve this with eigen decomposition!
 
-From the perspective of SVD, we can find that the line is the first principal component. With the second principal compomnet, we can find a plane. The plane's normal vector is the smallest principal component. $A^T A$ is the **covariance matrix**.
+From the perspective of SVD, we can find that the line is the first principal component. With the second principal compomnet, we can find a plane. The plane's normal vector is the smallest principal component. $$A^T A$$ is the **covariance matrix**.
 
 <div style="text-align: center;">
     <p align="center">
@@ -278,15 +278,15 @@ $$
 \end{gather*}
 $$
 
-The eigen values of the cov matrix is $\sigma^2$
+The eigen values of the cov matrix is $$\sigma^2$$
 
-- $A^TA = \sum{(x_j - \bar{x})(x_j - \bar{x})^T}$ A is called a "demeaned matrix". $\frac{1}{k} A^T A$ is a "sample covariance matrix"
+- $$A^TA = \sum{(x_j - \bar{x})(x_j - \bar{x})^T}$$ A is called a "demeaned matrix". $$\frac{1}{k} A^T A$$ is a "sample covariance matrix"
 
 ### Mahalanobis Distance
 
-For an error vector `e∈R3` under covariance Σ, the Mahalanobis distance is $d = \sqrt{e^T \Sigma^{-1} e}$
+For an error vector `e∈R3` under covariance Σ, the Mahalanobis distance is $$d = \sqrt{e^T \Sigma^{-1} e}$$
 
-## Condition Number of A Plane's Covariance Matrix is $\infty$
+## Condition Number of A Plane's Covariance Matrix is $$\infty$$
 
 Every point on a plane satisfies:
 
@@ -298,7 +298,7 @@ $$
 \end{gather*}
 $$
 
-So for the covariance matrix $\Sigma$:
+So for the covariance matrix $$\Sigma$$:
 
 $$
 \begin{gather*}
@@ -312,4 +312,4 @@ $$
 \end{gather*}
 $$
 
-So, $\vec{n}$ is an eigen vector of the covariance matrix, with 0 being the eigen value. The other 2 eigen vectors span the plane. The condition number therefore is $\infty$
+So, $$\vec{n}$$ is an eigen vector of the covariance matrix, with 0 being the eigen value. The other 2 eigen vectors span the plane. The condition number therefore is $$\infty$$

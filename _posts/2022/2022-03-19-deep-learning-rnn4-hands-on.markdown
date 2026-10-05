@@ -37,7 +37,7 @@ Abelisaurus
 ...
 ```
 
-- At each step, output $y^{(t)}$ is fed back into the network as $x^{(t+1)}$
+- At each step, output $$y^{(t)}$$ is fed back into the network as $$x^{(t+1)}$$
 
 **The goal is to train the RNN to predict the next letter in the name, given a one-hot vector input.**
 
@@ -50,14 +50,14 @@ Abelisaurus
 Training Phase:
 
 1. We feed a sequence of input characters X into the RNN.
-2. The model outputs a sequence of probability distributions $y_{hat}$, each over the entire vocabulary.
-3. The true labels $Y$ are the next characters in the sequence, shifted by one time step from X, so $X(1) = Y(0)$
-4. We compute the cross-entropy loss between $y_{hat}$ and $y$
+2. The model outputs a sequence of probability distributions $$y_{hat}$$, each over the entire vocabulary.
+3. The true labels $$Y$$ are the next characters in the sequence, shifted by one time step from X, so $$X(1) = Y(0)$$
+4. We compute the cross-entropy loss between $$y_{hat}$$ and $$y$$
 5. This loss is used to perform gradient descent and update the model's parameters, enabling it to learn to predict the next character in a sequence.
 
 Inference Phase (random sampling):
 
-1. Given an initial character (or a special start token), the model generates the next character by predicting the most probable character that follows, by sampling from the probability distribution $y_{hat}$
+1. Given an initial character (or a special start token), the model generates the next character by predicting the most probable character that follows, by sampling from the probability distribution $$y_{hat}$$
     - The start token is a zero vector.
 2. This predicted character is then used as the input for the next time step.
 3. The sequence generation continues iteratively, each time feeding the previously generated character back into the model.
@@ -93,7 +93,7 @@ What's a value in music? **Informally, it could be a note. In music theory, you 
  The music generation system will use 90 unique values. Our data is . In training, we use random snippets of 30 values taken from a much longer piece of music.
 
 - Input X of shape `[m (batch_num), T_x(time), 90-one-hot-vector]` and labels Y of shape `(𝑇𝑦,𝑚,90)`, `T_y = T_x` and they are times. This makes it easier to be fed into LSTM?
-- We feed $Y_{t-1}$ as $X_t$ into the LSTM.
+- We feed $$Y_{t-1}$$ as $$X_t$$ into the LSTM.
 - Training the model on random snippets of 30 values taken from a much longer piece of music.
   - The model is an LSTM with hidden states `C`, `a` that have 𝑛𝑎=64 dimensions.
 
@@ -148,7 +148,7 @@ history = model.fit([X, a0, c0], list(Y), epochs=100, verbose = 0)
 The dense layer is to convert the output of LSTM (64-vector) into 90-vector (output probability)
 
 - 64 (input units) * 90 (output units) + + 90 (biases) = 5,850
-- Remember that in LSTM, $y^(t) = softmax(a^(t))$
+- Remember that in LSTM, $$y^(t) = softmax(a^(t))$$
 
 #### Keras Lessons
 

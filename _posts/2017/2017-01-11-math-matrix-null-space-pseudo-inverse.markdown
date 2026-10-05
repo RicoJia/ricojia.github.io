@@ -12,23 +12,23 @@ tags:
 
 ## Column, Row, Left Null and Right Null Spaces
 
-Given the linear system $A\mathbf{x}=\mathbf{b}$ with $A\in\mathbb{R}^{m\times n}$:
+Given the linear system $$A\mathbf{x}=\mathbf{b}$$ with $$A\in\mathbb{R}^{m\times n}$$:
 
-- $\textbf{Row space}$: $\operatorname{Row}(A)$ is the subspace of $\mathbb{R}^{n}$ spanned by the rows of $A$. 
-    - Its dimension equals the rank $r=\operatorname{rank}(A)$.
-- $\textbf{Column space}$: $\operatorname{Col}(A)$: the subspace of $\mathbb{R}^{m}$ spanned by the columns of A. 
-    - The system $A\mathbf{x}=\mathbf{b}$ has a (possibly unique) solution iff $\mathbf{b}\in\operatorname{Col}(A)$.  
-        - If $A$ has full column rank ($r=n$), the solution is unique.
+- $$\textbf{Row space}$$: $$\operatorname{Row}(A)$$ is the subspace of $$\mathbb{R}^{n}$$ spanned by the rows of $$A$$. 
+    - Its dimension equals the rank $$r=\operatorname{rank}(A)$$.
+- $$\textbf{Column space}$$: $$\operatorname{Col}(A)$$: the subspace of $$\mathbb{R}^{m}$$ spanned by the columns of A. 
+    - The system $$A\mathbf{x}=\mathbf{b}$$ has a (possibly unique) solution iff $$\mathbf{b}\in\operatorname{Col}(A)$$.  
+        - If $$A$$ has full column rank ($$r=n$$), the solution is unique.
 
-- $\textbf{Right nullspace (nullspace)}$: $\mathcal{N}(A)=\{\mathbf{x}\in\mathbb{R}^{n}\mid A\mathbf{x}=0\}$.  
-    - Every vector in $\mathcal{N}(A)$ is orthogonal to the rows of $A$ ($x^T v = 0$); 
-    - **In human terms**, no $row(A)$ abd $N(A)$ terms are in each other
-    hence $\mathcal{N}(A)=\operatorname{Row}(A)^{\perp}$. 
-        - So $\operatorname{rank}(A) + \operatorname{rank}(\mathcal(N)(A)) = N$
-    - Its dimension is $n-r$.  If $A$ has full column rank, then $\mathcal{N}(A)=\{\mathbf{0}\}$.
--  $\textbf{Left nullspace}$ $\mathcal{N}(A^{\mathsf{T}})=\{\mathbf{y}\in\mathbb{R}^{m}\mid \mathbf{y}^{\mathsf{T}}A=0\}$.  
-    - This is the right nullspace of $A^{\mathsf{T}}$ and is orthogonal to $\operatorname{Col}(A)$.  
-    - Its dimension is $m-r$.
+- $$\textbf{Right nullspace (nullspace)}$$: $$\mathcal{N}(A)=\{\mathbf{x}\in\mathbb{R}^{n}\mid A\mathbf{x}=0\}$$.  
+    - Every vector in $$\mathcal{N}(A)$$ is orthogonal to the rows of $$A$$ ($$x^T v = 0$$); 
+    - **In human terms**, no $$row(A)$$ abd $$N(A)$$ terms are in each other
+    hence $$\mathcal{N}(A)=\operatorname{Row}(A)^{\perp}$$. 
+        - So $$\operatorname{rank}(A) + \operatorname{rank}(\mathcal(N)(A)) = N$$
+    - Its dimension is $$n-r$$.  If $$A$$ has full column rank, then $$\mathcal{N}(A)=\{\mathbf{0}\}$$.
+-  $$\textbf{Left nullspace}$$ $$\mathcal{N}(A^{\mathsf{T}})=\{\mathbf{y}\in\mathbb{R}^{m}\mid \mathbf{y}^{\mathsf{T}}A=0\}$$.  
+    - This is the right nullspace of $$A^{\mathsf{T}}$$ and is orthogonal to $$\operatorname{Col}(A)$$.  
+    - Its dimension is $$m-r$$.
 
 ## Projection Matrix
 
@@ -38,19 +38,19 @@ $$
 A\mathbf{x} = \mathbf{b}
 $$
 
-has no exact solution (because $\mathbf{b} \notin Col(A)$), we look for the **closest** vector (which is mx1)
+has no exact solution (because $$\mathbf{b} \notin Col(A)$$), we look for the **closest** vector (which is mx1)
 
 $$
 \mathbf{p} = A\hat{\mathbf{x}}
 $$
 
-lying in the column space of $A$.  In other words, $\hat{\mathbf{x}}$ is chosen so that
+lying in the column space of $$A$$.  In other words, $$\hat{\mathbf{x}}$$ is chosen so that
 
 $$
 \|\,\mathbf{b} - A\hat{\mathbf{x}}\,\|
 $$
 
-is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
+is minimized; equivalently, $$\mathbf{b}-\mathbf{p}$$ is orthogonal to $$Col(A)$$.
 
 <div style="text-align: center;">
 <p align="center">
@@ -62,12 +62,12 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
 </p>
 </div>
 
-- If $rank(A)=2$ but $n=3$, then $Col(A)$ is a plane in $\mathbb{R}^3$.
-- Therefore, $p$ is a projection of b on this plane
+- If $$rank(A)=2$$ but $$n=3$$, then $$Col(A)$$ is a plane in $$\mathbb{R}^3$$.
+- Therefore, $$p$$ is a projection of b on this plane
 
 ### Derivation of the Projection Matrix
 
-- Let $\{\mathbf{a}_1,\mathbf{a}_2,\dots,\mathbf{a}_r\}$ be a basis for $Col(A)$. $p = A\hat{\mathbf{x}}$ Orthogonality means
+- Let $$\{\mathbf{a}_1,\mathbf{a}_2,\dots,\mathbf{a}_r\}$$ be a basis for $$Col(A)$$. $$p = A\hat{\mathbf{x}}$$ Orthogonality means
 
     $$
     \mathbf{a}_i^T\bigl(\mathbf{b} - A\hat{\mathbf{x}}\bigr) = 0
@@ -86,8 +86,8 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
     A^T A\,\hat{\mathbf{x}} = A^T \mathbf{b}.
     $$
 
-- If $A$ has **full column rank** $rank(A)=n$, then $A^TA$ is positive definite and invertible, one can prove this by proving "A^TA" and $A$ have the same solutions.
-    - $A^TA$ and $A$ have the same column rank
+- If $$A$$ has **full column rank** $$rank(A)=n$$, then $$A^TA$$ is positive definite and invertible, one can prove this by proving "A^TA" and $$A$$ have the same solutions.
+    - $$A^TA$$ and $$A$$ have the same column rank
 - So
 
     $$
@@ -96,8 +96,8 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
     \mathbf{p} = A \hat{\mathbf{x}} =  A(A^T A)^{-1} A^Tb
     $$
 
-    - We define projection matrix as $A(A^T A)^{-1} A^T$. It projects b onto the column space of A.
-- Otherwise $A^TA$ is only positive **semi**-definite (singular), and one typically uses the Moore–Penrose pseudoinverse:
+    - We define projection matrix as $$A(A^T A)^{-1} A^T$$. It projects b onto the column space of A.
+- Otherwise $$A^TA$$ is only positive **semi**-definite (singular), and one typically uses the Moore–Penrose pseudoinverse:
 
     $$
     \hat{\mathbf{x}} = A^+ \mathbf{b}.
@@ -108,8 +108,8 @@ is minimized; equivalently, $\mathbf{b}-\mathbf{p}$ is orthogonal to $Col(A)$.
 
 Statement:
 
-If an arbitrary matrix $A\in\R^{m\times n}$ has rank $r$, then there exist
-matrices $C\in\R^{m\times r}$ and $F\in\R^{r\times n}$, both of rank $r$,
+If an arbitrary matrix $$A\in\R^{m\times n}$$ has rank $$r$$, then there exist
+matrices $$C\in\R^{m\times r}$$ and $$F\in\R^{r\times n}$$, both of rank $$r$$,
 such that
 
 $$
@@ -118,16 +118,16 @@ $$
 
 Proof:
 
-Since $rank(A)=r$, select $r$ linearly independent columns of $A$,
-with indices $j_1,\dots,j_r$. We choose a basis of $Col(A)$ and put them in $C$:
+Since $$rank(A)=r$$, select $$r$$ linearly independent columns of $$A$$,
+with indices $$j_1,\dots,j_r$$. We choose a basis of $$Col(A)$$ and put them in $$C$$:
 
 $$
 C = \bigl[A_{\,:\,,j_1}\;\;A_{\,:\,,j_2}\;\cdots\;A_{\,:\,,j_r}\bigr]
     \in\R^{m\times r},
 $$
 
-so $rank(C)=r$. Each column $A_{\,:\,,k}$ of $A$ lies in the column
-space of $C$, hence there is a vector $f_k\in\R^r$ with
+so $$rank(C)=r$$. Each column $$A_{\,:\,,k}$$ of $$A$$ lies in the column
+space of $$C$$, hence there is a vector $$f_k\in\R^r$$ with
 
 $$
 A = C_1 F_1^T + C_2 F_2^T ... 
@@ -139,11 +139,11 @@ $$
 F = \bigl[F_1^T;\;F_2^T;\cdots\;F_n\bigr] \in\R^{r\times n},
 $$
 
-and by construction $C\,F=A$.  
+and by construction $$C\,F=A$$.  
 
-Finally, $rank(F)=r$ because the product of two matrices cannot have a rank larger than either matrix. This means $rank(CF)=rank(A)=r$, and $rank(F)\ge rank(CF)$. And F has r columns, $rank(F) = r$ So **F's columns are unique**.
+Finally, $$rank(F)=r$$ because the product of two matrices cannot have a rank larger than either matrix. This means $$rank(CF)=rank(A)=r$$, and $$rank(F)\ge rank(CF)$$. And F has r columns, $$rank(F) = r$$ So **F's columns are unique**.
 
-## Projection When $A$ Is Not Full Column Rank Using Pseudo Inverse
+## Projection When $$A$$ Is Not Full Column Rank Using Pseudo Inverse
 
 [Reference article](https://zhuanlan.zhihu.com/p/656761644)
 
@@ -176,7 +176,7 @@ $$
 \mathbf{p} = F(F^\top F)^{-1} F^\top \mathbf{b}.
 $$
 
-### Solving for $\hat{\mathbf{x}}$
+### Solving for $$\hat{\mathbf{x}}$$
 
 
 We solve:

@@ -11,7 +11,7 @@ tags:
 
 If you haven't checked out a motivational 2D robot example of ESKF, [please check here](./2024-03-25-robotics-full-eskf.markdown).
 
-In this post, $\oplus$ is the "generic add", which "adds" on a manifold.
+In this post, $$\oplus$$ is the "generic add", which "adds" on a manifold.
 
 ## ESKF (On Manifold) in GINS (GPS-Intertial Navigation System)
 
@@ -20,10 +20,10 @@ GINS = GNSS + IMU
 ### [Step 1] States and Motion Model Setup
 
 In a GINS system, we have below states: `[position, velocity, rotation matrix, bias a, bias gyro (rotation), gravity]`
-Our state space is: $x = [p_x, p_y, p_z, v_x, v_y, v_z, \theta_x, \theta_y, \theta_z, b_{gx}, b_{gy}, b_{gz}, b_{ax}, b_{ay}, b_{az}, g_{x}, g_{y}, g_{z}]$. We write these in short as:  $x = [p, v, \theta, b_{g}, b_{a}, g]$. Here,
+Our state space is: $$x = [p_x, p_y, p_z, v_x, v_y, v_z, \theta_x, \theta_y, \theta_z, b_{gx}, b_{gy}, b_{gz}, b_{ax}, b_{ay}, b_{az}, g_{x}, g_{y}, g_{z}]$$. We write these in short as:  $$x = [p, v, \theta, b_{g}, b_{a}, g]$$. Here,
 
 - We are including gravity as a state varible because we want to estimate it what it is in our body frame real-time.
-- We are including $b_g$ and $b_a$ because they we want to have a good, real-time estimate of that as well.
+- We are including $$b_g$$ and $$b_a$$ because they we want to have a good, real-time estimate of that as well.
 
 $$
 \begin{gather*}
@@ -33,7 +33,7 @@ $$
 \end{gather*}
 $$
 
-As we have seen in the **motivating example,** there are our best estimates $x$, their "true values" $x_t$, and their differences (or errors) $\delta x$.  We also saw that **we use Kalman Filter to estimate the error $\delta x$**. So this relationship is:
+As we have seen in the **motivating example,** there are our best estimates $$x$$, their "true values" $$x_t$$, and their differences (or errors) $$\delta x$$.  We also saw that **we use Kalman Filter to estimate the error $$\delta x$$**. So this relationship is:
 
 $$
 \begin{gather*}
@@ -53,7 +53,7 @@ g_t = g + \delta g
 \end{gather*}
 $$
 
-Also, from kinematics, we can find the motion model. Considering in real life, there are noises, the motion model for the **true values** must include them. $\eta_{ba}$ and $\eta_{bg}$ are noises to the biases `b_a` and `b_g`, which are different than the noises to `a` and `w`
+Also, from kinematics, we can find the motion model. Considering in real life, there are noises, the motion model for the **true values** must include them. $$\eta_{ba}$$ and $$\eta_{bg}$$ are noises to the biases `b_a` and `b_g`, which are different than the noises to `a` and `w`
 
 $$
 \begin{gather*}
@@ -74,7 +74,7 @@ g = 0
 \end{gather*}
 $$
 
-Where the IMU measurements $\tilde{a}$, $\tilde{w}$ are control inputs $u_k$. Later, we can incorporate GPS readings as observations. Note that because this formulation has $R^T(\tilde{a} - b_a - \eta_a)$ and $R[\tilde{w} - b_g - \eta_g]^{\land}$, **we can't write the above in the form of** `x' = Ax + Bu` yet. Currently it's still
+Where the IMU measurements $$\tilde{a}$$, $$\tilde{w}$$ are control inputs $$u_k$$. Later, we can incorporate GPS readings as observations. Note that because this formulation has $$R^T(\tilde{a} - b_a - \eta_a)$$ and $$R[\tilde{w} - b_g - \eta_g]^{\land}$$, **we can't write the above in the form of** `x' = Ax + Bu` yet. Currently it's still
 
 - `ba' = η` is the zero-mean white gaussian process. it models the bias as a random walk. In discrete time, It's simply subject to a gaussian noise `b_{a, k+1} = b_{a,k} + \eta_k * dt`.
 
@@ -100,13 +100,13 @@ $$
 \end{gather*}
 $$
 
-Here for the covariance matrix, we **must linearize the system to get the Jacobian $\frac{\partial f}{\partial x}$**. One way to do this is to use quaternion (or not-recommended, Euler-angles for gimbal lock).
+Here for the covariance matrix, we **must linearize the system to get the Jacobian $$\frac{\partial f}{\partial x}$$**. One way to do this is to use quaternion (or not-recommended, Euler-angles for gimbal lock).
 
-However, **to use the SO(3) manifold perks, we stick to rotation matrices.** Now, we have a question: how do we get $\frac{\partial R}{\partial x}$? That will require derivative using perturbations. Without introducing tensors (multi-dimensional matrices), that'd be matrix-vector derivative, which is impossible. Another consideration for self driving cars is: if we are using global coordinate system, like UMT, or latitude-longitude, coordinates are relatively large numbers compare to the floating point number range.
+However, **to use the SO(3) manifold perks, we stick to rotation matrices.** Now, we have a question: how do we get $$\frac{\partial R}{\partial x}$$? That will require derivative using perturbations. Without introducing tensors (multi-dimensional matrices), that'd be matrix-vector derivative, which is impossible. Another consideration for self driving cars is: if we are using global coordinate system, like UMT, or latitude-longitude, coordinates are relatively large numbers compare to the floating point number range.
 
 ### [Step 2] Continuous Time Error State-Space Model
 
-The error $\delta x$ model is similar to the regular model
+The error $$\delta x$$ model is similar to the regular model
 
 $$
 \begin{gather*}
@@ -150,7 +150,7 @@ R (\tilde{w} - b_g)^{\land} exp(\delta \theta^{\land}) + R exp(\delta \theta^{\l
 \end{gather*}
 $$
 
-During the above steps, we ignored secodnary infinitesmal values. Now we are ready for getting $\delta v'$, too:
+During the above steps, we ignored secodnary infinitesmal values. Now we are ready for getting $$\delta v'$$, too:
 
 $$
 \begin{gather*}
@@ -170,9 +170,9 @@ $$
 \end{gather*}
 $$
 
-Note that above, we ignored $ R\eta_a$ because $R^TR$ = I, $ R\eta_a$ is still zero-mean white Gaussian noise.
+Note that above, we ignored $$ R\eta_a$$ because $$R^TR$$ = I, $$ R\eta_a$$ is still zero-mean white Gaussian noise.
 
-All together, in continuous time, the error $\delta x$ between our best estimate and the truth value has the motion model:
+All together, in continuous time, the error $$\delta x$$ between our best estimate and the truth value has the motion model:
 
 $$
 \begin{gather*}
@@ -193,7 +193,7 @@ $$
 
 ### [Step 3] Discrete Time Error State Space Model
 
-Using simple $\delta x_{k+1} = \delta x_k + \delta x_{k}' \Delta t$, we can write:
+Using simple $$\delta x_{k+1} = \delta x_k + \delta x_{k}' \Delta t$$, we can write:
 
 $$
 \begin{gather*}
@@ -254,7 +254,7 @@ $$
 
 ### [Step 4] Discrete Time ESKF Motion Prediction
 
-From equations `(2)`, the continuous system can be generically written with $f(\delta x)$, and Gaussian noise $n$
+From equations `(2)`, the continuous system can be generically written with $$f(\delta x)$$, and Gaussian noise $$n$$
 
 $$
 \begin{gather*}
@@ -264,11 +264,11 @@ $$
 \end{gather*}
 $$
 
-- Noise is $n \sim \mathcal(0, Q)$
+- Noise is $$n \sim \mathcal(0, Q)$$
 
 So it's easy to write out the motion prediction:
 
-1. **Motion prediction** in ESKF is already linear, which is great!😊 **However, one thing to note is in ESKF, update $\delta x_{k+1}$ will be set to 0 after the update**, so this step is **optional:**
+1. **Motion prediction** in ESKF is already linear, which is great!😊 **However, one thing to note is in ESKF, update $$\delta x_{k+1}$$ will be set to 0 after the update**, so this step is **optional:**
 
 $$
 \begin{gather*}
@@ -326,9 +326,9 @@ $$
 \end{gather*}
 $$
 
-Where the observation noise is: $v \sim \mathcal(0, V)$. We are using `v` because `R` is already in use :)
+Where the observation noise is: $$v \sim \mathcal(0, V)$$. We are using `v` because `R` is already in use :)
 
-Then, we linearize `z` just like we do in regular EKF. Note that here our independent varables are $\delta x$:
+Then, we linearize `z` just like we do in regular EKF. Note that here our independent varables are $$\delta x$$:
 
 $$
 \begin{gather*}
@@ -397,7 +397,7 @@ $$
 \end{gather*}
 $$
 
-- **One simplifying assumption here is: $\delta \theta$ is small enough to be a perturbation to $\theta$**. From [here](./2024-03-15-robotics-foundamentals-velocities.markdown), we can use the right perturbation and the BCH formula to get:
+- **One simplifying assumption here is: $$\delta \theta$$ is small enough to be a perturbation to $$\theta$$**. From [here](./2024-03-15-robotics-foundamentals-velocities.markdown), we can use the right perturbation and the BCH formula to get:
 
 $$
 \begin{gather*}
@@ -407,7 +407,7 @@ $$
 \end{gather*}
 $$
 
-- If $\delta \theta$ is not small enough, we can write out the full form as well:
+- If $$\delta \theta$$ is not small enough, we can write out the full form as well:
 
 $$
 \begin{gather*}
@@ -443,11 +443,11 @@ $$
 
 While the above is the general update, a dual-RTK-GPS can have a simplified observation model.
 
-First, a dual-RTK-GPS system can output: $y = [R_{GNSS}, P_{GNSS}]$
-- $R_{GNSS}$: orientation observation of the robot
-- $P_{GNSS}$: position observation of the robot
+First, a dual-RTK-GPS system can output: $$y = [R_{GNSS}, P_{GNSS}]$$
+- $$R_{GNSS}$$: orientation observation of the robot
+- $$P_{GNSS}$$: position observation of the robot
 
-In general $y = h(x) \oplus v$, but here we think the same observation model also holds true for $\delta x$:
+In general $$y = h(x) \oplus v$$, but here we think the same observation model also holds true for $$\delta x$$:
 
 $$
 \begin{gather*}
@@ -461,7 +461,7 @@ $$
 
 See? TODO (I'm not sure the above is true)
 
-This makes things easier, because this means our observation gives a direct observation of $\theta$. we can directly get:
+This makes things easier, because this means our observation gives a direct observation of $$\theta$$. we can directly get:
 
 $$
 \begin{gather*}
@@ -481,7 +481,7 @@ $$
 \end{gather*}
 $$
 
-In the meantime, innovation $y \ominus h(x_{pred}) = [\delta p, \delta \theta]$ and it is:
+In the meantime, innovation $$y \ominus h(x_{pred}) = [\delta p, \delta \theta]$$ and it is:
 
 $$
 \begin{gather*}
@@ -520,7 +520,7 @@ $$
 
 ### [Step 6] Covariance Matrix Of Errors After Resetting
 
-In discrete time, we approximate $p_{k+1}$ as the true value $p_t$ can define:
+In discrete time, we approximate $$p_{k+1}$$ as the true value $$p_t$$ can define:
 
 $$
 \begin{gather*}
@@ -544,15 +544,15 @@ g_{k+1} = g_{k} + \delta g_{k}
 \end{gather*}
 $$
 
-Since we have applied a correction, we can go ahead and reset $\delta x = 0$
+Since we have applied a correction, we can go ahead and reset $$\delta x = 0$$
 
-**However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $\delta x_{k}$, there's still an remeniscent error $\delta x^+$
+**However, we recognize that this correction may not update with the best reset.** So, we need to adjust the error covariance before proceeding to the next step. We assume that after the reset $$\delta x_{k}$$, there's still an remeniscent error $$\delta x^+$$
 
-The reset is to correct $x_{k+1} \sim \mathcal(\delta x, P_{k})$ to $x_{k+1} \sim \mathcal(0, P_{reset})$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $\theta$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled.
+The reset is to correct $$x_{k+1} \sim \mathcal(\delta x, P_{k})$$ to $$x_{k+1} \sim \mathcal(0, P_{reset})$$. **For vector space variables `p, v, b_a, b_g, g` this reset is a simple shift of distribution. The covariance matrices stay the same.** For rotation variables $$\theta$$ though, this shift of distribution is in the tanget space (which is a vector space). But projected on to the `SO(3)` manifold, the distribution is not only shifted, but also scaled.
 
 So, if we define:
 
-- $\delta \theta^+$ is the error after reset. It is zero of course, but we are interested in the finding the Jacobian of that.
+- $$\delta \theta^+$$ is the error after reset. It is zero of course, but we are interested in the finding the Jacobian of that.
 
 to find the new covariance matrix:
 
@@ -593,7 +593,7 @@ $$
 \end{gather*}
 $$
 
-**Usually, this is close enough to identity because the $\theta$ covariance is small**
+**Usually, this is close enough to identity because the $$\theta$$ covariance is small**
 
 TODO: Is this linear BCH? why do we use jacobian here?
 
@@ -603,8 +603,8 @@ The main differences between ESKF and EKF is:
 
 - ESKF's motion update is already linearized during the velocity and angular value! No extra linearization is needed
 - Kalman Filtering is applied on the error between the estimates and the true values, not on the estimates directly.
-- The use of generic + ($\oplus$) for updating motion model and observation with SO(3) manifold
-- In ESKF, we need to reset $\delta x = 0$ and $P_{k+1} = J_k P_{k+1} J_k$
+- The use of generic + ($$\oplus$$) for updating motion model and observation with SO(3) manifold
+- In ESKF, we need to reset $$\delta x = 0$$ and $$P_{k+1} = J_k P_{k+1} J_k$$
 
 $$
 \begin{gather*}

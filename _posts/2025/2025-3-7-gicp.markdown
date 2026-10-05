@@ -12,11 +12,11 @@ comments: true
 
 ## 1. Intuition
 
-In GICP (Segal et al, 2009), each matched pair is not just two points $p_s$ and $p_t$.  
+In GICP (Segal et al, 2009), each matched pair is not just two points $$p_s$$ and $$p_t$$.  
 Each point also carries a local covariance estimated from its neighbors (for example, 20 nearest points), which approximates a local surface patch.
 
-1. For each source point $p_s$, find its local neighborhood and compute covariance $C_s$.
-2. For each target correspondence $p_t$, do the same and compute covariance $C_t$.
+1. For each source point $$p_s$$, find its local neighborhood and compute covariance $$C_s$$.
+2. For each target correspondence $$p_t$$, do the same and compute covariance $$C_t$$.
 3. Use both covariances to weight the residual directionally.
 
 Compared with classic ICP variants:
@@ -50,9 +50,9 @@ $$
 E = r^T M r
 $$
 
-where $r$ is the residual vector and $M$ is an information-like matrix (inverse covariance structure).
+where $$r$$ is the residual vector and $$M$$ is an information-like matrix (inverse covariance structure).
 
-If we decompose $r$ in local orthonormal directions $(u, v, n)$:
+If we decompose $$r$$ in local orthonormal directions $$(u, v, n)$$:
 
 $$
 r = r_u u + r_v v + r_n n
@@ -81,12 +81,12 @@ So off-plane error is penalized heavily, while in-plane motion is penalized less
 </p>
 </div>
 
-## 3. Why Use $C_t + R C_s R^T$?
+## 3. Why Use $$C_t + R C_s R^T$$?
 
 For a residual between target and transformed source, uncertainty comes from both sides:
 
-- target local uncertainty: $C_t$
-- source local uncertainty after rotation: $R C_s R^T$
+- target local uncertainty: $$C_t$$
+- source local uncertainty after rotation: $$R C_s R^T$$
 
 So pair covariance is modeled as:
 
@@ -94,11 +94,11 @@ $$
 \Sigma = C_t + R C_s R^T
 $$
 
-and the weight matrix is approximately $M = \Sigma^{-1}$.
+and the weight matrix is approximately $$M = \Sigma^{-1}$$.
 
 ### 3.1 If Two Planes Are Similar
 
-Suppose both patches are near the $xy$-plane:
+Suppose both patches are near the $$xy$$-plane:
 
 $$
 C \approx
@@ -136,7 +136,7 @@ After inversion, weights become large in more axes, giving sharper constraints.
 
 ### 3.3 Bad Correspondence or Inconsistent Surface Orientation
 
-If one patch is horizontal and the other is vertical, then $C_t + R C_s R^T$ tends to be more isotropic and larger overall.  
+If one patch is horizontal and the other is vertical, then $$C_t + R C_s R^T$$ tends to be more isotropic and larger overall.  
 Its inverse becomes smaller and less informative.
 
 This is a robustness feature: inconsistent matches become weak constraints instead of dominating the fit.
@@ -163,8 +163,8 @@ $$
 
 To recover point-to-plane from GICP (as a limiting case):
 
-- choose source covariance $C_i^A = 0$
-- choose target covariance $C_i^B \approx P_i^{-1}$ with very large tangent variance and very small normal variance
+- choose source covariance $$C_i^A = 0$$
+- choose target covariance $$C_i^B \approx P_i^{-1}$$ with very large tangent variance and very small normal variance
 
 Then:
 
@@ -178,15 +178,15 @@ So GICP reduces to the point-to-plane objective.
 
 ## 5. Math: Rotation Covariance Identity
 
-Why does rotated covariance become $R C R^T$?
+Why does rotated covariance become $$R C R^T$$?
 
-For centered random vector $x$ with covariance
+For centered random vector $$x$$ with covariance
 
 $$
 C = \mathbb{E}[x x^T],
 $$
 
-let $y = Rx$. Then:
+let $$y = Rx$$. Then:
 
 $$
 \operatorname{Cov}(y)

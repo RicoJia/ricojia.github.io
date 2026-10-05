@@ -162,7 +162,7 @@ class Encoder(torch.nn.Module):
         return X
 ```
 
-- Scaling: the embeddings are scaled by $\sqrt{\text{embedding\_dimension}}$" before adding positional encodings so their magnitudes match. There's a [StackExchange thread on why exactly this is needed](https://datascience.stackexchange.com/questions/87906/transformer-model-why-are-word-embeddings-scaled-before-adding-positional-encod). However, some were also wondering about its necessity
+- Scaling: the embeddings are scaled by $$\sqrt{\text{embedding\_dimension}}$$" before adding positional encodings so their magnitudes match. There's a [StackExchange thread on why exactly this is needed](https://datascience.stackexchange.com/questions/87906/transformer-model-why-are-word-embeddings-scaled-before-adding-positional-encod). However, some were also wondering about its necessity
 
 ### Decoder Layer
 

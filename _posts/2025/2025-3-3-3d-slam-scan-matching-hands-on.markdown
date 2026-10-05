@@ -63,8 +63,8 @@ Point filtering
 - [Moving-Least-Squares Smoothing](https://www.sci.utah.edu/~shachar/Publications/crpss.pdf) takes up around 80ms to per ~20k points. The surface of objects are smoother, but in many cases, this smoothing does not change point distribution much and is optional
   - How it works:
         1. Fit a plane H across a set of points.
-        2. Calculate height of each point w.r.t H, $p_i$, and their projections onto H, $(x_i, y_i)$
-        3. Fit a low-degree bivariate polynomial g(x,y) across all $p_i$. Then, the output MLS points are $g(x_i, y_i)$
+        2. Calculate height of each point w.r.t H, $$p_i$$, and their projections onto H, $$(x_i, y_i)$$
+        3. Fit a low-degree bivariate polynomial g(x,y) across all $$p_i$$. Then, the output MLS points are $$g(x_i, y_i)$$
 
     <div style="text-align: center;">
     <p align="center">

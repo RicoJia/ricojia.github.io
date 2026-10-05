@@ -68,8 +68,8 @@ This is task-aligned for autonomous driving (collision avoidance, path planning)
 
 An alternative or supplementary signal requires no offline reconstruction. Given calibrated cameras or consecutive video frames:
 
-1. Predict depth or 3D feature locations from frame $t$
-2. Project them into another camera viewpoint or into frame $t+1$ using known/estimated camera pose
+1. Predict depth or 3D feature locations from frame $$t$$
+2. Project them into another camera viewpoint or into frame $$t+1$$ using known/estimated camera pose
 3. Compare projected features or pixels against actual observations there
 
 This **photometric or feature-level reprojection loss** provides a self-supervised geometric signal without any annotation. It is used in methods such as Monodepth2, SurroundDepth, and similar works.
@@ -111,28 +111,28 @@ A sparse point cloud alone is not sufficient for autonomous driving training. Th
 
 ### 4.1 The Core Challenge — Depth Ambiguity
 
-A single image pixel $(u, v)$ does not correspond to one unique 3D point. It corresponds to an entire **ray** through 3D space:
+A single image pixel $$(u, v)$$ does not correspond to one unique 3D point. It corresponds to an entire **ray** through 3D space:
 
 $$\mathbf{p}_{3D} = \mathbf{o} + d \cdot \hat{\mathbf{r}}_{u,v}, \quad d \in [d_{\min}, d_{\max}]$$
 
-Without knowing the depth $d$, you cannot place the image feature into a unique BEV cell. This is the central difficulty of perspective-to-BEV lifting.
+Without knowing the depth $$d$$, you cannot place the image feature into a unique BEV cell. This is the central difficulty of perspective-to-BEV lifting.
 
 ### 4.2 IPM — Inverse Perspective Mapping
 
-**Inverse Perspective Mapping (IPM)** projects image pixels to BEV without depth estimation, by assuming all scene points lie on the ground plane ($Z = 0$ in world coordinates).
+**Inverse Perspective Mapping (IPM)** projects image pixels to BEV without depth estimation, by assuming all scene points lie on the ground plane ($$Z = 0$$ in world coordinates).
 
-Given camera intrinsics $K$ and extrinsics $[R \mid t]$, the ground-plane constraint reduces the problem to a planar homography, giving a closed-form, per-pixel mapping with no learning.
+Given camera intrinsics $$K$$ and extrinsics $$[R \mid t]$$, the ground-plane constraint reduces the problem to a planar homography, giving a closed-form, per-pixel mapping with no learning.
 
 - **Strengths:** Fast, simple, no supervision needed
 - **Limitation:** Works only for flat ground. Fails for raised objects (vehicles, pedestrians), curbs, overpasses, or any non-planar structure
 
 ### 4.3 The General Feature-Lifting Approach
 
-For a BEV cell at world position $(x, y)$:
+For a BEV cell at world position $$(x, y)$$:
 
-1. Assume or predict a height hypothesis $z$
-2. Project $(x, y, z)$ into image coordinates $(u, v)$ using $K$ and $[R \mid t]$
-3. Sample the **image feature map** at $(u, v)$ via bilinear interpolation
+1. Assume or predict a height hypothesis $$z$$
+2. Project $$(x, y, z)$$ into image coordinates $$(u, v)$$ using $$K$$ and $$[R \mid t]$$
+3. Sample the **image feature map** at $$(u, v)$$ via bilinear interpolation
 4. Write or accumulate the sampled feature into the BEV cell
 
 This family of operations is called **unprojection**, **lifting**, **splatting**, or **view transformation** depending on direction and implementation.
@@ -163,7 +163,7 @@ image → hard warp to BEV → backbone   ✗
 
 | Method | Mechanism | Strengths | Weaknesses |
 |---|---|---|---|
-| **A. Flat-ground / IPM** | Assume ground plane $z = 0$; closed-form homography | Simple, fast, no learned depth | Fails for non-flat objects |
+| **A. Flat-ground / IPM** | Assume ground plane $$z = 0$$; closed-form homography | Simple, fast, no learned depth | Fails for non-flat objects |
 | **B. Depth distribution (LSS)** | Predict softmax over depth bins per pixel; lift feature along ray weighted by distribution | Handles arbitrary heights; differentiable; end-to-end | Needs depth supervision or self-sup. loss |
 | **C. Attention-based (BEVFormer)** | BEV grid queries attend to image features via cross-attention; geometry encoded in positional embeddings | No explicit depth; learns flexible correspondences | Computationally heavier; less geometric interpretability |
 | **D. Occupancy prediction** | Predict occupied / free / unknown per voxel directly; no explicit per-pixel depth | Task-aligned; avoids metric depth regression | Requires 3D occupancy ground truth |

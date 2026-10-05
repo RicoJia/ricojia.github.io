@@ -88,8 +88,8 @@ L(A, P, N) = max(|f(A) - f(P)|^2 - |f(A) - f(N)|^2 + \alpha, 0)
 \end{gather*}
 $$
 
-Where $f(P)$ is the encoding of a "positive" image, and $f(N)$ is that of a negative image.
-We append $\alpha$ to the loss function because we don't want the learned encoding is 0. This way, the model will learn an encoding such that distances between positive images are far smaller than those between negative images. **$\alpha$ is usually a hyperparameter (so not trainable)**
+Where $$f(P)$$ is the encoding of a "positive" image, and $$f(N)$$ is that of a negative image.
+We append $$\alpha$$ to the loss function because we don't want the learned encoding is 0. This way, the model will learn an encoding such that distances between positive images are far smaller than those between negative images. **$$\alpha$$ is usually a hyperparameter (so not trainable)**
 
 Triplet selection has to be careful too. We want to choose triplets `(image, true image, negative image)` that are hard to train on. Easy
 
@@ -100,7 +100,7 @@ Some triplets already satisfy the loss. Why would it be a hassle to select them?
 1. Calculate embeddings of all images using the current model. (These will be computed in parallel in PyTorch/TensorFlow)
 2. Compute each pair's similarity.
 3. For each anchor, find the farthest distance positive image, and the closest distance negative image. Those are "hard triplets"
-4. Total triplet loss is $\sum_m L(A, P, N) = \sum_m max(|f(A) - f(P)|^2 - |f(A) - f(N)|^2 + \alpha, 0)$ over batch $m$, or one can take the average as well.
+4. Total triplet loss is $$\sum_m L(A, P, N) = \sum_m max(\vert f(A) - f(P)\vert ^2 - \vert f(A) - f(N)\vert ^2 + \alpha, 0)$$ over batch $$m$$, or one can take the average as well.
 5. Backpropagation starts with final output gradient:
 
 $$
@@ -113,7 +113,7 @@ This can be handled by auto-diff and the gradient's computational graph.
 
 #### Alternative 1: Binary Classification
 
-The idea is to put two twin networks together, and try to have 1 neuron with weights $W$ and activation $\sigma(x)$ to learn if the two images are the same.
+The idea is to put two twin networks together, and try to have 1 neuron with weights $$W$$ and activation $$\sigma(x)$$ to learn if the two images are the same.
 
 <div style="text-align: center;">
 <p align="center">

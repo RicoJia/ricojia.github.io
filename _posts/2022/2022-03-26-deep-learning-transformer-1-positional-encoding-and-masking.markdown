@@ -158,7 +158,7 @@ Which might get vectorized as:
 In that case, we want to:
 
 - Truncate the sequence to uniform length
-- Pad a large negative number (-1e9) instead of 0 onto short sequences. Why -1e9? Because later in scaled-dot product attention, if we have large negative values, $softmax(\frac{QK}{\sqrt(d_k)} V)$ will likely give probabilities of zero
+- Pad a large negative number (-1e9) instead of 0 onto short sequences. Why -1e9? Because later in scaled-dot product attention, if we have large negative values, $$softmax(\frac{QK}{\sqrt(d_k)} V)$$ will likely give probabilities of zero
 
 ```
 [[ 71, 121, 4, 56, 99], 

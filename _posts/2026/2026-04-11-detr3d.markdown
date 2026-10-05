@@ -80,7 +80,7 @@ feature map (H/4, W/4, 1) -> (H/4, W/4, 256) -> cross attention
     - Full attention over every pixel in every camera at every scale would be expensive. Naive cross-attention would do `object query attends to all image pixels from all cameras and scales`. That will be `6 camera x 4 scales * many H, W locations`.
         - **Instead, we project 3D reference locations to 2D  cameras and look there**
         - Deformable cross-attention does not attend to all feature-map positions. For each query `q`, each attention head samples a small number of image feature locations around the projected reference point (basically we select a small neighborhood of `f` vectors, get their `k` and v`), then combines those sampled values with learned attention weights.
-            - So the final context vector is $\sum(multiheaded{q, k_i, v_i})$
+            - So the final context vector is $$\sum(multiheaded{q, k_i, v_i})$$
 
 4. Repeat step 3 N times
 

@@ -24,8 +24,8 @@ $$
 Where
 
 - f is the **state transition function**, and h is the **measurement (observation) function**.
-- $v_k ~ N(0, Q_k)$ and $w_k ~ N(0, R_k)$ are Gaussian noises.
-- $u_k$ is the "control signal", $z_k$ is the "observation".
+- $$v_k ~ N(0, Q_k)$$ and $$w_k ~ N(0, R_k)$$ are Gaussian noises.
+- $$u_k$$ is the "control signal", $$z_k$$ is the "observation".
 
 When f and h are linear, that is, we have a linear system, our state estimation framework becomes:
 
@@ -40,7 +40,7 @@ $$
 
 Then, The framwork is as follows:
 
-1. When a new control update $u_k$ comes in, we can calculate a prediction of x, $x_k^*$, **the prediction covariance matrix, $P_k^*$**, and the Kalman gain $K_k$
+1. When a new control update $$u_k$$ comes in, we can calculate a prediction of x, $$x_k^*$$, **the prediction covariance matrix, $$P_k^*$$**, and the Kalman gain $$K_k$$
 
 $$
 \begin{gather*}
@@ -52,9 +52,9 @@ K_k = P_k^* C_k^T (C_k P_k^* C_k^T + Q_k)^{-1}  \tag{3}
 \end{gather*}
 $$
 
-- Note that in this step, the covariance matrix $P_k^*$ should increase from $P_{k-1}$, because we are updating with the control signal and we don't have the feedback from observation yet.
+- Note that in this step, the covariance matrix $$P_k^*$$ should increase from $$P_{k-1}$$, because we are updating with the control signal and we don't have the feedback from observation yet.
 
-2. When a new observation comes in, we can calculate our **posteriors**. Note, here $P_k$ is the final estimate of the covariance matrix
+2. When a new observation comes in, we can calculate our **posteriors**. Note, here $$P_k$$ is the final estimate of the covariance matrix
 
 $$
 \begin{gather*}
@@ -64,28 +64,28 @@ $$
 \end{gather*}
 $$
 
-- Where $z_k - C_k x_k^*$ is called "innovation", meaning the "new information learned from the observation"
+- Where $$z_k - C_k x_k^*$$ is called "innovation", meaning the "new information learned from the observation"
 
 ### Variable Dimensions
 
 Vectors:
 
-- $x_k$: `[m, 1]`
-- $u_k$: `[m, m]`
-- $z_k$: `[n, 1]`
+- $$x_k$$: `[m, 1]`
+- $$u_k$$: `[m, m]`
+- $$z_k$$: `[n, 1]`
 
 Correspondingly, the matrices are:
 
-- $A_k$: `[m, m]`
-- $P_k$: `[m, m]`
-- $C_k$: `[n, m]`
-- $K_k$: `[m, n]`
-- $R_k$: `[m, m]`
-- $Q_k$: `[n. n]`
+- $$A_k$$: `[m, m]`
+- $$P_k$$: `[m, m]`
+- $$C_k$$: `[n, m]`
+- $$K_k$$: `[m, n]`
+- $$R_k$$: `[m, m]`
+- $$Q_k$$: `[n. n]`
 
 ## Proof 1 - Minimize State Estimation Covariance From Ground Truth (Most Common Proof)
 
-The goal of Kalman filter is to minimize the state estimation covariance from ground truth $x_{k, true}$:
+The goal of Kalman filter is to minimize the state estimation covariance from ground truth $$x_{k, true}$$:
 
 $$
 \begin{gather*}
@@ -123,9 +123,9 @@ $$
 \end{gather*}
 $$
 
-### General Form of $P_k$
+### General Form of $$P_k$$
 
-Since $v_k$ and $x_k$ are independent, cross terms are zero. So we can derive the general form of P_k:
+Since $$v_k$$ and $$x_k$$ are independent, cross terms are zero. So we can derive the general form of P_k:
 
 $$
 \begin{gather*}
@@ -139,7 +139,7 @@ $$
 \end{gather*}
 $$
 
-### Prediction of covariance $P_{k}^*$
+### Prediction of covariance $$P_{k}^*$$
 
 For equantion(2) **a-priori error covariance** is:
 
@@ -161,9 +161,9 @@ $$
 \end{gather*}
 $$
 
-### Kalman Gain $K_k$ and Covariance $P_k$
+### Kalman Gain $$K_k$$ and Covariance $$P_k$$
 
-When the covariance $P_k$ is the smallest, its partial derivative w.r.t $K_k$ should be 0
+When the covariance $$P_k$$ is the smallest, its partial derivative w.r.t $$K_k$$ should be 0
 
 $$
 \begin{gather*}
@@ -190,7 +190,7 @@ $$
 \end{gather*}
 $$
 
-Note that $R = R^T$, $P_k^* = (P_k^*)^T$, $P_k = (P_k)^T$
+Note that $$R = R^T$$, $$P_k^* = (P_k^*)^T$$, $$P_k = (P_k)^T$$
 
 Combine both results:
 
@@ -206,7 +206,7 @@ $$
 \end{gather*}
 $$
 
-Without proof, when K_k is optimal, $P_k = (I - K_k C_k) P_k^*$.
+Without proof, when K_k is optimal, $$P_k = (I - K_k C_k) P_k^*$$.
 
 ## Proof 2 - MAP (Maximum A-Posteriori)
 
@@ -226,10 +226,10 @@ $$
 
 Here, we assume:
 
-- $x_k$, $x_{k-1}$ are ground truth
-- control noise $w_k \sim \mathcal{N}(0, Q)$,
-- observation $v_k sim \mathcal{N}(0, R)$
-- each state vector $x_k$ has a covariance matrix $P_k$
+- $$x_k$$, $$x_{k-1}$$ are ground truth
+- control noise $$w_k \sim \mathcal{N}(0, Q)$$,
+- observation $$v_k sim \mathcal{N}(0, R)$$
+- each state vector $$x_k$$ has a covariance matrix $$P_k$$
 
 So according to the [linear transforms of Multivariate Gaussian Distribution](../2017/2017-02-16-math-MultiVariate-Distribution.markdown), we can write the joint distribution:
 
@@ -243,9 +243,9 @@ $$
 \end{gather*}
 $$
 
-- Note that the noise covariance $z_k$ is independent from $x_k$, that's why we have $P(z_k | x_k) \sim \mathcal{N}(C_k x_{k}, R)$
+- Note that the noise covariance $$z_k$$ is independent from $$x_k$$, that's why we have $$P(z_k \vert  x_k) \sim \mathcal{N}(C_k x_{k}, R)$$
 
-In the MAP framework, we are interested in finding the posterior $\hat{x_k}$ (estimate of $x_k$) using [the log trick on multivariate Gaussian distribution](../2017/2017-02-13-math-MAP-MLE.markdown):
+In the MAP framework, we are interested in finding the posterior $$\hat{x_k}$$ (estimate of $$x_k$$) using [the log trick on multivariate Gaussian distribution](../2017/2017-02-13-math-MAP-MLE.markdown):
 
 $$
 \begin{gather*}
@@ -271,7 +271,7 @@ $$
 \end{gather*}
 $$
 
-Now, let's do the heavy lifting: differentiating w.r.t our variable of interest, $x_k$, and solve it while it's 0:
+Now, let's do the heavy lifting: differentiating w.r.t our variable of interest, $$x_k$$, and solve it while it's 0:
 
 $$
 \begin{gather*}
@@ -287,7 +287,7 @@ $$
 \end{gather*}
 $$
 
-We are skipping another leavy lift: getting the covariance of $x_k$, $P_k$. If you are curious, the covariance of a [multivariate Gaussian distribution can be achieved by taking the Hessian of its negative log function.](../2017/2017-02-16-math-MultiVariate-Distribution.markdown)
+We are skipping another leavy lift: getting the covariance of $$x_k$$, $$P_k$$. If you are curious, the covariance of a [multivariate Gaussian distribution can be achieved by taking the Hessian of its negative log function.](../2017/2017-02-16-math-MultiVariate-Distribution.markdown)
 
 $$
 \begin{gather*}
@@ -319,7 +319,7 @@ $$
 \end{gather*}
 $$
 
-$x_k$ can be simplified to:
+$$x_k$$ can be simplified to:
 
 $$
 \begin{gather*}
@@ -331,7 +331,7 @@ $$
 \end{gather*}
 $$
 
-So we can see that we've derived the covariance matrix $P_k$, Kalman Gain $K_k$, and the final estimate $x_k$
+So we can see that we've derived the covariance matrix $$P_k$$, Kalman Gain $$K_k$$, and the final estimate $$x_k$$
 
 <div style="text-align: center;">
     <p align="center">

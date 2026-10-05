@@ -15,12 +15,12 @@ Generally, we need to try different sets of parameters to find the best performi
 
 In terms of number layers, it could be a linear search:  
 
-1. Define a range of possible numbers of layers e.g., $[5, 20]$
+1. Define a range of possible numbers of layers e.g., $$[5, 20]$$
 2. Uniformly sample from this range
 
-However, the same cannot be applied to learning rate, momentum parameter, or RMS prop parameter. That's because they could range from $(0, 1]$. Therefore, the search would look like:
+However, the same cannot be applied to learning rate, momentum parameter, or RMS prop parameter. That's because they could range from $$(0, 1]$$. Therefore, the search would look like:
 
-1. Choose a range of log10 of posible values. E.g., if we want $[1e-3, 1]$ for learning rate, we choose $[-3, 0]$
+1. Choose a range of log10 of posible values. E.g., if we want $$[1e-3, 1]$$ for learning rate, we choose $$[-3, 0]$$
 2. Uniformly sample in the log space.
 
 For example, to estimate `alpha`:

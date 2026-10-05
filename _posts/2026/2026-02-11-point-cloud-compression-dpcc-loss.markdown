@@ -13,10 +13,10 @@ tags:
 
 ### What is the bottleneck?
 
-In learned compression the **entropy bottleneck** is a learned probability model $p(\hat{z})$ placed on the quantized latent features $\hat{z}$. It serves two purposes:
+In learned compression the **entropy bottleneck** is a learned probability model $$p(\hat{z})$$ placed on the quantized latent features $$\hat{z}$$. It serves two purposes:
 
-- **Training**: adds a rate penalty $R = -\sum \log_2 p(\hat{z})$ to the loss, pushing the encoder to produce features that are cheap to code.
-- **Inference**: provides the CDF needed by the range coder to compress $\hat{z}$ into a bitstream.
+- **Training**: adds a rate penalty $$R = -\sum \log_2 p(\hat{z})$$ to the loss, pushing the encoder to produce features that are cheap to code.
+- **Inference**: provides the CDF needed by the range coder to compress $$\hat{z}$$ into a bitstream.
 
 ### How are the features quantized?
 
@@ -24,11 +24,11 @@ During training, hard rounding is replaced by additive uniform noise to keep gra
 
 $$\tilde{z} = z + u, \qquad u \sim \mathcal{U}(-0.5,\, 0.5)$$
 
-At inference the features are hard-rounded to integers: $\hat{z} = \text{round}(z)$.
+At inference the features are hard-rounded to integers: $$\hat{z} = \text{round}(z)$$.
 
 ### How does the arithmetic/range coder fit into training?
 
-It does **not** run during training. Instead, the expected bit cost is computed analytically using the learned CDF $F$:
+It does **not** run during training. Instead, the expected bit cost is computed analytically using the learned CDF $$F$$:
 
 $$R = -\sum_i \log_2 \bigl[F(\hat{z}_i + 0.5) - F(\hat{z}_i - 0.5)\bigr]$$
 
@@ -38,11 +38,11 @@ This is differentiable, so it can be back-propagated. The range coder is only ca
 
 $$\mathcal{L} = D + \lambda R$$
 
-- $D$ — reconstruction distortion (e.g. Chamfer distance between original and reconstructed point cloud).
-- $R$ — estimated bit-rate from the entropy bottleneck (bits per point).
-- $\lambda$ — trade-off weight: larger $\lambda$ → smaller files at the cost of more distortion.
+- $$D$$ — reconstruction distortion (e.g. Chamfer distance between original and reconstructed point cloud).
+- $$R$$ — estimated bit-rate from the entropy bottleneck (bits per point).
+- $$\lambda$$ — trade-off weight: larger $$\lambda$$ → smaller files at the cost of more distortion.
 
-The joint optimisation drives the encoder to produce a **compact, peaked latent distribution** (low $R$) while still enabling accurate reconstruction (low $D$).
+The joint optimisation drives the encoder to produce a **compact, peaked latent distribution** (low $$R$$) while still enabling accurate reconstruction (low $$D$$).
 
 ---
 
@@ -54,7 +54,7 @@ $$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{chamfer}} + \mathcal{L}_{\text
 
 ### Chamfer Loss
 
-Measures geometric reconstruction quality at each decoder stage. At stage $i$, the predicted points are compared to the ground-truth point cloud from the **corresponding encoder stage** (i.e. the stage before downsampling destroyed detail). The final stage uses a full weight of 1; all earlier stages are scaled by `chamfer_coe < 1`.
+Measures geometric reconstruction quality at each decoder stage. At stage $$i$$, the predicted points are compared to the ground-truth point cloud from the **corresponding encoder stage** (i.e. the stage before downsampling destroyed detail). The final stage uses a full weight of 1; all earlier stages are scaled by `chamfer_coe < 1`.
 
 ```python
 def get_chamfer_loss(
@@ -81,20 +81,20 @@ $$P = \{p_1 = (0,0),\ p_2 = (2,0)\}, \qquad Q = \{q_1 = (0.5,0),\ q_2 = (3,0)\}$
 
 **Step 1 — Nearest-neighbor matching.**
 
-- $P \to Q$: $p_1 \leftrightarrow q_1$,  $p_2 \leftrightarrow q_2$
-- $Q \to P$: $q_1 \leftrightarrow p_1$,  $q_2 \leftrightarrow p_2$
+- $$P \to Q$$: $$p_1 \leftrightarrow q_1$$,  $$p_2 \leftrightarrow q_2$$
+- $$Q \to P$$: $$q_1 \leftrightarrow p_1$$,  $$q_2 \leftrightarrow p_2$$
 
 **Step 2 — Loss value.**
 
 $$L = \|p_1 - q_1\|^2 + \|p_2 - q_2\|^2 + \|q_1 - p_1\|^2 + \|q_2 - p_2\|^2 = 0.25 + 1 + 0.25 + 1 = 2.5$$
 
-With the mean version ($|P|=|Q|=2$):
+With the mean version ($$\vert P\vert =\vert Q\vert =2$$):
 
 $$L_{\text{mean}} = \frac{0.25+1}{2} + \frac{0.25+1}{2} = 1.25$$
 
 **Step 3 — Gradients.**
 
-For a single squared term $\|p - q\|^2$:
+For a single squared term $$\|p - q\|^2$$:
 
 $$\frac{\partial}{\partial p}\|p-q\|^2 = 2(p-q), \qquad \frac{\partial}{\partial q}\|p-q\|^2 = 2(q-p)$$
 
@@ -102,12 +102,12 @@ Each point appears in **two** symmetric terms (once from each direction), so its
 
 | Point | Contribution per term | Total gradient |
 |---|---|---|
-| $p_1 = (0,0)$ | $2(p_1 - q_1) = (-1, 0)$ | $\nabla_{p_1} L = (-2, 0)$ |
-| $p_2 = (2,0)$ | $2(p_2 - q_2) = (-2, 0)$ | $\nabla_{p_2} L = (-4, 0)$ |
-| $q_1 = (0.5,0)$ | $2(q_1 - p_1) = (1, 0)$ | $\nabla_{q_1} L = (2, 0)$ |
-| $q_2 = (3,0)$ | $2(q_2 - p_2) = (2, 0)$ | $\nabla_{q_2} L = (4, 0)$ |
+| $$p_1 = (0,0)$$ | $$2(p_1 - q_1) = (-1, 0)$$ | $$\nabla_{p_1} L = (-2, 0)$$ |
+| $$p_2 = (2,0)$$ | $$2(p_2 - q_2) = (-2, 0)$$ | $$\nabla_{p_2} L = (-4, 0)$$ |
+| $$q_1 = (0.5,0)$$ | $$2(q_1 - p_1) = (1, 0)$$ | $$\nabla_{q_1} L = (2, 0)$$ |
+| $$q_2 = (3,0)$$ | $$2(q_2 - p_2) = (2, 0)$$ | $$\nabla_{q_2} L = (4, 0)$$ |
 
-**Step 4 — Gradient descent effect** ($x \leftarrow x - \eta \nabla_x L$, $\eta = 0.1$).
+**Step 4 — Gradient descent effect** ($$x \leftarrow x - \eta \nabla_x L$$, $$\eta = 0.1$$).
 
 Chamfer loss **pulls matched points toward each other**:
 
@@ -120,20 +120,20 @@ A single point can become the nearest neighbor for multiple points simultaneousl
 
 $$P = \{(0,0),\ (0.2,0)\}, \qquad Q = \{(1,0)\}$$
 
-Both $p_1$ and $p_2$ match $q_1$, so $q_1$ receives gradient from both:
+Both $$p_1$$ and $$p_2$$ match $$q_1$$, so $$q_1$$ receives gradient from both:
 
 $$\nabla_q L = 2(q - p_1) + 2(q - p_2)$$
 
-$q$ is pulled toward the **average** of $p_1$ and $p_2$. This is one reason Chamfer loss can produce clustering: many predicted points can chase the same target, or one predicted point can represent several targets imperfectly.
+$$q$$ is pulled toward the **average** of $$p_1$$ and $$p_2$$. This is one reason Chamfer loss can produce clustering: many predicted points can chase the same target, or one predicted point can represent several targets imperfectly.
 
 > **Single-sided vs. bidirectional Chamfer — asymmetric matching example.**
 >
 > The two directions play distinct roles:
 >
-> - $P \to Q$ (**accuracy**): every predicted point must be near some GT point.
-> - $Q \to P$ (**coverage**): every GT point must be near some predicted point.
+> - $$P \to Q$$ (**accuracy**): every predicted point must be near some GT point.
+> - $$Q \to P$$ (**coverage**): every GT point must be near some predicted point.
 >
-> The following example has **asymmetric** nearest-neighbor matching and shows how the $Q \to P$ term actively fights clustering.
+> The following example has **asymmetric** nearest-neighbor matching and shows how the $$Q \to P$$ term actively fights clustering.
 >
 > $$P = \{p_1=(0,0),\ p_2=(1,0)\} \quad \text{(predicted)}, \qquad Q = \{q_1=(0.6,0),\ q_2=(3,0)\} \quad \text{(GT)}$$
 >
@@ -141,27 +141,27 @@ $q$ is pulled toward the **average** of $p_1$ and $p_2$. This is one reason Cham
 >
 > | Direction | Pair | Note |
 > |---|---|---|
-> | $P \to Q$ | $p_1 \to q_1$, $p_2 \to q_1$ | both predicted points are closest to $q_1$; $q_2$ is **uncovered** |
-> | $Q \to P$ | $q_1 \to p_2$, $q_2 \to p_2$ | both GT points are closest to $p_2$; $p_1$ gets no pull from this direction |
+> | $$P \to Q$$ | $$p_1 \to q_1$$, $$p_2 \to q_1$$ | both predicted points are closest to $$q_1$$; $$q_2$$ is **uncovered** |
+> | $$Q \to P$$ | $$q_1 \to p_2$$, $$q_2 \to p_2$$ | both GT points are closest to $$p_2$$; $$p_1$$ gets no pull from this direction |
 >
-> The matching is asymmetric: $p_1$ chases $q_1$ in $P \to Q$, but $q_1$ chases $p_2$ in $Q \to P$.
+> The matching is asymmetric: $$p_1$$ chases $$q_1$$ in $$P \to Q$$, but $$q_1$$ chases $$p_2$$ in $$Q \to P$$.
 >
 > **Gradients on predicted points** (sum loss):
 >
-> | Term | $\nabla_{p_1} L$ | $\nabla_{p_2} L$ |
+> | Term | $$\nabla_{p_1} L$$ | $$\nabla_{p_2} L$$ |
 > |---|---|---|
-> | $P \to Q$ | $2(p_1 - q_1) = (-1.2,\,0)$ | $2(p_2 - q_1) = (+0.8,\,0)$ |
-> | $Q \to P$ | — (not matched) | $2(p_2-q_1)+2(p_2-q_2) = (+0.8,0)+(-4,0) = (-3.2,\,0)$ |
-> | **Total** | $(-1.2,\,0)$ | $(-2.4,\,0)$ |
+> | $$P \to Q$$ | $$2(p_1 - q_1) = (-1.2,\,0)$$ | $$2(p_2 - q_1) = (+0.8,\,0)$$ |
+> | $$Q \to P$$ | — (not matched) | $$2(p_2-q_1)+2(p_2-q_2) = (+0.8,0)+(-4,0) = (-3.2,\,0)$$ |
+> | **Total** | $$(-1.2,\,0)$$ | $$(-2.4,\,0)$$ |
 >
-> **Update with $\eta = 0.1$:**
+> **Update with $$\eta = 0.1$$:**
 >
 > $$p_1: (0,0) \to (0.12,0) \quad \text{(moves toward } q_1\text{)}$$
 > $$p_2: (1,0) \to (1.24,0) \quad \text{(moves toward } q_2 \text{ — pulled away from } q_1\text{!)}$$
 >
-> The dominant force on $p_2$ is the $Q \to P$ coverage penalty from the distant $q_2=(3,0)$. It **overrides** the $P \to Q$ pull toward $q_1$ and drives $p_2$ rightward to cover $q_2$.
+> The dominant force on $$p_2$$ is the $$Q \to P$$ coverage penalty from the distant $$q_2=(3,0)$$. It **overrides** the $$P \to Q$$ pull toward $$q_1$$ and drives $$p_2$$ rightward to cover $$q_2$$.
 >
-> **With single-sided $P \to Q$ only:** $\nabla_{p_2} L = (+0.8, 0)$, so $p_2$ moves *left* toward $q_1$ — deepening the cluster. The bidirectional loss is what breaks the symmetry and spreads predictions to cover the full GT.
+> **With single-sided $$P \to Q$$ only:** $$\nabla_{p_2} L = (+0.8, 0)$$, so $$p_2$$ moves *left* toward $$q_1$$ — deepening the cluster. The bidirectional loss is what breaks the symmetry and spreads predictions to cover the full GT.
 
 ### Density Loss
 
@@ -170,7 +170,7 @@ Penalises two per-point density statistics that the decoder predicts for each up
 1. **Upsampling count** — L1 between the predicted number of children per point (`pred_unums`) and the ground-truth downsampling count (`gt_dnums`).
 2. **Mean distance** — L1 between the predicted mean child-to-parent distance (`pred_mdis`) and the ground-truth mean distance (`gt_mdis`).
 
-For each decoder stage $i$, the nearest ground-truth point is looked up via `pred2gt_idx` so that predictions are compared to the correct GT entry.
+For each decoder stage $$i$$, the nearest ground-truth point is looked up via `pred2gt_idx` so that predictions are compared to the correct GT entry.
 
 ```python
 def get_density_loss(

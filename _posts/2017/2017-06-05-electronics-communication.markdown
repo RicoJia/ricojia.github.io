@@ -62,7 +62,7 @@ $$
 \end{gather*}
 $$
 
-For multiplication, we need: $x^ax^b = x^{a+b}$. and reduce coefficients mod 2 (1+1=0) So we have:
+For multiplication, we need: $$x^ax^b = x^{a+b}$$. and reduce coefficients mod 2 (1+1=0) So we have:
 
 $$
 \begin{gather*}
@@ -103,7 +103,7 @@ $$
 
 CRC (Cyclic redundancy check) is a small value calculated on a piece of data to ensure data integrity. It was first proposed in 1961. Here, we walk through a simple CRC-3 example:
 
-1. Choose our generator polynomial (the Divisor above) to be 3rd order polynomial (since it's CRC **-3**): $G(x) = x^3 + x + 1 (1011)$
+1. Choose our generator polynomial (the Divisor above) to be 3rd order polynomial (since it's CRC **-3**): $$G(x) = x^3 + x + 1 (1011)$$
 2. Append input data `1101` by the highest degree of the generator (which is 3): `1101 -> 1101000`
 3. Divide the appended input by the generator polynomial:
 

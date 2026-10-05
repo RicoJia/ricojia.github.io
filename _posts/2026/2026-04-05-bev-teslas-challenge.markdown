@@ -59,7 +59,7 @@ The transformer-based architecture works as follows:
 1. Take images from multiple cameras at multiple timesteps; rectify them
 2. Feed each image through an image feature extractor (backbone)
 3. Generate **keys** and **values** per image; generate a **spatial BEV query** over the shared grid
-4. Cross-attention produces BEV-aligned spatial features, all referenced to the same ego frame at time $T$
+4. Cross-attention produces BEV-aligned spatial features, all referenced to the same ego frame at time $$T$$
 
 ![](https://i.postimg.cc/pXg88Cjg/Screenshot-from-2026-04-08-08-46-07.png)
 
@@ -132,8 +132,8 @@ This is task-aligned for autonomous driving and avoids single-pixel depth regres
 
 An additional signal needs no offline reconstruction:
 
-1. Predict depth or lifted 3D features from frame $t$
-2. Project them into another camera or frame $t+1$ using known ego-motion
+1. Predict depth or lifted 3D features from frame $$t$$
+2. Project them into another camera or frame $$t+1$$ using known ego-motion
 3. Compare against actual observations there (photometric or feature-level loss)
 
 This is the basis of methods like Monodepth2 and SurroundDepth.
@@ -174,15 +174,15 @@ The full pipeline densifies, cleans, and semantically organizes the skeleton int
 
 ### 6.1 The Depth Ambiguity Problem
 
-A single pixel $(u, v)$ maps not to one 3D point but to an entire ray:
+A single pixel $$(u, v)$$ maps not to one 3D point but to an entire ray:
 
 $$\mathbf{p}_{3D} = \mathbf{o} + d \cdot \hat{\mathbf{r}}_{u,v}, \quad d \in [d_{\min}, d_{\max}]$$
 
-Without knowing $d$, you cannot assign that image feature to a unique BEV grid cell. This is the core difficulty of perspective-to-BEV lifting.
+Without knowing $$d$$, you cannot assign that image feature to a unique BEV grid cell. This is the core difficulty of perspective-to-BEV lifting.
 
 ### 6.2 IPM — Inverse Perspective Mapping
 
-**IPM** resolves the ambiguity by assuming all scene points lie on the ground plane ($Z = 0$). The constraint turns the projection into a planar homography — closed-form, no learning required.
+**IPM** resolves the ambiguity by assuming all scene points lie on the ground plane ($$Z = 0$$). The constraint turns the projection into a planar homography — closed-form, no learning required.
 
 - **Good for:** flat road surface, lane markings
 - **Bad for:** vehicles, pedestrians, curbs, overpasses

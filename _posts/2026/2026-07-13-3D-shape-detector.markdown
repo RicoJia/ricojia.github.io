@@ -108,7 +108,7 @@ self.head = nn.Conv2d(width, 4, 1)     # 1x1 conv, full 128x128 resolution
 
 **A 1×1 convolution at full resolution means every pixel's amplitude is set independently.** Nothing couples neighbours. So the network can — and does — make one pixel 100× louder than the one beside it
 
-One remedy is to predict $A$ at low resolution, then upsample.
+One remedy is to predict $$A$$ at low resolution, then upsample.
 
 ```python
 #amplitude/gain describe sensor geometry -> low-frequency by construction
@@ -118,4 +118,4 @@ params = F.interpolate(params, size=(128, 128),
                        mode="bilinear", align_corners=False)
 ```
 
-With an 8×8 grid upsampled bilinearly, $A$ can only vary on a ~16-pixel scale. A single-pixel amplitude spike is impossible.
+With an 8×8 grid upsampled bilinearly, $$A$$ can only vary on a ~16-pixel scale. A single-pixel amplitude spike is impossible.

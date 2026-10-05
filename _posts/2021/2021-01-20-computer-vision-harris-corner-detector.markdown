@@ -10,7 +10,7 @@ tags:
 
 ## Basic Idea
 
-When a specified window truly has a corner, if we shift a window (region of interest) along any direction (+/- x or y direction) slightly by small displacements, $u$, $v$, we could expect a noticeable difference in the **sum of squared difference** in intensity $I$ **before and after** the shift:
+When a specified window truly has a corner, if we shift a window (region of interest) along any direction (+/- x or y direction) slightly by small displacements, $$u$$, $$v$$, we could expect a noticeable difference in the **sum of squared difference** in intensity $$I$$ **before and after** the shift:
 
 $$
 \begin{gather*}
@@ -27,7 +27,7 @@ $$
 </p>
 </div>
 
-In real life, an unweighted window doesn't work too well mostly because center points may deserve more focus than farther points, otherwise we might accumulate too much noise. So, we can apply a window function to emphasize that. People like to use a Gaussian window $w(x,y)$
+In real life, an unweighted window doesn't work too well mostly because center points may deserve more focus than farther points, otherwise we might accumulate too much noise. So, we can apply a window function to emphasize that. People like to use a Gaussian window $$w(x,y)$$
 
 $$
 \begin{gather*}
@@ -35,7 +35,7 @@ E(u,v) = \sum_{X,Y} w(x,y)(I(x+u, y+v) - I(x,y))^2
 \end{gather*}
 $$
 
-In the day and age when compute was limited, to make the above faster, we can make use of image gradients along $x$ and $y$: $I_x$, $I_y$. That's because image gradients along each direction can be calculated in 1 pass. To do that, let's meet our old friend, **Taylor Expansion**:
+In the day and age when compute was limited, to make the above faster, we can make use of image gradients along $$x$$ and $$y$$: $$I_x$$, $$I_y$$. That's because image gradients along each direction can be calculated in 1 pass. To do that, let's meet our old friend, **Taylor Expansion**:
 
 $$
 \begin{gather*}
@@ -126,11 +126,11 @@ $$
 <img src="https://user-images.githubusercontent.com/39393023/131152407-d01721e2-d83f-4546-983f-f70eb5965b8f.png" height="200" width="width"/>
 </p>
 
-Mathematically, one principle direction of the ellipsoid is represented by the **eigen vector** of the matrix $M$. The length along that principle direction is the corresponding eigen value of $M$. So when we move the window in:
+Mathematically, one principle direction of the ellipsoid is represented by the **eigen vector** of the matrix $$M$$. The length along that principle direction is the corresponding eigen value of $$M$$. So when we move the window in:
 
 - A flat region: no high sum of squared difference is expected. **Neither eigen value should be large**
 - An edge: we expect high sum of squared difference along the direction perpendicular to the edge. So 1 eigen value of M should be large, the other is small
-- A corner: we would expect high sum of squared difference along both $x$ and $y$ directions. So both eigen values should be high
+- A corner: we would expect high sum of squared difference along both $$x$$ and $$y$$ directions. So both eigen values should be high
 
 ## How To Measure Harris Corner Response
 
@@ -142,15 +142,15 @@ R = det(M) - \alpha \cdot trace(M)^2 = \lambda_1 \lambda_2 - \alpha (\lambda_1 +
 \end{gather*}
 $$
 
-- Recall: $det(M) = \lambda_1 \lambda_2$
-- $\alpha \in [0.04, 0.06]$ (to balances the sensitivity between **edges vs corners**
-- $R \approx 0$ for flat region, $R < 0$ for an edge (one large lambda one small lambda), and $R > 0$ for a corner
+- Recall: $$det(M) = \lambda_1 \lambda_2$$
+- $$\alpha \in [0.04, 0.06]$$ (to balances the sensitivity between **edges vs corners**
+- $$R \approx 0$$ for flat region, $$R < 0$$ for an edge (one large lambda one small lambda), and $$R > 0$$ for a corner
 
 So the general workflow is:
 
 1. Calculate image gradient using the Sobel Operator
-2. For each pixel, compute its second moment matrix, $M$, within a small window
-3. Compute $R$ for each pixel, then threshold it, and find local maxima with Non Maximum Suppresion to ensure the most prominent corners are selected.
+2. For each pixel, compute its second moment matrix, $$M$$, within a small window
+3. Compute $$R$$ for each pixel, then threshold it, and find local maxima with Non Maximum Suppresion to ensure the most prominent corners are selected.
 
 
 ### Properties Of Harris Corner
@@ -179,4 +179,4 @@ CV2 Harris Corner uses this function ```R=det(M)−k(trace(M))2```, when R<0, on
 
 ## Final Remarks
 
-Shi-Tomasi corner (1994) basically uses the same M matrix. The difference is its cornerness is to find $min(\lambda_1, \lambda_2)$, then find local maximums. ?? This is called **Good Features to Track**
+Shi-Tomasi corner (1994) basically uses the same M matrix. The difference is its cornerness is to find $$min(\lambda_1, \lambda_2)$$, then find local maximums. ?? This is called **Good Features to Track**

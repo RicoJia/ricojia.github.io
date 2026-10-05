@@ -22,7 +22,7 @@ $$
 z_j=\max_i x_{i,j}.  
 $$
 
-Attention pooling instead learns how much each point should contribute. A query $\mathbf{q}$ is compared with a key $\mathbf{k}_i$ from every point:
+Attention pooling instead learns how much each point should contribute. A query $$\mathbf{q}$$ is compared with a key $$\mathbf{k}_i$$ from every point:
 
 $$  
 s_i=\frac{\mathbf{q}^{T}\mathbf{k}_i}{\sqrt{d}},  

@@ -13,7 +13,7 @@ comments: true
 
 ### Common Conversions
 
-- ROS `geometry_msgs::Pose` $->$  `Eigen::Quaterniond`
+- ROS `geometry_msgs::Pose` $$->$$  `Eigen::Quaterniond`
 
 ```cpp
 geometry_msgs::Pose p;

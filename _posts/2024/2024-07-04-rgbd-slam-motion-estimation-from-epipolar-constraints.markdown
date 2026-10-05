@@ -23,19 +23,19 @@ This blog is inspired by this great great book: [14 Lectures in Visual SLAM](htt
 
 In the Epipolar Geometry show, our main characters are:
 
-- $O_1$,  $O_2$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
-- $p_1$, $p_2$ are the corresponding pixel points
-- $P$ is the 3D point
-- Additionally, $e_1$, $e_2$ are the epipoles of the two cameras. $l_1$ and $l_2$ are epipolar lines
-- $O_1 O_2$ is called the baseline
+- $$O_1$$,  $$O_2$$ are the optical centers of two camera poses. Each one of them has a camera coordinate frame attached to them.
+- $$p_1$$, $$p_2$$ are the corresponding pixel points
+- $$P$$ is the 3D point
+- Additionally, $$e_1$$, $$e_2$$ are the epipoles of the two cameras. $$l_1$$ and $$l_2$$ are epipolar lines
+- $$O_1 O_2$$ is called the baseline
 
-The main purpose of this show is to establish a constraint between the pixels, using the co-planar characteristic of $O_1$, $P$, and $O_2$
+The main purpose of this show is to establish a constraint between the pixels, using the co-planar characteristic of $$O_1$$, $$P$$, and $$O_2$$
 
-Below we are denoting 3D points using the capital letter $P$, and 2D pixel points using lower case letter $p$ . Let $P_1=[X,Y,Z]$ in $O_1$. Assume there's transformation $O_2 = RO_1 + T$. Then, the 3D point $P_2 = RP_1 + t$, where the **translation vector t** is $\vec{O_1O_2}$
+Below we are denoting 3D points using the capital letter $$P$$, and 2D pixel points using lower case letter $$p$$ . Let $$P_1=[X,Y,Z]$$ in $$O_1$$. Assume there's transformation $$O_2 = RO_1 + T$$. Then, the 3D point $$P_2 = RP_1 + t$$, where the **translation vector t** is $$\vec{O_1O_2}$$
 
 ## Step 1 - Epipolar Constraints Derivation
 
-In the pinhole camera model, we introduce the notion of "canonical plane". Remember that our image plane is focal length $f$ away from the optical center? the canonical plane is 1 unit away from it. Meanwhile, the point $P$ has depth $Z_1$ and $Z_2$ in each frame. This simplifies our computation quite a bit. We represent points on the canonical planes of the two cameras as $P_{c1}$, $P_{c2}$
+In the pinhole camera model, we introduce the notion of "canonical plane". Remember that our image plane is focal length $$f$$ away from the optical center? the canonical plane is 1 unit away from it. Meanwhile, the point $$P$$ has depth $$Z_1$$ and $$Z_2$$ in each frame. This simplifies our computation quite a bit. We represent points on the canonical planes of the two cameras as $$P_{c1}$$, $$P_{c2}$$
 
 From the pinhole camera model, we know:
 
@@ -46,7 +46,7 @@ K(RP_1+t) = Z_2 p_2
 \end{align*}
 $$
 
-Then, we "normalize" the depths $Z_1$ and $Z_2$ and get the canonical points:
+Then, we "normalize" the depths $$Z_1$$ and $$Z_2$$ and get the canonical points:
 
 $$
 \begin{gather*}
@@ -78,7 +78,7 @@ $$
 
 One important point is **we omitted depth** because one side is zero. So, **the epipolar constraint is scale ambiguous**. Since `t` and `R` each has 3 degrees of freedom (dof), E technically has 6 dof. But because of equivalence to scale, it has 5.
 
-Note that we can use the skew matrix of $t$ to represent $E$ as $E = [t_\times] R$.
+Note that we can use the skew matrix of $$t$$ to represent $$E$$ as $$E = [t_\times] R$$.
 
 Now, to get the **foundamental matrix, F**,
 
@@ -99,7 +99,7 @@ $$
 
 ## Step 2 - Estimate Relative Motion in Epipolar Constraints (8 point algorithm)
 
-In 1981, Longuet-Higgins proposed the famous "8-point algorithm" in Nature to estimate E, and solve for R and t. Since usually $K$ is known, we can operate on the canonical points
+In 1981, Longuet-Higgins proposed the famous "8-point algorithm" in Nature to estimate E, and solve for R and t. Since usually $$K$$ is known, we can operate on the canonical points
 
 E is a 3x3 matrix:
 
@@ -113,7 +113,7 @@ e_7 & e_8 & e_9
 \end{bmatrix}
 $$
 
-Let $e = [e_1 , e_2 , e_3 , e_4 , e_5 , e_6 , e_7 , e_8 , e_9 ]^T$
+Let $$e = [e_1 , e_2 , e_3 , e_4 , e_5 , e_6 , e_7 , e_8 , e_9 ]^T$$
 
 ### ❓Remember how to get the canonical plane coordinates from pixel values?
 
@@ -135,9 +135,9 @@ $$
 
 ### 🤔 How Many Equations Do We Need?
 
-$P_{c1} = [u_1, v_1, 1]$ and $P_{c2} = [u_2, v_2, 1]$.
+$$P_{c1} = [u_1, v_1, 1]$$ and $$P_{c2} = [u_2, v_2, 1]$$.
 
-So, each epipolar constraint $P_{c2}^T E P_{c1}$ gives 1 equation:
+So, each epipolar constraint $$P_{c2}^T E P_{c1}$$ gives 1 equation:
 
 $$
 \begin{gather*}
@@ -145,7 +145,7 @@ $$
 \end{gather*}
 $$
 
-Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Usually, we either make one element 1, or make $abs(t)=1$. Hence, we get 8 matched feature points, choose $e$ in the null space of $A$, voila!
+Because the epipolar constraint is scale ambiguous, E multiplies any scalar would also be a valid essenstial matrix. So, we have 1 degree of freedom, hence we need 8 equations. Usually, we either make one element 1, or make $$abs(t)=1$$. Hence, we get 8 matched feature points, choose $$e$$ in the null space of $$A$$, voila!
 
 ### How To Select Those 8 Points?
 
@@ -165,7 +165,7 @@ $$
 E = U \Sigma V^T
 $$
 
-where E has eigen values $\sigma_1$, $\sigma_2$, $\sigma_3$. To project E onto a manifold, it will be equvalent to $diag(1,1,0)$
+where E has eigen values $$\sigma_1$$, $$\sigma_2$$, $$\sigma_3$$. To project E onto a manifold, it will be equvalent to $$diag(1,1,0)$$
 
 $$
 \begin{align*}
@@ -174,13 +174,13 @@ $$
 \end{align*}
 $$
 
-Each combination of $t$ and $R$ could be a valid solution. They correspond to the below scenarios:
+Each combination of $$t$$ and $$R$$ could be a valid solution. They correspond to the below scenarios:
 
 <p align="center">
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/27e5e2a9-fc12-431e-8778-77855504ee3e" height="300" width="width"/>
 </p>
 
-But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation** [1]. Given $R$ and $t$, one can establish
+But only the first scenario has both canonical points' depths being positive. So, we just need to plug in R and t, and make sure that holds. This is called a "Cheirality Check" - it's done by **triangulation** [1]. Given $$R$$ and $$t$$, one can establish
 
 $$
 \begin{gather*}
@@ -193,13 +193,13 @@ Z_1 P_{c1} \times P_{c1} \\
 \end{gather*}
 $$
 
-Then, one can solve for depths $Z_1$ and $Z_2$. If they are both positive, then the solution is valid.
+Then, one can solve for depths $$Z_1$$ and $$Z_2$$. If they are both positive, then the solution is valid.
 
 ## [Optional] Step 4 - Homography for Co-Planar Features
 
-In two frames, if all our feature points land on the **the same** plane, like a wall, or a floor, **then the transform between the two frames is called a Homography (单应).** For example, two matching feature points have: $p_2 = Hp_1$, where $H$ is composed of $R$ and $t$. **This method is a.k.a Direct Linear Transform** (DLT)
+In two frames, if all our feature points land on the **the same** plane, like a wall, or a floor, **then the transform between the two frames is called a Homography (单应).** For example, two matching feature points have: $$p_2 = Hp_1$$, where $$H$$ is composed of $$R$$ and $$t$$. **This method is a.k.a Direct Linear Transform** (DLT)
 
-What's a plane? (My rusty brain yells to the college me) If we know the normal vector $n$, and a point it passes $P$, and a constant $c$, it is:
+What's a plane? (My rusty brain yells to the college me) If we know the normal vector $$n$$, and a point it passes $$P$$, and a constant $$c$$, it is:
 
 $$
 \begin{gather*}
@@ -211,7 +211,7 @@ n^Tp + c = 0
 \end{gather*}
 $$
 
-Above is we write the co-plane constraint in another form, so we are set up for further elimination. The issue is we don't know $n$, and $c$. But that's ok, we know the relationship between $R$, $t$ and $H$.
+Above is we write the co-plane constraint in another form, so we are set up for further elimination. The issue is we don't know $$n$$, and $$c$$. But that's ok, we know the relationship between $$R$$, $$t$$ and $$H$$.
 
 $$
 \begin{gather*}
@@ -240,7 +240,7 @@ h_7 & h_8 & 1
 \end{gather*}
 $$
 
-Each pair of 2D matching pixels $[u_1, v_1]$, $[u_2, v_2]$ gives:
+Each pair of 2D matching pixels $$[u_1, v_1]$$, $$[u_2, v_2]$$ gives:
 
 $$
 \begin{gather*}
@@ -262,20 +262,20 @@ v_2 = \frac{h_4 u_1 + h_5 v_1 + h_6}{h_7 u_1 + h_8 v_1 + h_9}
 \end{gather*}
 $$
 
-So, **we need 4 pairs of points to solve for homography.**. Like the essential matrix, we get 4 solutions for $H$. By applying the "positive depth" constraint, we can eliminate two. To eliminate the last one, we can assume the normal vector of the known scene plane. Then, R and t could be solved using decomposition
+So, **we need 4 pairs of points to solve for homography.**. Like the essential matrix, we get 4 solutions for $$H$$. By applying the "positive depth" constraint, we can eliminate two. To eliminate the last one, we can assume the normal vector of the known scene plane. Then, R and t could be solved using decomposition
 
 ## Step 5 - Do Both 8 points and Homography To Avoid De-generation
 
-When there is no linear translation $t$, $E$ would be zero matrix too (if you multiply E and R) together. So a common practice is to calculate both homography and 8 points, then reproject them into back into the picture
+When there is no linear translation $$t$$, $$E$$ would be zero matrix too (if you multiply E and R) together. So a common practice is to calculate both homography and 8 points, then reproject them into back into the picture
 
 ### 🔎 How Do we Check Our Results?
 
 Reprojection. Project points on 1 image point onto the other. How?
 
-First, we can see that the projection of one point can be mapped to multiple points, due to the scale ambiguity in translation (while rotation should be absolute). On **canonical planes**, The mapped points of $P_{c1}$ for example, are actually the line $l_2$ on the second image. Why?
+First, we can see that the projection of one point can be mapped to multiple points, due to the scale ambiguity in translation (while rotation should be absolute). On **canonical planes**, The mapped points of $$P_{c1}$$ for example, are actually the line $$l_2$$ on the second image. Why?
 
 <p align="center">
 <img src="https://github.com/RicoJia/Omnid_Project/assets/39393023/e6f684d8-de6c-4185-af21-f878ae7d5b33" height="300" width="width"/>
 </p>
 
-Remember the epipolar constraint $P_{c2}^TEP_{c1}$ = 0? It already tells that the 3-vector $EP_{c1} = [a,b,c]$ is perpendicular to $P_{c2} = [x,y,1]$. That defines a line! $ax + by + c = 0$. So once we get this point, if the $P_2$ is close to this line, we think this projection is successful.
+Remember the epipolar constraint $$P_{c2}^TEP_{c1}$$ = 0? It already tells that the 3-vector $$EP_{c1} = [a,b,c]$$ is perpendicular to $$P_{c2} = [x,y,1]$$. That defines a line! $$ax + by + c = 0$$. So once we get this point, if the $$P_2$$ is close to this line, we think this projection is successful.

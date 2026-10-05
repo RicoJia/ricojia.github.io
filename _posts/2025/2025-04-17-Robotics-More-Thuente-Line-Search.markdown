@@ -26,7 +26,7 @@ The goal is to choose 𝛼 ∈ ( 0 , 1 ] such that the updated pose reduces the 
 
 ## Problem Setup
 
-Given the current pose $x_0$​, the cost w.r.t $\alpha$ along the search direction $dx$ is:
+Given the current pose $$x_0$$​, the cost w.r.t $$\alpha$$ along the search direction $$dx$$ is:
 
 $$\phi(\alpha) = f\bigl(x_0 + \alpha\,dx\bigr).$$
 
@@ -38,17 +38,17 @@ $$
 
 ## Armijo Condition
 
-We always start from $\alpha=1$. The first intuition is that if our step is not too large, the cost should be smaller than the first-order Taylor approximation around $x_0$. In math form we use the Armijo (sufficient-decrease) idea:
+We always start from $$\alpha=1$$. The first intuition is that if our step is not too large, the cost should be smaller than the first-order Taylor approximation around $$x_0$$. In math form we use the Armijo (sufficient-decrease) idea:
 
 $$f\bigl(x_0 + \alpha\,dx\bigr) \le f(x_0) + c_1\,\alpha\,\nabla f(x_0)^\top dx,$$
 
-where $c_1$ is a small constant (commonly $c_1=10^{-4}$). (This is a relaxed version of the first-order Taylor expansion)
+where $$c_1$$ is a small constant (commonly $$c_1=10^{-4}$$). (This is a relaxed version of the first-order Taylor expansion)
 
-The directional derivative of $\phi$ is
+The directional derivative of $$\phi$$ is
 
 $$\frac{d}{d\alpha}f\bigl(x_0 + \alpha\,dx\bigr) = \nabla f\bigl(x_0 + \alpha\,dx\bigr)^\top dx,$$
 
-Evaluated at $\alpha=0$,
+Evaluated at $$\alpha=0$$,
 
 $$
 \phi'(0)=\nabla f(x_0)^\top dx
@@ -61,7 +61,7 @@ When the Armijo sufficient-decrease condition fails, there are two possible caus
 1. The step is too large (overshoot).
 
     - The update x 0 +αdx jumps past the minimum and the cost goes back up. In this case, reducing the step size helps:
-    - The update $x_0+\alpha\,dx$ jumps past the minimum and the cost increases. In this case, reducing the step size helps, e.g.
+    - The update $$x_0+\alpha\,dx$$ jumps past the minimum and the cost increases. In this case, reducing the step size helps, e.g.
 
 $$
 \alpha \leftarrow 0.5\alpha
@@ -72,7 +72,7 @@ $$
     - The iterate is near a saddle point,
     - Or the gradient is noisy.
 
-In this case, do we do $\alpha = max(2\alpha, \alpha_bracket)$
+In this case, do we do $$\alpha = max(2\alpha, \alpha_bracket)$$
 
 How do we tell whether α is too large or too small?
 
@@ -82,8 +82,8 @@ $$
 \phi'(\alpha)=\nabla f\bigl(x_0+\alpha\,dx\bigr)^\top dx
 $$
 
-- If $\phi'(\alpha)<0$: the slope is still negative → the cost is still decreasing → $\alpha$ is too small (we haven't reached the bottom yet).
-- If $\phi'(\alpha)>0$: the slope became positive → we passed the minimum → $\alpha$ is too large.
+- If $$\phi'(\alpha)<0$$: the slope is still negative → the cost is still decreasing → $$\alpha$$ is too small (we haven't reached the bottom yet).
+- If $$\phi'(\alpha)>0$$: the slope became positive → we passed the minimum → $$\alpha$$ is too large.
 
 ## Strong Curvature Check (strong Wolfe curvature condition)
 
@@ -97,4 +97,4 @@ $$
 |\phi'(\alpha)|\le c_2\,|\phi'(0)|, c_2 \in (c_1, 1)
 $$
 
-we say the slope is flat enough and accept $\alpha$. This is the (strong) Wolfe curvature condition.
+we say the slope is flat enough and accept $$\alpha$$. This is the (strong) Wolfe curvature condition.

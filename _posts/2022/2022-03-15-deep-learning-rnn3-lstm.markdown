@@ -11,9 +11,9 @@ tags:
 
 ## LSTM
 
-LSTM came out in 1997 and GRU is a simplification of it. In LSTM, we have the "forget gate", $\Gamma_r$, the output gate $\Gamma_o$, and the update gate $\Gamma_u$. We do NOT have $\Gamma_r$
+LSTM came out in 1997 and GRU is a simplification of it. In LSTM, we have the "forget gate", $$\Gamma_r$$, the output gate $$\Gamma_o$$, and the update gate $$\Gamma_u$$. We do NOT have $$\Gamma_r$$
 
-$C^{(t-1)}$ can retain largely the $C^{(t)}$.
+$$C^{(t-1)}$$ can retain largely the $$C^{(t)}$$.
 
 $$
 \begin{gather*}
@@ -49,14 +49,14 @@ LSTM is historically the most proven architecture. GRU is simpler, newer, and po
 
 Detailed Explanations:
 
-- $x^{(t)}, a^{(t-1)}$ are stacked vertically
-- $\Gamma_f * C^{(t-1)}$ is like applying a mask.
-- All gates should be in the ranges of $[0,1]$. That is, if close to 0, values from the previous state, or calculated intermediate state won't be kept
-- So when a subject changes its state, like a singular noun changes to plural,  $\Gamma_f$'s certain values should change its value `0 -> 1`
-- $\tilde{C}$ uses `tanh` so its values are in $[-1, 1]$. Whether its values are passed onto the actual hidden state $C^{(t-1)}$is determined by gate $\Gamma_i$
-- $a = \Gamma_o * tanh(C^{t})$ to normalize its values to $[-1, 1]$
+- $$x^{(t)}, a^{(t-1)}$$ are stacked vertically
+- $$\Gamma_f * C^{(t-1)}$$ is like applying a mask.
+- All gates should be in the ranges of $$[0,1]$$. That is, if close to 0, values from the previous state, or calculated intermediate state won't be kept
+- So when a subject changes its state, like a singular noun changes to plural,  $$\Gamma_f$$'s certain values should change its value `0 -> 1`
+- $$\tilde{C}$$ uses `tanh` so its values are in $$[-1, 1]$$. Whether its values are passed onto the actual hidden state $$C^{(t-1)}$$is determined by gate $$\Gamma_i$$
+- $$a = \Gamma_o * tanh(C^{t})$$ to normalize its values to $$[-1, 1]$$
 
-**Why LSTM is useful:** LSTM is like GRU, but it also has a cell state $C$ (long term memory), $a$ (short term memory). Its gates control how much the current cell state gets into the overall cell state. Ideally, the model can learn to keep the hidden cell state for things like pluralism, and reject the cell state updates in between.
+**Why LSTM is useful:** LSTM is like GRU, but it also has a cell state $$C$$ (long term memory), $$a$$ (short term memory). Its gates control how much the current cell state gets into the overall cell state. Ideally, the model can learn to keep the hidden cell state for things like pluralism, and reject the cell state updates in between.
 
 - A forget gate is added, so long term memory could be abandonded.
   - So the long term memory is the direct contribution of LSTM to address RNNs' vanishing gradient problem
@@ -105,7 +105,7 @@ dW_c = dp\widetilde c^{\langle t \rangle} \begin{bmatrix} a_{prev} \\ x_t\end{bm
 dW_o = d\gamma_o^{\langle t \rangle} \begin{bmatrix} a_{prev} \\ x_t\end{bmatrix}^T \tag{14}
 $$
 
-To calculate $db_f, db_u, db_c, db_o$ you just need to sum across all 'm' examples (axis= 1) on $d\gamma_f^{\langle t \rangle}, d\gamma_u^{\langle t \rangle}, dp\widetilde c^{\langle t \rangle}, d\gamma_o^{\langle t \rangle}$ respectively. Note that you should have the `keepdims = True` option.
+To calculate $$db_f, db_u, db_c, db_o$$ you just need to sum across all 'm' examples (axis= 1) on $$d\gamma_f^{\langle t \rangle}, d\gamma_u^{\langle t \rangle}, dp\widetilde c^{\langle t \rangle}, d\gamma_o^{\langle t \rangle}$$ respectively. Note that you should have the `keepdims = True` option.
 
 $$
 \begin{gather*}
@@ -127,7 +127,7 @@ $$
 \end{gather*}
 $$
 
-Here, to account for concatenation, the weights for equations 19 are the first n_a, (i.e. $W_f = W_f[:,:n_a]$ etc...)
+Here, to account for concatenation, the weights for equations 19 are the first n_a, (i.e. $$W_f = W_f[:,:n_a]$$ etc...)
 
 $$
 \begin{gather*}
@@ -137,7 +137,7 @@ dx^{\langle t \rangle} = W_f^T d\gamma_f^{\langle t \rangle} + W_u^T  d\gamma_u^
 \end{gather*}
 $$
 
-where the weights for equation 21 are from n_a to the end, (i.e. $W_f = W_f[:,n_a:]$ etc...)
+where the weights for equation 21 are from n_a to the end, (i.e. $$W_f = W_f[:,n_a:]$$ etc...)
 
 ## Bi-Directional RNN
 
@@ -151,7 +151,7 @@ Bi-Directional RNN can learn not only the correspondence from the past, but also
 </p>
 </div>
 
-The RNN cell now has one set of weights $W_h^{forward}$, $W_x^{forward}$, $b^{forward}$ and backwards $W_h^{backward}$, $W_x^{backward}$, $b^{backward}$
+The RNN cell now has one set of weights $$W_h^{forward}$$, $$W_x^{forward}$$, $$b^{forward}$$ and backwards $$W_h^{backward}$$, $$W_x^{backward}$$, $$b^{backward}$$
 
 E.g., "She saw a dog". Let's denote:
 
@@ -162,7 +162,7 @@ E.g., "She saw a dog". Let's denote:
 
 Then,
 
-1. Initialize forward and backward hidden states $h_t^{forward}$ and $h_t^{backward}$ to zeros
+1. Initialize forward and backward hidden states $$h_t^{forward}$$ and $$h_t^{backward}$$ to zeros
 
 2. Forward pass: from `t=1` through `t=4`,
 

@@ -11,7 +11,7 @@ tags:
 
 ## Pre-integration Model
 
-In Graph Optimization using IMU pre-integration, $b_g$ and $b_a$ are factors under optimization. We have derived the Jacobians of pre-integrated intermediate values w.r.t these factors, but we still need an information matrix. The noise characteristics can serve that role.
+In Graph Optimization using IMU pre-integration, $$b_g$$ and $$b_a$$ are factors under optimization. We have derived the Jacobians of pre-integrated intermediate values w.r.t these factors, but we still need an information matrix. The noise characteristics can serve that role.
 
 ### Rotation Model
 
@@ -37,7 +37,7 @@ $$
 \end{gather*}
 $$
 
-- Measured rotation part is: $\Delta  \tilde{R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)$.
+- Measured rotation part is: $$\Delta  \tilde{R_{ij}} = \prod_{k=i}^{j-1} Exp((\tilde{w_k} - b_{g,k}) \Delta t)$$.
 
 - Using:
 
@@ -80,7 +80,7 @@ Exp \left( -\Delta \tilde{R}_{k,k+1}^\top J_{r,i} \eta_{gd,i} \Delta t \right) \
 \end{gather*}
 $$
 
-Where the accumulated observed rotation part is $\Delta \tilde{R}_{i,j}$
+Where the accumulated observed rotation part is $$\Delta \tilde{R}_{i,j}$$
 
 #### The above is to use [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) to move rotation matrices to the right
 
@@ -94,7 +94,7 @@ $$
 
 ### Velocity Model
 
-For velocity, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $Exp(-\delta \phi) \approx (I - \delta \phi)$, and drop second order small terms:
+For velocity, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $$Exp(-\delta \phi) \approx (I - \delta \phi)$$, and drop second order small terms:
 
 $$
 \begin{gather*}
@@ -122,7 +122,7 @@ $$
 
 ### Position Model
 
-For position, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $Exp(-\delta \phi) \approx (I - \delta \phi)$, and drop second order small terms:
+For position, we plug the above into the formula. Similarly, we apply the first order taylor approximation of $$Exp(-\delta \phi) \approx (I - \delta \phi)$$, and drop second order small terms:
 
 $$
 \begin{gather*}
@@ -208,7 +208,7 @@ $$
 \end{gather*}
 $$
 
-The mean is only a linear combination of with zero-mean gaussian noise $\eta_{gd,i}$, so the mean is zero. Now let's get covariance. We can show that the covariance is a recursive form, too.
+The mean is only a linear combination of with zero-mean gaussian noise $$\eta_{gd,i}$$, so the mean is zero. Now let's get covariance. We can show that the covariance is a recursive form, too.
 
 $$
 \begin{gather*}
@@ -228,7 +228,7 @@ $$
 \end{gather*}
 $$
 
-This is a linear system. Using the covariance of mulplied matrix: $cov(AX) = A cov(X) A^T$, we can see that **the covariance keeps growing** if we accumulate:
+This is a linear system. Using the covariance of mulplied matrix: $$cov(AX) = A cov(X) A^T$$, we can see that **the covariance keeps growing** if we accumulate:
 
 $$
 \begin{gather*}
@@ -278,7 +278,7 @@ $$
 
 ### Accumulated Noise Model All Together
 
-If we put the accumulated noises into a vector $\eta_{ik}$
+If we put the accumulated noises into a vector $$\eta_{ik}$$
 
 $$
 \begin{gather*}
@@ -348,4 +348,4 @@ $$
 \end{gather*}
 $$
 
-Note that $A_{k+1}$ is close to identity, rotational noises are solely added up by incremental rotational noises. Noises of the velocity and positional parts primarily come from themselves.
+Note that $$A_{k+1}$$ is close to identity, rotational noises are solely added up by incremental rotational noises. Noises of the velocity and positional parts primarily come from themselves.

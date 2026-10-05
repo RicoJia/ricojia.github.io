@@ -88,9 +88,9 @@ $$
 
 #### Is Non-Admissible Heuristics Useless?
 
-Not at all. If we have a weighted $f= g+ \epsilon h$, where a is larger towards the goal, we could have a smaller search space (hence faster), and find a suboptimal route. `Weighted A*-> Anytime A*-> ARA*->D*`
+Not at all. If we have a weighted $$f= g+ \epsilon h$$, where a is larger towards the goal, we could have a smaller search space (hence faster), and find a suboptimal route. `Weighted A*-> Anytime A*-> ARA*->D*`
 
-This is called "$\epsilon$-suboptimality". **It can be orders of magnitude faster than A star**
+This is called "$$\epsilon$$-suboptimality". **It can be orders of magnitude faster than A star**
 
 #### What are the Cons of A Star?
 
@@ -163,7 +163,7 @@ $$
 \end{gather*}
 $$
 
-If A is "nilpotent", that is $A^n = 0$, $e^{At}$ has a closed form expression.
+If A is "nilpotent", that is $$A^n = 0$$, $$e^{At}$$ has a closed form expression.
 
 <div style="text-align: center;">
 <p align="center">
@@ -214,7 +214,7 @@ y' = v sin \theta
 \end{gather*}
 $$
 
-With constraints `-1<=v<=1`, `|k| <= 1/R_min`, $R_{min}$ is the minimum arc. So the path is ultimately straight lines and arcs. Reed-Shepp Model allows bi-direction motion (backing up, and forward), and they are non-holonomic feasibility.
+With constraints `-1<=v<=1`, `|k| <= 1/R_min`, $$R_{min}$$ is the minimum arc. So the path is ultimately straight lines and arcs. Reed-Shepp Model allows bi-direction motion (backing up, and forward), and they are non-holonomic feasibility.
 
 <div style="text-align: center;">
 <p align="center">

@@ -20,7 +20,7 @@ Kurtosis is a statistic that tells us how strongly a distribution is influenced 
 </p>
 </div>
 
-For a zero-mean variable $x$, kurtosis is
+For a zero-mean variable $$x$$, kurtosis is
 
 $$
 \frac{E[x^4]}{E[x^2]^2}.
@@ -28,7 +28,7 @@ $$
 
 So kurtosis is not mainly asking: "How large is the noise"? It is asking: "How heavy are the tails relative to the normal noise scale?"
 
-A Gaussian distribution has kurtosis $3$.
+A Gaussian distribution has kurtosis $$3$$.
 
 ## Small numerical example
 
@@ -159,4 +159,4 @@ $$
 \frac{E|x|^4}{E|x|^2}.
 $$
 
-For a zero-mean residual, this is essentially the kurtosis. So $L_4/L_2$ can be interpreted as a smooth, normalized measure of tail heaviness, closely connected to kurtosis.
+For a zero-mean residual, this is essentially the kurtosis. So $$L_4/L_2$$ can be interpreted as a smooth, normalized measure of tail heaviness, closely connected to kurtosis.

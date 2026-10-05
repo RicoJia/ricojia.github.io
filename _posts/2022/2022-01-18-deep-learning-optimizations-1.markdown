@@ -15,7 +15,7 @@ Deep learning is still highly empirical, it works well in big data where there's
 
 ## Exponentially Weighted Averages
 
-Exponentially weighted averages is $v_{t} = b v_{t-1} + (1-b)\theta_t$. As $b$ becomes lower, this average will become more noisy. E.g., when $b=0.9$
+Exponentially weighted averages is $$v_{t} = b v_{t-1} + (1-b)\theta_t$$. As $$b$$ becomes lower, this average will become more noisy. E.g., when $$b=0.9$$
 
 $$
 \begin{gather*}
@@ -23,7 +23,7 @@ v_{100} = 0.1 * 0.9^{99} \theta_1 + 0.1 * 0.9^{98} \theta_2 ...
 \end{gather*}
 $$
 
-In exponentially weighted averages, the initial phase could be much lower than the "real average" values. This is called a bias. And this is because initially, $(1-b) \theta_t$ is the main component, while $(1-b)$ could be small Usually, people won't care much. But if you are concerned, you can then apply bias correction:
+In exponentially weighted averages, the initial phase could be much lower than the "real average" values. This is called a bias. And this is because initially, $$(1-b) \theta_t$$ is the main component, while $$(1-b)$$ could be small Usually, people won't care much. But if you are concerned, you can then apply bias correction:
 
 <div style="text-align: center;">
 <p align="center">
@@ -37,7 +37,7 @@ $$
 v_t = \frac{v_t}{1-b^t}
 $$
 
-As $t \rightarrow \inf$, $v_t$ will go to 1, so the exponentially weighted average will grow closer and closer to the uncorrected one.
+As $$t \rightarrow \inf$$, $$v_t$$ will go to 1, so the exponentially weighted average will grow closer and closer to the uncorrected one.
 
 ## Technique 2 - Gradient Descent With Momentum
 
@@ -54,7 +54,7 @@ b = b - \lambda V_{db}
 \end{gather*}
 $$
 
-- $\beta$ is commonly 0.9
+- $$\beta$$ is commonly 0.9
 - No bias correction in momentum implementation
 
 <div style="text-align: center;">
@@ -95,16 +95,16 @@ b = b - \lambda \frac{db}{\sqrt{S_b^{corrected}} + \epsilon}
 \end{gather*}
 $$
 
-- $dW^2$ are element wise squares. So we have root, and squares. (but no "mean"??)
-- In real life, to avoid numerical issues when $dW^2$ is small, we want to add a small number $\epsilon$ (typically $10^{-8}$).
+- $$dW^2$$ are element wise squares. So we have root, and squares. (but no "mean"??)
+- In real life, to avoid numerical issues when $$dW^2$$ is small, we want to add a small number $$\epsilon$$ (typically $$10^{-8}$$).
 - "RMSProp" is used when Adam is not used.
 - Typical values:
-  - Learning rate: $[10^(-3), 10^{-2}]$
-  - Weight decay: $[10^{-5}, 10^{-4}]$
+  - Learning rate: $$[10^(-3), 10^{-2}]$$
+  - Weight decay: $$[10^{-5}, 10^{-4}]$$
 
 ### PyTorch Implementation
 
-[In PyTorch](https://pytorch.org/docs/stable/generated/torch.optim.RMSprop.html), momentum $\mu B$ and weight decay on the gradients $\lambda_w \cdot W$ are also incorporated. For the sake of conciseness, I'm omitting calculation for bias.
+[In PyTorch](https://pytorch.org/docs/stable/generated/torch.optim.RMSprop.html), momentum $$\mu B$$ and weight decay on the gradients $$\lambda_w \cdot W$$ are also incorporated. For the sake of conciseness, I'm omitting calculation for bias.
 
 $$
 \begin{gather*}
@@ -120,7 +120,7 @@ $$
 
 Note that
 
-- Weight decay $dW = dW + \lambda_w \cdot W$ is finally applied on parameters. This is equivalent to **L2 regularization** which eventually adds an $-\lambda_w W$ term in weight update
+- Weight decay $$dW = dW + \lambda_w \cdot W$$ is finally applied on parameters. This is equivalent to **L2 regularization** which eventually adds an $$-\lambda_w W$$ term in weight update
 
 $$
 \begin{gather*}
@@ -153,13 +153,13 @@ b = b - \lambda \frac{V_{dw}}{\sqrt{S_b + \epsilon}}  \\
 \end{gather*}
 $$
 
-- Additionally, $V_{dw}$, $V_{db}$, $S_w$, $S_b$ can be in their "corrected" form.
+- Additionally, $$V_{dw}$$, $$V_{db}$$, $$S_w$$, $$S_b$$ can be in their "corrected" form.
 
 - **Hyperparameter Choices**:
-  - $\lambda$
-  - $\beta_1$ (~0.9)
-  - $\beta_2$ (~0.999)
-  - $\epsilon$ (~10^{-8})
+  - $$\lambda$$
+  - $$\beta_1$$ (~0.9)
+  - $$\beta_2$$ (~0.999)
+  - $$\epsilon$$ (~10^{-8})
 
 Usually we don't need to change them. Momentum variable is more probably valuable than the rest.
 

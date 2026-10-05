@@ -34,13 +34,13 @@ $$
 x_i = [p_i, v_i, R_i, \ldots]  
 $$
 
-In a LIO system, we usually keep only a fixed time window so that online optimization remains bounded. Suppose the window is 3 seconds. When $x_4$ arrives, the active states become
+In a LIO system, we usually keep only a fixed time window so that online optimization remains bounded. Suppose the window is 3 seconds. When $$x_4$$ arrives, the active states become
 
 $$  
 x_2,\ x_3,\ x_4  
 $$
 
-so $x_1$ must be removed. However, we cannot simply delete $x_1$. The measurements involving $x_1$ contain useful information about both $x_2$ and $x_3$. If we delete $x_1$ and all of its edges directly, that information would be lost. Instead, we marginalize $x_1$:
+so $$x_1$$ must be removed. However, we cannot simply delete $$x_1$$. The measurements involving $$x_1$$ contain useful information about both $$x_2$$ and $$x_3$$. If we delete $$x_1$$ and all of its edges directly, that information would be lost. Instead, we marginalize $$x_1$$:
 
 $$  
 p(x_2,x_3,x_4) = 
@@ -49,7 +49,7 @@ p(x_1,x_2,x_3,x_4)
 ,dx_1  
 $$
 
-In the linearized optimization problem, this marginalization is performed using the **Schur complement**. The result is a new **marginalized prior** on the states that remain. Because $x_1$ was connected to both $x_2$ and $x_3$, this prior generally couples $x_2$ and $x_3$. So the graph
+In the linearized optimization problem, this marginalization is performed using the **Schur complement**. The result is a new **marginalized prior** on the states that remain. Because $$x_1$$ was connected to both $$x_2$$ and $$x_3$$, this prior generally couples $$x_2$$ and $$x_3$$. So the graph
 
 $$  
 x_1-x_2-x_3-x_4  
@@ -69,7 +69,7 @@ $$
 x_2-x_3-x_4  
 $$
 
-No new information is created. The information associated with the old state $x_1$ is compressed into a prior on the states that remain in the optimization window. **The Schur complement is the mathematical operation used to perform this compression.**
+No new information is created. The information associated with the old state $$x_1$$ is compressed into a prior on the states that remain in the optimization window. **The Schur complement is the mathematical operation used to perform this compression.**
 
 ---
 
@@ -141,7 +141,7 @@ $$
 x_2,\ x_3,\ x_4  
 $$
 
-and we want to eliminate $x_1$. Partition the information matrix as
+and we want to eliminate $$x_1$$. Partition the information matrix as
 
 $$  
 \Lambda = 
@@ -184,7 +184,7 @@ $$
 \end{bmatrix}  
 $$
 
-The Schur complement eliminates $x_1$:
+The Schur complement eliminates $$x_1$$:
 
 $$  
 \Lambda_{\text{new}} =
@@ -205,15 +205,15 @@ $$
 \end{bmatrix}  
 $$
 
-The important point is that marginalizing $x_1$ changes both the diagonal and off-diagonal terms associated with $x_2$ and $x_3$. This happens because $x_1$ was connected to both states. The information inherited from $x_1$ creates a marginalized prior on
+The important point is that marginalizing $$x_1$$ changes both the diagonal and off-diagonal terms associated with $$x_2$$ and $$x_3$$. This happens because $$x_1$$ was connected to both states. The information inherited from $$x_1$$ creates a marginalized prior on
 
 $$  
 x_2,\ x_3  
 $$
 
-rather than a prior on only $x_2$.
+rather than a prior on only $$x_2$$.
 
-Another way to see this is to separate the remaining measurements from the marginalized prior (using the term prior because we haven't done graph optimization yet). Without the information from $x_1$, the remaining chain
+Another way to see this is to separate the remaining measurements from the marginalized prior (using the term prior because we haven't done graph optimization yet). Without the information from $$x_1$$, the remaining chain
 
 $$  
 x_2-x_3-x_4  
@@ -230,7 +230,7 @@ $$
 \end{bmatrix}  
 $$
 
-After marginalizing $x_1$,
+After marginalizing $$x_1$$,
 
 $$  
 \Lambda_{\text{new}} = 
@@ -271,7 +271,7 @@ $$
 -\frac{1}{3}  
 $$
 
-means the marginalized prior also preserves a relationship between $x_2$ and $x_3$. If $x_1$ is connected only to $x_2$, marginalizing $x_1$ produces a prior mainly on $x_2$. If $x_1$ is connected to both $x_2$ and $x_3$, marginalizing $x_1$ produces a **joint prior coupling $x_2$ and $x_3$**.
+means the marginalized prior also preserves a relationship between $$x_2$$ and $$x_3$$. If $$x_1$$ is connected only to $$x_2$$, marginalizing $$x_1$$ produces a prior mainly on $$x_2$$. If $$x_1$$ is connected to both $$x_2$$ and $$x_3$$, marginalizing $$x_1$$ produces a **joint prior coupling $$x_2$$ and $$x_3$$**.
 
 In general:
 

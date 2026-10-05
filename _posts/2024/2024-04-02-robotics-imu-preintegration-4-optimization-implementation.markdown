@@ -40,7 +40,7 @@ $$
 
 One way is to use a single node to encompass all states. That however, would create a giant Jacobian & Hessian for the problem, but in the meantime there are a lot of zeros in them. So now we use separate nodes for each state.
 
-**The error, a.k.a residual**, can be defined flexibly as well. Here, we define it to be the `difference` between the integration terms calculated from our state estimates, and the ones come from our IMU (but with $b_g$ and $b_a$).
+**The error, a.k.a residual**, can be defined flexibly as well. Here, we define it to be the `difference` between the integration terms calculated from our state estimates, and the ones come from our IMU (but with $$b_g$$ and $$b_a$$).
 
 <div style="text-align: center;">
 <p align="center">
@@ -79,9 +79,9 @@ $$
 \end{gather*}
 $$
 
-Where $R(\phi)$ represents the perturbed rotation.
+Where $$R(\phi)$$ represents the perturbed rotation.
 
-By using [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) and the BCH formula, we can write out the right perturbation of $\phi_i$
+By using [this property](https://ricojia.github.io/2017/02/22/lie-group/#3-rt-textexpphi-r--textexprt-phi) and the BCH formula, we can write out the right perturbation of $$\phi_i$$
 
 $$
 \begin{gather*}
@@ -96,7 +96,7 @@ r_{\Delta R_{ij}}(R_i \operatorname{Exp}(\phi_i)) &= \log \left( \Delta \tilde{R
 \end{gather*}
 $$
 
-The perturbation of $\phi_j$:
+The perturbation of $$\phi_j$$:
 
 $$
 \begin{gather*}
@@ -119,7 +119,7 @@ $$
 \end{gather*}
 $$
 
-Meanwhile, the rotational error is a function of gyro bias $b_g$ as well. In an arbitrary iteration, we calculate a correction $\delta b_g$. When calculating the Jacobian (for the next iteration update), we need to take that into account as well:
+Meanwhile, the rotational error is a function of gyro bias $$b_g$$ as well. In an arbitrary iteration, we calculate a correction $$\delta b_g$$. When calculating the Jacobian (for the next iteration update), we need to take that into account as well:
 
 $$
 \begin{gather*}
@@ -133,7 +133,7 @@ r_{\Delta R_{ij}}(b_{g,i} + \delta b_{g,i} + \tilde{\delta} b_{g,i}) &= \log \le
 \end{gather*}
 $$
 
-So the partial derivative of the rotational part w.r.t gyro bias $b_g$ is:
+So the partial derivative of the rotational part w.r.t gyro bias $$b_g$$ is:
 
 $$
 \begin{gather*}
@@ -189,7 +189,7 @@ $$
 \end{gather*}
 $$
 
-The Jacobians w.r.t to $v_i$, $v_j$ are very intuitive,
+The Jacobians w.r.t to $$v_i$$, $$v_j$$ are very intuitive,
 
 $$
 \begin{gather*}
@@ -224,7 +224,7 @@ $$
 \end{gather*}
 $$
 
-Since in $r_{\Delta v_{ij}}$, only the $-\Delta \tilde{v}_{ij}$ is a function of the biases,
+Since in $$r_{\Delta v_{ij}}$$, only the $$-\Delta \tilde{v}_{ij}$$ is a function of the biases,
 
 $$
 \begin{gather*}
@@ -280,7 +280,7 @@ In a graph optimization systems, we have keyframes.
 
 When a new IMU data comes in:
 
-1. Calculate $\Delta R_{ij}, \Delta v_{ij}, \Delta p_{ij}$
+1. Calculate $$\Delta R_{ij}, \Delta v_{ij}, \Delta p_{ij}$$
 1. Calculate noise covariances as the information matrices for the graph optimization
 1. Jacobians of Pre-integration w.r.t biases (so we can update them in a linear manner):
 
@@ -326,8 +326,8 @@ When Frame A is first created, it gets an estimate from the GNSS. During Optimiz
 
 - IMU Pre-integration Edge (EdgeInertial):
     1. Given the current gyro estimate, get the pre-integration rotation part: `const SO3 dR = preint_->GetDeltaRotation(bg);`
-    2. Calculate the residual as error: $eR = dR^{-1} * R_i^T * R_j$
-    3. For Update, the Jacobian of the residual w.r.t orientation update is: $J_r^{-1} (R_j^{-1} R_i)$
+    2. Calculate the residual as error: $$eR = dR^{-1} * R_i^T * R_j$$
+    3. For Update, the Jacobian of the residual w.r.t orientation update is: $$J_r^{-1} (R_j^{-1} R_i)$$
 - Note that we do update R in a pose estimate in Update_Constraint Edge (EdgePriorPoseNavState, based on the prior)
     1. `const Vec3d er = SO3(state_.R_.matrix().transpose() * vp->estimate().so3().matrix()).log();` for the orientation update. Its Jacobian is:
 
@@ -344,8 +344,8 @@ Each frame has a velocity estimate that starts at 0. When frame A is the most up
   - The residual (a.k.a error) is simply `(velocity_estimate - v_linear_odom)`. `velocity_estimate` is the only vertex
   - For Update, the Jacobian of the residual w.r.t velocity_estimate is Identity.
 - IMU Pre-integration Edge
-  - The residual is $r_{\Delta v_{i,j}} = R_i^T (v_j - v_i - g \Delta t_{i,j}) - \Delta \tilde{v}_{ij}$. So `velocity_estimate` of the current frame and the last frame are the vertices required
-  - For Update, the Jacobian of the residual w.r.t velocity_estimate is $-R_i^T$ and $R_i^T$ for Frame A and Frame B respectively
+  - The residual is $$r_{\Delta v_{i,j}} = R_i^T (v_j - v_i - g \Delta t_{i,j}) - \Delta \tilde{v}_{ij}$$. So `velocity_estimate` of the current frame and the last frame are the vertices required
+  - For Update, the Jacobian of the residual w.r.t velocity_estimate is $$-R_i^T$$ and $$R_i^T$$ for Frame A and Frame B respectively
 
 At the next time, a new frame B is created. Frame A does not get updated during observation stage, but get updated udring the optimization stage:
 
@@ -368,7 +368,7 @@ At time step B, only frame A is used for these constraints:
 
 - Update_Constraint Edge (EdgePriorPoseNavState, based on the prior).  Position is used in :
     1. `const Vec3d ep = vp->estimate().translation() - state_.p_;`
-    2. Jacobian w.r.t $p_i$: `dp/dp1 = -R1T.matrix();`
+    2. Jacobian w.r.t $$p_i$$: `dp/dp1 = -R1T.matrix();`
 
 Frame B is used for:
 
@@ -386,7 +386,7 @@ At the first GNSS frame, the gyro bias is created with the bg IMU initialization
   - This edge is simply the difference between the gyro biases in two frames: `bg_j->estimate() - bg_i->estimate()`.
   - The Jacobian is very intutitve: `I` for `bg_j`, and `-I` for `bg_i`
 - Update_Constraint Edge (EdgePriorPoseNavState, based on the prior)
-  - There are multiple Jacobian of sub-residuals w.r.t `bg`. The sub-residuals include $dR$, $dP$, and $dV$
+  - There are multiple Jacobian of sub-residuals w.r.t `bg`. The sub-residuals include $$dR$$, $$dP$$, and $$dV$$
   - `dR/dbg1 = -invJr * eR.inverse().matrix() * SO3::jr((dR_dbg * dbg).eval()) * dR_dbg;` Note that above rotation residual `eR`  and jacobian of the rotation part w.r.t `bg` have been calculated
   - `dV/dbg1 = -dv_dbg`. `dv_dbg` is updated in pre-integration: `dV_dbg_ - dR_.matrix() * dt * acc_hat * dR_dbg_;`
   - `dP/dbg1 = -dp_dbg` is also updated in pre-integration: `dp_dbg = dP_dbg_ + dV_dbg_ * dt - 0.5f * dR_.matrix() * dt2 * acc_hat * dR_dbg_;`
@@ -396,7 +396,7 @@ At the first GNSS frame, the gyro bias is created with the bg IMU initialization
 Upon receiving a new GNSS or odom update:
 
 1. Create a new frame object.
-2. Get an estimate of the current frame by $lastframe \oplus imupreintegration$
+2. Get an estimate of the current frame by $$lastframe \oplus imupreintegration$$
 3. Optimize
     - Add regular edges, like Prior edges, and pre-integration edges. Some examples include:
         - V: IMU Pre-integration Edge, between 2 GNSS frames

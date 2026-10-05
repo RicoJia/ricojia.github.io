@@ -47,7 +47,7 @@ Concepts:
 
 ## Scan Matching
 
-The goal of scan matching is: given the observation model $z = h(x, u) + w$, find the most likely estimate 
+The goal of scan matching is: given the observation model $$z = h(x, u) + w$$, find the most likely estimate 
 
 $$
 \begin{gather*}
@@ -74,7 +74,7 @@ The main problems in scan matching are:
 
 ### Point-Point 2D Iterative Closest Point (ICP)
 
-In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $T_{WB}$, and Later, sub map frame. A typical ICP-like algorithm iterative conducts 2 steps:
+In 2D, robot pose is `[x, y, theta]`. The coordinate system we use are $$T_{WB}$$, and Later, sub map frame. A typical ICP-like algorithm iterative conducts 2 steps:
 
 1. Data association
 2. Pose estimation
@@ -85,7 +85,7 @@ In this step, we use the KD-Tree to find the nearest neighbor of each point. Dat
 
 #### [Step 2] Pose Estimation
 
-A single 2D LiDAR Point comes in as $[\phi, r]$:
+A single 2D LiDAR Point comes in as $$[\phi, r]$$:
 
 $$
 \begin{gather*}
@@ -135,7 +135,7 @@ $$
 \end{gather*}
 $$
 
-Then, we can calculate $H$, $b$, and finally $x$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
+Then, we can calculate $$H$$, $$b$$, and finally $$x$$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
 
 $$
 \begin{gather*}
@@ -186,7 +186,7 @@ $$
 
 - If you are curious how to get the distance, hint: use the distance from the point to point (0, -c/b) and the Pythogorean Theorem. 
 
-2. Because $\sqrt{a^2 + b^2 + c^2}$ is a constant, we use distance as error: `e = a p_x + b p_y + c`. The Jacobian is:
+2. Because $$\sqrt{a^2 + b^2 + c^2}$$ is a constant, we use distance as error: `e = a p_x + b p_y + c`. The Jacobian is:
 
 $$
 \begin{gather*}
@@ -217,7 +217,7 @@ J_i = e^\top e
 \end{gather*}
 $$
 
-Then, we can calculate $H$, $b$, and finally $x$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
+Then, we can calculate $$H$$, $$b$$, and finally $$x$$ just like we do [for bundle adjustment](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/)
 
 $$
 \begin{gather*}
@@ -245,7 +245,7 @@ ICP methods can be thought of as minimizing the "total potential energy" of the 
 
 This likelihood field is also called "distance map". Around each point, the field will become weaker as distance goes up. 
 
-For a given point $P^W$ in the world frame, we denote its field strength as $\pi (P^W)$. So the goal is to find the relative pose $x$ between point cloud 1 and 2 such that 
+For a given point $$P^W$$ in the world frame, we denote its field strength as $$\pi (P^W)$$. So the goal is to find the relative pose $$x$$ between point cloud 1 and 2 such that 
 
 $$
 \begin{gather*}
@@ -255,7 +255,7 @@ $$
 \end{gather*}
 $$
 
-To iteratively find that, we need the Jacobian of $\Pi$ w.r.t pose $x$:
+To iteratively find that, we need the Jacobian of $$\Pi$$ w.r.t pose $$x$$:
 
 $$
 \begin{gather*}
@@ -275,7 +275,7 @@ $$
 \end{gather*}
 $$
 
-- $\alpha$ is the resolution, `c` is image center
+- $$\alpha$$ is the resolution, `c` is image center
 
 So the Jacobian is finally:
 
@@ -294,7 +294,7 @@ $$
 \end{gather*}
 $$
 
-Where $[\Delta \pi_x \Delta \pi_y]$ is the image gradient
+Where $$[\Delta \pi_x \Delta \pi_y]$$ is the image gradient
 
 ## Summary
 
@@ -303,7 +303,7 @@ Comparisons:
 - Accuracies: NDT >= Likelihood field > PL-ICP > Point-Point ICP 
 - Speed: Point-Point ICP ~= likelihood field > point to line
 
-A skewed submap can lead to subsequent scans matching to incorrect features. Therefore, we introduce an "inlier" ratio of the $\Chi^2$ error that helps us identify not-so-good scans. However, if one uses multi-level scan matching, make sure there is a floor value for the threshold, because lower resolution maps may round down the threshold.
+A skewed submap can lead to subsequent scans matching to incorrect features. Therefore, we introduce an "inlier" ratio of the $$\Chi^2$$ error that helps us identify not-so-good scans. However, if one uses multi-level scan matching, make sure there is a floor value for the threshold, because lower resolution maps may round down the threshold.
 
 - This requires us to create debugging tools every step of the way. We need to make sure you can see numeric result and visualization at the same iteration (score, scan match)
 

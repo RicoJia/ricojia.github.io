@@ -10,13 +10,13 @@ tags:
 
 ## Introduction
 
-For a square full-rank matrix $G$, the usual SVD is
+For a square full-rank matrix $$G$$, the usual SVD is
 
 $$
 G = U\Sigma V^\top
 $$
 
-and the closest orthogonal matrix to $G$ in Frobenius norm is the **polar factor**
+and the closest orthogonal matrix to $$G$$ in Frobenius norm is the **polar factor**
 
 $$
 Q = UV^\top.
@@ -34,13 +34,13 @@ $$
 Q^\top Q = I
 $$
 
-and $Q$ should be close to $G$. The orthogonalized matrix is
+and $$Q$$ should be close to $$G$$. The orthogonalized matrix is
 
 $$
 Q = G(G^\top G)^{-1/2}
 $$
 
-The hard part is computing $(G^\top G)^{-1/2}$. Newton-Schulz approximates this through matrix iterations.
+The hard part is computing $$(G^\top G)^{-1/2}$$. Newton-Schulz approximates this through matrix iterations.
 
 ---
 
@@ -52,7 +52,7 @@ $$
 X_{k+1} = \frac{1}{2}X_k(3I - X_k^\top X_k)
 $$
 
-Initialize with a scaled version of $G$:
+Initialize with a scaled version of $$G$$:
 
 $$
 X_0 = \frac{G}{\|G\|_F}
@@ -70,7 +70,7 @@ $$
 X_{k+1} = \frac{1}{2}X_k(3I - X_k^\top X_k).
 $$
 
-As $k$ increases, $X_k^\top X_k \to I$, so $X_k$ becomes approximately orthogonal.
+As $$k$$ increases, $$X_k^\top X_k \to I$$, so $$X_k$$ becomes approximately orthogonal.
 
 The final result is
 
@@ -253,4 +253,4 @@ $$
 X_{k+1} = \frac{1}{2}X_k(3I - X_k^\top X_k).
 $$
 
-Usually a small number of iterations, such as $5$ to $10$, is enough if $G$ is well-scaled.
+Usually a small number of iterations, such as $$5$$ to $$10$$, is enough if $$G$$ is well-scaled.

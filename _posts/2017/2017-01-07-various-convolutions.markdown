@@ -34,12 +34,12 @@ Below is an example of Transpose Convolution: `i=4, k=3, p=2, s=1`
 ### 1D Example
 
 Given:
-- Input: $[2,3]$
-- Kernel: $[1,2,3]$
+- Input: $$[2,3]$$
+- Kernel: $$[1,2,3]$$
 - Stride: 2
 
 Solution:
-Output Length is $(L_{input} - 1) \times stride + L_{kernel}$, which is $(2-1) \times 2 + 3 = 5$
+Output Length is $$(L_{input} - 1) \times stride + L_{kernel}$$, which is $$(2-1) \times 2 + 3 = 5$$
 
 so we can create an output matrix:
 
@@ -49,7 +49,7 @@ $$
 \end{bmatrix}
 $$
 
-So the first 3 items are: $2 \times [1,2,3] = [2,4,6]$ So the output matrix becomes:
+So the first 3 items are: $$2 \times [1,2,3] = [2,4,6]$$ So the output matrix becomes:
 
 $$
 \begin{gather*}
@@ -59,7 +59,7 @@ $$
 \end{gather*}
 $$
 
-In the output matrix, moving to the right by `stride=2`, the next 3 items are: $3 \times [1,2,3] = [3,6,9]$. Adding to the output, the output becomes:
+In the output matrix, moving to the right by `stride=2`, the next 3 items are: $$3 \times [1,2,3] = [3,6,9]$$. Adding to the output, the output becomes:
 
 $$
 \begin{gather*}
@@ -99,11 +99,11 @@ Solution:
 
 **Padding controls how much space is added around the output.** It is the padded area around the intermediate output, so we just need to carve it out and get the output
 
-Intermediate output Height: $H = Stride \times (H_{input}-1) + H_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$
-Intermediate output Width: $W = Stride \times (W_{input}-1) + W_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$
+Intermediate output Height: $$H = Stride \times (H_{input}-1) + H_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$$
+Intermediate output Width: $$W = Stride \times (W_{input}-1) + W_{kernel} - 2 \times padding = 2 \times (2-1) + 3 = 5$$
 
-Output Height: $H = Stride \times (H_{input}-1) + H_{kernel} - 2 \times padding = 2 \times (2-1) + 3 - 2 = 3$
-Output Width: $W = Stride \times (W_{input}-1) + W_{kernel} - 2 \times padding = 2 \times (2-1) + 3 - 2 = 3$
+Output Height: $$H = Stride \times (H_{input}-1) + H_{kernel} - 2 \times padding = 2 \times (2-1) + 3 - 2 = 3$$
+Output Width: $$W = Stride \times (W_{input}-1) + W_{kernel} - 2 \times padding = 2 \times (2-1) + 3 - 2 = 3$$
 
 So let's create an intermediate matrix:
 
@@ -117,7 +117,7 @@ $$
 \end{bmatrix}
 $$
 
-So starting in $output[0][0]$, we add $Input[0][0] \times kernel$:
+So starting in $$output[0][0]$$, we add $$Input[0][0] \times kernel$$:
 
 $$
 \begin{bmatrix}
@@ -127,7 +127,7 @@ $$
 \end{bmatrix}
 $$
 
-In the intermediate output, moving to the right by $stride=2$, we **add** $Input[0][1] \times kernel$:
+In the intermediate output, moving to the right by $$stride=2$$, we **add** $$Input[0][1] \times kernel$$:
 
 $$
 \begin{bmatrix}
@@ -226,9 +226,9 @@ Intro TODO
 
 Effectively, we have a larger kernel and a larger stride. With input image size `n`, kernel size `k`, stride `s`, padding (conventionally one side only)`p`, dilated rate `r`, **output size o** is:
 
-- The effective kernel size `g` is: $g = r x (k - 1) + 1$,
+- The effective kernel size `g` is: $$g = r x (k - 1) + 1$$,
 - The effective stride is still `s`
-- So $o = \frac{n + 2*p - g}{s} + 1$. To keep `input_dim = output_dim`, i.e., `n=o` (same padding):
+- So $$o = \frac{n + 2*p - g}{s} + 1$$. To keep `input_dim = output_dim`, i.e., `n=o` (same padding):
 
 $$
 \begin{gather*}

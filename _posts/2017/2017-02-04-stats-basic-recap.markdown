@@ -48,7 +48,7 @@ $$
 \end{gather*}
 $$
 
-    - Where `N` is the whole popilation's size, $\mu$ is the population mean
+    - Where `N` is the whole popilation's size, $$\mu$$ is the population mean
 
 - Sample variance:
 
@@ -58,9 +58,9 @@ s^2 = \frac{1}{n} \sum_n (x - \bar{x})^2
 \end{gather*}
 $$
 
-    - Where `n` is the batch size, $\bar{x}$ is the batch mean
+    - Where `n` is the batch size, $$\bar{x}$$ is the batch mean
 
-The sample variance has a slight bias because $\bar{x}$ is a random variable dependent on the sample. The population mean is slightly larger, so we divide by $N-1$ instead of $N$.
+The sample variance has a slight bias because $$\bar{x}$$ is a random variable dependent on the sample. The population mean is slightly larger, so we divide by $$N-1$$ instead of $$N$$.
 
 ## Distributions
 
@@ -80,7 +80,7 @@ TODO
 
 ## Covariance And Correlation
 
-Given two random variables $A$, $B$
+Given two random variables $$A$$, $$B$$
 
 - Mean
 
@@ -109,7 +109,7 @@ cov(AB) = \frac{1}{N} \sum_i (A_i - \mu_A)(B_i - \mu_B)
 \end{gather*}
 $$
 
-    - Covariance indicates **the Joint variability of $(A_i, B_i)$ pairs together.** If a single pair of $A_i$, $B_i$ are both positive, you will get a positive value. If one of them is positive, one of them is negative, you will get a negative value. Altogether, they could indicate how related $A$ and $B$ are. 
+    - Covariance indicates **the Joint variability of $$(A_i, B_i)$$ pairs together.** If a single pair of $$A_i$$, $$B_i$$ are both positive, you will get a positive value. If one of them is positive, one of them is negative, you will get a negative value. Altogether, they could indicate how related $$A$$ and $$B$$ are. 
 
 - Correlation
 
@@ -119,7 +119,7 @@ corr(AB) = \frac{cov(AB)}{\sigma_A \sigma_B}
 \end{gather*}
 $$
 
-    - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $[-1, 1]$. If $A=kB$ after mean normalization, then correlation will be a perfect 1
+    - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $$[-1, 1]$$. If $$A=kB$$ after mean normalization, then correlation will be a perfect 1
 
 ### Covariance of Function
 
@@ -155,7 +155,7 @@ Transformer is "autoregressive". It's regressive because it tries to model the r
 
 ## Random Process
 
-A random process $R(t)$ is basically a collection of random variables that vary along time. The random variables' mean and standard deviations may or may not change. If they don't change, we call the random process **stationary**
+A random process $$R(t)$$ is basically a collection of random variables that vary along time. The random variables' mean and standard deviations may or may not change. If they don't change, we call the random process **stationary**
 
 ### Gaussian Random Process
 
@@ -169,7 +169,7 @@ $$
 \end{gather*}
 $$
 
-Where the mean function of the Random Process is $m(t)$, and the **covariance function** $k(t, t')$ could change over time, too.
+Where the mean function of the Random Process is $$m(t)$$, and the **covariance function** $$k(t, t')$$ could change over time, too.
 
 $$
 \begin{gather*}
@@ -191,8 +191,8 @@ $$
 \end{gather*}
 $$
 
-the covariance $\sigma$ does not change across time. Between different times, `t, t'`, there's no correlation between them, and they are independent.
-$\delta(t - t')$ is "Dirac Delta Distribution."  It's a probability distribution, where everywhere is 0 except for at time `t'`. Also, $\int_{-\infty}^{\infty} \delta(t-t')f(t) = f(t')$
+the covariance $$\sigma$$ does not change across time. Between different times, `t, t'`, there's no correlation between them, and they are independent.
+$$\delta(t - t')$$ is "Dirac Delta Distribution."  It's a probability distribution, where everywhere is 0 except for at time `t'`. Also, $$\int_{-\infty}^{\infty} \delta(t-t')f(t) = f(t')$$
 
 <div style="text-align: center;">
 <p align="center">
@@ -215,7 +215,7 @@ In signal procesisng, if we view a signal `x(t)` as a random process, then we ca
 </p>
 </div>
 
-It's defined as the Fourier Transform of the auto-correlation of the signal function at time difference $\tau$. The autocorrelation is:
+It's defined as the Fourier Transform of the auto-correlation of the signal function at time difference $$\tau$$. The autocorrelation is:
 
 $$
 \begin{gather*}
@@ -225,7 +225,7 @@ $$
 \end{gather*}
 $$
 
-So if the signal is periodic with period of $\tau$, $R_{xx}(n\tau)$ would peak. The PSD $S_{xx}(f)$ is then the Fourier Transform of the autocorrelation across all time differences, $\tau$:
+So if the signal is periodic with period of $$\tau$$, $$R_{xx}(n\tau)$$ would peak. The PSD $$S_{xx}(f)$$ is then the Fourier Transform of the autocorrelation across all time differences, $$\tau$$:
 
 $$
 \begin{gather*}
@@ -235,7 +235,7 @@ $$
 \end{gather*}
 $$
 
-For white Gaussian noise, the PSD is a **constant** $\sigma^2$:
+For white Gaussian noise, the PSD is a **constant** $$\sigma^2$$:
 
 $$
 \begin{gather*}

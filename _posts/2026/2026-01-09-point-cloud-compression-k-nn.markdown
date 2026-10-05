@@ -28,7 +28,7 @@ We use a **max-heap of size k**. Why a max-heap?
 
 For each query point `p`:
 
-1. Initialize a max-heap of size k, filled with $\infty$
+1. Initialize a max-heap of size k, filled with $$\infty$$
 
 2. For each point p ​:
 
@@ -46,7 +46,7 @@ For each query point `p`:
 
         then:
 
-        - Replace the root with $d_i^2$​
+        - Replace the root with $$d_i^2$$​
 
         - Heapify-down to restore max-heap property
 

@@ -21,15 +21,15 @@ $$
 For an `nxn` real symmetric matrix. It's equivalent to say "it's positive definite" when:
 
 1. All eigen values are positive
-    - Imagine the case where one eigen value is $\leq 0$. Then, $v^T A v <=0$, which contradicts with the definition of positive definiteness.
-2. There exists a real invertible matrix C such that $A=C^{T}C$
-    - Using Eigen Value Decomposition: $A = V \Lambda V^{-1} = V \Lambda V^{T}$. Here, $V$ is an orthonormal matrix consists of A's eigen vectors, $V$ consists of its corresponding eigen values.
-    - Using 1, since all eigen values are positive, $\Lambda = \sqrt{\Lambda}\sqrt{\Lambda^T}$.
-    - So, $A = V \Lambda V^{T} = (\sqrt{\Lambda} V^T)^T (\sqrt{\Lambda} V^T)$
+    - Imagine the case where one eigen value is $$\leq 0$$. Then, $$v^T A v <=0$$, which contradicts with the definition of positive definiteness.
+2. There exists a real invertible matrix C such that $$A=C^{T}C$$
+    - Using Eigen Value Decomposition: $$A = V \Lambda V^{-1} = V \Lambda V^{T}$$. Here, $$V$$ is an orthonormal matrix consists of A's eigen vectors, $$V$$ consists of its corresponding eigen values.
+    - Using 1, since all eigen values are positive, $$\Lambda = \sqrt{\Lambda}\sqrt{\Lambda^T}$$.
+    - So, $$A = V \Lambda V^{T} = (\sqrt{\Lambda} V^T)^T (\sqrt{\Lambda} V^T)$$
 
 ## Cholesky Decomposition (LLT Decomp.)
 
-Definition: if $A$ is a **symmetric** positive definite matrix, there exists a unique lower triangular matrix L such that $A=LL^T$
+Definition: if $$A$$ is a **symmetric** positive definite matrix, there exists a unique lower triangular matrix L such that $$A=LL^T$$
 
 L looks like:
 
@@ -65,7 +65,7 @@ l_{11} & L_{21}^T \\
 \end{gather*}
 $$
 
-So $a_{11}$, $l_{11}$ are scalars. Then, we can solve for $l_11$, $l_21$ by:
+So $$a_{11}$$, $$l_{11}$$ are scalars. Then, we can solve for $$l_11$$, $$l_21$$ by:
 
 $$
 \begin{gather*}
@@ -75,7 +75,7 @@ A_{12}^T = l_{11}L_{21}^T
 \end{gather*}
 $$
 
-But we can't solve for $A_{22}$ directly yet:
+But we can't solve for $$A_{22}$$ directly yet:
 
 $$
 \begin{gather*}
@@ -91,11 +91,11 @@ A_{22} - L_{21}L_{21}^T
 \end{gather*}
 $$
 
-Voila, after solving for these iteratively, we get the LLT decomposition $A=LL^T$.
+Voila, after solving for these iteratively, we get the LLT decomposition $$A=LL^T$$.
 
 ### LLT Decomp. Variant - LDL Decomp.
 
-The vanilla method above suffers from numerical instability from the square root operations. For the same A, one can do $A=LDL^T$, where **L is a lower triangle matrix, D is a diagonal matrix with positive diagonal terms**.
+The vanilla method above suffers from numerical instability from the square root operations. For the same A, one can do $$A=LDL^T$$, where **L is a lower triangle matrix, D is a diagonal matrix with positive diagonal terms**.
 
 To give a feel:
 
@@ -132,13 +132,13 @@ L_{31} D_1 & L_{31} L_{21} D_1 + L_{32} D_2 & L_{31}^2 D_1 + L_{32}^2 D_2 + D_3
 \end{gather*}
 $$
 
-Based on $A$, unleashing the GPU power, we can solve:
+Based on $$A$$, unleashing the GPU power, we can solve:
 
-1. $D_1$
-2. $L_{21}$, $L_{31}$, ...
-3. $D_2$
-4. $L_{32}$ ...
-5. $D_3$...
+1. $$D_1$$
+2. $$L_{21}$$, $$L_{31}$$, ...
+3. $$D_2$$
+4. $$L_{32}$$ ...
+5. $$D_3$$...
 
 I hate how some websites throw the math right at us. But with the above example, hopefully it's a bit easier:
 
@@ -174,15 +174,15 @@ $$
 
 Where:
 
-- $\mathbf{L}$ is a lower-triangular matrix (often with ones on its diagonal),
-- $\mathbf{D}$ is a diagonal matrix,
-- $\mathbf{L}^\top$ is then upper-triangular.
+- $$\mathbf{L}$$ is a lower-triangular matrix (often with ones on its diagonal),
+- $$\mathbf{D}$$ is a diagonal matrix,
+- $$\mathbf{L}^\top$$ is then upper-triangular.
 
-To solve the above equation, To solve, define $L^\top x = y$, $Dy = z$.
+To solve the above equation, To solve, define $$L^\top x = y$$, $$Dy = z$$.
 
-1. $Lz = -b$. Since L is lower triangular, we can solve for `z` by going from first row to the last row
-2. $Dy = z$: the solution is `y_i = z_i/D_ii`.
-3. $L^Tx = y$: $L^T$ is upper triangular, we can solve for `z` from the bottom row to the top.
+1. $$Lz = -b$$. Since L is lower triangular, we can solve for `z` by going from first row to the last row
+2. $$Dy = z$$: the solution is `y_i = z_i/D_ii`.
+3. $$L^Tx = y$$: $$L^T$$ is upper triangular, we can solve for `z` from the bottom row to the top.
 
 
 ### LLT Decomp. Variant - Block Cholesky Decomp.
@@ -209,7 +209,7 @@ L_{41} & L_{42} & L_{43} & L_{44}
 \end{gather*}
 $$
 
-- Let's start $A_{11}$ in the $L$ matrix:
+- Let's start $$A_{11}$$ in the $$L$$ matrix:
 
 $$
 \begin{gather*}
@@ -226,7 +226,7 @@ S & \hat{L}
 \end{gather*}
 $$
 
-- From $A=LL^T$, we get:
+- From $$A=LL^T$$, we get:
 
 $$
 \begin{gather*}
@@ -238,7 +238,7 @@ S = BL_{11}^{-T} [2]
 \end{gather*}
 $$
 
-- For (1), We have chosen $r$ to be small enough, so $chol(A_{11})$ is relatively easy
+- For (1), We have chosen $$r$$ to be small enough, so $$chol(A_{11})$$ is relatively easy
 - Then we can witness the GPU power for (2): 
 
 $$
@@ -256,7 +256,7 @@ L_{41} = A_{41}L_{11}^{-T}
 \end{gather*}
 $$
 
-- For (3), once we get $S$, can go ahead and calculate $A'=\hat{A}-SS^T$. Again, this can be done by leveraging the almighty GPU power:
+- For (3), once we get $$S$$, can go ahead and calculate $$A'=\hat{A}-SS^T$$. Again, this can be done by leveraging the almighty GPU power:
 
 $$
 \begin{gather*}
@@ -270,7 +270,7 @@ A'_{44} = A_{44} - L_{41}L_{41}^T
 \end{gather*}
 $$
 
-4. Repeat the whole process again with $A'$
+4. Repeat the whole process again with $$A'$$
 
 ## Why Bother With Matrix Decomps?
 

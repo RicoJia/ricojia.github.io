@@ -14,7 +14,7 @@ tags:
 ## Terminology
 
 - **latent feature**: a compressed internal representation that contains essential information needed to reconstruct the original data.
-- **Cardinality**: the number of elements in a set. If a point cloud P is: `P = {p1, p2, ..., pN}` cardinality  $C(s) = N$
+- **Cardinality**: the number of elements in a set. If a point cloud P is: `P = {p1, p2, ..., pN}` cardinality  $$C(s) = N$$
 - Permutation: reordeirng points so they are easier to compress. Compression algorithms reorder points so that nearby points in space appear close together in memory. This makes prediction, delta encoding, or entropy coding work better.E.g., `P = [(0,0), (10,10), (1,1), (11,11), (2,2)]` is hard to encode because This order jumps back and forth across space., but `P' = [(0,0), (1,1), (2,2), (10,10), (11,11)]` is better.
 
 ---
@@ -128,7 +128,7 @@ For each query point the layer:
     attn = gamma(q.unsqueeze(-1) - k + pos)  # (B, H, M, K)
     ```
 
-4. **Masked softmax** — invalid neighbors are set to $-\infty$ before softmax so they contribute zero probability. `mask[:, None]` broadcasts to `(B, 1, M, K)` across the H head dimension:
+4. **Masked softmax** — invalid neighbors are set to $$-\infty$$ before softmax so they contribute zero probability. `mask[:, None]` broadcasts to `(B, 1, M, K)` across the H head dimension:
 
     ```python
     attn = attn.masked_fill(~mask[:, None], float('-inf'))
@@ -155,21 +155,21 @@ Each encoder stage collapses a set of input points into fewer representative poi
 
 **1. Density embedding**
 
-Encodes how many original points were collapsed into this representative. An MLP maps the count (or a soft density estimate) to a $d$-dimensional vector. This lets the decoder know how densely populated each region was so it can upsample by the right amount.
+Encodes how many original points were collapsed into this representative. An MLP maps the count (or a soft density estimate) to a $$d$$-dimensional vector. This lets the decoder know how densely populated each region was so it can upsample by the right amount.
 
 **2. Local position embedding**
 
-For each collapsed point $p_k$ in the neighbourhood of representative $p$, the relative offset is computed:
+For each collapsed point $$p_k$$ in the neighbourhood of representative $$p$$, the relative offset is computed:
 
 $$\delta_k = p_k - p$$
 
-Direction and distance are extracted from $\delta_k$ and passed through an MLP to produce a $d$-dimensional geometry descriptor. This captures the local surface shape around each representative.
+Direction and distance are extracted from $$\delta_k$$ and passed through an MLP to produce a $$d$$-dimensional geometry descriptor. This captures the local surface shape around each representative.
 
 **3. Ancestor embedding**
 
 The features from the **previous encoder stage** (carried on the collapsed points) are aggregated into the representative via a `MaskedPointTransformer`. This propagates multi-scale context — details learned at finer scales are preserved as the point cloud is progressively compressed.
 
-The three embeddings are concatenated and fused by another MLP to produce the final $d$-dimensional feature vector that travels to the next stage.
+The three embeddings are concatenated and fused by another MLP to produce the final $$d$$-dimensional feature vector that travels to the next stage.
 
 **Why separate coordinates and features?**
 
@@ -178,7 +178,7 @@ A point cloud is stored as two parallel tensors:
 - **Coordinates** `(B, 3, N)` — where each point is in 3D space.
 - **Features** `(B, C, N)` — what each point *means* in the context of compression.
 
-Raw $(x,y,z)$ alone says only *where* a point is. Compression additionally needs to record *how densely packed* the original cloud was around each anchor, *what the local surface shape looks like*, and *what was learned at earlier encoder stages*. Three numbers per point cannot carry all of that information, which is why a $C$-dimensional feature vector is maintained alongside every point.
+Raw $$(x,y,z)$$ alone says only *where* a point is. Compression additionally needs to record *how densely packed* the original cloud was around each anchor, *what the local surface shape looks like*, and *what was learned at earlier encoder stages*. Three numbers per point cannot carry all of that information, which is why a $$C$$-dimensional feature vector is maintained alongside every point.
 
 By the bottleneck those features encode:
 
@@ -198,10 +198,10 @@ The decoder then upsamples each anchor, using its feature vector to determine ho
 
 ### What is the bottleneck?
 
-The **entropy bottleneck** is a learned probability model $p(\hat{z})$ placed on the quantized latent features $\hat{z}$. It serves two purposes:
+The **entropy bottleneck** is a learned probability model $$p(\hat{z})$$ placed on the quantized latent features $$\hat{z}$$. It serves two purposes:
 
-- **Training**: adds a rate penalty $R = -\sum \log_2 p(\hat{z})$ to the loss, pushing the encoder to produce features that are cheap to code.
-- **Inference**: provides the CDF the range coder needs to compress $\hat{z}$ into a bitstream.
+- **Training**: adds a rate penalty $$R = -\sum \log_2 p(\hat{z})$$ to the loss, pushing the encoder to produce features that are cheap to code.
+- **Inference**: provides the CDF the range coder needs to compress $$\hat{z}$$ into a bitstream.
 
 ### How are the features quantized?
 
@@ -209,11 +209,11 @@ During training, hard rounding is replaced by additive uniform noise to keep gra
 
 $$\tilde{z} = z + u, \qquad u \sim \mathcal{U}(-0.5,\, 0.5)$$
 
-At inference the features are hard-rounded: $\hat{z} = \text{round}(z)$.
+At inference the features are hard-rounded: $$\hat{z} = \text{round}(z)$$.
 
 ### How does the range coder fit into training?
 
-It does **not** run during training. The expected bit cost is computed analytically from the learned CDF $F$:
+It does **not** run during training. The expected bit cost is computed analytically from the learned CDF $$F$$:
 
 $$R = -\sum_i \log_2 \bigl[F(\hat{z}_i + 0.5) - F(\hat{z}_i - 0.5)\bigr]$$
 
@@ -223,6 +223,6 @@ This is differentiable, so it can be backpropagated. The range coder is only cal
 
 $$\mathcal{L} = D + \lambda R$$
 
-- $D$ — reconstruction distortion (e.g. Chamfer distance).
-- $R$ — estimated bit-rate from the entropy bottleneck (bits per point).
-- $\lambda$ — trade-off weight: larger $\lambda$ → smaller bitstream at the cost of higher distortion.
+- $$D$$ — reconstruction distortion (e.g. Chamfer distance).
+- $$R$$ — estimated bit-rate from the entropy bottleneck (bits per point).
+- $$\lambda$$ — trade-off weight: larger $$\lambda$$ → smaller bitstream at the cost of higher distortion.

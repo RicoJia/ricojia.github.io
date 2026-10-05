@@ -14,9 +14,9 @@ tags:
 
 Unlike Digital Signal Processing, 1D convolution in deep learning does **not** flip the kernel — it is simply cross-correlation.
 
-Input $x = [1, 2, 3, 4]$ (length $N=4$), kernel $h = [1, 0, -1]$ (length $K=3$), stride $S=1$.
+Input $$x = [1, 2, 3, 4]$$ (length $$N=4$$), kernel $$h = [1, 0, -1]$$ (length $$K=3$$), stride $$S=1$$.
 
-**Output length:** $\lfloor (N - K) / S \rfloor + 1 = (4 - 3)/1 + 1 = 2$
+**Output length:** $$\lfloor (N - K) / S \rfloor + 1 = (4 - 3)/1 + 1 = 2$$
 
 **Output values:**
 
@@ -172,9 +172,9 @@ $$
 
 ### Final output
 
-Stacking $Y_1, Y_2, Y_3$ gives a tensor of shape **3×3×3** (height × width × out\_channels).
+Stacking $$Y_1, Y_2, Y_3$$ gives a tensor of shape **3×3×3** (height × width × out\_channels).
 
-> **Shape formula:** spatial output = $\lfloor (N - K) / S \rfloor + 1 = (4 - 2)/1 + 1 = 3$, so output is $3 \times 3 \times 3$.
+> **Shape formula:** spatial output = $$\lfloor (N - K) / S \rfloor + 1 = (4 - 2)/1 + 1 = 3$$, so output is $$3 \times 3 \times 3$$.
 
 ---
 
@@ -191,15 +191,15 @@ $$
 
 Use a 1×1 convolution with `C_out=3`. Weight tensor shape: `(3, 2, 1, 1)`.
 
-Now we define the kernel, where each per-output-channel weight vector $[w_1,\, w_2]$ is:
+Now we define the kernel, where each per-output-channel weight vector $$[w_1,\, w_2]$$ is:
 
-| Output channel | $w_1$ (ch 1) | $w_2$ (ch 2) |
+| Output channel | $$w_1$$ (ch 1) | $$w_2$$ (ch 2) |
 |---|---|---|
 | #1 | 1 | 0 |
 | #2 | 0 | 1 |
 | #3 | 1 | −1 |
 
-Each output channel is $Y_k = w_1 \cdot A + w_2 \cdot B$:
+Each output channel is $$Y_k = w_1 \cdot A + w_2 \cdot B$$:
 
 $$
 Y_1 = 1\cdot A + 0\cdot B = \begin{bmatrix}1 & 2\\3 & 4\end{bmatrix}

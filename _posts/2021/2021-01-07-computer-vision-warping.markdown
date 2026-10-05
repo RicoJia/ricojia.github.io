@@ -69,9 +69,9 @@ So we **need to plug in the image center coords into this matrix.** if we want t
 
 THe way I interpret this is:
 
-- OpenCV has an underlying function for rotating the image by the top left corner. Say points in the image frame $\vec{P}=(px, py)$. After rotation, points becomes $R \vec(P)$
-- However, we want to rotate points by the chosen center frame $\vec{C}$, then find their image frame coordinates. We denote the chosen center frame coordinates as $\vec{X} = \vec{P} + \vec{C}$
-- So we want to find linear translation $\vec{T}$ so after rotating points in the image frame, we shift the points so they are rotated as if by the chosen center. So that becomes: 
+- OpenCV has an underlying function for rotating the image by the top left corner. Say points in the image frame $$\vec{P}=(px, py)$$. After rotation, points becomes $$R \vec(P)$$
+- However, we want to rotate points by the chosen center frame $$\vec{C}$$, then find their image frame coordinates. We denote the chosen center frame coordinates as $$\vec{X} = \vec{P} + \vec{C}$$
+- So we want to find linear translation $$\vec{T}$$ so after rotating points in the image frame, we shift the points so they are rotated as if by the chosen center. So that becomes: 
 
 $$
 \begin{gather*}
@@ -80,7 +80,7 @@ R\vec{P} + \vec{T} = R(\vec{P} - \vec{C}) + \vec{C}
 \end{gather*}
 $$
 
-$(I - R)$ corresponds to the formula in the function
+$$(I - R)$$ corresponds to the formula in the function
 
 ## Perspective Warping include
 

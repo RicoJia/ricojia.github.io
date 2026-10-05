@@ -53,16 +53,16 @@ When we read in English, we put focus on certain "important parts". The model we
 
 - TODO: recreate the structure of context diagram (0.5h)
 
-2. Compute energy $e^{(t, t')}$ as a function of the post-attention hidden state $s^{(t-1)}$ and pre-attention hidden state $a^{(t')}$. **$e^{(t, t')}$ is the attention $y^{(t)}$ should pay to $a^{(t')}$**.
+2. Compute energy $$e^{(t, t')}$$ as a function of the post-attention hidden state $$s^{(t-1)}$$ and pre-attention hidden state $$a^{(t')}$$. **$$e^{(t, t')}$$ is the attention $$y^{(t)}$$ should pay to $$a^{(t')}$$**.
 
-- $s^{(t-1)}$ and $a^{(t')}$ are fed into a dense layer to get $e^{(t, t')}$. Then, $e^{(t, t')}$ gets into a softmax layer to compute $\alpha^{(t, t')}$
+- $$s^{(t-1)}$$ and $$a^{(t')}$$ are fed into a dense layer to get $$e^{(t, t')}$$. Then, $$e^{(t, t')}$$ gets into a softmax layer to compute $$\alpha^{(t, t')}$$
 - Context
 
 $$
 context = \sum_{t'}^{T_x} \alpha^{(t, t')} a^{t'}
 $$
 
-- TODO: more explanation on `RepeatVector` copy $s^{(t-1)}$ `T_x` times
+- TODO: more explanation on `RepeatVector` copy $$s^{(t-1)}$$ `T_x` times
 
 ```python
 # UNQ_C1 (UNIQUE CELL IDENTIFIER, DO NOT EDIT)

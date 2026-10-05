@@ -24,7 +24,7 @@ $$
 \end{gather*}
 $$
 
-- In MLE, $x$ is unknown but fixed (so it's not a variable)
+- In MLE, $$x$$ is unknown but fixed (so it's not a variable)
 
 MAP (Maximum A-Posterior) not only considers MLE, but also considers the prior states `x`. It is more stale than MLE and can work better in a Bayesian Filter framework. When the data is limited, MAP might be better. When observation and single state variable data are abundant, the prior's influence diminishes
 
@@ -36,7 +36,7 @@ $$
 \end{gather*}
 $$
 
-- In MAP, $x$ is unknown but fixed (so it's not a variable)
+- In MAP, $$x$$ is unknown but fixed (so it's not a variable)
 
 ### The Log Trick While Working With Joint Multivariate Gaussian Distributions In MLE
 
@@ -52,9 +52,9 @@ $$
 
 This example is inspired by [this post](https://sassafras13.github.io/MLEvsMAP/).
 
-Assume now my robot is at an unknown location, $\mu$. A landmark is at `x=(0)`. The robot has 3 measurements: 5m, 8m, 9m. We assume that the likelihoods of these measurements follow a Gaussian noise distribution: $P(z|x) = \frac{1}{\sigma\sqrt{2 \pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}$
+Assume now my robot is at an unknown location, $$\mu$$. A landmark is at `x=(0)`. The robot has 3 measurements: 5m, 8m, 9m. We assume that the likelihoods of these measurements follow a Gaussian noise distribution: $$P(z\vert x) = \frac{1}{\sigma\sqrt{2 \pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}$$
 
-Therefore, the joint likelihood of having these measurements at the location $\mu$ is:
+Therefore, the joint likelihood of having these measurements at the location $$\mu$$ is:
 
 $$
 \begin{gather*}
@@ -64,7 +64,7 @@ $$
 \end{gather*}
 $$
 
-Now, we are going to find $\mu$ such that this joint likelihood is the smallest. We can do that by taking its partial derivative w.r.t $\mu$, then set it to 0. For the ease of computation, we do the log trick:
+Now, we are going to find $$\mu$$ such that this joint likelihood is the smallest. We can do that by taking its partial derivative w.r.t $$\mu$$, then set it to 0. For the ease of computation, we do the log trick:
 
 $$
 \begin{gather*}

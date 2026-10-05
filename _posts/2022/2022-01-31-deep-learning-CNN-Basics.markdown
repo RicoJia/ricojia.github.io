@@ -175,7 +175,7 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
     \end{gather*}
     $$
 
-- We need to get $\frac{J}{W}$ and $\frac{J}{X}$.
+- We need to get $$\frac{J}{W}$$ and $$\frac{J}{X}$$.
 
     $$
     \begin{gather*}
@@ -185,7 +185,7 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
     \end{gather*}
     $$
 
-- For kernel gradient $\frac{\partial J}{\partial K}$, it's cross correlation: $x \ast \frac{\partial J}{\partial y}$
+- For kernel gradient $$\frac{\partial J}{\partial K}$$, it's cross correlation: $$x \ast \frac{\partial J}{\partial y}$$
 
     $$
     \begin{gather*}
@@ -195,9 +195,9 @@ One Neural Net implementation [can be found here](https://github.com/TheIndepend
     \end{gather*}
     $$
 
-- For bias gradient, there is only 1 bias value per output channel; so, we apply it to all elements of one channel. Its gradient is the sum across all channels, so its output gradient $\sum_c \frac{\partial J}{\partial y_c}$
+- For bias gradient, there is only 1 bias value per output channel; so, we apply it to all elements of one channel. Its gradient is the sum across all channels, so its output gradient $$\sum_c \frac{\partial J}{\partial y_c}$$
 
-- For input gradient, $\frac{J}{X}$, it's actually convolution: $k \circledast \frac{\partial J}{\partial y}$
+- For input gradient, $$\frac{J}{X}$$, it's actually convolution: $$k \circledast \frac{\partial J}{\partial y}$$
 
     $$
     \begin{gather*}
@@ -345,7 +345,7 @@ Then, the receptive field across layers are:
 - 2 layers → sees 5×5
 - L layers → sees (2L+1) × (2L+1)
 
-We denote the input as $f_0$, output of layer $l$ as $f_l$. The receptive field of layer $l$ is $r_l$, but really **it's the number of cells on layer $l$ that a reference layer output sees**. In the below example, $r_0=8$ at the input, w.r.t the second layer. It would be different w.r.t a different layer.
+We denote the input as $$f_0$$, output of layer $$l$$ as $$f_l$$. The receptive field of layer $$l$$ is $$r_l$$, but really **it's the number of cells on layer $$l$$ that a reference layer output sees**. In the below example, $$r_0=8$$ at the input, w.r.t the second layer. It would be different w.r.t a different layer.
 
 <div style="text-align: center;">
 <p align="center">

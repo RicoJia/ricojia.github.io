@@ -107,7 +107,7 @@ Gatys et al proposed a method to generate a picture that resembles content C, bu
 </p>
 </div>
 
-- This is done by crafting a cost function, with `G` being the generate dimage, `C` being the original image, and `S` being the styleimage. Some may argue that $\alpha$ and $\beta$ are redundant, but those are the notations used by Gatys et al.
+- This is done by crafting a cost function, with `G` being the generate dimage, `C` being the original image, and `S` being the styleimage. Some may argue that $$\alpha$$ and $$\beta$$ are redundant, but those are the notations used by Gatys et al.
 
 $$
 \begin{gather*}
@@ -130,12 +130,12 @@ $$
 - In neural style transfer, we train the pixels of an image, and not the parameters of a network. How?
     1. Load the Content Image `C`
     2. Load the style image `S`
-    3. Generate a random image $I$
+    3. Generate a random image $$I$$
     4. Initialize a VGG19 model as the backbone for feature extraction
     5. Compute the content cost
     6. Compute the style cost
-    7. Calculate Gram Matrix,  the loss $J(C,S)$, and the partial derivatives $\frac{\partial L}{\partial I}$ through back propagation
-    8. Update image value by $I = I - \lambda \frac{\partial L}{\partial I}$
+    7. Calculate Gram Matrix,  the loss $$J(C,S)$$, and the partial derivatives $$\frac{\partial L}{\partial I}$$ through back propagation
+    8. Update image value by $$I = I - \lambda \frac{\partial L}{\partial I}$$
 
 ## Reference
 

@@ -26,17 +26,17 @@ $$
 $$  
   
 - Unit: **dB**  
-- $\mathrm{MAX}$ is the maximum representable signal value.  
-- $\mathrm{MSE}$ is the mean squared error between reference and reconstructed data.
+- $$\mathrm{MAX}$$ is the maximum representable signal value.  
+- $$\mathrm{MSE}$$ is the mean squared error between reference and reconstructed data.
 
 For point cloud geometry:  
   
-- $\mathrm{MAX}$ = diagonal length of the 3D bounding box of the reference point cloud.  
-- $\mathrm{MSE}$ is computed using nearest-neighbor distances.  
+- $$\mathrm{MAX}$$ = diagonal length of the 3D bounding box of the reference point cloud.  
+- $$\mathrm{MSE}$$ is computed using nearest-neighbor distances.  
   
 **Procedure:**  
   
-1. For each point $p_i$ in the reference point cloud, find its nearest neighbor $\hat{p}_i$ in the reconstructed cloud.  
+1. For each point $$p_i$$ in the reference point cloud, find its nearest neighbor $$\hat{p}_i$$ in the reconstructed cloud.  
 2. Compute:  
   
 $$  
@@ -48,7 +48,7 @@ $$
 
 Colored PSNR: For attribute (color) distortion:  
   
-- $\mathrm{MAX} = 255$ (for 8-bit color channels).  
+- $$\mathrm{MAX} = 255$$ (for 8-bit color channels).  
 - MSE is computed across RGB channels and averaged:  
   
 $$  
@@ -64,8 +64,8 @@ $$
   
 where:  
 
-- $(R_i, G_i, B_i)$ are original colors,  
-- $(\hat{R}_i, \hat{G}_i, \hat{B}_i)$ are reconstructed colors.  
+- $$(R_i, G_i, B_i)$$ are original colors,  
+- $$(\hat{R}_i, \hat{G}_i, \hat{B}_i)$$ are reconstructed colors.  
   
 PSNR is then computed as:  
   
@@ -85,8 +85,8 @@ A common geometry loss for point clouds is the **Chamfer Distance (CD)**.
   
 Given two point sets:  
 
-- Reference point cloud: $P = \{p_i\}_{i=1}^N$  
-- Reconstructed point cloud: $\hat{P} = \{\hat{p}_j\}_{j=1}^M$  
+- Reference point cloud: $$P = \{p_i\}_{i=1}^N$$  
+- Reconstructed point cloud: $$\hat{P} = \{\hat{p}_j\}_{j=1}^M$$  
   
 The (symmetric) point-to-point Chamfer distance is:  
   
@@ -104,8 +104,8 @@ This is essentially the average squared nearest-neighbor distance in **both dire
 Is Chamfer Distance Differentiable?  **Short answer**:  
 **Yes, almost everywhere — and it is widely used in gradient-based optimization.**  
   
-- The squared Euclidean distance $\|p - \hat{p}\|^2$ is fully differentiable.  
-- The only non-smooth operation is the **nearest neighbor selection** (the $\min$).  
+- The squared Euclidean distance $$\|p - \hat{p}\|^2$$ is fully differentiable.  
+- The only non-smooth operation is the **nearest neighbor selection** (the $$\min$$).  
 
 ### Step 1: Forward Pass Nearest-neighbor (NN) assignment  
 
@@ -141,9 +141,9 @@ $$
 
 ### Step 2: Chamfer Distance — Gradient w.r.t. Reconstructed Points  
   
-The reconstructed point cloud $\hat{P} = \{\hat{p}_j\}_{j=1}^M$ is the output of the network, so during backpropagation we compute gradients with respect to these points.  
+The reconstructed point cloud $$\hat{P} = \{\hat{p}_j\}_{j=1}^M$$ is the output of the network, so during backpropagation we compute gradients with respect to these points.  
   
-The symmetric Chamfer Distance between the original point cloud $P = \{p_i\}_{i=1}^N$ and the reconstructed point cloud $\hat{P}$ is:
+The symmetric Chamfer Distance between the original point cloud $$P = \{p_i\}_{i=1}^N$$ and the reconstructed point cloud $$\hat{P}$$ is:
 
 $$  
 \mathcal{L}_{\text{CD}}(P,\hat P)  
@@ -153,7 +153,7 @@ $$
 \frac{1}{M}\sum_{j=1}^{M} \min_{i} \|\hat{p}_j - p_i\|^2.  
 $$
 
-To compute the gradient with respect to a reconstructed point $\hat{p}_k$, we consider the second term (reconstructed → original). Let $S_k$ be the set of original points for which $\hat{p}_k$ is the nearest neighbor. Then the gradient is:  
+To compute the gradient with respect to a reconstructed point $$\hat{p}_k$$, we consider the second term (reconstructed → original). Let $$S_k$$ be the set of original points for which $$\hat{p}_k$$ is the nearest neighbor. Then the gradient is:  
   
 $$  
 \frac{\partial \mathcal{L}_{\hat{P} \to P}}{\partial \hat{p}_k}  
@@ -175,9 +175,9 @@ $$
 \in \mathbb{R}^{3M}.  
 $$
 
-For a single term $\|p_i - \hat p_{j^*(i)}\|^2$, the gradient w.r.t. $\hat{\mathbf{x}}$ is zero everywhere except in the block corresponding to $j^*(i)$:  
+For a single term $$\|p_i - \hat p_{j^*(i)}\|^2$$, the gradient w.r.t. $$\hat{\mathbf{x}}$$ is zero everywhere except in the block corresponding to $$j^*(i)$$:  
   
-- For block $k = j^*(i)$:  
+- For block $$k = j^*(i)$$:  
 
 $$  
 \frac{\partial}{\partial \hat p_k}  
@@ -186,7 +186,7 @@ $$
 2(\hat p_k - p_i)  
 $$
 
-- For blocks $k \neq j^*(i)$:  
+- For blocks $$k \neq j^*(i)$$:  
 
 $$  
 \frac{\partial}{\partial \hat p_k}  
@@ -199,7 +199,7 @@ Thus, the Jacobian is **block-sparse**: each reference point contributes to exac
 
 ### Step 4: Aggregating Over All Points  
   
-Now summing over all reference points in the $P \to \hat P$ term,  
+Now summing over all reference points in the $$P \to \hat P$$ term,  
   
 $$  
 \mathcal{L}_{P \to \hat P}  
@@ -209,7 +209,7 @@ $$
 \|p_i - \hat p_{j^*(i)}\|^2,  
 $$
 
-the gradient for a reconstructed point $\hat p_k$ becomes:  
+the gradient for a reconstructed point $$\hat p_k$$ becomes:  
   
 $$  
 \frac{\partial \mathcal{L}_{P \to \hat P}}{\partial \hat p_k}  
@@ -235,7 +235,7 @@ $$
 (\hat p_k - p_i).  
 $$
 
-So aggregation simply amounts to **summing all contributions from reference points that selected $\hat p_k$ as their nearest neighbor**.  
+So aggregation simply amounts to **summing all contributions from reference points that selected $$\hat p_k$$ as their nearest neighbor**.  
   
 ### Q & A: Where non-differentiability comes from (and why it’s “almost everywhere”)  
   
@@ -245,7 +245,7 @@ $$
 j^*(i) = \arg\min_j \|p_i-\hat p_j\|^2.  
 $$  
   
-As you move $\hat p_j$'s continuously, most of the time the identity of the minimizer stays the same, so $j^*(i)$ is constant locally and the loss is a smooth quadratic in that region.  
+As you move $$\hat p_j$$'s continuously, most of the time the identity of the minimizer stays the same, so $$j^*(i)$$ is constant locally and the loss is a smooth quadratic in that region.  
   
 A change happens only when two candidates tie:  
 

@@ -41,9 +41,9 @@ x -> Batch Normalization -> Activation (ReLu, etc.)
 
 1. Similar to input normalization, we could get input to each layer to have mean 0, and unit variance across all dimensions. Some variables are:
 
-- $\epsilon$: ensures numerical stability
-- $\beta_\mu$, $\beta_v$ are momentum constants.
-- In total, a batch normalization layer for one channel has **2 trainable parameters ($\beta_\mu$, $\beta_v$) + 2 non trainable parameters ($\mu_z$, $\sigma_z$) = 4 parameters**
+- $$\epsilon$$: ensures numerical stability
+- $$\beta_\mu$$, $$\beta_v$$ are momentum constants.
+- In total, a batch normalization layer for one channel has **2 trainable parameters ($$\beta_\mu$$, $$\beta_v$$) + 2 non trainable parameters ($$\mu_z$$, $$\sigma_z$$) = 4 parameters**
 
 $$
 \begin{gather*}
@@ -78,7 +78,7 @@ $$
 
 ### During Inference
 
-The batch Normalization layer already has its $\gamma$ and $\beta$ learned. In training, we simply use the learned $\mu$ and $\sigma$ from training. [In this coursera video](https://www.youtube.com/watch?v=5qefnAek8OA), Andrew Ng stated that this is fairly robust.
+The batch Normalization layer already has its $$\gamma$$ and $$\beta$$ learned. In training, we simply use the learned $$\mu$$ and $$\sigma$$ from training. [In this coursera video](https://www.youtube.com/watch?v=5qefnAek8OA), Andrew Ng stated that this is fairly robust.
 
 $$
 \begin{gather*}
@@ -137,7 +137,7 @@ class BatchNormCustom(torch.nn.Module):
 
 ### Why Batch Normalization Works?
 
-**Internal Covariate Shift** is the situation where the input data distribution $P(X)$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
+**Internal Covariate Shift** is the situation where the input data distribution $$P(X)$$ is shifted, but conditional output distrinbution `P(Y|X)` remains the same. Some examples are:
 
 - In a cat classifier, training data are black cats, but test data are orange cats
 - In an image deblurring system, images are brighter than test data.

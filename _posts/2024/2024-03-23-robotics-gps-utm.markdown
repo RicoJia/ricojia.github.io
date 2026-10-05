@@ -34,7 +34,7 @@ A GPS module's performance is affected by:
 
 A consumer grade GPS is 10m accuracy 95% of the time
 
-0 deg meridian is a line that runs through Greenwich. 180 deg meridian is a line runs from North to the south pole. $It goes through Chukotka$
+0 deg meridian is a line that runs through Greenwich. 180 deg meridian is a line runs from North to the south pole. $$It goes through Chukotka$$
 
 Fix: is the process navigation satellites -> position, velocity, time.
 
@@ -56,9 +56,9 @@ RTK refers to 载波相位差.
 
 Given:
 
-- Four satellites with known positions $ \mathbf{S}_i = $x_i, y_i, z_i$ $ for $ i = 1, 2, 3, 4 $,
+- Four satellites with known positions $ \mathbf{S}_i = $$x_i, y_i, z_i$$ $ for $ i = 1, 2, 3, 4 $,
 - Measured distances \$ r_i \$ from receiver to each satellite.
-We want to find the unknown receiver position $ \mathbf{x} = $x, y, z$ $.
+We want to find the unknown receiver position $ \mathbf{x} = $$x, y, z$$ $.
 
 For each satellite, we have:
 
@@ -87,7 +87,7 @@ $$
 
 where:
 
-- $ A \in \mathbb{R}^{3 \times 3} $ has rows $ 2(\mathbf{S}_4 - \mathbf{S}_i)$,
+- $ A \in \mathbb{R}^{3 \times 3} $ has rows $$ 2(\mathbf{S}_4 - \mathbf{S}_i)$$,
 - $ \mathbf{b} \in \mathbb{R}^3 $ is the simplified right-hand side.
 
 If overdetermined or noisy, solve using the pseudoinverse:
@@ -128,20 +128,20 @@ p = r + c(\delta t_u - \delta t^{(s)}) + I + T + \varepsilon_p \\
 \end{gather*}
 $$
 
-- $p$: Pseudorange observation (meters).It's the `c * apparent_time_difference`
+- $$p$$: Pseudorange observation (meters).It's the `c * apparent_time_difference`
   - So the formula basically says "the pseudorange is the sum of the true satellite-receiver distance, clock bias (difference), and various delays"
-- $r$: True geometric distance between satellite and receiver (m)
-- $c$: Speed of light (m/s)
-- $\delta t_u$: Receiver clock bias (s)
-- $\delta t^{(s)}$: Satellite clock bias (s)
-- $I$: Ionospheric delay (m)
-- $T$: Tropospheric delay (m)
-- $\varphi$: Carrier-phase observation (in cycles or radians)
-- $\lambda$: Carrier wavelength (m)
-- $N$: Integer ambiguity (in cycles)
-- $\varepsilon_p$, $\varepsilon_\varphi$: Measurement noise or unmodeled error
+- $$r$$: True geometric distance between satellite and receiver (m)
+- $$c$$: Speed of light (m/s)
+- $$\delta t_u$$: Receiver clock bias (s)
+- $$\delta t^{(s)}$$: Satellite clock bias (s)
+- $$I$$: Ionospheric delay (m)
+- $$T$$: Tropospheric delay (m)
+- $$\varphi$$: Carrier-phase observation (in cycles or radians)
+- $$\lambda$$: Carrier wavelength (m)
+- $$N$$: Integer ambiguity (in cycles)
+- $$\varepsilon_p$$, $$\varepsilon_\varphi$$: Measurement noise or unmodeled error
 
- The observation equations include aggregated error terms $\varepsilon$, representing unmodeled effects. For simplicity, these terms are omitted in subsequent formulas.
+ The observation equations include aggregated error terms $$\varepsilon$$, representing unmodeled effects. For simplicity, these terms are omitted in subsequent formulas.
 
 In step 2, ionospheric effect could cause delays experienced by receives and base stations. If a rover is close to a base station, the ionospheric delay is roughly the same:
 
@@ -156,7 +156,7 @@ In step 2, ionospheric effect could cause delays experienced by receives and bas
 #### Single-, Double-, and Triple-Difference Observation Equations
 
 The base station sees:
-    - Apparent time (a.k.a pseudo range) - $t_{true} + t_{delay}$
+    - Apparent time (a.k.a pseudo range) - $$t_{true} + t_{delay}$$
     - Phase: (see below)
 
 At the rover side, by taking the difference between the satellite message it hears directly and that from the base station, the resulting single-difference observation is:
@@ -170,12 +170,12 @@ p_{ij}^p = r_{ij}^p + c \delta t_{u,ij}^p \\
 \end{gather*}
 $$
 
-- Subscripts $i$, $j$: Receiver indices for the rover and satellite
-- $p_{ij}^p$: Single-differenced pseudorange
-- $\varphi_{ij}^p$: Single-differenced carrier-phase
-- $r_{ij}^p$: Single-differenced geometric distance
-- $\delta t_{u,ij}^p$: Single-differenced receiver clock error
-- $N_{ij}^p$: Single-differenced integer ambiguity
+- Subscripts $$i$$, $$j$$: Receiver indices for the rover and satellite
+- $$p_{ij}^p$$: Single-differenced pseudorange
+- $$\varphi_{ij}^p$$: Single-differenced carrier-phase
+- $$r_{ij}^p$$: Single-differenced geometric distance
+- $$\delta t_{u,ij}^p$$: Single-differenced receiver clock error
+- $$N_{ij}^p$$: Single-differenced integer ambiguity
 
 [More details can be seen here](https://blog.csdn.net/qq_41782151/article/details/118601308?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-118601308-blog-81043370.pc_relevant_multi_platform_whitelistv4&spm=1001.2101.3001.4242.1&utm_relevant_index=3)
 
@@ -190,16 +190,16 @@ $$
 </p>
 </div>
 
-Another crucial technique RTK GPS uses is Carrier Phase Ambiguity resolution. The carrier wave is a high frequency sinusoidal wave. In the illustration below, we can determine the distance between a satellite and a rover using the number of phases. Here, the total number of wavelength is $\phi = \alpha + \beta + N$. We aim to solve for N:
+Another crucial technique RTK GPS uses is Carrier Phase Ambiguity resolution. The carrier wave is a high frequency sinusoidal wave. In the illustration below, we can determine the distance between a satellite and a rover using the number of phases. Here, the total number of wavelength is $$\phi = \alpha + \beta + N$$. We aim to solve for N:
 
 - `N`: an integer that represents a **fixed number of wavelengths**. This number is unknown at the moment
   - The L1 carrier wave is transmitted at 1575.42 MHz, its wavelength is 19cm.
-- $\alpha$ is the **fractional number of wavelengths**. E.g., if the total distance is in total 10.5 wavelengths. $\alpha = 0.5$
-- $\beta$ is the "accumulated number of observed wavelengths during the measurement period." As the receiver moves and the satellite orbits the earth, $\beta$ shrinks when the two gets closer, and expands when the two gets farther apart.
+- $$\alpha$$ is the **fractional number of wavelengths**. E.g., if the total distance is in total 10.5 wavelengths. $$\alpha = 0.5$$
+- $$\beta$$ is the "accumulated number of observed wavelengths during the measurement period." As the receiver moves and the satellite orbits the earth, $$\beta$$ shrinks when the two gets closer, and expands when the two gets farther apart.
 
 ### RTK GPS in Autonomous Vehicles
 
-In an autonomous vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $\theta$. This set up is also known as DUAL GNSS Compassing. **Usually, GPS signals come in at 1hz.**
+In an autonomous vehicle, we use two RTK GPS modules (蘑菇头) so we know the mid point `(x, y, z)`, and its heading $$\theta$$. This set up is also known as DUAL GNSS Compassing. **Usually, GPS signals come in at 1hz.**
 
 <div style="text-align: center;">
 <p align="center">

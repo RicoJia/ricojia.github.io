@@ -166,7 +166,7 @@ $$
 \hat a_b=a_m-\hat b_a.  
 $$
 
-The ($-I\Delta t$) gyro-bias block is a first-order approximation. A more accurate discretization uses the (SO(3)) right Jacobian.
+The ($$-I\Delta t$$) gyro-bias block is a first-order approximation. A more accurate discretization uses the (SO(3)) right Jacobian.
 
 ### 3 - 3 Covariance propagation
 
@@ -181,7 +181,7 @@ G_dQ_wG_d^\top
 }  
 $$
 
-where ($Q_w$) contains the gyro noise, accelerometer noise, and bias random-walk covariances. If the noise mapping has already been included, define
+where ($$Q_w$$) contains the gyro noise, accelerometer noise, and bias random-walk covariances. If the noise mapping has already been included, define
 
 $$  
 Q_d=G_dQ_wG_d^\top  
@@ -196,7 +196,7 @@ F_kP_k^{+} F_k^\top+Q_d.
 }  
 $$
 
-The identity blocks for ($b_g$), ($b_a$), and ($g$) mean that these errors are constant during deterministic propagation. They can still be corrected during the LiDAR measurement update.
+The identity blocks for ($$b_g$$), ($$b_a$$), and ($$g$$) mean that these errors are constant during deterministic propagation. They can still be corrected during the LiDAR measurement update.
 
 ## 4 - Observation Update with NDT
 
@@ -205,14 +205,14 @@ Different papers use different symbols. Here, we use:
 | EKF notation      | NDT notation          | Meaning                        |
 | ----------------- | --------------------- | ------------------------------ |
 | H or C            | J                     | Stacked measurement Jacobian   |
-| V or R            | $\Sigma$              | Stacked measurement covariance |
+| V or R            | $$\Sigma$$              | Stacked measurement covariance |
 | r                 | e                     | Stacked residual vector        |
-| $H^\top V^{-1}H$  | $J^\top\Sigma^{-1}J$  | Measurement information matrix |
-| $-H^\top V^{-1}r$ | $-J^\top\Sigma^{-1}e$ | Residual gradient term         |
+| $$H^\top V^{-1}H$$  | $$J^\top\Sigma^{-1}J$$  | Measurement information matrix |
+| $$-H^\top V^{-1}r$$ | $$-J^\top\Sigma^{-1}e$$ | Residual gradient term         |
 
 ### 4 - 1 NDT residual
 
-For a source point $p_i$, let $\mu_i$ and $\Sigma_i$ be the mean and covariance of its matched NDT voxel.
+For a source point $$p_i$$, let $$\mu_i$$ and $$\Sigma_i$$ be the mean and covariance of its matched NDT voxel.
 
 The transformed point is
 
@@ -232,7 +232,7 @@ $$
 \chi_i^2=e_i^\top\Sigma_i^{-1}e_i.  
 $$
 
-Here, ($e_i$) is a vector. The value ($\chi_i^2$) is a scalar cost.
+Here, ($$e_i$$) is a vector. The value ($$\chi_i^2$$) is a scalar cost.
 
 ### 4 - 2 Residual Jacobian
 
@@ -291,11 +291,11 @@ $$
 
 Let
 
-- $\hat x^-$ be the propagated IMU state;
+- $$\hat x^-$$ be the propagated IMU state;
 
-- $\bar P$ be its covariance;
+- $$\bar P$$ be its covariance;
 
-- $\hat x_k$ be the nominal state at iteration $k$.
+- $$\hat x_k$$ be the nominal state at iteration $$k$$.
 
 At each iteration, NDT computes the residual and Jacobian at the current state:
 
@@ -309,7 +309,7 @@ The IEKF then:
 
 1. Recomputes NDT correspondences, residuals, and Jacobians.
 
-2. Solves for the correction $\delta x_k$.
+2. Solves for the correction $$\delta x_k$$.
 
 3. Injects the correction into the nominal state.
 
@@ -377,13 +377,13 @@ $$
 \hat x_k\neq\hat x^-.  
 $$
 
-Let $x_0$ be the original propagated IMU state and ($x_k$) the state at IEKF iteration (k). Define $d_k$ to be delta x w.r.t $x_0$:
+Let $$x_0$$ be the original propagated IMU state and ($$x_k$$) the state at IEKF iteration (k). Define $$d_k$$ to be delta x w.r.t $$x_0$$:
 
 $$  
 d_k=x_k\boxminus x_0.  
 $$
 
-Now consider a small perturbation $\delta x_{k,\text{raw}}$ around $x_k$. Expressed back in the tangent space of $x_0$, we accumulate it:
+Now consider a small perturbation $$\delta x_{k,\text{raw}}$$ around $$x_k$$. Expressed back in the tangent space of $$x_0$$, we accumulate it:
 
 $$  
 d_{k+1}  
@@ -391,7 +391,7 @@ d_{k+1}
 d_k+T_k\delta x_{k,\text{raw}},  
 $$
 
-where  $T_k$ is essentially the local Jacobian that maps perturbations from the tangent space at $x_k$ back to the tangent space at $x_0$.
+where  $$T_k$$ is essentially the local Jacobian that maps perturbations from the tangent space at $$x_k$$ back to the tangent space at $$x_0$$.
 
  $$  
 \boxed{  
@@ -478,7 +478,7 @@ so this reduces to the simpler equation derived earlier.
 
 FAST-LIO2 expresses the same idea by transporting the prior covariance into the current tangent space and including the displacement between the current iterate and the propagated state in every correction. ([ar5iv](https://ar5iv.labs.arxiv.org/html/2107.06829 "[2107.06829] FAST-LIO2: Fast Direct LiDAR-inertial Odometry"))
 
-Note, $T_k$ is a Jacobian that relates the tangent space of the current nominal state, $\hat x_k$ and the tangent space of the propagated IMU state $\hat x^-$. For position, velocity, biases, and gravity, the state change is additive. so the projection of the state change is identity. Rotation is a bit more complicated, I haven't fully gotten that yet, but this looks like a right Jacobian using BCH:
+Note, $$T_k$$ is a Jacobian that relates the tangent space of the current nominal state, $$\hat x_k$$ and the tangent space of the propagated IMU state $$\hat x^-$$. For position, velocity, biases, and gravity, the state change is additive. so the projection of the state change is identity. Rotation is a bit more complicated, I haven't fully gotten that yet, but this looks like a right Jacobian using BCH:
 
 $$  
 \boxed{  
@@ -503,13 +503,13 @@ $$
 y=f(x),  
 $$
 
-linearized around $x_0$,
+linearized around $$x_0$$,
 
 $$  
 y \approx f(x_0)+f'(x_0)\delta x.  
 $$
 
-If (x) has covariance $P_x$, then the covariance of $y$ is approximately
+If (x) has covariance $$P_x$$, then the covariance of $$y$$ is approximately
 
 $$  
 \boxed{  
@@ -517,9 +517,9 @@ P_y=f'(x_0)P_xf'(x_0)^\top.
 }  
 $$
 
-The same idea applies in the IEKF, except that the state may lie on a $SO(3)$ manifold .
+The same idea applies in the IEKF, except that the state may lie on a $$SO(3)$$ manifold .
 
-The propagated covariance $\bar P$ is the covariance matrix at $x_0$. To express the same uncertainty around $x_k$, we need the inverse mapping:
+The propagated covariance $$\bar P$$ is the covariance matrix at $$x_0$$. To express the same uncertainty around $$x_k$$, we need the inverse mapping:
 
  $$  
 \boxed{  
@@ -530,7 +530,7 @@ $$
 
 This step only **changes the coordinates of the prior covariance**. It does not add measurement information.
 
-Finally, the LiDAR/NDT measurement causes the actual Kalman covariance reduction. Let ($P_k$) be the propagated covariance transported into the tangent space of the converged state. Define
+Finally, the LiDAR/NDT measurement causes the actual Kalman covariance reduction. Let ($$P_k$$) be the propagated covariance transported into the tangent space of the converged state. Define
 
 $$  
 A_k =
@@ -592,13 +592,13 @@ $$
 H \Delta x = b, \quad H = J^T W J.
 $$
 
-Here, $J$ is the Jacobian of the residuals and $W$ is the weighting matrix. Since $H = J^T W J$, the normal matrix is positive semidefinite when $W$ is positive semidefinite. If $H$ is rank deficient or badly ill-conditioned, then there exists a nonzero vector $v$ such that
+Here, $$J$$ is the Jacobian of the residuals and $$W$$ is the weighting matrix. Since $$H = J^T W J$$, the normal matrix is positive semidefinite when $$W$$ is positive semidefinite. If $$H$$ is rank deficient or badly ill-conditioned, then there exists a nonzero vector $$v$$ such that
 
 $$
 H v \approx 0.
 $$
 
-That means the cost changes very little along the direction $v$, so the update is not uniquely determined by the measurements. This is the core of gauge freedom in local estimation.
+That means the cost changes very little along the direction $$v$$, so the update is not uniquely determined by the measurements. This is the core of gauge freedom in local estimation.
 
 Take a simplified 2D corridor. Let the state update be
 
@@ -606,7 +606,7 @@ $$
 \Delta x = \begin{bmatrix} \Delta s \\ \Delta n \end{bmatrix},
 $$
 
-where $s$ is motion along the corridor and $n$ is motion across the corridor. If the corridor is long and visually repetitive, lidar often constrains the cross-corridor direction much better than the along-corridor direction. A toy lidar-only normal matrix might look like
+where $$s$$ is motion along the corridor and $$n$$ is motion across the corridor. If the corridor is long and visually repetitive, lidar often constrains the cross-corridor direction much better than the along-corridor direction. A toy lidar-only normal matrix might look like
 
 $$
 H_{\text{lidar}} =
@@ -618,11 +618,11 @@ $$
 
 This means:
 
-- The cost changes only a little when we move along $s$.
-- The cost changes a lot when we move along $n$.
+- The cost changes only a little when we move along $$s$$.
+- The cost changes a lot when we move along $$n$$.
 - So the solution is numerically weak along the corridor axis.
 
-Then the matrix is nearly singular, and updates in the $s$ direction are poorly determined.
+Then the matrix is nearly singular, and updates in the $$s$$ direction are poorly determined.
 
 Now suppose we add IMU constraints in a tightly coupled estimator. Over a short time interval, the IMU provides a motion prior and temporal consistency, so a simple toy contribution could look like
 
@@ -646,8 +646,8 @@ $$
 
 This is the key intuition:
 
-- Lidar alone gave almost no information along $s$.
+- Lidar alone gave almost no information along $$s$$.
 - IMU adds a short-horizon motion constraint, so the along-corridor direction is no longer almost free.
 - The fused problem is better conditioned, even though global drift is still possible over long time scales.
 
-This example is deliberately simplified. In a real LIO system, the state includes position, orientation, velocity, and IMU biases, so $H$ is much larger than $2 \times 2$. But the conditioning story is the same: the lidar block may be weak in some directions, and the IMU terms help stabilize the update.
+This example is deliberately simplified. In a real LIO system, the state includes position, orientation, velocity, and IMU biases, so $$H$$ is much larger than $$2 \times 2$$. But the conditioning story is the same: the lidar block may be weak in some directions, and the IMU terms help stabilize the update.

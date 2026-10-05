@@ -16,7 +16,7 @@ A floating point is represented as `sign bit | exponent | mantissa`. `0 | 100000
 - Sign bit `0` represents positive.
 - In IEEE 754, an FP32 number's exponent has a bias of 127. So the exponent `10000001` is `129-127=2`
 - Mantissa (fraction) is 23-bit mantissa `10000000000000000000000`. In IEEE 754, there's an implicit leading 1 in the mantissa, so we interpret this as `1.10000000000000000000000` in binary, and `1.5` in decimal
-  - `.10000000000000000000000` is 0.5, because the 1st digit is $2^{-1} = 0.5$, 2nd digit is $2^{-2} = 0.25$
+  - `.10000000000000000000000` is 0.5, because the 1st digit is $$2^{-1} = 0.5$$, 2nd digit is $$2^{-2} = 0.25$$
 - So all together, the value is:
 
 $$
@@ -49,7 +49,7 @@ So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing g
 
 - `0.0001`
   - FP16: `0|00001|1010001110`, which is 0.00010001659393.
-        1. $0.0001 \approx 1.6384 \times 2^{−14}$
+        1. $$0.0001 \approx 1.6384 \times 2^{−14}$$
         2. Sign bit is 0 for positive.
         2. Actual Exponent `E_actual = -14`, so the FP16 exponent is `E = E_actual + bias = -14 + 15 = 1`. So we get `00001`
         3. For mantissa:
@@ -70,7 +70,7 @@ So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing g
                 ```
 
   - BF16: `0|01110001|1010010`, 0.00010013580322
-        1. $0.0001 \approx 1.6384 \times 2^{−14}$
+        1. $$0.0001 \approx 1.6384 \times 2^{−14}$$
         2. Sign bit is 0 for positive.
         2. Actual Exponent `E_actual = -14`, so the FP16 exponent is `E = E_actual + bias = -14 + 127 = 113`. So we get `01110001`
         3. For mantissa: similar to the process for FP16.

@@ -42,24 +42,24 @@ The Lie group is named after **Sophus Lie**. A group is a Lie group if it is a g
 Every Lie group has a Lie algebra. A Lie Algebra is a **vector space that captures the infinitesimal structure of a Lie Group, e.g., the tangent space of the Lie Group**. The general definition of Lie algebras is: a Lie algebra consists of a set `V`, a field `F`, and a binary operation `,`. We also define `[]` as the **Lie bracket**:
 
 - Closure: `∀X,Y∈V, [X,Y]∈V.`
-- Bilinearity: `∀X,Y,Z∈V, ∀a,b∈F`, $[aX+bY,Z]=a[X,Z]+b[Y,Z],[Z,aX+bY]=a[Z,X]+b[Z,Y].$
+- Bilinearity: `∀X,Y,Z∈V, ∀a,b∈F`, $$[aX+bY,Z]=a[X,Z]+b[Y,Z],[Z,aX+bY]=a[Z,X]+b[Z,Y].$$
 - Antisymmetry (or Skew-symmetry): `∀X∈V, [X,X]=0`.
-- Jacobi Identity: `∀X,Y,Z∈V` $[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0$
+- Jacobi Identity: `∀X,Y,Z∈V` $$[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0$$
 
-In the context of `SO(3)`, the lie algebra `so(3)` describes the algebra of infinitesimal rotations. Specifically, it's a skew matrix (see below), with **Lie Bracket** defined as $[X,Y]=XY−YX$
+In the context of `SO(3)`, the lie algebra `so(3)` describes the algebra of infinitesimal rotations. Specifically, it's a skew matrix (see below), with **Lie Bracket** defined as $$[X,Y]=XY−YX$$
 
 ### Manifold
 
 Manifold is a topological space which is locally Euclidean and globally connected.
 
 - Topology means "a collection of open subsets"
-- Each point on the manifold has a neighborhood that is homeomorphic (topologically equivalent) to an open subset of a Euclidean space $\mathbb{R}^n$.
+- Each point on the manifold has a neighborhood that is homeomorphic (topologically equivalent) to an open subset of a Euclidean space $$\mathbb{R}^n$$.
 
 Examples:
 
-- Manifold embedded in $\mathbb{R}^n$ Example: if we want to find a manifold where all its points are on the 2D unit circle:
+- Manifold embedded in $$\mathbb{R}^n$$ Example: if we want to find a manifold where all its points are on the 2D unit circle:
   - (1,0) or (0,1) are on the manifold. But apparently not all points on the XY plane are on the circle.
-  - Polar cordinates $(r=1, \, \theta)$ describe the 1D manifold where all its points are continuous and generates the circle. The unit circle is said to be a "projection" of the 1D manifold onto the R2
+  - Polar cordinates $$(r=1, \, \theta)$$ describe the 1D manifold where all its points are continuous and generates the circle. The unit circle is said to be a "projection" of the 1D manifold onto the R2
   - Following the same principle, a 3D sphere is a projection of the 2D manifold (theta, psi).
 
 <div style="text-align: center;">
@@ -82,8 +82,8 @@ Examples:
     </p>
 </div>
 
-- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $RR^T = I, det(R) = I$
-- **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $exp(\phi^{\land}) = R$ is called "exponential mapping"
+- All 3D rotation matrices form a group called "Special Orthogonal Group, SO(3)", whose definition is $$RR^T = I, det(R) = I$$
+- **Their corresponding skew symmetric matrices are their Lie Algebra so(3)**. The exponential $$exp(\phi^{\land}) = R$$ is called "exponential mapping"
 - A sphere is a manifold. Any two points on a sphere cannot produce another point on the sphere. However, at any point on the sphere, there's a tangent plane where any two points there could add up to a point on the same plane (using the local coordinates there). Then, using some mapping, point addition result on the tangent plane can be projected onto the sphere. We describe that addition as:
 
 $$
@@ -94,7 +94,7 @@ $$
 \end{gather*}
 $$
 
-- Where `x`, `y` are points on the manifold, $\delta$ is a point on the tangent plane
+- Where `x`, `y` are points on the manifold, $$\delta$$ is a point on the tangent plane
 
 Reference: <https://zhuanlan.zhihu.com/p/545370811>
 <div style="text-align: center;">
@@ -139,7 +139,7 @@ $$
 
 ## Skew Symmetric Matrices
 
-Let $\phi \in R^3$ be a vector, and let $R \in SO(3)$ be a rotation matrix (i.e., $R^TR = I$ and $det⁡(R)=1$). Define the “hat” (or wedge) operator $\phi^{\land}$ as the skew-symmetric matrix satisfying
+Let $$\phi \in R^3$$ be a vector, and let $$R \in SO(3)$$ be a rotation matrix (i.e., $$R^TR = I$$ and $$det⁡(R)=1$$). Define the “hat” (or wedge) operator $$\phi^{\land}$$ as the skew-symmetric matrix satisfying
 
 $$
 \begin{gather*}
@@ -149,7 +149,7 @@ $$
 \end{gather*}
 $$
 
-for any $x \in R^3$
+for any $$x \in R^3$$
 
 ### From Skew Symmetric `so(3)` To SO(3)
 
@@ -165,7 +165,7 @@ $$
 \end{gather*}
 $$
 
-Where $\phi(t)^{\land}$ the skew matrix of vector $\phi(t) = [\phi_1, \phi_2, \phi_1,]$
+Where $$\phi(t)^{\land}$$ the skew matrix of vector $$\phi(t) = [\phi_1, \phi_2, \phi_1,]$$
 
 $$
 \begin{gather*}
@@ -177,7 +177,7 @@ $$
 \end{gather*}
 $$
 
-Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $\phi(t)^{\land}$ with it.**
+Then, **one can see that taking the direvative of `R` is equivalent to multiplying the skew matrix $$\phi(t)^{\land}$$ with it.**
 
 $$
 \begin{gather*}
@@ -211,7 +211,7 @@ $$
 
 ### Rodrigues Formula
 
-Let's represent the skew matrix as angle multiplied by a unit vector, $a^{\land}$
+Let's represent the skew matrix as angle multiplied by a unit vector, $$a^{\land}$$
 
 $$
 \begin{gather*}
@@ -219,7 +219,7 @@ $$
 \end{gather*}
 $$
 
-By writing out $a^{\land} a^{\land}$ "Unit" skew matrices have the below two properties:
+By writing out $$a^{\land} a^{\land}$$ "Unit" skew matrices have the below two properties:
 
 $$
 \begin{gather*}
@@ -229,7 +229,7 @@ a^{\land} a^{\land} a^{\land} = -a^{\land}
 \end{gather*}
 $$
 
-- One trick for the second formula is: $a^{\land} (a^{\land} a^{\land}) = a \times (aa^T - I) = -a^{\land}$
+- One trick for the second formula is: $$a^{\land} (a^{\land} a^{\land}) = a \times (aa^T - I) = -a^{\land}$$
 
 So,
 
@@ -259,11 +259,11 @@ $$
 
 ## Properties (伴随性质)
 
-### 1. $ \phi^{\land} R = R (R^T \phi)^{\land}$
+### 1. $$ \phi^{\land} R = R (R^T \phi)^{\land}$$
 
 Proof:
 
-First, we know from $ (a \times b) \cdot c = a \times (b \cdot c)$
+First, we know from $$ (a \times b) \cdot c = a \times (b \cdot c)$$
 
 $$
 \begin{gather*}
@@ -295,11 +295,11 @@ $$
 \end{gather*}
 $$
 
-### 2. Conjugation: $\text{Exp} (P^{-1} A P)= P^{-1} \text{Exp} (A) P$
+### 2. Conjugation: $$\text{Exp} (P^{-1} A P)= P^{-1} \text{Exp} (A) P$$
 
 TODO?
 
-### 3. $R^T \text{Exp}(\phi) R = \text{Exp}(R^T \phi)$
+### 3. $$R^T \text{Exp}(\phi) R = \text{Exp}(R^T \phi)$$
 
 From 1, we know:
 
@@ -323,7 +323,7 @@ $$
 
 ## SO(3) Derivatives
 
-- $\frac{\partial Ra}{\partial R} = -Ra^\land$, with $w$ being the underlying rotation vector
+- $$\frac{\partial Ra}{\partial R} = -Ra^\land$$, with $$w$$ being the underlying rotation vector
 
 $$
 \begin{gather*}

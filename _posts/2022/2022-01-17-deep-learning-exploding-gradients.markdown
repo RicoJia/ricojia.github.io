@@ -11,7 +11,7 @@ tags:
 
 ## Why Exploding & Vanishing Gradients Happen
 
-In a very deep network, output of each layer might diminish / explodes. This is mainly because layer outputs are products of $W_1W_2...x$ (ignoring activation for now)
+In a very deep network, output of each layer might diminish / explodes. This is mainly because layer outputs are products of $$W_1W_2...x$$ (ignoring activation for now)
 
 <div style="text-align: center;">
 <p align="center">
@@ -21,7 +21,7 @@ In a very deep network, output of each layer might diminish / explodes. This is 
 </p>
 </div>
 
-Let's pretend that the above is a very deep network ;), and each node has exactly the same weights. Then, the final output is on the order of $W^nx$. So if $W$'s elements are slightly over 1, outputs could explode. On the other hand, if $W$'s elements are slightly below 1, output could diminish to 0. In [the batch gradient derivation](./2022-01-14-deep-learning-optimizations.markdown), we saw how gradient at one layer depends on the gradient of its output through **the chain rule**: $\frac{\partial{J}}{\partial{w_i}}$. Since the output is exponential w.r.t any layer, this gradient is also "exponential", intuitively.
+Let's pretend that the above is a very deep network ;), and each node has exactly the same weights. Then, the final output is on the order of $$W^nx$$. So if $$W$$'s elements are slightly over 1, outputs could explode. On the other hand, if $$W$$'s elements are slightly below 1, output could diminish to 0. In [the batch gradient derivation](./2022-01-14-deep-learning-optimizations.markdown), we saw how gradient at one layer depends on the gradient of its output through **the chain rule**: $$\frac{\partial{J}}{\partial{w_i}}$$. Since the output is exponential w.r.t any layer, this gradient is also "exponential", intuitively.
 
 $$
 \begin{gather*}
@@ -53,7 +53,7 @@ In the above example, the kernel would have trouble even at layer 31! Why?!
 
 The above initialization technique would still cause the gradient to explode. This is because :
 
-1. The output vector $y$ at layer 1 has `mean=0`, `variance = 1`.
+1. The output vector $$y$$ at layer 1 has `mean=0`, `variance = 1`.
 2. The standard deviation at each layer will keep growing.
 
 To see what's happening in this layer:
@@ -94,7 +94,7 @@ y_{256}
 \end{gather*}
 $$
 
-In code, we can see that the mean is 0. This is because for independent variables $w$ and $x$:
+In code, we can see that the mean is 0. This is because for independent variables $$w$$ and $$x$$:
 
 $$
 \begin{gather*}
@@ -102,7 +102,7 @@ E[wx] = E[w]E[x] = 0
 \end{gather*}
 $$
 
-And the standard deviation is almost $\sqrt{256}$. This is because for a single product $wx$:
+And the standard deviation is almost $$\sqrt{256}$$. This is because for a single product $$wx$$:
 
 $$
 \begin{gather*}
@@ -110,7 +110,7 @@ Var(wx) = E[(wx)^2] - E[(wx)] = E[(wx)^2] - 0 = E[w^2x^2] = E[w^2]E[x^2] = 1
 \end{gather*}
 $$
 
-And for $y_i = w_{i1}x_{i} + ... + w_{i, 256}x_{i}$, its mean is 0. If we talk about $y_i$'s variance, it would be 256, because:
+And for $$y_i = w_{i1}x_{i} + ... + w_{i, 256}x_{i}$$, its mean is 0. If we talk about $$y_i$$'s variance, it would be 256, because:
 
 $$
 \begin{gather*}
@@ -118,13 +118,13 @@ Var(A + B) = E[(A+B)^2] = E[A^2] + 2E[A^B] + E[B^2] = E[A^2] + E[A^2] = 2
 \end{gather*}
 $$
 
-Then, the variance of $Y$ across all $y_i$ is 256. The standard deviation of $y$ is 16. If y is a Gaussian distribution, this means 33.3% of y will lie outside of $[-16, 16]$.
+Then, the variance of $$Y$$ across all $$y_i$$ is 256. The standard deviation of $$y$$ is 16. If y is a Gaussian distribution, this means 33.3% of y will lie outside of $$[-16, 16]$$.
 
 In the next layer, the standard deviation will be amplified further and further.
 
 #### Naive Initialization For Perceptron Networks
 
-What about we make each layer's weights so that each layer's output vector $y$ has `mean=0`, `standard deviation = 1`? This way, the next layer's $y$ will still be 1.
+What about we make each layer's weights so that each layer's output vector $$y$$ has `mean=0`, `standard deviation = 1`? This way, the next layer's $$y$$ will still be 1.
 
 It's quite simple to do that. Since:
 
@@ -134,7 +134,7 @@ Var(y) = Var(y_i) = w_{i1}x_{i} + ... + w_{i, 256}x_{i}
 \end{gather*}
 $$
 
-If we scale $W$'s variance by $\sqrt{1/256}$, problem solved, right? It seems so!
+If we scale $$W$$'s variance by $$\sqrt{1/256}$$, problem solved, right? It seems so!
 
 ```python
 import torch
@@ -153,7 +153,7 @@ However, we have to add the non-linear activation back in so a neural net can cl
 In Xavier Glorot and Yoshua Bengio's paper: [Understanding the difficulty of training deep feedforward neural networks](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf), they believed one good way to initialize is to:
 
 1. Create uniformly distributed weights
-2. Normalized them to $\frac{\sqrt{6}}{\sqrt{n_i + n_{i+1}}}$, where $n_i$ and $n_{i+1}$ are "fan in" and "fan out" (number of inputs and outputs to the layer)
+2. Normalized them to $$\frac{\sqrt{6}}{\sqrt{n_i + n_{i+1}}}$$, where $$n_i$$ and $$n_{i+1}$$ are "fan in" and "fan out" (number of inputs and outputs to the layer)
 
 ```python
 import math
@@ -172,7 +172,7 @@ x.mean(), x.std()   # see (tensor(0.0047), tensor(0.0452))
 #### He (Kaiming) Initialization
 
 What if the activation function is **ReLu**? In his paper: [Delving Deep into Rectifiers:
-Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) (ICCV, 2015)  He Kaiming (何恺明) found that instead of scaling $\sqrt{1/n}$ (as in the naive scaling approach), we do $\sqrt{2/n}$, we could achieve good results. Why? Intuitively, half of the $y$ would turn to 0 after ReLu. So $y$'s variance will become half
+Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) (ICCV, 2015)  He Kaiming (何恺明) found that instead of scaling $$\sqrt{1/n}$$ (as in the naive scaling approach), we do $$\sqrt{2/n}$$, we could achieve good results. Why? Intuitively, half of the $$y$$ would turn to 0 after ReLu. So $$y$$'s variance will become half
 
 #### Remarks On Zero Initialization
 

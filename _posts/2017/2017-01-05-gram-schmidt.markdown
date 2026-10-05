@@ -12,12 +12,12 @@ tags:
 
 ### Glossary
 
-- Inner product: $<a,b> = \vec{a}^T \cdot \vec{b}$, which is a.k.a "dot product"
-- Outer product: $a \otimes b = \vec{a} \cdot \vec{b}^T$, which results in a matrix.
+- Inner product: $$<a,b> = \vec{a}^T \cdot \vec{b}$$, which is a.k.a "dot product"
+- Outer product: $$a \otimes b = \vec{a} \cdot \vec{b}^T$$, which results in a matrix.
 
 ### Vector Projection
 
-Projection of a on to b $proj_ba= \frac{<a,b>}{\sqrt{<a,a>}}a$
+Projection of a on to b $$proj_ba= \frac{<a,b>}{\sqrt{<a,a>}}a$$
 
 <p align="center">
     <figure>
@@ -28,12 +28,12 @@ Projection of a on to b $proj_ba= \frac{<a,b>}{\sqrt{<a,a>}}a$
 
 ## Gram-Schmidt Orthogonalization
 
-**Goal**: given m linearly independent N-dimensional vectors ${v_1 ... v_m}$, transform them into an orthogonal set of vectors.
+**Goal**: given m linearly independent N-dimensional vectors $${v_1 ... v_m}$$, transform them into an orthogonal set of vectors.
 
-**Method**: an orthogonal vector is formed by subtracting a vector's projection onto other orthogonal basis, $U$.
-1. $u_1 = v_1$
-2. $u_2 = v_2 - \frac{<v_2,u_1>}{\sqrt{<u_1,u_1>}}u_1$
-3. $u_3 = v_3 - \frac{<v_3,u_1>}{\sqrt{<u_1,u_1>}}u_1 - \frac{<v_3,u_2>}{\sqrt{<u_2,u_2>}}u_2$
+**Method**: an orthogonal vector is formed by subtracting a vector's projection onto other orthogonal basis, $$U$$.
+1. $$u_1 = v_1$$
+2. $$u_2 = v_2 - \frac{<v_2,u_1>}{\sqrt{<u_1,u_1>}}u_1$$
+3. $$u_3 = v_3 - \frac{<v_3,u_1>}{\sqrt{<u_1,u_1>}}u_1 - \frac{<v_3,u_2>}{\sqrt{<u_2,u_2>}}u_2$$
 
 **Caveats**
 
@@ -41,11 +41,11 @@ Projection of a on to b $proj_ba= \frac{<a,b>}{\sqrt{<a,a>}}a$
 
 ## QR Decomposition
 
-**Goal**: given a matrix $A$, decompose it into $A=QR$ such that Q is orthonormal, and R is an upper triangular matrix. 
+**Goal**: given a matrix $$A$$, decompose it into $$A=QR$$ such that Q is orthonormal, and R is an upper triangular matrix. 
 
 **How**:
-1. Get an Orthogonal Basis of $A$'s columns using Gram-Schmidt (or Householder Transformation). This basis is $Q$
-2. Get $R$:
+1. Get an Orthogonal Basis of $$A$$'s columns using Gram-Schmidt (or Householder Transformation). This basis is $$Q$$
+2. Get $$R$$:
 
 $$
 \begin{gather*}
@@ -91,7 +91,7 @@ $$
 \end{equation*}
 $$
 
-One important note from Gram-Schmidt, is that each subsequent basis vector is perpendicular to the vectors that creates the previous basis vectors, but not to the vector that it directly comes from. E.g., $e_2\perp a_1$, $e_3\perp a_1$, $e_3\perp a_2$, $e_2 \not\perp a_2$
+One important note from Gram-Schmidt, is that each subsequent basis vector is perpendicular to the vectors that creates the previous basis vectors, but not to the vector that it directly comes from. E.g., $$e_2\perp a_1$$, $$e_3\perp a_1$$, $$e_3\perp a_2$$, $$e_2 \not\perp a_2$$
 
 Then, Q is 
 
@@ -133,7 +133,7 @@ When `m < n`, A is overdetermined. So it will defintely have linearly dependent 
 
 ### Applications
 
-1. Find Least Square Solution to $Ax = b$. The common solution is 
+1. Find Least Square Solution to $$Ax = b$$. The common solution is 
 
 $$
 \begin{gather*}
@@ -150,7 +150,7 @@ $$
 \end{gather*}
 $$
 
-Note that $R$ may not be square matrix (when `m<n`), or may not be invertible (when A is not invertible). Except from those cases, 
+Note that $$R$$ may not be square matrix (when `m<n`), or may not be invertible (when A is not invertible). Except from those cases, 
 
 $$
 \begin{gather*}

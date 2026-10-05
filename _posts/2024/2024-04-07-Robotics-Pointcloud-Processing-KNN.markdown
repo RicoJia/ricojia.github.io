@@ -33,7 +33,7 @@ $$
 \end{gather*}
 $$
 
-If given $[x,y,z]$ coordinates, it's easy to go the other way, too:
+If given $$[x,y,z]$$ coordinates, it's easy to go the other way, too:
 
 $$
 \begin{gather*}

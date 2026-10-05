@@ -153,7 +153,7 @@ In [this paper](https://arxiv.org/pdf/1608.05859), Press & Wolf propose weight t
 target output word ---embedding layer E---> embedding ------> Decoder ---embedding layer E---> logits ------> Softmax
 ```
 
-The vanilla embedding in an one-hot vector that represents a token, then get an embedding dim. That could be "reused" to output logits as well. The biggest highlight is the reuse of the embedding layer E. The logits are simply $HE^T$ (H is `[sentence_length, embedding_dim]`, $E^T$ is `[embedding_dim, output_token_dim]`). Because of the token<->embedding relationship is shared, the model might be able to learn such an E that satisfy this need.
+The vanilla embedding in an one-hot vector that represents a token, then get an embedding dim. That could be "reused" to output logits as well. The biggest highlight is the reuse of the embedding layer E. The logits are simply $$HE^T$$ (H is `[sentence_length, embedding_dim]`, $$E^T$$ is `[embedding_dim, output_token_dim]`). Because of the token<->embedding relationship is shared, the model might be able to learn such an E that satisfy this need.
 
 ### 2. Noam Scheduling
 

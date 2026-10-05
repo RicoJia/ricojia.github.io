@@ -35,7 +35,7 @@ k = \begin{bmatrix}
 P = kx
 $$
 
-In 1D, if we choose to draw a cubic curve, the first step is we need 4 points, and define the spline: $f(x) = ax^3 + bx^2 + cx + d$
+In 1D, if we choose to draw a cubic curve, the first step is we need 4 points, and define the spline: $$f(x) = ax^3 + bx^2 + cx + d$$
 
 <div style="text-align: center;">
 <p align="center">
@@ -133,7 +133,7 @@ $$
 \theta = \arccos \bigl( \langle q_0, q_1 \rangle \bigr),
 $$
 
-The angle between them on $(S^3)$. Then
+The angle between them on $$(S^3)$$. Then
 
 $$
 q(t) =
@@ -142,7 +142,7 @@ q(t) =
 \quad t \in [0,1].
 $$
 
-If you think of $q_0, q_1$ as rotation matrices $(R_0, R_1 \in SO(3))$,
+If you think of $$q_0, q_1$$ as rotation matrices $$(R_0, R_1 \in SO(3))$$,
 then slerp is equivalent to
 
 $$

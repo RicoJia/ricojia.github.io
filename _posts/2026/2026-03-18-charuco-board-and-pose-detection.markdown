@@ -234,9 +234,9 @@ $$
 
 where:
 
-- $p_{cad}$ is a sampled CAD point in the object frame
+- $$p_{cad}$$ is a sampled CAD point in the object frame
 
-- $q$ is an observed depth point in the checker frame
+- $$q$$ is an observed depth point in the checker frame
 
 - trimming removes large outliers from bad depth or segmentation errors
 

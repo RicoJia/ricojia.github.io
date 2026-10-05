@@ -115,9 +115,9 @@ Here is a very helpful document on learning about [the SeaBeam instruments Sonar
     ![](https://i.postimg.cc/SsFTgVjm/Screenshot-from-2025-06-23-21-21-03.png)
 
 3. A receiver (hydrophone) array
-    1. After the ping, each patch of the sea bed sends back a plane-wave (to very good approximation). Each receiver receives them and could form their own waveform: $A(t)$ (amplitude), and $\phi(t)$ (phase)
+    1. After the ping, each patch of the sea bed sends back a plane-wave (to very good approximation). Each receiver receives them and could form their own waveform: $$A(t)$$ (amplitude), and $$\phi(t)$$ (phase)
         - The receive array is at most a few metres long; the covered seabed distance (swath) is hundreds of metres away.
-        - We assume the distance from the camera to sea bed is much longer than the receiver array size (far-field condition): `Range >> L^2/lambda`. A single echo from the seabed will have an arbitrary angle of incidence $\theta$ on to receiver 3, 2, 1. It will first reach 3, then travel by $d sin\theta$ to 2, then $d sin\theta$ to 1.
+        - We assume the distance from the camera to sea bed is much longer than the receiver array size (far-field condition): `Range >> L^2/lambda`. A single echo from the seabed will have an arbitrary angle of incidence $$\theta$$ on to receiver 3, 2, 1. It will first reach 3, then travel by $$d sin\theta$$ to 2, then $$d sin\theta$$ to 1.
             ![](https://i.postimg.cc/85Ry9WrM/Screenshot-from-2025-06-23-22-14-44.png)
         - **the spherical wavefront that leaves any single patch is practically planar by the time it spans the array.** Therefore,
     2. So effectively, we can work out the **beams** to each patch of the seabed, based on the received waveforms at each receiver

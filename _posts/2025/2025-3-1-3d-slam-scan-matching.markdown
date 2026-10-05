@@ -14,10 +14,10 @@ comments: true
 
 When we run scan matching, we usually have two point clouds:
 
-- a source scan $S_1 = \{\mathbf{p}_1, \ldots, \mathbf{p}_n\}$ (the new measurement), and
-- a target scan $S_2 = \{\mathbf{q}_1, \ldots, \mathbf{q}_m\}$ (a previous scan or a global map).
+- a source scan $$S_1 = \{\mathbf{p}_1, \ldots, \mathbf{p}_n\}$$ (the new measurement), and
+- a target scan $$S_2 = \{\mathbf{q}_1, \ldots, \mathbf{q}_m\}$$ (a previous scan or a global map).
 
-Our goal is to find a rigid transform $(R, \mathbf{t})$ that best aligns the source to the target.
+Our goal is to find a rigid transform $$(R, \mathbf{t})$$ that best aligns the source to the target.
 
 <div style="text-align: center;">
 <p align="center">
@@ -30,11 +30,11 @@ Our goal is to find a rigid transform $(R, \mathbf{t})$ that best aligns the sou
 
 ## Point-Point ICP
 
-If the two clouds are perfectly aligned, each transformed source point $R\mathbf{p}_i + \mathbf{t}$ would land exactly on its counterpart $\mathbf{q}_i$.
+If the two clouds are perfectly aligned, each transformed source point $$R\mathbf{p}_i + \mathbf{t}$$ would land exactly on its counterpart $$\mathbf{q}_i$$.
 
 In practice there's noise and partial overlap, so we instead minimize the sum of squared distances between matched points.
 
-For a pair of matched points $(\mathbf{p}_i, \mathbf{q}_i)$, define the residual
+For a pair of matched points $$(\mathbf{p}_i, \mathbf{q}_i)$$, define the residual
 
 $$
 \mathbf{e}_i = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t}.
@@ -63,29 +63,29 @@ $$
 \mathbf{x} = [\boldsymbol{\theta}, \mathbf{t}]
 $$
 
-where $\boldsymbol{\theta}$ is a minimal representation of the rotation (e.g., axis-angle or small roll–pitch–yaw),
+where $$\boldsymbol{\theta}$$ is a minimal representation of the rotation (e.g., axis-angle or small roll–pitch–yaw),
 
-The key trick is the linearization. Around the current estimate $(R, \mathbf{t})$, we approximate how the residuals change with a small pose increment $d\mathbf{x}$. For point-to-point ICP, the Jacobians for each correspondence are:
+The key trick is the linearization. Around the current estimate $$(R, \mathbf{t})$$, we approximate how the residuals change with a small pose increment $$d\mathbf{x}$$. For point-to-point ICP, the Jacobians for each correspondence are:
 
 $$
 \mathbf{e}(R, \mathbf{t}) = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t} \quad \Rightarrow \quad \frac{\partial \mathbf{e}}{\partial \mathbf{t}} = -I_{3 \times 3}.
 $$
 
-For rotation, we apply a small perturbation $(\delta\boldsymbol{\theta}, \delta\mathbf{t})$ to the current pose:
+For rotation, we apply a small perturbation $$(\delta\boldsymbol{\theta}, \delta\mathbf{t})$$ to the current pose:
 
 $$
 R' = R \exp([\delta\boldsymbol{\theta}]^\wedge), \quad \mathbf{t}' = \mathbf{t} + \delta\mathbf{t},
 $$
 
-where $[\cdot]^\wedge$ is the hat operator, giving the skew-symmetric matrix:
+where $$[\cdot]^\wedge$$ is the hat operator, giving the skew-symmetric matrix:
 
 $$
 [\mathbf{p}_i]^\wedge = \begin{bmatrix} 0 & -p_{i,z} & p_{i,y} \\ p_{i,z} & 0 & -p_{i,x} \\ -p_{i,y} & p_{i,x} & 0 \end{bmatrix},
 $$
 
-and $[\mathbf{p}_i]^\wedge \delta\boldsymbol{\theta} = \mathbf{p}_i \times \delta\boldsymbol{\theta}$.
+and $$[\mathbf{p}_i]^\wedge \delta\boldsymbol{\theta} = \mathbf{p}_i \times \delta\boldsymbol{\theta}$$.
 
-For small $\delta\boldsymbol{\theta}$, $\exp([\delta\boldsymbol{\theta}]^\wedge) \approx I + [\delta\boldsymbol{\theta}]^\wedge$.
+For small $$\delta\boldsymbol{\theta}$$, $$\exp([\delta\boldsymbol{\theta}]^\wedge) \approx I + [\delta\boldsymbol{\theta}]^\wedge$$.
 
 Starting from the perturbed residual with small perturbation (δθ, δ**t**):
 
@@ -115,7 +115,7 @@ $$\frac{\partial e}{\partial \delta\boldsymbol{\theta}} \approx R[\mathbf{p}_i]^
 
 ### From per-point Jacobians to the global least-squares system
 
-For each correspondence $(\mathbf{p}_i, \mathbf{q}_i)$, we have a residual:
+For each correspondence $$(\mathbf{p}_i, \mathbf{q}_i)$$, we have a residual:
 
 $$\mathbf{e}_i = \mathbf{q}_i - R\mathbf{p}_i - \mathbf{t} \in \mathbb{R}^3$$
 
@@ -129,7 +129,7 @@ $$\delta\mathbf{e}_i \approx J_i \, \delta\mathbf{x}, \quad J_i = \begin{bmatrix
 
 **Stacking all correspondences:**
 
-Define the global residual vector and Jacobian matrix by stacking over all $N$ correspondences:
+Define the global residual vector and Jacobian matrix by stacking over all $$N$$ correspondences:
 
 $$\mathbf{e} = \begin{bmatrix} \mathbf{e}_1 \\ \vdots \\ \mathbf{e}_N \end{bmatrix} \in \mathbb{R}^{3N}, \quad J = \begin{bmatrix} J_1 \\ \vdots \\ J_N \end{bmatrix} \in \mathbb{R}^{3N \times 6}$$
 
@@ -139,7 +139,7 @@ $$F(\mathbf{x}) = \frac{1}{2} \sum_{i=1}^N \|\mathbf{e}_i\|^2 = \frac{1}{2} \|\m
 
 **Linearization:**
 
-Around the current estimate $\mathbf{x}$, we linearize:
+Around the current estimate $$\mathbf{x}$$, we linearize:
 
 $$\mathbf{e}(\mathbf{x} + \delta\mathbf{x}) \approx \mathbf{e}(\mathbf{x}) + J \, \delta\mathbf{x}$$
 
@@ -242,7 +242,7 @@ The Point-Plane ICP is different from Point-Point ICP in:
 
 Also note that:
 
-- A plane is $n^T x + d = 0$. The plane coefficient we get are $n, d$
+- A plane is $$n^T x + d = 0$$. The plane coefficient we get are $$n, d$$
 - The signed distance between a point and a plane is:
 
 $$
@@ -315,11 +315,11 @@ $$
 </div>
 
 1. Voxelization. Partition the target point cloud into voxels. For each voxel, compute:
-    - Mean: $\mu$
-    - Covariance matrix: $\Sigma$
-2. Point-to-Distribution Association (for each source point). For each point $p_t$ in the source scan:
-    1. Transform to map frame using current pose estimate: $p_t = Rp_t + t$
-    2. Voxle Lookup. Find the voxel containing $pt$ in the target map. Retrieve $\mu$ and $\Sigma$ of that voxel.
+    - Mean: $$\mu$$
+    - Covariance matrix: $$\Sigma$$
+2. Point-to-Distribution Association (for each source point). For each point $$p_t$$ in the source scan:
+    1. Transform to map frame using current pose estimate: $$p_t = Rp_t + t$$
+    2. Voxle Lookup. Find the voxel containing $$pt$$ in the target map. Retrieve $$\mu$$ and $$\Sigma$$ of that voxel.
     3. Error and cost function:
         1. Assuming correct alignment, the transformed point should follow the distribution of the voxel:
 
@@ -331,7 +331,7 @@ $$
             \end{gather*}
             $$
 
-        2. Here, $\Sigma$ is the covariance matrix of the voxel. $\Sigma^{-1}$ is the information matrix, and because we are getting its inverse, in practice, we want to add a small value to it $\Sigma + 10^{-3}I$
+        2. Here, $$\Sigma$$ is the covariance matrix of the voxel. $$\Sigma^{-1}$$ is the information matrix, and because we are getting its inverse, in practice, we want to add a small value to it $$\Sigma + 10^{-3}I$$
         3. Jacobian update:
 
             $$
@@ -358,10 +358,10 @@ $$
     \end{gather*}
     $$
 
-    - $H = \sum_i J_i^T \Sigma^{-1} J_i$
-    - $b = -\sum_i J_i^T \Sigma^{-1} e_i$
-    - $\chi^2 = \sum_i e_i^T \Sigma^{-1} e_i$
-    - $dx = H^{-1} b$
+    - $$H = \sum_i J_i^T \Sigma^{-1} J_i$$
+    - $$b = -\sum_i J_i^T \Sigma^{-1} e_i$$
+    - $$\chi^2 = \sum_i e_i^T \Sigma^{-1} e_i$$
+    - $$dx = H^{-1} b$$
 
 When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching.
 
@@ -377,9 +377,9 @@ This is more similar to the 2D version of NDT [2], and it different from the ori
 
 ### Why NDT Works
 
-We have points in the target cloud `x1, x2...xi` and source cloud `x1', x2' ... xi'`. The goal is to find the transform `T` such that $x1 \approx T x1'$ ...
+We have points in the target cloud `x1, x2...xi` and source cloud `x1', x2' ... xi'`. The goal is to find the transform `T` such that $$x1 \approx T x1'$$ ...
 
-The mean and covarance matrix of the target cloud are $\mu_t$, $\Sigma_t$
+The mean and covarance matrix of the target cloud are $$\mu_t$$, $$\Sigma_t$$
 
 The main idea of NDT is **"if the true transform `T*` is found, the point distrbution of the source and the target clouds should match at each voxel."**
     - We are actually turning the target cloud into a statistical field
@@ -421,7 +421,7 @@ $$
 \end{gather*}
 $$
 
-- **$x_1'$, $x_2'$ are samples from the source cloud, and they are independent from each other.** So they can be thought of as samples drawn from the source cloud distribution $X'$
+- **$$x_1'$$, $$x_2'$$ are samples from the source cloud, and they are independent from each other.** So they can be thought of as samples drawn from the source cloud distribution $$X'$$
 
 $$
 \begin{gather*}
@@ -431,7 +431,7 @@ $$
 \end{gather*}
 $$
 
-- To calculate the expected log-likelihood, we have a refresher: the expectation of a function $g(X)$ is:
+- To calculate the expected log-likelihood, we have a refresher: the expectation of a function $$g(X)$$ is:
 
 $$
 \begin{gather*}
@@ -441,7 +441,7 @@ $$
 \end{gather*}
 $$
 
-- **So for a point in source cloud $X'$, we need to find the true corresponding pdf value of $ln(f(x_i'))$.** Following the true transform, each point $x_i'$ is mapped to target point $x_{i} = (T^*)^{-1} x_{i}'$. But under the candidate pose T, they are mapoped to $x_{iT} = T^{-1} x_{i}'$. So the true corresponding pdf value of $ln(f(T^{-1}f(\mathbf{x}_i')))$ should be:
+- **So for a point in source cloud $$X'$$, we need to find the true corresponding pdf value of $$ln(f(x_i'))$$.** Following the true transform, each point $$x_i'$$ is mapped to target point $$x_{i} = (T^*)^{-1} x_{i}'$$. But under the candidate pose T, they are mapoped to $$x_{iT} = T^{-1} x_{i}'$$. So the true corresponding pdf value of $$ln(f(T^{-1}f(\mathbf{x}_i')))$$ should be:
 
 $$
 \begin{gather*}

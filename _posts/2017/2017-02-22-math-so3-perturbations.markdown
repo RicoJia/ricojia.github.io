@@ -22,7 +22,7 @@ p_2 = R_{c2c1} R_{c1w}p_w
 \end{gather*}
 $$
 
-$R_{c2c1} R_{c1w}$ is called a "left perturbation".
+$$R_{c2c1} R_{c1w}$$ is called a "left perturbation".
 
 On the other hand, at the world frame,
 
@@ -34,7 +34,7 @@ p_w = R_{wc1}R_{c1c2}p_2
 \end{gather*}
 $$
 
-$R_{wc1}R_{c1c2}$ is called a "right perturbation". This is **more common** since we are always more interested in world frame coordinates.
+$$R_{wc1}R_{c1c2}$$ is called a "right perturbation". This is **more common** since we are always more interested in world frame coordinates.
 
 <div style="text-align: center;">
 <p align="center">
@@ -55,11 +55,11 @@ R = exp(\phi_1^{\land}) exp(\phi_2^{\land}) = exp(\phi_1^{\land} + \phi_2^{\land
 \end{gather*}
 $$
 
-In 2D, the above form is correct. However, in 3D, we know that $R_1R_2 \ne R_2R_1$, so the above can't be true. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
+In 2D, the above form is correct. However, in 3D, we know that $$R_1R_2 \ne R_2R_1$$, so the above can't be true. Rotation matrices (Lie Algebra) are in the tangent space, not in the Cartesian space. So perturbations in rotation matrices need to be mapped correspondingly.
 
 ## BCH (Baker-Cambell-Hausdorff) Formula
 
-BCH formula states that for two Lie Algebras $e^{A}$ and $e^{B}$ with skew matrices `A` and `B` that composes `C`: $R = e^{C} = e^{A^{\land}} e^{B^{\land}}$, Then to determine C
+BCH formula states that for two Lie Algebras $$e^{A}$$ and $$e^{B}$$ with skew matrices `A` and `B` that composes `C`: $$R = e^{C} = e^{A^{\land}} e^{B^{\land}}$$, Then to determine C
 
 $$
 \begin{gather*}
@@ -67,11 +67,11 @@ C = A + B + \frac{1}{2}[A, B] + \frac{1}{12}([A, [A, B] - [B, [B, A]]]) ...
 \end{gather*}
 $$
 
-Where `[A, B]` is a commutator that $[A, B] = AB - BA$, and $[A, [A, B]] = A(AB-BA) - (AB-BA)A$. If we take the taylor expansion with perturbations as shown, we get:
+Where `[A, B]` is a commutator that $$[A, B] = AB - BA$$, and $$[A, [A, B]] = A(AB-BA) - (AB-BA)A$$. If we take the taylor expansion with perturbations as shown, we get:
 
 ### Small Example of BCH
 
-- For small $A$, $B$, one have $C \approx A + B + \frac{1}{2}[A, B]$. Example: for two rotations `A` and `B`
+- For small $$A$$, $$B$$, one have $$C \approx A + B + \frac{1}{2}[A, B]$$. Example: for two rotations `A` and `B`
 
 $$
 \begin{gather*}
@@ -129,7 +129,7 @@ R = exp(A^{\land})
 \end{gather*}
 $$
 
-- Left Jacobian is defined as the "derivative" that measures the infinitesimally small change in R w.r.t to $A^{\land}$. So it's
+- Left Jacobian is defined as the "derivative" that measures the infinitesimally small change in R w.r.t to $$A^{\land}$$. So it's
 
 $$
 \begin{gather*}
@@ -137,9 +137,9 @@ J_{l}(A) =  \frac{\partial{exp(A^{\land})}}{\partial{A}}
 \end{gather*}
 $$
 
-- So note that in $exp(A^{\land}) = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}$, $\frac{\partial A^{\land}}{A}$ is not hard because TODO?
+- So note that in $$exp(A^{\land}) = I + \frac{(1-cos \theta) A^{\land} A^{\land}}{\theta^2} + \frac{sin \theta A^{\land}}{\theta}$$, $$\frac{\partial A^{\land}}{A}$$ is not hard because TODO?
 
-- $\frac{\theta}{A}$ is a bit tricky. But we have $\theta = \sqrt{A_1^2 + A_2^2 + A_3^2}$. So
+- $$\frac{\theta}{A}$$ is a bit tricky. But we have $$\theta = \sqrt{A_1^2 + A_2^2 + A_3^2}$$. So
 
 $$
 \begin{gather*}

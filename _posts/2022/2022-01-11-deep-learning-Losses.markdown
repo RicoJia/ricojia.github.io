@@ -40,7 +40,7 @@ torch.mean(torch.abs(x - y)) # tensor(1.0)
 `reduction` options:
 
 - `"mean"` (default): average over all elements → scalar.
-- `"sum"`: sum over all elements → $\sum_i |x_i - y_i|$.
+- `"sum"`: sum over all elements → $$\sum_i \vert x_i - y_i\vert $$.
 - `"none"`: no reduction → elementwise absolute errors, same shape as inputs.
 
 - Advantages: less sensitive to outliers than MSE.
@@ -52,7 +52,7 @@ $$
 \text{Hinge} = \frac{1}{n}\sum_i \max\!\bigl(0,\, 1 - y_i\,\hat{y}_i\bigr)
 $$
 
-Most commonly used in SVM training. Labels should be $\pm 1$. Not well suited to probabilistic outputs.
+Most commonly used in SVM training. Labels should be $$\pm 1$$. Not well suited to probabilistic outputs.
 
 ### Huber Loss
 
@@ -66,7 +66,7 @@ L_\delta(y,\hat{y}) = \begin{cases}
 $$
 
 - Advantages: continuous and differentiable everywhere; commonly used in SLAM for robustness to outlier observations.
-- Requires tuning $\delta$.
+- Requires tuning $$\delta$$.
 
 <div style="text-align: center;">
     <p align="center">
@@ -83,14 +83,14 @@ $$
 
 ### Cross Entropy Loss (Binary)
 
-For binary classification with predicted probability $\hat{y} \in (0,1)$ and true label $y \in \{0,1\}$:
+For binary classification with predicted probability $$\hat{y} \in (0,1)$$ and true label $$y \in \{0,1\}$$:
 
 $$
 \text{CE} = -\frac{1}{n}\sum_i \bigl[y_i\log\hat{y}_i + (1-y_i)\log(1-\hat{y}_i)\bigr]
 $$
 
 - Advantages: well-calibrated for probabilistic outputs; penalizes confident wrong predictions heavily.
-- Note: the loss diverges as $\hat{y} \to 0$ or $\hat{y} \to 1$, so `BCEWithLogitsLoss` (which fuses sigmoid + log) is numerically preferred.
+- Note: the loss diverges as $$\hat{y} \to 0$$ or $$\hat{y} \to 1$$, so `BCEWithLogitsLoss` (which fuses sigmoid + log) is numerically preferred.
 
 ### Negative Log-Likelihood Loss (NLL)
 
@@ -105,7 +105,7 @@ Always pair with a log-softmax activation for numerical stability.
 **Example**: logits `[1.0, 2.0, 0.5]`, true class index `1`.
 
 1. Apply log-softmax: `[-1.463, -0.463, -1.963]`
-2. Pick the true-class log-probability: $-\log p(y=1) = 0.463$
+2. Pick the true-class log-probability: $$-\log p(y=1) = 0.463$$
 
 ### Sparse Categorical Cross-Entropy
 
@@ -119,9 +119,9 @@ $$
 
 | Pixel | Class 0 | Class 1 | Class 2 | True class | Loss |
 |-------|---------|---------|---------|------------|------|
-| 0     | 0.1     | 0.7     | 0.2     | 2          | $-\log 0.2$ |
-| 1     | 0.3     | 0.7     | 0.0     | 1          | $-\log 0.7$ |
-| 2     | 0.5     | 0.4     | 0.1     | 0          | $-\log 0.5$ |
+| 0     | 0.1     | 0.7     | 0.2     | 2          | $$-\log 0.2$$ |
+| 1     | 0.3     | 0.7     | 0.0     | 1          | $$-\log 0.7$$ |
+| 2     | 0.5     | 0.4     | 0.1     | 0          | $$-\log 0.5$$ |
 
 Total loss is the sum (or mean) of the per-pixel losses.
 
@@ -133,7 +133,7 @@ Multiclass classification and image segmentation both suffer from the **data imb
 
 ### IoU and Dice Loss
 
-- **IoU Loss** = $1 - \text{IoU}$, where $\text{IoU} = \frac{|\text{intersection}|}{|\text{union}|}$.
+- **IoU Loss** = $$1 - \text{IoU}$$, where $$\text{IoU} = \frac{\vert \text{intersection}\vert }{\vert \text{union}\vert }$$.
 
   <div style="text-align: center;">
   <p align="center">
@@ -144,7 +144,7 @@ Multiclass classification and image segmentation both suffer from the **data imb
   </p>
   </div>
 
-- **Dice Loss** = $1 - \dfrac{2\,|\text{intersection}|}{|\text{pred}|+|\text{target}|}$
+- **Dice Loss** = $$1 - \dfrac{2\,\vert \text{intersection}\vert }{\vert \text{pred}\vert +\vert \text{target}\vert }$$
 
   <div style="text-align: center;">
   <p align="center">
@@ -168,7 +168,7 @@ Dice loss was introduced alongside weighted cross-entropy for highly imbalanced 
 
 ### Focal Loss
 
-Focal loss addresses class imbalance by **down-weighting easy, well-classified examples** so the model focuses on hard ones. The modulating factor $(1-p_t)^\gamma$ shrinks the loss for confident correct predictions. $\gamma \ge 0$ is a hyperparameter; $p_t$ is the predicted probability of the true class.
+Focal loss addresses class imbalance by **down-weighting easy, well-classified examples** so the model focuses on hard ones. The modulating factor $$(1-p_t)^\gamma$$ shrinks the loss for confident correct predictions. $$\gamma \ge 0$$ is a hyperparameter; $$p_t$$ is the predicted probability of the true class.
 
 $$
 \text{FL}(p_t) = (1-p_t)^{\gamma}\,(-\log p_t)
@@ -261,7 +261,7 @@ def dfl_loss_one_side(logits, target):
 
 ## Cauchy Robust Kernel
 
-In typical nonlinear optimization (e.g., SLAM), the squared $L_2$ norm of a residual error $e$ is used as the cost:
+In typical nonlinear optimization (e.g., SLAM), the squared $$L_2$$ norm of a residual error $$e$$ is used as the cost:
 
 $$
 \begin{gather*}
@@ -271,7 +271,7 @@ $$
 \end{gather*}
 $$
 
-To reduce the influence of outliers, a robust loss function $\rho(s)$ is used in place of the plain quadratic cost. The $\textbf{Cauchy loss}$ is defined as:
+To reduce the influence of outliers, a robust loss function $$\rho(s)$$ is used in place of the plain quadratic cost. The $$\textbf{Cauchy loss}$$ is defined as:
 
 $$
 \begin{gather*}
@@ -281,9 +281,9 @@ $$
 \end{gather*}
 $$
 
-where $\delta$ is a tuning parameter that determines the scale at which residuals begin to be downweighted.
+where $$\delta$$ is a tuning parameter that determines the scale at which residuals begin to be downweighted.
 
-The derivative of the Cauchy loss with respect to $e$ gives the weight applied to the residual during optimization:
+The derivative of the Cauchy loss with respect to $$e$$ gives the weight applied to the residual during optimization:
 
 $$
 \begin{gather*}
@@ -293,12 +293,12 @@ $$
 \end{gather*}
 $$
 
-This expression shows that for **large residuals** ($s \gg \delta^2$, e.g., a wrong observation edge), the weight decreases, reducing their influence in the optimization process.
+This expression shows that for **large residuals** ($$s \gg \delta^2$$, e.g., a wrong observation edge), the weight decreases, reducing their influence in the optimization process.
 
-Unlike the squared $L_2$ loss, which grows quadratically with $s$, the Cauchy loss grows **logarithmically**:
+Unlike the squared $$L_2$$ loss, which grows quadratically with $$s$$, the Cauchy loss grows **logarithmically**:
 
-- For small $s$, $\rho(s) \approx s$ (behaves like L2).
-- For large $s$, $\rho(s)$ grows slowly and the gradient $\frac{\partial \rho}{\partial s}$ asymptotically approaches zero.
+- For small $$s$$, $$\rho(s) \approx s$$ (behaves like L2).
+- For large $$s$$, $$\rho(s)$$ grows slowly and the gradient $$\frac{\partial \rho}{\partial s}$$ asymptotically approaches zero.
 
 <div style="text-align: center;">
 <p align="center">

@@ -18,7 +18,7 @@ comments: true
 
 ## ICP refinement: CAD/model points + observed object cluster
 
-For each coarse pose candidate ${}^{checker}T_{object}$, we refine it by aligning target point cloud to the observed segmented object cluster.
+For each coarse pose candidate $${}^{checker}T_{object}$$, we refine it by aligning target point cloud to the observed segmented object cluster.
 
 Let:
 
@@ -34,7 +34,7 @@ $$
 p_i^{checker} = T p_i^{object}  
 $$
 
-Then for each observed point $q_j \in Q$, find its nearest transformed CAD point:
+Then for each observed point $$q_j \in Q$$, find its nearest transformed CAD point:
 
 $$  
 i^*(j) =
@@ -68,7 +68,7 @@ and optionally keeps only the best trimmed fraction of the remaining corresponde
 
 ## Closed-form rigid transform update
 
-Now suppose we have $N$ valid correspondences:
+Now suppose we have $$N$$ valid correspondences:
 
 $$  
 (a_k, b_k), \quad k = 1,\dots,N  
@@ -81,7 +81,7 @@ a_k = transformed CAD/source point
 b_k = observed target point
 ```
 
-We want to find a rigid transform $(R, t)$ that best maps the source points to the target points:
+We want to find a rigid transform $$(R, t)$$ that best maps the source points to the target points:
 
 $$  
 \min_{R,t}  
@@ -167,9 +167,9 @@ H =
 A^T B  
 $$
 
-where $A$ is the matrix of centered source points and $B$ is the matrix of centered target points.
+where $$A$$ is the matrix of centered source points and $$B$$ is the matrix of centered target points.
 
-Important detail: this is called a covariance-like matrix, but the scale factor $\frac{1}{N}$ is not necessary for the rotation, because it does not change the SVD singular vectors.
+Important detail: this is called a covariance-like matrix, but the scale factor $$\frac{1}{N}$$ is not necessary for the rotation, because it does not change the SVD singular vectors.
 
 ---
 
@@ -194,7 +194,7 @@ $$
 R = V U^T  
 $$
 
-In NumPy, `vt` is $V^T$, so:
+In NumPy, `vt` is $$V^T$$, so:
 
 ```python
 rotation = vt.T @ u.T
@@ -230,7 +230,7 @@ $$
 \det(R) < 0  
 $$
 
-then the code flips the last row of $V^T$:
+then the code flips the last row of $$V^T$$:
 
 ```python
 if np.linalg.det(rotation) < 0.0:
@@ -257,7 +257,7 @@ This prevents the fitted transform from mirroring the CAD model.
 
 ## Step 6: Solve translation
 
-Once $R$ is known, translation is:
+Once $$R$$ is known, translation is:
 
 $$  
 t = \bar{b} - R \bar{a}  
@@ -354,7 +354,7 @@ $$
 r_k(\xi) = R(\xi) a_k + t(\xi) - b_k
 $$
 
-where $\xi \in \mathfrak{se}(3)$ is a small pose update.
+where $$\xi \in \mathfrak{se}(3)$$ is a small pose update.
 
 Then it linearizes:
 
@@ -380,7 +380,7 @@ $$
 T \leftarrow \exp(\delta \xi^\wedge) T
 $$
 
-Your code does **not** do this. It does not compute $J$, $J^T J$, or a Lie algebra update. It directly solves $(R,t)$ from point correspondences using SVD.
+Your code does **not** do this. It does not compute $$J$$, $$J^T J$$, or a Lie algebra update. It directly solves $$(R,t)$$ from point correspondences using SVD.
 
 ---
 

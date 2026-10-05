@@ -35,7 +35,7 @@ $$
 
 ## Why dynamic IoU thresholding
 
-Fixed IoU thresholds are harsh on small objects. A shift of 1-2 pixels changes IoU much more for a $6 \times 6$ box than for a $100 \times 100$ box.
+Fixed IoU thresholds are harsh on small objects. A shift of 1-2 pixels changes IoU much more for a $$6 \times 6$$ box than for a $$100 \times 100$$ box.
 
 STAL addresses this by lowering the IoU acceptance threshold for smaller objects. ([arXiv][2])
 
@@ -49,7 +49,7 @@ $$
 A_j = \operatorname{area\ of\ GT\ object}\ j, \qquad A_{\mathrm{img}} = \operatorname{image\ area}
 $$
 
-For small objects, $\tau_j$ becomes lower than the base threshold. This allows spatially reasonable low-IoU matches to remain trainable positives.
+For small objects, $$\tau_j$$ becomes lower than the base threshold. This allows spatially reasonable low-IoU matches to remain trainable positives.
 
 Example intuition:
 
@@ -285,7 +285,7 @@ $$
 \tau_{\min} = 0.10
 $$
 
-and the image is $640 \times 640$.
+and the image is $$640 \times 640$$.
 
 ### Large object
 
@@ -301,7 +301,7 @@ $$
 τ = 0.10 + (0.50 - 0.10)(0.25) = 0.20
 $$
 
-So a candidate needs IoU at least $0.20$.
+So a candidate needs IoU at least $$0.20$$.
 
 ### Tiny object
 
@@ -317,9 +317,9 @@ $$
 τ = 0.10 + (0.50 - 0.10)(0.0125) = 0.105
 $$
 
-So a candidate with IoU $0.15$ is accepted.
+So a candidate with IoU $$0.15$$ is accepted.
 
-With a fixed threshold of $0.50$, that candidate would be rejected.
+With a fixed threshold of $$0.50$$, that candidate would be rejected.
 
 This is the key STAL difference:
 

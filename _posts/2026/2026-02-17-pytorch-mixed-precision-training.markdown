@@ -139,7 +139,7 @@ optimizer step:
 In PyTorch, model weights are stored as **fp32**. `Autocast` temporarily casts weights to fp16, then the optimizer updates fp32 weights.
     - FP16 is NOT used in backprop
 
-- `GradScaler` scales all gradients by just scaling the loss $L_{\text{scaled}} = L \times S$, so all gradients in the graph are scaled automatically: $\frac{\partial L_{\text{scaled}}}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}$
+- `GradScaler` scales all gradients by just scaling the loss $$L_{\text{scaled}} = L \times S$$, so all gradients in the graph are scaled automatically: $$\frac{\partial L_{\text{scaled}}}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}$$
 
 - Inf/NaN detection — if the scale is too large and causes overflow in the gradients, GradScaler detects it, skips the `optimizer.step()`, and halves the scale. If steps succeed it slowly increases the scale back up
 

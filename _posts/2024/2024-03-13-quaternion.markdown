@@ -69,7 +69,7 @@ q_a q_b = [s_a s_b - v_a^T v_b, s_a v_b + s_b v_a + v_a \times v_b]
 \end{gather*}
 $$
 
-Note that the $v_a \times v_b$ is not commutative, so the quaternion is not commutative, unless $v_a, v_b$ are co-linear
+Note that the $$v_a \times v_b$$ is not commutative, so the quaternion is not commutative, unless $$v_a, v_b$$ are co-linear
 
 ### Length of q
 
@@ -87,7 +87,7 @@ $$
 \end{gather*}
 $$
 
-### q conjugate: $q^{*}$
+### q conjugate: $$q^{*}$$
 
 $$
 \begin{gather*}
@@ -97,7 +97,7 @@ q^{*}q = [s_a s_b + v^T v, 0] = q q^{*}
 \end{gather*}
 $$
 
-Because $q^{*}q = [s_a s_b + v^T v, 0]$, we can see that the inverse of q is
+Because $$q^{*}q = [s_a s_b + v^T v, 0]$$, we can see that the inverse of q is
 
 $$
 \begin{gather*}
@@ -121,7 +121,7 @@ $$
 
 A general quaternion does NOT have to be a unit vector, however, a rotation quaternion **must be a unit vector**.
 
-### 1. Rotation is $p'=qpq^{-1}$
+### 1. Rotation is $$p'=qpq^{-1}$$
 
 <div style="text-align: center;">
     <p align="center">
@@ -131,9 +131,9 @@ A general quaternion does NOT have to be a unit vector, however, a rotation quat
     </p>
 </div>
 
-For a point `(x, y, z)`, `p' = Rp`. If we want to do rotation in quaternions, we write `p = [0, x, y, z]`. $p' = qpq^{-1}$. Actually `p'` is a pure imaginary number. Here is why:
+For a point `(x, y, z)`, `p' = Rp`. If we want to do rotation in quaternions, we write `p = [0, x, y, z]`. $$p' = qpq^{-1}$$. Actually `p'` is a pure imaginary number. Here is why:
 
-- Let's define 2 matrices: (the only difference is the sign of $v^{\land}$)
+- Let's define 2 matrices: (the only difference is the sign of $$v^{\land}$$)
 
 $$
 \begin{gather*}
@@ -153,7 +153,7 @@ v & sI - v^{\land}
 \end{gather*}
 $$
 
-We can prove that $q_1^{+} q_2 = q_1 q_2$
+We can prove that $$q_1^{+} q_2 = q_1 q_2$$
 
 $$
 \begin{gather*}
@@ -174,7 +174,7 @@ s_1 \mathbf{v}_2 + s_2 \mathbf{v}_1 + \mathbf{v}_1^\wedge \mathbf{v}_2
 \end{gather*}
 $$
 
-Similarly, $q_1^{+} q_2 = q_1 q_2 = q_2^{\oplus} q_1$. So
+Similarly, $$q_1^{+} q_2 = q_1 q_2 = q_2^{\oplus} q_1$$. So
 
 $$
 \begin{gather*}
@@ -182,7 +182,7 @@ p' = qpq^{-1} = q^{+} p^{+} q^{-1} = q^{+} q^{-1 \oplus} p
 \end{gather*}
 $$
 
-Then, we can write out $q^{+} q^{-1 \oplus}$, using that **a rotation quaternion is unit length**
+Then, we can write out $$q^{+} q^{-1 \oplus}$$, using that **a rotation quaternion is unit length**
 
 $$
 \begin{gather*}
@@ -203,11 +203,11 @@ s & \mathbf{v}^\top \\
 \end{gather*}
 $$
 
-Here, it's easy to see that $p' = qpq^{-1} = q^{+} q^{-1 \oplus} p$ has a zero real part.
+Here, it's easy to see that $$p' = qpq^{-1} = q^{+} q^{-1 \oplus} p$$ has a zero real part.
 
-### 2. Rotation Matrix is $R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$
+### 2. Rotation Matrix is $$R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$$
 
-Since rotation in quaternion is purely imaginary, the rotation Matrix can be represented as the last element in $q^{+} q^{-1 \oplus}$
+Since rotation in quaternion is purely imaginary, the rotation Matrix can be represented as the last element in $$q^{+} q^{-1 \oplus}$$
 
 $$
 \begin{gather*}
@@ -215,9 +215,9 @@ p' = qpq^{-1} = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2 p = Rp
 \end{gather*}
 $$
 
-**So that leads to $R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$.**
+**So that leads to $$R = v v^{T} + s^2 I + 2sv^{\land} + (v^{\land})^2$$.**
 
-### 3. From Quaternion To Rotation Angle, $\theta$ Using $tr(R)$
+### 3. From Quaternion To Rotation Angle, $$\theta$$ Using $$tr(R)$$
 
 Now, we can represent trace of `R` as the real part of quaternion `q`, `s`
 
@@ -235,7 +235,7 @@ v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
 \end{gather*}
 $$
 
-We have the trace of $(v^{\land})^2$:
+We have the trace of $$(v^{\land})^2$$:
 
 $$
 \begin{gather*}
@@ -263,7 +263,7 @@ $$
 \end{gather*}
 $$
 
-We always require that $\theta \in [0, \pi]$. And for cases where $\theta$ is out of $[0, \pi]$, we change the sign of q. So we can know the rotation angle, $\theta$:
+We always require that $$\theta \in [0, \pi]$$. And for cases where $$\theta$$ is out of $$[0, \pi]$$, we change the sign of q. So we can know the rotation angle, $$\theta$$:
 
 $$
 \begin{gather*}
@@ -309,9 +309,9 @@ Most libraries will use quaternion for rotations as it only requires 4 numbers. 
 
 ## Rotation Matrix To Rotation Quaternion
 
-### 1. Define "Quaternion Angular Velocity" $q^{*}q' = \bar{w}$
+### 1. Define "Quaternion Angular Velocity" $$q^{*}q' = \bar{w}$$
 
-Since we have $qq^{*} = 1$, we can get the derivative of:
+Since we have $$qq^{*} = 1$$, we can get the derivative of:
 
 $$
 \begin{gather*}
@@ -321,11 +321,11 @@ q^{*}q' + q'^{*}q = 0
 \end{gather*}
 $$
 
-So we can see that $q^{*}q'$ must be a **pure imaginary number** $q^{*}q' = \bar{w} = [0, w_1, w_2, w_3]$
+So we can see that $$q^{*}q'$$ must be a **pure imaginary number** $$q^{*}q' = \bar{w} = [0, w_1, w_2, w_3]$$
 
-### 2. Purely Imaginary Quaternion's Exponential $Exp(\bar{w})$ is A Unit Quaternion
+### 2. Purely Imaginary Quaternion's Exponential $$Exp(\bar{w})$$ is A Unit Quaternion
 
-With pure imaginary $\bar{w} = [0, w]$, the derivative of the rotation quaternion is
+With pure imaginary $$\bar{w} = [0, w]$$, the derivative of the rotation quaternion is
 
 $$
 \begin{gather*}
@@ -363,7 +363,7 @@ u^3 = -u
 \end{gather*}
 $$
 
-Where `u` is a unit vector, $\theta$ is the angle of rotation. This leads to **the extension of the Euler's Formula in Quaternion**:
+Where `u` is a unit vector, $$\theta$$ is the angle of rotation. This leads to **the extension of the Euler's Formula in Quaternion**:
 
 $$
 \begin{gather*}
@@ -383,7 +383,7 @@ exp(i \theta) = cos \theta + i sin \theta
 \end{gather*}
 $$
 
-Exponential of a pure imaginary quaternion $exp(\bar{w})$ is a unit quaternion, by the definition of `u`:
+Exponential of a pure imaginary quaternion $$exp(\bar{w})$$ is a unit quaternion, by the definition of `u`:
 
 $$
 \begin{gather*}
@@ -391,9 +391,9 @@ $$
 \end{gather*}
 $$
 
-### 3. Rotation Quaternion Is Half of Rotation Vector: $\bar{w} = [0, \frac{\phi}{2}]$
+### 3. Rotation Quaternion Is Half of Rotation Vector: $$\bar{w} = [0, \frac{\phi}{2}]$$
 
-We have defined `R` with a Cartesian angular velocity $\phi$:
+We have defined `R` with a Cartesian angular velocity $$\phi$$:
 
 $$
 \begin{gather*}
@@ -401,7 +401,7 @@ R = exp(\phi) = exp(\theta n)
 \end{gather*}
 $$
 
-To go from rotation matrix to rotation quaternion $exp(\bar{w}) = [s, v]$, we know
+To go from rotation matrix to rotation quaternion $$exp(\bar{w}) = [s, v]$$, we know
 
 $$
 \begin{gather*}
@@ -422,7 +422,7 @@ exp(\bar{w}) = [cos \frac{\theta}{2}, n sin \frac{\theta}{2}]
 \end{gather*}
 $$
 
-Since we define $q*q' = \bar{w} = [0, \theta_w u]$, we can see that the "quaternion rotation velocity" $\bar{w}$ update is half of that in `so(3)`:
+Since we define $$q*q' = \bar{w} = [0, \theta_w u]$$, we can see that the "quaternion rotation velocity" $$\bar{w}$$ update is half of that in `so(3)`:
 
 $$
 \begin{gather*}
@@ -439,7 +439,7 @@ n = v
 \end{gather*}
 $$
 
-So in $q' = q \bar{w}$:
+So in $$q' = q \bar{w}$$:
 
 $$
 \begin{gather*}
@@ -449,9 +449,9 @@ $$
 
 ### 4. Quaternion Rotation Update
 
-#### 4.1 Quaternion Rotation Update  Can Be Approximated As $q(t) \approx q(t_0)(1, \frac{\phi}{2})$
+#### 4.1 Quaternion Rotation Update  Can Be Approximated As $$q(t) \approx q(t_0)(1, \frac{\phi}{2})$$
 
-We have known that $q(t) = q(t_0) exp(\bar{w} \Delta t)$. How do we approximate $exp(\bar{w} \Delta t)$? **If we slightly change our above Cartesian angular velocity's definition to angular increment: $\theta^i = \theta \Delta t$, $\phi^i = \phi \Delta t$**
+We have known that $$q(t) = q(t_0) exp(\bar{w} \Delta t)$$. How do we approximate $$exp(\bar{w} \Delta t)$$? **If we slightly change our above Cartesian angular velocity's definition to angular increment: $$\theta^i = \theta \Delta t$$, $$\phi^i = \phi \Delta t$$**
 
 $$
 \begin{gather*}
@@ -460,7 +460,7 @@ exp(\bar{w} \Delta t) = [cos \theta_w^i, u sin \theta_w^i] = [cos(\frac{\theta^i
 \end{gather*}
 $$
 
-When $\theta \rightarrow 0$, we have
+When $$\theta \rightarrow 0$$, we have
 
 $$
 \begin{gather*}
@@ -472,9 +472,9 @@ q(t) \approx q(t_0)exp(\bar{w} \Delta t) = q[t_0](1, \frac{\phi^i}{2})
 \end{gather*}
 $$
 
-**This shows that when we measure the Cartesian angular increment $\phi^i$ in $\Delta t$**, in quaternion, the rotation quaternion update is approximately $q[t_0](1, \frac{\phi^i}{2})$.
+**This shows that when we measure the Cartesian angular increment $$\phi^i$$ in $$\Delta t$$**, in quaternion, the rotation quaternion update is approximately $$q[t_0](1, \frac{\phi^i}{2})$$.
 
-**However, one can see that $[1, \frac{\phi^i}{2}]$ is not a unit vector, so after some updates, we need to normalize q? TODO: I'm not sure what normalization here entails.**
+**However, one can see that $$[1, \frac{\phi^i}{2}]$$ is not a unit vector, so after some updates, we need to normalize q? TODO: I'm not sure what normalization here entails.**
 
 #### 4.2 "Accurate" Quaternion Update Without Approximation and Normalization
 

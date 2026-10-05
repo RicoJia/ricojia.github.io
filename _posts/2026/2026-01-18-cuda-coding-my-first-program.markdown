@@ -12,10 +12,10 @@ tags:
 
 ## On Chamfer Distance
 
-Chamfer distance measures how close two point clouds are by averaging nearest-neighbor distances in both directions. Given two point sets $P_1$ and $P_2$,
+Chamfer distance measures how close two point clouds are by averaging nearest-neighbor distances in both directions. Given two point sets $$P_1$$ and $$P_2$$,
 
-1. For each point in $P_1$ , compute the squared Euclidean distance to its nearest neighbor in $P_2$, producing distances $d_1$.
-2. Then we do the reverse: for each point in $P_2$, compute the squared distance to its nearest neighbor in $P_1$, producing $d_2$.
+1. For each point in $$P_1$$ , compute the squared Euclidean distance to its nearest neighbor in $$P_2$$, producing distances $$d_1$$.
+2. Then we do the reverse: for each point in $$P_2$$, compute the squared distance to its nearest neighbor in $$P_1$$, producing $$d_2$$.
 3. The Chamfer distance is the sum of the two means:
 
 $$

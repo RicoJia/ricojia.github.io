@@ -46,7 +46,7 @@ Anti-alias filtering works best before or during sampling. After a false frequen
 
 ## Moire Pattern Frequency
 
-Suppose the two patterns have spatial frequencies $f_1$ and $f_2$. The moiré frequency is approximately their difference:
+Suppose the two patterns have spatial frequencies $$f_1$$ and $$f_2$$. The moiré frequency is approximately their difference:
 
 $$
 f_{\text{moire}} = |f_1-f_2|.

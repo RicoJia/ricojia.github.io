@@ -10,11 +10,11 @@ tags:
 
 ## Definition
 
-A complex matrix is self adjoint if $A = \bar{A}^T$, reading "equal to its own conjugate transpose". It's also called "Hermitian". 
+A complex matrix is self adjoint if $$A = \bar{A}^T$$, reading "equal to its own conjugate transpose". It's also called "Hermitian". 
 
-For real values, this means $A = A^T$
+For real values, this means $$A = A^T$$
 
-In Eigen, if you know $A = A^T$, you can use `Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> es(cov);` to calculate its Eigen Vectors and Eigen Values. 
+In Eigen, if you know $$A = A^T$$, you can use `Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> es(cov);` to calculate its Eigen Vectors and Eigen Values. 
 
 1. Reduces A to tridiagonal form (cheaper than the full Hessenberg Reduction that general matrices require)
 2. Apply Symmetric QR or divide-and-conquer algorithm

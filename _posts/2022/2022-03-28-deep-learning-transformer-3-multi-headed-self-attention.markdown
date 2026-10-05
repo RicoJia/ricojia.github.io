@@ -19,7 +19,7 @@ The Process is:
     - This adds learnability for the non-linear decision landscape.
 1. Split `q'`, `k'`, `v'` into heads: `h1_q`, `h1_k`, `h1_v`, `h2_q`, `h2_k`, `h2_v`. A head is a part of the overall `q'`, `k'`, `v'`.
 1. The attention module is [additive or scaled-product attention pooling](./2022-03-27-deep-learning-attention-mechanism.markdown). The attention module does not have any learnable parameters. **They run on each head in parallel**.
-    - For each head $i$, attention is calculated based on its unique $W_i^Q Q$, $W_i^K K$ , $W_i^V V$
+    - For each head $$i$$, attention is calculated based on its unique $$W_i^Q Q$$, $$W_i^K K$$ , $$W_i^V V$$
     - In the "Attention is All You Need" paper, 8 heads were used.
 1. All `h` are concatenated
 3. The concatenated head is transformed into a shorter embedding through a dense layer, `Wo`
@@ -155,22 +155,22 @@ Saywe are given an `n` input tokens. They are a `nxd` vector. We are outputting 
 #### For CNN
 
 - Input and output channels are `d`; kernel size is `k`
-- Time complexity: $O(nd^2k)$ because we need to go over all elements in the input and output filters
-- Sequential operations: we need to calculate layer by layer, but we know that beforehand, so $O(1)$
-- Maximum Path length: (receptive field size?) is $O(n/k)$, For example, x1, x5 are within the receptive fields of CNN
+- Time complexity: $$O(nd^2k)$$ because we need to go over all elements in the input and output filters
+- Sequential operations: we need to calculate layer by layer, but we know that beforehand, so $$O(1)$$
+- Maximum Path length: (receptive field size?) is $$O(n/k)$$, For example, x1, x5 are within the receptive fields of CNN
 
 #### For RNN
 
 - Say we have 1 layer, since we are outputting with the same dimension, the hidden state dimension is `d` as well.
-- Time Complexity: weight matrices are `dxd`. In total, $O(nd^2)$
-- Sequential Complexity: $O(n)$
-- Maximum path length: $O(n)$ as we need to finish the entire $n$ timesteps so the last output sequence can technically see the first input element.
+- Time Complexity: weight matrices are `dxd`. In total, $$O(nd^2)$$
+- Sequential Complexity: $$O(n)$$
+- Maximum path length: $$O(n)$$ as we need to finish the entire $$n$$ timesteps so the last output sequence can technically see the first input element.
 
 #### For Self Attention
 
-- Time Complexity: weight matrices are `nxd`. In total, $O(n^2d)$
-- Sequential Complexity: $O(1)$: we need to do linear transform, concatenate, and dense layer.
-- Maximum path length: $O(1)$ as the single operation is able to consider all input elements.
+- Time Complexity: weight matrices are `nxd`. In total, $$O(n^2d)$$
+- Sequential Complexity: $$O(1)$$: we need to do linear transform, concatenate, and dense layer.
+- Maximum path length: $$O(1)$$ as the single operation is able to consider all input elements.
 
 **So, both CNN and self attention has a low number of sequential operations and are highly parallelizable. However, self attention will suffer from higher complexity when input sequence is long.**
 

@@ -44,12 +44,12 @@ The term *graph engineering* is not yet standardized. The industry more often us
 
 A technically precise description starts with an ordinary directed graph, where:
 
-- $V$ contains agents, tools, deterministic functions, data stores, evaluators, and human approval points.
-- $E$ contains the allowed transitions between those nodes.
-- $S$ is state: the objective, plan, evidence, memory, artifacts, budgets, and current status.
-- $P$ is policy: who may route work, call tools, write data, create agents, or modify the graph.
-- $C$ is the set of checks and acceptance criteria.
-- $H$ is execution history: checkpoints, traces, tool results, approvals, and failures.
+- $$V$$ contains agents, tools, deterministic functions, data stores, evaluators, and human approval points.
+- $$E$$ contains the allowed transitions between those nodes.
+- $$S$$ is state: the objective, plan, evidence, memory, artifacts, budgets, and current status.
+- $$P$$ is policy: who may route work, call tools, write data, create agents, or modify the graph.
+- $$C$$ is the set of checks and acceptance criteria.
+- $$H$$ is execution history: checkpoints, traces, tool results, approvals, and failures.
 
 This distinction matters. **Edges are not shared state.** An edge says where execution may go next. State is the information read or changed during that transition. A conditional edge may inspect state—for example, `tests_passed == true`—before selecting the next node.
 

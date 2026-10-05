@@ -13,10 +13,10 @@ tags:
 
 ### Solving An Equation
 
-To find an arbitrary equation's root $f(x) = 0$,
+To find an arbitrary equation's root $$f(x) = 0$$,
 
-- We start from an arbitrary point $x_0$ that's *hopefully* close to the solution, *$x_s$*
-- **The main idea of Newton's method is, we draw a tangent line at $x_0$, this line will cross `y=0` at $x_1$. It's most likely that this point is closer to $x_s$ than $x_0$**. So, this is to solve $x_1f(x_0) - x_0f'(x_0) + f(x_0) = 0$, and we get $x_1 = x_0 - \frac{f(x_0)}{f'(x_0)}$
+- We start from an arbitrary point $$x_0$$ that's *hopefully* close to the solution, *$$x_s$$*
+- **The main idea of Newton's method is, we draw a tangent line at $$x_0$$, this line will cross `y=0` at $$x_1$$. It's most likely that this point is closer to $$x_s$$ than $$x_0$$**. So, this is to solve $$x_1f(x_0) - x_0f'(x_0) + f(x_0) = 0$$, and we get $$x_1 = x_0 - \frac{f(x_0)}{f'(x_0)}$$
 
 So at each iteration, the newer estimate is:
 
@@ -38,12 +38,12 @@ $$
 
 Some caution-worthy notes are:
 
-- $f'(x_0)$ should be non-zero. Otherwise, the estimate will NOT move
-- In vanilla gradient descent, we only find the gradient and issue an update $\Delta x = \lambda g$ using a fixed step size $\lambda$. However, in Newton's method, we not only follow the gradient direction, but we also "solve" for the step size. That makes Newton's method faster.
+- $$f'(x_0)$$ should be non-zero. Otherwise, the estimate will NOT move
+- In vanilla gradient descent, we only find the gradient and issue an update $$\Delta x = \lambda g$$ using a fixed step size $$\lambda$$. However, in Newton's method, we not only follow the gradient direction, but we also "solve" for the step size. That makes Newton's method faster.
 
 ### Example: Solve For Square-Roots
 
-If we want find $\sqrt{m}$, we can format this problem to solving:
+If we want find $$\sqrt{m}$$, we can format this problem to solving:
 
 $$
 \begin{gather*}
@@ -89,7 +89,7 @@ double sqrt_c(float x) {
 
 ### Newton's Method for Optimization
 
-When optimizing `f(x)`, again we start from an arbitrary point $x_0$. If we can achieve the optimum at $x_0 + \Delta x$:
+When optimizing `f(x)`, again we start from an arbitrary point $$x_0$$. If we can achieve the optimum at $$x_0 + \Delta x$$:
 
 We think of it as:
 
@@ -141,10 +141,10 @@ $$
 
 In Gauss Newton, we specifically look at minimizing a least squares problem. Assume we have a:
 
-- scalar-valued cost function $c(x)$,
-- vector-valued function: $f(x)$, `[m, 1]`
-- Jacobian $J_0$ at $x_0$ is consequently `[m, n]`
-- Hessian $H$ is $D^2c(x)$. It's approximated as $J^T J$
+- scalar-valued cost function $$c(x)$$,
+- vector-valued function: $$f(x)$$, `[m, 1]`
+- Jacobian $$J_0$$ at $$x_0$$ is consequently `[m, n]`
+- Hessian $$H$$ is $$D^2c(x)$$. It's approximated as $$J^T J$$
 
 $$
 \begin{gather*}
@@ -180,7 +180,7 @@ $$
 \end{gather*}
 $$
 
-So we can solve for $\Delta x$ with $H = J_0^TJ_0$, $b = - J_0^T f(x_0)$:
+So we can solve for $$\Delta x$$ with $$H = J_0^TJ_0$$, $$b = - J_0^T f(x_0)$$:
 
 $$
 \begin{gather*}
@@ -192,13 +192,13 @@ $$
 \end{gather*}
 $$
 
-- Note: because $J_0$ may not have an inverse, here we cannot multiply $J_0^{-1}$ to eliminate $J_0^T$
-- In fact, to $\Delta x$ is available if and only if $H$ is **positive definite**.
-- In least square, $f(x)$ is a.k.a residuals. Usually, it represents the **error between a data point and from its ground truth**.
+- Note: because $$J_0$$ may not have an inverse, here we cannot multiply $$J_0^{-1}$$ to eliminate $$J_0^T$$
+- In fact, to $$\Delta x$$ is available if and only if $$H$$ is **positive definite**.
+- In least square, $$f(x)$$ is a.k.a residuals. Usually, it represents the **error between a data point and from its ground truth**.
 
-In SLAM, we always frame this least squares problem with `e = [observered_landmark - predicted_landmark]` at each landmark. So all together, we want to **minimize the total least squares of the difference between  observations and predictions.** In the meantime, at each landmark, there is an error covariance, so all together, there's an error matrix $\Sigma$. Here in cost calculation, we take $\Sigma^{-1}$ so the **larger the error covariance, the lower the weight the corresponding difference gets.**
+In SLAM, we always frame this least squares problem with `e = [observered_landmark - predicted_landmark]` at each landmark. So all together, we want to **minimize the total least squares of the difference between  observations and predictions.** In the meantime, at each landmark, there is an error covariance, so all together, there's an error matrix $$\Sigma$$. Here in cost calculation, we take $$\Sigma^{-1}$$ so the **larger the error covariance, the lower the weight the corresponding difference gets.**
 
-With $e(x + \Delta x) \approx e(x) + J \Delta x$,
+With $$e(x + \Delta x) \approx e(x) + J \Delta x$$,
 
 $$
 \begin{gather*}
@@ -214,7 +214,7 @@ $$
 \end{gather*}
 $$
 
-Using Cholesky Decomposition, one can get $\Sigma^{-1} = A^T A$. Then we can write the above as
+Using Cholesky Decomposition, one can get $$\Sigma^{-1} = A^T A$$. Then we can write the above as
 
 $$
 \begin{gather*}
@@ -226,11 +226,11 @@ $$
 
 For a more detailed derivation, [please see here](./2024-07-11-rgbd-slam-bundle-adjustment.markdown)
 
-When $\Delta x$ is small, or $f(x)$ is small, GN has faster convergence. When either or both of them are large, or when the target function is highly non-linear, G-N does not work well.
+When $$\Delta x$$ is small, or $$f(x)$$ is small, GN has faster convergence. When either or both of them are large, or when the target function is highly non-linear, G-N does not work well.
 
 ## Levenberg-Marquardt (LM) Optimization
 
-Again, **Taylor expansion** works better when $\Delta x$ is small, so the function can be better estimated by it. So, similar to regularization techniques on step sizes in deep learning, like L1, L2 regularization, we can regularize the step size, $\Delta x$. $\mu$ is called "the damping factor"
+Again, **Taylor expansion** works better when $$\Delta x$$ is small, so the function can be better estimated by it. So, similar to regularization techniques on step sizes in deep learning, like L1, L2 regularization, we can regularize the step size, $$\Delta x$$. $$\mu$$ is called "the damping factor"
 
 $$
 \begin{gather*}
@@ -242,8 +242,8 @@ $$
 
 Intuitively,
 
-- as $\mu$ grows, the diagonal identity matrix $\mu I_H$ grows, so $H + \mu I_H \rightarrow \mu I_H$. So, $\Delta x \approx (H + \mu I_H)^{-1}g = \frac{g}{\mu}$, which means $\Delta x$ grows smaller. In the meantime, $\Delta x$ will be similar to that in gradient descent.
-- as $\mu$ becomes smaller, $\Delta x$ will become more like Gauss-Newton. However, due to $\mu I_H$, $(H + \mu I_H)$ is positive semi-definite, which provides more stability for solving for $\Delta x$.
+- as $$\mu$$ grows, the diagonal identity matrix $$\mu I_H$$ grows, so $$H + \mu I_H \rightarrow \mu I_H$$. So, $$\Delta x \approx (H + \mu I_H)^{-1}g = \frac{g}{\mu}$$, which means $$\Delta x$$ grows smaller. In the meantime, $$\Delta x$$ will be similar to that in gradient descent.
+- as $$\mu$$ becomes smaller, $$\Delta x$$ will become more like Gauss-Newton. However, due to $$\mu I_H$$, $$(H + \mu I_H)$$ is positive semi-definite, which provides more stability for solving for $$\Delta x$$.
 
 LM in general is more stable than GN. However, it's more computationally costly.
 

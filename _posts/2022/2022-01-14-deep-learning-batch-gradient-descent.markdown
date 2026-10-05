@@ -11,7 +11,7 @@ tags:
 
 ## A Neuron And Batch Gradient Descent
 
-A Neuron, has multiple inputs and a single output. First it gets the weighted sum of all inputs, then feeds it into an "activation function". Below, the activation function $\sigma(z)$ is a "sigma function"
+A Neuron, has multiple inputs and a single output. First it gets the weighted sum of all inputs, then feeds it into an "activation function". Below, the activation function $$\sigma(z)$$ is a "sigma function"
 
 $$
 \begin{gather*}
@@ -26,7 +26,7 @@ $$
 <figcaption align="center">Image Source: Stackoverflow</figcaption>
 </p>
 
-So for a single input, x (`nx1` vector), and its corresponding groudtruth value y, we can get its prediction $\hat{y}$ and cost $J$. In our example, J is cross-entropy, which has its minimum cost when $y = \hat{y}$
+So for a single input, x (`nx1` vector), and its corresponding groudtruth value y, we can get its prediction $$\hat{y}$$ and cost $$J$$. In our example, J is cross-entropy, which has its minimum cost when $$y = \hat{y}$$
 
 $$
 \begin{gather*}
@@ -36,7 +36,7 @@ J = -(ylog(\hat{y}) + (1-y)log(1-\hat{y}))
 \end{gather*}
 $$
 
-Then, we can apply gradient descent to update parameters, $w$, which is the **goal of deep learning**. The gradient is represented as $\nabla{J}$, which is the partial derivative w.r.t all parameters in vector $w$. Since gradient gives the steepest **ascent**, we want to update $w$ with the negative of that.
+Then, we can apply gradient descent to update parameters, $$w$$, which is the **goal of deep learning**. The gradient is represented as $$\nabla{J}$$, which is the partial derivative w.r.t all parameters in vector $$w$$. Since gradient gives the steepest **ascent**, we want to update $$w$$ with the negative of that.
 
 $$
 \begin{gather*}
@@ -68,7 +68,7 @@ $$
 \end{gather*}
 $$
 
-So from the single input $x$, we update $w$ with
+So from the single input $$x$$, we update $$w$$ with
 
 $$
 \begin{gather*}
@@ -80,7 +80,7 @@ $$
 
 Ideally, we feed the entire batch of training set into the network and optimize our weights using gradient descent. This is called "vectorization", because we put the entire batch in a matrix. Matrix operations are usually faster than their for-loop counterparts, because they make use of low-level optimization techniques like SIMD, parallel computing, etc.
 
-**Now, if we have a batch inputs, that is $x^{(0)} ... x^{(m)}$**
+**Now, if we have a batch inputs, that is $$x^{(0)} ... x^{(m)}$$**
 
 $$
 \begin{gather*}
@@ -94,9 +94,9 @@ $$
 
 ## Neural Network And Back Propagation
 
-Now, to be consistent with mainstream notations, we represent the output of each node as $a$, instead of $\hat{y}$.
+Now, to be consistent with mainstream notations, we represent the output of each node as $$a$$, instead of $$\hat{y}$$.
 
-Imagine we have two layers, an input layer, and an output layer. To update all params $w$ to yield better final output, we first pass inputs $x^{(0)} ... x^{(m)}$ through the network. The output of each node $Lj$ is $a^{L}_{j}$, where $L$ is the layer number. The target values are $y^{(0)} ... y^{(m)}$.
+Imagine we have two layers, an input layer, and an output layer. To update all params $$w$$ to yield better final output, we first pass inputs $$x^{(0)} ... x^{(m)}$$ through the network. The output of each node $$Lj$$ is $$a^{L}_{j}$$, where $$L$$ is the layer number. The target values are $$y^{(0)} ... y^{(m)}$$.
 
 ### When L is An Output Layer
 
@@ -110,7 +110,7 @@ $$
 
 ### When L is A Hidden Layer
 
-For node $a^{Lj}$, we assume all nodes in layer $L-1$ are connected to $A^{Lj}$ (Fully Connected), outputs from $L-1$ is written as vector $a^{L-1}$. Note that $w^{L}_{j}$ is parameter vector and $z^{L}_{j}$ are scalar intermediate outputs
+For node $$a^{Lj}$$, we assume all nodes in layer $$L-1$$ are connected to $$A^{Lj}$$ (Fully Connected), outputs from $$L-1$$ is written as vector $$a^{L-1}$$. Note that $$w^{L}_{j}$$ is parameter vector and $$z^{L}_{j}$$ are scalar intermediate outputs
 
 $$
 \begin{gather*}
@@ -120,7 +120,7 @@ w = w - \sum_{m}^{M}\lambda\nabla{J^{(m)}}
 \end{gather*}
 $$
 
-For a specific node in layer L, $Lj$:
+For a specific node in layer L, $$Lj$$:
 
 $$
 \begin{gather*}
@@ -130,7 +130,7 @@ $$
 \end{gather*}
 $$
 
-The node is connected to nodes 0...Q in layer L+1, that is, partial derivative needs to consider all these influenced paths. With scalar output $a^{L}_{j}$, scalar derivative $\frac{\partial{J}}{\partial{a^{L}_{j}}}$
+The node is connected to nodes 0...Q in layer L+1, that is, partial derivative needs to consider all these influenced paths. With scalar output $$a^{L}_{j}$$, scalar derivative $$\frac{\partial{J}}{\partial{a^{L}_{j}}}$$
 
 $$
 \begin{gather*}
@@ -140,7 +140,7 @@ $$
 \end{gather*}
 $$
 
-To further reduce $\frac{\partial{J}}{\partial{a^{L}_j}}$ , with scalar derivative $\dot{\sigma{(z^{L+1}_q)}}$, node $(L+1,q)$'s parameter vector $w^{L+1}_{q}$, and the jth parameter $w^{L+1}_{q, j}$
+To further reduce $$\frac{\partial{J}}{\partial{a^{L}_j}}$$ , with scalar derivative $$\dot{\sigma{(z^{L+1}_q)}}$$, node $$(L+1,q)$$'s parameter vector $$w^{L+1}_{q}$$, and the jth parameter $$w^{L+1}_{q, j}$$
 
 $$
 \begin{gather*}
@@ -157,7 +157,7 @@ $$
 That was a lot of details with chain rule. So in all, during back propagation, assume we have batch size of m, input size n and output size p.
 
 1. Start from the output layer and back track
-    - For context , compute $\frac{\partial{J}}{\partial{a^{L}_j}}$, given J being the binary cross entropy
+    - For context , compute $$\frac{\partial{J}}{\partial{a^{L}_j}}$$, given J being the binary cross entropy
 
         $$
         \begin{gather*}
@@ -177,7 +177,7 @@ That was a lot of details with chain rule. So in all, during back propagation, a
         \end{gather*}
         $$
 
-        - $y, a, z$ are `mxp` matrices.
+        - $$y, a, z$$ are `mxp` matrices.
 
 2. For non-output layers,
     - For context, each individual neuron has
@@ -251,7 +251,7 @@ Another alternative is to have batch size being one (stochastic gradient descent
 
 ### How to Create A MiniBatch
 
-1. Shuffle the inputs and labels. Before feeding to the network, shuffle $X$ and the corresponding $Y$.
+1. Shuffle the inputs and labels. Before feeding to the network, shuffle $$X$$ and the corresponding $$Y$$.
 
 ```python
 permutation = list(np.random.permutation(m))

@@ -78,7 +78,7 @@ The main difference, however, is in `add_frame`:
 1. Given two point clouds: source and target, we can voxelize them.
 2. For the same voxel location in source and target:
     1. Count the number of points in the voxel of source and target: `m`, `n`
-    2. We can calculate mean and variances of them: $\mu_a$, $\mu_b$, $\Sigma_a$,$\Sigma_b$
+    2. We can calculate mean and variances of them: $$\mu_a$$, $$\mu_b$$, $$\Sigma_a$$,$$\Sigma_b$$
     3. Now we want to add the source cloud to the target. We can update the target point cloud's new mean directly:
 
         $$

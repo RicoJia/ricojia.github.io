@@ -37,7 +37,7 @@ points = [
 ]
 ```
 
-**Quantization bits** determine grid resolution. With $n$ bits there are $2^n$ levels. For example, if the bounding box along one axis spans $[0, 1]$ and we use 8 bits, the step size is $1 / (2^8 - 1) \approx 0.0039$. Fewer bits → smaller file but coarser precision.
+**Quantization bits** determine grid resolution. With $$n$$ bits there are $$2^n$$ levels. For example, if the bounding box along one axis spans $$[0, 1]$$ and we use 8 bits, the step size is $$1 / (2^8 - 1) \approx 0.0039$$. Fewer bits → smaller file but coarser precision.
 
 Here, imagine a simple step size of `0.01`:
 
@@ -50,7 +50,7 @@ quantized = [
 ]
 ```
 
-Draco stores the **bounding-box minimum** and the **step size** so the decoder can reconstruct approximate floats: $\text{float} = \text{min} + \text{quantized\_int} \times \text{step}$.
+Draco stores the **bounding-box minimum** and the **step size** so the decoder can reconstruct approximate floats: $$\text{float} = \text{min} + \text{quantized\_int} \times \text{step}$$.
 
 ### Step 2 — Prediction and Residual Coding
 

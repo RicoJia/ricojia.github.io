@@ -101,7 +101,7 @@ Option 2 is called multi-task learning. Rich Caruana stated that multi-task lear
 </p>
 </div>
 
-The final loss function for a batch of size $i$, $j$ classes is:
+The final loss function for a batch of size $$i$$, $$j$$ classes is:
 
 $$
 \begin{gather*}
@@ -109,7 +109,7 @@ Loss = \sum_i \sum_j L(y_j^{(i)}, \hat{y}_j^{(i)})
 \end{gather*}
 $$
 
-$L$ can be BCE Loss for each class.
+$$L$$ can be BCE Loss for each class.
 
 ### End-To-End Learning
 

@@ -33,12 +33,12 @@ Machine Learning Operations is similar to DevOps in general software engineering
 
 ### Data Normalization
 
-When data come in different scales, say feature 1 ranges from $[-100, 100]$, another ranges from $[-1, 1]$, then the cost over these two features could be quite elongated along feature 1. Therefore, feature 2's gradient could be really small, and the same learning rate may not perform as well.
+When data come in different scales, say feature 1 ranges from $$[-100, 100]$$, another ranges from $$[-1, 1]$$, then the cost over these two features could be quite elongated along feature 1. Therefore, feature 2's gradient could be really small, and the same learning rate may not perform as well.
 
 To make the cost function optimize faster:
 
 1. "Shift to the center" - subtract out the mean from inputs
-2. "variance scaling" - find the variance of data $\sigma$, then perform $x /= \sigma$. This sets the input data to have variance of 1.
+2. "variance scaling" - find the variance of data $$\sigma$$, then perform $$x /= \sigma$$. This sets the input data to have variance of 1.
  note is **apply the same mean and variance on training and test inputs.**. Otherwise, results could be different.
 
 <div style="text-align: center;">

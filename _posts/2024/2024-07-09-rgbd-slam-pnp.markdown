@@ -11,7 +11,7 @@ tags:
 
 ## Intro
 
-The Perspective-n-Point (PnP) problem is a very important technique in RGBD SLAM. In RGBD SLAM, it's quite common to see PnP as a front end , and bundle adjustment as the backend. In 2D-2D Methods, epipolar constraint is key for measuring the relative motion between two camera frames. In PnP, we are given the 3D coordinates of points (in world frame, and the camera frame), their 2D coordinates and, and matches. In this case, we have depth $z$, hence we do not need to apply epipolar constraints.
+The Perspective-n-Point (PnP) problem is a very important technique in RGBD SLAM. In RGBD SLAM, it's quite common to see PnP as a front end , and bundle adjustment as the backend. In 2D-2D Methods, epipolar constraint is key for measuring the relative motion between two camera frames. In PnP, we are given the 3D coordinates of points (in world frame, and the camera frame), their 2D coordinates and, and matches. In this case, we have depth $$z$$, hence we do not need to apply epipolar constraints.
 
 <p align="center">
 <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/c52064b4-ddaf-40ed-974a-cf30dc0addb9" height="400" width="width"/>
@@ -41,7 +41,7 @@ v_1 = \frac{t_5 X + t_6 Y + t_7 Z + t_8}{t_9 X + t_{10} Y + t_{11} Z + t_{12}}.
 \end{gather*}
 $$
 
-Let $P=[x,y,z]$
+Let $$P=[x,y,z]$$
 
 $$
 \begin{gather*}
@@ -71,11 +71,11 @@ $$
 \end{gather*}
 $$
 
-Since we need $SE(3)$ constraints on R, we need to use QR decomposition to solve for R, while it's relatively simple to solve for t since it's in the Cartesian Space. Since we are getting an approximate solution from QR decomposition, we often need to optimize based on this solution.
+Since we need $$SE(3)$$ constraints on R, we need to use QR decomposition to solve for R, while it's relatively simple to solve for t since it's in the Cartesian Space. Since we are getting an approximate solution from QR decomposition, we often need to optimize based on this solution.
 
 ### P3P
 
-In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. In the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $OA$, $OB$. $OC$ [1].
+In the PnP set up, O is the origin of the camera frame, and we know the 3D points A, B, C in the world frame, after 2D feature matching. In the current camera view, we know their canonical coordinates, a, b, c. Our unknowns are $$OA$$, $$OB$$. $$OC$$ [1].
 
 First we can solve for cosines:
 

@@ -119,7 +119,7 @@ When a joint angle changes, forward kinematics moves one or more links in the ch
 
 In FCL's Dynamic AABB Tree, `update(collision_object)` handles this by removing the leaf, recomputing its AABB, and reinserting it at an optimal position — the topology may change slightly to keep the tree balanced and tight.
 
-**Cost**: $O(k \log n)$ for $k$ moved links, vs. $O(n \log n)$ for a full rebuild.
+**Cost**: $$O(k \log n)$$ for $$k$$ moved links, vs. $$O(n \log n)$$ for a full rebuild.
 
 ```
 Joint changes  →  recompute leaf AABBs  →  refit ancestors bottom-up
@@ -300,7 +300,7 @@ def triangle_triangle_distance(T1, T2):
 
 An **Axis-Aligned Bounding Box (AABB) Tree** is a bounding volume hierarchy (BVH). Each node stores a box whose sides are parallel to the coordinate axes and that is guaranteed to fully enclose all geometry in its subtree.
 
-Naively, you can check all $2^n$ pairs of the bounding boxes:
+Naively, you can check all $$2^n$$ pairs of the bounding boxes:
 
 Key idea: If two nodes' boxes don't overlap, none of their children can overlap — allowing large groups of geometry pairs to be rejected **cheaply**:
 

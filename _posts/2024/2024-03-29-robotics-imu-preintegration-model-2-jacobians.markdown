@@ -11,7 +11,7 @@ tags:
 
 ## Update Pre-integration When Updating Biases
 
-Pre-integration parts are functions are functions `w.r.t` gyro and acceleration biases: $b_{g,i}, b_{a,i}$. In graph optimization, we would usually need to update these bias terms. So how do we update the preintegration terms? **The trick is again, linearization: we assume each pre-integration term can be approximated linearly**
+Pre-integration parts are functions are functions `w.r.t` gyro and acceleration biases: $$b_{g,i}, b_{a,i}$$. In graph optimization, we would usually need to update these bias terms. So how do we update the preintegration terms? **The trick is again, linearization: we assume each pre-integration term can be approximated linearly**
 
 ### Jacobian of Rotational Part w.r.t Gyro Bias
 
@@ -45,7 +45,7 @@ $$
 \end{gather*}
 $$
 
-The last step makes use of the fact that when angles are small, Jacobian $J \approx I $. So, multiplying them all together is approx adding up the angles in $Exp()$ So this gives the general Jacobian of the rotation part w.r.t gyro bias:
+The last step makes use of the fact that when angles are small, Jacobian $J \approx I $. So, multiplying them all together is approx adding up the angles in $$Exp()$$ So this gives the general Jacobian of the rotation part w.r.t gyro bias:
 
 $$
 \begin{gather*}

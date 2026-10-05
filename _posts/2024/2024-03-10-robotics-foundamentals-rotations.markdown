@@ -10,9 +10,9 @@ tags:
 
 ## Representations of Rotation
 
-A rotation, can be respresented as $so(3)$ (Lie Algebra of Special Orthogonal Group), or $SO(3)$, (Special Orthogonal Group) and rotation vector.
+A rotation, can be respresented as $$so(3)$$ (Lie Algebra of Special Orthogonal Group), or $$SO(3)$$, (Special Orthogonal Group) and rotation vector.
 
-**Representation 1** A rotation vector is $s = \theta [s_x, s_y, s_z] = [\omega_x, \omega_y, \omega_z]$, where:
+**Representation 1** A rotation vector is $$s = \theta [s_x, s_y, s_z] = [\omega_x, \omega_y, \omega_z]$$, where:
 
 $$
 \begin{gather*}
@@ -20,9 +20,9 @@ $$
 \end{gather*}
 $$
 
-$[s_x, s_y, s_z]$ here is the axis of rotation, which is a unit vector.
+$$[s_x, s_y, s_z]$$ here is the axis of rotation, which is a unit vector.
 
-**Representation 2** Then we can write this rotation vector in the form of $so(3)$. It's also called "skew symmetric matrix" of a rotation axis (notice how the matrix diagonal serve as the axis of symmetry and sign?)
+**Representation 2** Then we can write this rotation vector in the form of $$so(3)$$. It's also called "skew symmetric matrix" of a rotation axis (notice how the matrix diagonal serve as the axis of symmetry and sign?)
 
 $$
 \begin{gather*}
@@ -62,7 +62,7 @@ R = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x)
 \end{gather*}
 $$
 
-Then we can get $\theta$ and rotation axis $u=[u_x, u_y, u_z]$
+Then we can get $$\theta$$ and rotation axis $$u=[u_x, u_y, u_z]$$
 
 $$
 \begin{gather*}
@@ -114,7 +114,7 @@ $$
 <img src="https://github.com/ChengeYang/Probabilistic-Robotics-Algorithms/assets/39393023/5aab7bcb-c434-4ad2-ae41-a4d3314f9dfe" height="200" width="width"/>
 </p>
 
-See? The rotation about both the Z axis $\gamma$ and the X axis $\alpha$ will effectively create a combined rotation about the X axis, $\theta$. So, such rotations do not have unique angular values.
+See? The rotation about both the Z axis $$\gamma$$ and the X axis $$\alpha$$ will effectively create a combined rotation about the X axis, $$\theta$$. So, such rotations do not have unique angular values.
 
 ### Implementations
 
@@ -124,7 +124,7 @@ See? The rotation about both the Z axis $\gamma$ and the X axis $\alpha$ will ef
 
 ## Instantaneous Rotation
 
-According to the Poisson Formula, $R' = Rw^{\land}$, for a small time period $\Delta t$, the ODE can be solved:
+According to the Poisson Formula, $$R' = Rw^{\land}$$, for a small time period $$\Delta t$$, the ODE can be solved:
 
 $$
 \begin{gather*}
@@ -188,7 +188,7 @@ $$
 \end{gather*}
 $$
 
-Actually, we still need to establish the relationship between $w$ (instantaneous angular velocity) and rotation vector $\phi$:
+Actually, we still need to establish the relationship between $$w$$ (instantaneous angular velocity) and rotation vector $$\phi$$:
 
 $$
 \begin{gather*}
@@ -262,7 +262,7 @@ $$
 \end{gather*}
 $$
 
-But in 2D, one can easily find that: $\phi^{\land} R = R \phi^{\land}$
+But in 2D, one can easily find that: $$\phi^{\land} R = R \phi^{\land}$$
 
 ### Commutative Property Of Cross Product
 
@@ -276,7 +276,7 @@ $$
 
 ### Adjoint Action
 
-For $R_0,R_1\in SO(3)$,
+For $$R_0,R_1\in SO(3)$$,
 
 $$
 \begin{gather*}
@@ -286,7 +286,7 @@ $$
 \end{gather*}
 $$
 
-**Claim (equivariance of the exponential)**: For any $X\in \mathfrak{so}(3)$,
+**Claim (equivariance of the exponential)**: For any $$X\in \mathfrak{so}(3)$$,
 
 $$
 \begin{aligned}
@@ -298,7 +298,7 @@ R_0 \, \operatorname{Exp}(X) \, R_0^{-1}
 \end{aligned}
 $$
 
-In particular with $X=\widehat{w}$ for $w\in\mathbb{R}^3$,
+In particular with $$X=\widehat{w}$$ for $$w\in\mathbb{R}^3$$,
 
 $$
 \begin{aligned}
@@ -310,7 +310,7 @@ $$
 
 #### Proof
 
-For matrices, since $R_0\,\widehat{w}\,R_0^{-1} = (R_0 w)^{\wedge}$, we get
+For matrices, since $$R_0\,\widehat{w}\,R_0^{-1} = (R_0 w)^{\wedge}$$, we get
 
 $$
 \begin{aligned}
@@ -334,7 +334,7 @@ QED.
 
 ## First Order BCH Approximation For Small Angles
 
-For a small angle $w$, its `SO(3)` is approximately
+For a small angle $$w$$, its `SO(3)` is approximately
 
 $$
 \begin{gather*}

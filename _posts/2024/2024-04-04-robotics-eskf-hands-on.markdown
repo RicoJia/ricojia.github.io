@@ -14,7 +14,7 @@ tags:
 - Did you turn on the message debugging flag, or are you compiling with `PRINT_DEBUG_MSGS`?
 - Are you sure you are launching the right test?
 
-## Covariance Update with $\Delta t$
+## Covariance Update with $$\Delta t$$
 
 In a Kalman filter, the covariance prediction step is usually written as:
 
@@ -22,7 +22,7 @@ $$
 P' = FPF^T + Q  
 $$
 
-where $F$ propagates the current uncertainty through the system dynamics, and $Q$ adds new uncertainty from process noise.,One detail is easy to miss: **the process noise must be scaled correctly by the time interval $\Delta t$**.
+where $$F$$ propagates the current uncertainty through the system dynamics, and $$Q$$ adds new uncertainty from process noise.,One detail is easy to miss: **the process noise must be scaled correctly by the time interval $$\Delta t$$**.
 
 A useful way to understand this is to start from a simple motion model:
 
@@ -36,7 +36,7 @@ $$
 a = a_{\text{true}} + n, n \sim \mathcal{N}(0, \sigma^2)  
 $$
 
-Over a small time interval $\Delta t$, this acceleration noise affects velocity and position as:
+Over a small time interval $$\Delta t$$, this acceleration noise affects velocity and position as:
 
 $$  
 \Delta v = n \Delta t  , \Delta p = \frac{1}{2} n \Delta t^2  

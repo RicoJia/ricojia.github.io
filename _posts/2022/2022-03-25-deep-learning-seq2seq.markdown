@@ -249,7 +249,7 @@ One approach is "beam search". The idea is, at each step, we are given the K pro
     ] 
     ```
 
-- In the mean time, we can calculate each new word `i`'s probability `y2_i`. The total probability of the sequence of `i` is `y2_i * y1`. This is equivalent to $p(y2_i\| y1) p(y1) = p(y2_i, y1)$
+- In the mean time, we can calculate each new word `i`'s probability `y2_i`. The total probability of the sequence of `i` is `y2_i * y1`. This is equivalent to $$p(y2_i\| y1) p(y1) = p(y2_i, y1)$$
 - We decided that the top **3** most probable sequence is:
 
     ```
@@ -301,9 +301,9 @@ A quick way to determine whether the beam search is to evaluate if `prob(y_pred)
 2. Feed "is" and "went" into the decoder `y_2p`, `y_2*`
 3. Feed "goint" and "went" into the decoder `y_3p`, `y_3*`
 ...
-4. Calculate for timestep `T`,  $P_p = \Pi_T y_p^{(t)}$, $P_* = \Pi_T y_*^{(t)}$.
-    - If $P_p > P_*$, then the RNN is at fault
-    - If $P_p < P_*$ then increasing beam width might help
+4. Calculate for timestep `T`,  $$P_p = \Pi_T y_p^{(t)}$$, $$P_* = \Pi_T y_*^{(t)}$$.
+    - If $$P_p > P_*$$, then the RNN is at fault
+    - If $$P_p < P_*$$ then increasing beam width might help
 
 ## Bleu Score
 

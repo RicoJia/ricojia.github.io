@@ -10,7 +10,7 @@ tags:
 
 ## Lagrange Multiplier
 
-Multivating example: maximize $f(x,y)$, where $xy+1$, given constraint $g(x,y) = x^2+y^2-1 = 0$
+Multivating example: maximize $$f(x,y)$$, where $$xy+1$$, given constraint $$g(x,y) = x^2+y^2-1 = 0$$
 
 Geometric Intuition: the value of ```f(x,y)``` and the constraint **it must stay on** are tangent to each other. That is, a small perturbation along the constraint curve will not cause change in the value function, hence a potential extrema is achieved.
 
@@ -18,13 +18,13 @@ Geometric Intuition: the value of ```f(x,y)``` and the constraint **it must stay
     <img src="https://user-images.githubusercontent.com/39393023/122949585-670a5f00-d341-11eb-8cd1-9055c7238239.png" height="300" width="width"/>
 </p>
 
-So this is equivalent to: $L=f(x)-\lambda g(x)$, and get $[\frac{\partial{L}}{\partial{x}}, \frac{\partial{L}}{\partial{\lambda}}] = 0$
+So this is equivalent to: $$L=f(x)-\lambda g(x)$$, and get $$[\frac{\partial{L}}{\partial{x}}, \frac{\partial{L}}{\partial{\lambda}}] = 0$$
 
-$\lambda$ is **the lagrange multiplier**.
+$$\lambda$$ is **the lagrange multiplier**.
 
 To solve: 
 
-1. Define Lagrangian $L = f(x) + \sum_i \lambda_i g_i(x,y)$. In this case, it's simply:
+1. Define Lagrangian $$L = f(x) + \sum_i \lambda_i g_i(x,y)$$. In this case, it's simply:
 
 $$
 \begin{gather*}
@@ -59,11 +59,11 @@ x^2 + y^2 - 1 = 0
 \end{gather*}
 $$
 
-We can get the solution: $\lambda = \frac{1}{2}, x = y = \sqrt{\frac{1}{2}}$
+We can get the solution: $$\lambda = \frac{1}{2}, x = y = \sqrt{\frac{1}{2}}$$
 
 ### Why does Lagrange Multiplier work?
 
-Since the optimal point is on multiple constraint surfaces, the pertabtion on each surface must be perpendicular to its surface normal: $\nabla g_k(x, y)$:
+Since the optimal point is on multiple constraint surfaces, the pertabtion on each surface must be perpendicular to its surface normal: $$\nabla g_k(x, y)$$:
 
 $$
 \begin{gather*}
@@ -104,7 +104,7 @@ $$
 
 ## Pontryagin's Minimum Principle
 
-If f(x,y, t) is a function of time, we will have "costates" $\lambda_k(t)$. So:
+If f(x,y, t) is a function of time, we will have "costates" $$\lambda_k(t)$$. So:
 
 If we define our state transition to be: 
 
@@ -126,7 +126,7 @@ $$
 \end{gather*}
 $$
 
-Pontryagin’s Minimum Principle says any optimal pair `x*(.), u*(.)` must have a costate $\lambda(t)$ satisfying the hamiltonian:
+Pontryagin’s Minimum Principle says any optimal pair `x*(.), u*(.)` must have a costate $$\lambda(t)$$ satisfying the hamiltonian:
 
 $$
 \begin{gather*}
@@ -146,7 +146,7 @@ $$
 \end{gather*}
 $$
 
-$\lambda(t)$: 
+$$\lambda(t)$$: 
 
 $$
 \begin{gather*}

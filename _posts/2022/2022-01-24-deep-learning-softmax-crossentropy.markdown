@@ -21,7 +21,7 @@ When we build a classifier for cat classification, at the end of training, it's 
 </p>
 </div>
 
-- The raw unnomalized output of the network, which is the input of the softmax layer, $Y_i$ is also know as **"Logit"**.
+- The raw unnomalized output of the network, which is the input of the softmax layer, $$Y_i$$ is also know as **"Logit"**.
 
 The softmax opertation is:
 
@@ -53,7 +53,7 @@ $$
 T = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}
 $$
 
-**Column 0:** $[1,\ 2]$
+**Column 0:** $$[1,\ 2]$$
 
 $$
 e^1 = 2.718,\quad e^2 = 7.389,\quad \text{sum} = 10.107
@@ -63,7 +63,7 @@ $$
 \text{softmax}(\text{col}_0) = \begin{bmatrix} 2.718 / 10.107 \\ 7.389 / 10.107 \end{bmatrix} \approx \begin{bmatrix} 0.269 \\ 0.731 \end{bmatrix}
 $$
 
-**Column 1:** $[3,\ 4]$
+**Column 1:** $$[3,\ 4]$$
 
 $$
 e^3 = 20.085,\quad e^4 = 54.599,\quad \text{sum} = 74.684
@@ -95,13 +95,13 @@ $$
 
 What this classifier really does is to solve an Maximum Likelihood Estimation Problem (MLE). MLE is **given certain inputs, find a set of weights such that its predicted outputs have the highlest likelihood to match the observations.** So in this context:
 
-- Softmax is usually used as the final layer. Its output represents the probability distribution of all output classes $\hat{Y}$ given certain inputs: $P(\hat{Y}|X)$.
+- Softmax is usually used as the final layer. Its output represents the probability distribution of all output classes $$\hat{Y}$$ given certain inputs: $$P(\hat{Y}\vert X)$$.
 
 - Is the MLE specific to Softmax? No.  MLE is the general theoretical framework of many types of models. However for classification, Softmax is a common and more intuitive way to implement MLE, especially when it's combined with **Cross-Entropy Loss**.
 
 ## Cross Entropy Loss (a.k.a Softmax Loss)
 
-Before introducing cross entropy as a loss, let's talk about entropy. Entropy is a measure of how "disperse" a system is. For a random variable, if its distribution is fairly "concentrated", its entropy is fairly small. E.g., a random variable with $P(x_1) = 0$ and $P(x_2) = 1$. This system is "concentrated" and its entropy is zero. On the other hand, if a random variable is "all over the place", like in a uniform distribution, then its entropy is high. The entropy is represented as:
+Before introducing cross entropy as a loss, let's talk about entropy. Entropy is a measure of how "disperse" a system is. For a random variable, if its distribution is fairly "concentrated", its entropy is fairly small. E.g., a random variable with $$P(x_1) = 0$$ and $$P(x_2) = 1$$. This system is "concentrated" and its entropy is zero. On the other hand, if a random variable is "all over the place", like in a uniform distribution, then its entropy is high. The entropy is represented as:
 
 $$
 \begin{gather*}
@@ -117,9 +117,9 @@ H(P,Q) = - \sum_x P(x)log(Q(x))
 \end{gather*}
 $$
 
-- Cross entropy can be thought of as the "cost" to represent the distribution $P(x)$ using distribution $Q(x)$.
+- Cross entropy can be thought of as the "cost" to represent the distribution $$P(x)$$ using distribution $$Q(x)$$.
 
-Now, to measure the "information loss" for using $Q(x)$ to represent $P(x)$, one metric is the **Kullback-Leibler (KL) Divergence**:
+Now, to measure the "information loss" for using $$Q(x)$$ to represent $$P(x)$$, one metric is the **Kullback-Leibler (KL) Divergence**:
 
 $$
 \begin{gather*}
@@ -128,7 +128,7 @@ D_{KL}(P || Q) = - \sum_x P(x)log(\frac{P(x)}{Q(x)})
 \end{gather*}
 $$
 
-When evaluating a model across epochs, **the true distribution and its entropy $H(P)$ remains the same for each input**. The difference of the model's performance each time is determined by $H(P,Q)$. Thus, the cross entropy can be used as a loss
+When evaluating a model across epochs, **the true distribution and its entropy $$H(P)$$ remains the same for each input**. The difference of the model's performance each time is determined by $$H(P,Q)$$. Thus, the cross entropy can be used as a loss
 
 $$
 \begin{gather*}
@@ -136,7 +136,7 @@ $$
 \end{gather*}
 $$
 
-- Note that we always represent the ground truth label $y_i$ as an one-hot vector, where the true class has a probability 1, and other classes have a probability 0. So the one hot vector actually represents the true output distribution. **This is why cross entropy can be used as a loss in deep learning.**. $i$ is the dimension of the output vector.
+- Note that we always represent the ground truth label $$y_i$$ as an one-hot vector, where the true class has a probability 1, and other classes have a probability 0. So the one hot vector actually represents the true output distribution. **This is why cross entropy can be used as a loss in deep learning.**. $$i$$ is the dimension of the output vector.
 
 **Cross-entropy loss** can be used with other activation functions like **ReLU**, **tanh**, etc., as long as we want the logit to be the probability distribution of the output.
 
@@ -144,7 +144,7 @@ $$
 
 By combining the softmax activation and cross-entropy loss into a single operation, implementations avoid computing the softmax probabilities explicitly, which enhances numerical stability and computational efficiency.
 
-1. Given output one-hot vector $\hat{y}$, compute softmax of each output class in one prediction
+1. Given output one-hot vector $$\hat{y}$$, compute softmax of each output class in one prediction
 
 $$
 softmax(\hat{y}) = p_i = \frac{1}{\sum_i e^{\hat{y_i}}}
@@ -153,7 +153,7 @@ e^{\hat{y1}}, e^{\hat{y2}} ...
 \end{bmatrix}
 $$
 
-2. Compute cross entropy against the target one-hot vector $y$. Because only 1 class has a probability 1, it can be simplified to:
+2. Compute cross entropy against the target one-hot vector $$y$$. Because only 1 class has a probability 1, it can be simplified to:
 
 $$
 \begin{gather*}
@@ -165,7 +165,7 @@ $$
 
 Where `m` is the correct predicted class. This trick is also called the **log-sum-exp** trick
 
-**The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $e^{\hat{y}}$ can be large, so we subtract values by the largest element in $\hat{y}$, $\hat{y_{max}}$. So, we get $\sum_i e^{\hat{y_i} - \hat{y_{max}}}$ for better stability
+**The biggest advantage of softmax with cross-entropy-loss is numerical stability**. Some values in $$e^{\hat{y}}$$ can be large, so we subtract values by the largest element in $$\hat{y}$$, $$\hat{y_{max}}$$. So, we get $$\sum_i e^{\hat{y_i} - \hat{y_{max}}}$$ for better stability
 
 In PyTorch, it is `torch.nn.CrossEntropyLoss()`, In TensorFlow, it is `tf.nn.softmax_cross_entropy_with_logits(labels, logits)`. **This function requires masks to be in long (int64)**
 
@@ -234,11 +234,11 @@ max(\hat{y}, 0) - \hat{y}y + log(1 + e^{-|\hat{y}|})
 \end{gather*}
 $$
 
-When $\hat{y} \rightarrow \infty$, using the vanilla function will lead to underflow and you will get $-\infty$. The updated function is more accurate.
+When $$\hat{y} \rightarrow \infty$$, using the vanilla function will lead to underflow and you will get $$-\infty$$. The updated function is more accurate.
 
 ## Gradient Descent With Softmax
 
-The gradient of cross entropy loss, $J$ w.r.t jth dimension of the output prediction $\hat{y_j}$ is:
+The gradient of cross entropy loss, $$J$$ w.r.t jth dimension of the output prediction $$\hat{y_j}$$ is:
 
 $$
 \begin{gather*}
@@ -246,7 +246,7 @@ $$
 \end{gather*}
 $$
 
-The gradient of the Softmax layer's output at jth dimension $\hat{y_j}$, w.r.t jth dimension of the input $z_j$ is (that is, its own logit):
+The gradient of the Softmax layer's output at jth dimension $$\hat{y_j}$$, w.r.t jth dimension of the input $$z_j$$ is (that is, its own logit):
 
 $$
 \begin{gather*}
@@ -284,7 +284,7 @@ $$
 \end{gather*}
 $$
 
-Similarly, the gradient of the Softmax layer's output at jth dimension $\hat{y_j}$, w.r.t cth dimension of the input $z_j$ is:
+Similarly, the gradient of the Softmax layer's output at jth dimension $$\hat{y_j}$$, w.r.t cth dimension of the input $$z_j$$ is:
 
 $$
 \begin{gather*}

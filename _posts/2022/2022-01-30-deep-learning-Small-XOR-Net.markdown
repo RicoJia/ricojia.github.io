@@ -100,7 +100,7 @@ def test_with_model(X_train, y_train, X_test, y_test, X_validation=None, y_valid
 </p>
 </div>
 
-- 💡 Biases are usually initialized to 0, so it's trivial for analysis. Weights however, needs to be initialized carefully. For `ReLU` activation functions, we use `He` Initialization. Here we are using `sigmoid`, so we use `Xavier` initialization. Xavier/Glorot randomly initializes weights to 0 mean, $gain * \sqrt{\frac{6}{n_{i}+n_{i+1}}}$ variance.
+- 💡 Biases are usually initialized to 0, so it's trivial for analysis. Weights however, needs to be initialized carefully. For `ReLU` activation functions, we use `He` Initialization. Here we are using `sigmoid`, so we use `Xavier` initialization. Xavier/Glorot randomly initializes weights to 0 mean, $$gain * \sqrt{\frac{6}{n_{i}+n_{i+1}}}$$ variance.
 
 <div style="text-align: center;">
 <p align="center">
@@ -114,7 +114,7 @@ def test_with_model(X_train, y_train, X_test, y_test, X_validation=None, y_valid
 
 ### Hyper Parameter Tuning
 
-In a Gaussian Mixture example, I have 5 mixtures of classes. The first architecture, with only 2 layers, could learn only up to <80% on the test set. Once I added another hidden layer, the non-linearity increases and the accuracy could hit >90%. Note that cost still looks a little noisy at the end, with gradient norm oscillating in $[0, 0.15]$ in some cases. **However, since the eventual test set accuracy is decent, we don't need to worry too much about it**
+In a Gaussian Mixture example, I have 5 mixtures of classes. The first architecture, with only 2 layers, could learn only up to <80% on the test set. Once I added another hidden layer, the non-linearity increases and the accuracy could hit >90%. Note that cost still looks a little noisy at the end, with gradient norm oscillating in $$[0, 0.15]$$ in some cases. **However, since the eventual test set accuracy is decent, we don't need to worry too much about it**
 
 <div style="text-align: center;">
 <p align="center">

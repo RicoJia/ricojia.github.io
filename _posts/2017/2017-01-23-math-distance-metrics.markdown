@@ -12,7 +12,7 @@ tags:
 
 ### Kullback-Leibler (KL) Divergence
 
-Given two distributions, $p(x)$, and $q(x)$, denotes **how different $p(x)$ is from $q(x)$**, hence it further denotes **how much information will be lost when q(x) is used to represent p(x)**
+Given two distributions, $$p(x)$$, and $$q(x)$$, denotes **how different $$p(x)$$ is from $$q(x)$$**, hence it further denotes **how much information will be lost when q(x) is used to represent p(x)**
 
 $$
 \begin{gather*}
@@ -20,16 +20,16 @@ D_{KL}(p(x) || q(x)) = \sum_X p(x) ln(\frac{p(x)}{q(x)})
 \end{gather*}
 $$
 
-- KL Divergence is not a distance, because the $KL(x)$ from $p(x)$ to $q(x)$ usually is not the same as that from $q(x)$ to $p(x)$
-- $KL(x) \ge 0$, when $p(x)=q(x)$, $KL(x)=0$
+- KL Divergence is not a distance, because the $$KL(x)$$ from $$p(x)$$ to $$q(x)$$ usually is not the same as that from $$q(x)$$ to $$p(x)$$
+- $$KL(x) \ge 0$$, when $$p(x)=q(x)$$, $$KL(x)=0$$
 
-From counting, we find that $q(x_i)=0$ for a certain value $x_i$, technically,
+From counting, we find that $$q(x_i)=0$$ for a certain value $$x_i$$, technically,
 
 $$
 D_{KL}(p(x) | q(x)) = \sum_X p(x) ln(\frac{p(x)}{0}) = \infty
 $$
 
-However, this could cause a lot of issues. instead, we can assume $q(x) = \epsilon = 10^{-3}$ in this case to avoid numerical errors
+However, this could cause a lot of issues. instead, we can assume $$q(x) = \epsilon = 10^{-3}$$ in this case to avoid numerical errors
 
 #### KL Divergence Can Never Be Negative
 
@@ -48,7 +48,7 @@ $$
 
 #### Special Case: `nn.CrossEntropy()`
 
-When the target distribution $p(x)$ is an one-hot vector, the above formulation becomes [cross-entropy](../2022/2022-01-24-deep-learning-softmax-crossentropy.markdown):
+When the target distribution $$p(x)$$ is an one-hot vector, the above formulation becomes [cross-entropy](../2022/2022-01-24-deep-learning-softmax-crossentropy.markdown):
 
 $$
 \begin{gather*}
@@ -66,11 +66,11 @@ $$
 \end{gather*}
 $$
 
-Where $P_i$, $Q_i$ are bins for distributions $P$, $Q$. Denometer $P_i + Q_i$ brings a normalization effect, which considers different scales of the distributions.
+Where $$P_i$$, $$Q_i$$ are bins for distributions $$P$$, $$Q$$. Denometer $$P_i + Q_i$$ brings a normalization effect, which considers different scales of the distributions.
 
 ## Mahalanobis Distance
 
-The Mahalanobis distance is a measure of “how far” a point $x$ lies from the mean $\mu$ of a multivariate distribution, taking into account the scale (variance) and correlations of the data.
+The Mahalanobis distance is a measure of “how far” a point $$x$$ lies from the mean $$\mu$$ of a multivariate distribution, taking into account the scale (variance) and correlations of the data.
 
 $$
 \begin{gather*}
@@ -84,7 +84,7 @@ $$
 
 Geodesic distance measures the smallest rotation angle between two rotations.
 
-For rotation matrices $R_1$ and $R_2$:
+For rotation matrices $$R_1$$ and $$R_2$$:
 
 $$
 d_{geo}(R_1, R_2) = \cos^{-1}\left(\frac{\operatorname{tr}(R_1 R_2^\top) - 1}{2}\right)

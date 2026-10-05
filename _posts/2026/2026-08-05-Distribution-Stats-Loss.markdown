@@ -34,13 +34,13 @@ s_k^{\text{real}}
 \right)^2.  
 $$
 
-Here, $s_k^{\text{gen}}$ is a statistic measured from generated data, $s_k^{\text{real}}$ is the corresponding statistic measured from real data, and $w_k$ controls how important that statistic is.
+Here, $$s_k^{\text{gen}}$$ is a statistic measured from generated data, $$s_k^{\text{real}}$$ is the corresponding statistic measured from real data, and $$w_k$$ controls how important that statistic is.
 
 The important question is: **what statistics should we put into this loss?**
 
 ## Start with the residual
 
-Suppose the generator produces a range image $R_{\text{gen}}$. After removing the large-scale surface trend, we obtain a residual
+Suppose the generator produces a range image $$R_{\text{gen}}$$. After removing the large-scale surface trend, we obtain a residual
 
 $$  
 x = R_{\text{gen}} - R_{\text{trend}}.  
@@ -56,7 +56,7 @@ x =
 \text{ mm}.  
 $$
 
-Three pixels have a residual of $1$ mm, while one pixel has a larger $4$ mm residual. Different statistics describe different properties of this distribution.
+Three pixels have a residual of $$1$$ mm, while one pixel has a larger $$4$$ mm residual. Different statistics describe different properties of this distribution.
 
 ## Overall noise amplitude: standard deviation
 
@@ -114,7 +114,7 @@ $$
 
 This makes the loss respond naturally to multiplicative errors.
 
-## Distribution shape: $L_1/L_2$
+## Distribution shape: $$L_1/L_2$$
 
 Noise amplitude is not enough. Two residual distributions can have the same standard deviation while having very different shapes. To describe the central part of the distribution, we can use
 
@@ -134,7 +134,7 @@ L_1 = \frac{
 \text{ mm}.  
 $$
 
-We then divide by $L_2$:
+We then divide by $$L_2$$:
 
 $$  
 \frac{L_1}{L_2} =
@@ -143,14 +143,14 @@ $$
 0.80.  
 $$
 
-Why divide by $L_2$? Because we want this statistic to describe **shape rather than absolute amplitude**. Suppose we multiply every residual by ten:
+Why divide by $$L_2$$? Because we want this statistic to describe **shape rather than absolute amplitude**. Suppose we multiply every residual by ten:
 
 $$  
 x =  
 {10,\ 10,\ 10,\ 40}.  
 $$
 
-Both $L_1$ and $L_2$ become ten times larger, so their ratio stays the same:
+Both $$L_1$$ and $$L_2$$ become ten times larger, so their ratio stays the same:
 
 $$  
 \frac{L_1}{L_2}  
@@ -158,9 +158,9 @@ $$
 0.80.  
 $$
 
-That means $L_1/L_2$ tells us about the structure of the distribution without being dominated by its overall scale. It is useful for describing the core of the residual distribution.
+That means $$L_1/L_2$$ tells us about the structure of the distribution without being dominated by its overall scale. It is useful for describing the core of the residual distribution.
 
-## Tail shape: $L_4/L_2$
+## Tail shape: $$L_4/L_2$$
 
 To pay more attention to large residuals, we increase the exponent. Define
 
@@ -209,13 +209,13 @@ $$
 1.30.  
 $$
 
-Notice what happened. The large residual of $4$ mm contributes much more strongly to $L_4$ than to $L_1$ or $L_2$. So $L_4/L_2$ gives us a differentiable measure of how heavy the tails are.
+Notice what happened. The large residual of $$4$$ mm contributes much more strongly to $$L_4$$ than to $$L_1$$ or $$L_2$$. So $$L_4/L_2$$ gives us a differentiable measure of how heavy the tails are.
 
 ---
 
 ## Why not directly use p99 or p999?
 
-A natural alternative would be to compare percentiles such as p99 or p999. Those are excellent diagnostic measurements, but they are poor training losses. A percentile is obtained by sorting the residual values and selecting one particular element. For example, if there are $16{,}384$ valid pixels, a hard p999 calculation may send gradient through essentially one selected residual value. That is only about
+A natural alternative would be to compare percentiles such as p99 or p999. Those are excellent diagnostic measurements, but they are poor training losses. A percentile is obtained by sorting the residual values and selecting one particular element. For example, if there are $$16{,}384$$ valid pixels, a hard p999 calculation may send gradient through essentially one selected residual value. That is only about
 
 $$  
 \frac{1}{16384}  
@@ -233,7 +233,7 @@ E|x|^p
 \right)^{1/p}  
 $$
 
-depends on all of the residual values. The gradient is still weighted toward large residuals for large $p$, but the objective is much smoother than a hard quantile. This gives a useful division of labor:
+depends on all of the residual values. The gradient is still weighted toward large residuals for large $$p$$, but the objective is much smoother than a hard quantile. This gives a useful division of labor:
 
 $$  
 \text{training}  
@@ -267,9 +267,9 @@ x
 L_{\text{dist}},  
 $$
 
-where $\theta$ represents the learnable parameters of the generator.
+where $$\theta$$ represents the learnable parameters of the generator.
 
-Training therefore adjusts $\theta$ so that the generated statistics move toward the real statistics.
+Training therefore adjusts $$\theta$$ so that the generated statistics move toward the real statistics.
 
 ---
 
@@ -308,7 +308,7 @@ P_{\text{eq}}
 \right],  
 $$
 
-where $\Delta R$ is the range difference between adjacent valid pixels and $\epsilon$ controls what counts as approximately equal.
+where $$\Delta R$$ is the range difference between adjacent valid pixels and $$\epsilon$$ controls what counts as approximately equal.
 
 For
 
@@ -322,7 +322,7 @@ $$
 \exp(0)=1.  
 $$
 
-A difference of $1$ mm gives
+A difference of $$1$$ mm gives
 
 $$  
 \exp(-1)  
@@ -330,7 +330,7 @@ $$
 0.368.  
 $$
 
-A difference of $2$ mm gives
+A difference of $$2$$ mm gives
 
 $$  
 \exp(-4)  
@@ -338,7 +338,7 @@ $$
 0.018.  
 $$
 
-So $P_{\text{eq}}$ becomes large when many neighboring range measurements are nearly identical. This is useful for matching plateau-like structure created by sensor quantization or discretization.
+So $$P_{\text{eq}}$$ becomes large when many neighboring range measurements are nearly identical. This is useful for matching plateau-like structure created by sensor quantization or discretization.
 
 ## Mean adjacent difference
 

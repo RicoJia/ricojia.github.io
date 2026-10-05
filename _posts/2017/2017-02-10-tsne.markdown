@@ -64,7 +64,7 @@ To calculate the similarity between point A and C,
 1. Calculate the "unscaled similarity"
 
     1. calculate their L2 Distance, `d_{AC}`
-    2. Then, plug `d` into a gaussian distribution with a known standard deviation $\sigma_A$? and get an "unscaled similarity"
+    2. Then, plug `d` into a gaussian distribution with a known standard deviation $$\sigma_A$$? and get an "unscaled similarity"
 
     $$
     \begin{gather*}
@@ -101,7 +101,7 @@ Because we want to have the same/similar similarity score if the same cluster be
 
 #### Would the similarities A -> C and C -> A the same?
 
-No. This is because the similarity score is finally scaled by A or C's total distance to other points. If A or C has a lot of points really close to them, the denominator $\sum_{K \neq A} exp(-d_{AK}^2/2\sigma_{i}^2)$ would be large so the similarity values would be scaled down by quite a bit.
+No. This is because the similarity score is finally scaled by A or C's total distance to other points. If A or C has a lot of points really close to them, the denominator $$\sum_{K \neq A} exp(-d_{AK}^2/2\sigma_{i}^2)$$ would be large so the similarity values would be scaled down by quite a bit.
 
 #### Eventually, we would end up with a similarity matrix
 

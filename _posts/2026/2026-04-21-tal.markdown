@@ -84,7 +84,7 @@ $$
 \beta = 6.
 $$
 
-The high $\beta$ means localization quality is strongly emphasized.
+The high $$\beta$$ means localization quality is strongly emphasized.
 
 ---
 
@@ -92,11 +92,11 @@ The high $\beta$ means localization quality is strongly emphasized.
 
 Suppose one ground-truth object has three candidate anchors:
 
-| Candidate | Class score ($s$) | IoU ($u$) | TAL score ($s^\alpha u^\beta$), with ($\alpha=1,\beta=6$) |
+| Candidate | Class score ($$s$$) | IoU ($$u$$) | TAL score ($$s^\alpha u^\beta$$), with ($$\alpha=1,\beta=6$$) |
 | --------: | --------------: | ------: | ----------------------------------------------------: |
-|         A |            0.90 |    0.30 |                        $0.90 \times 0.30^6 = 0.00066$ |
-|         B |            0.50 |    0.70 |                        $0.50 \times 0.70^6 = 0.0588$ |
-|         C |            0.80 |    0.60 |                        $0.80 \times 0.60^6 = 0.0373$ |
+|         A |            0.90 |    0.30 |                        $$0.90 \times 0.30^6 = 0.00066$$ |
+|         B |            0.50 |    0.70 |                        $$0.50 \times 0.70^6 = 0.0588$$ |
+|         C |            0.80 |    0.60 |                        $$0.80 \times 0.60^6 = 0.0373$$ |
 
 Even though A has the best class score, its IoU is poor, so TAL does **not** prefer it.
 
@@ -132,11 +132,11 @@ $$
 t = s^\alpha u^\beta.
 $$
 
-6. Pick top-$k$ candidates per ground-truth box.
+6. Pick top-$$k$$ candidates per ground-truth box.
 7. Resolve conflicts if one anchor is assigned to multiple GTs.
 8. Produce training targets for classification and box regression.
 
-Ultralytics’ `TaskAlignedAssigner` documentation describes this as matching predicted boxes to ground-truth boxes using a metric that combines classification and localization information, with helper steps for selecting candidates inside GTs, top-$k$ candidates, and resolving highest overlaps. ([Ultralytics Docs][2])
+Ultralytics’ `TaskAlignedAssigner` documentation describes this as matching predicted boxes to ground-truth boxes using a metric that combines classification and localization information, with helper steps for selecting candidates inside GTs, top-$$k$$ candidates, and resolving highest overlaps. ([Ultralytics Docs][2])
 
 ---
 

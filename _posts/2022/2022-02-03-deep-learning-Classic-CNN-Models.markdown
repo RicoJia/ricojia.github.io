@@ -219,13 +219,13 @@ Overall, there are 50 trainable layers in ResNet-50. Stage 1: 1 conv layer. Stag
 
 ### Why ResNet Works
 
-1. ResNet is able to learn "identity" when it's optimal to do so. That is, a residual block's $w$ and $b$ could be both zeros. So the final result will be no worse than that of a plain network. This requires the **input & output dimensions to match**
+1. ResNet is able to learn "identity" when it's optimal to do so. That is, a residual block's $$w$$ and $$b$$ could be both zeros. So the final result will be no worse than that of a plain network. This requires the **input & output dimensions to match**
 
-    - The original paper proposed "projection shortcut" as well, which is used when input & output dimensions do not match $H(x) = F(x) + W_sX$. However, this seems to be performing worse than the identity shortcut $H(x)=F(x)+X$ in the bottleneck building blocks.
+    - The original paper proposed "projection shortcut" as well, which is used when input & output dimensions do not match $$H(x) = F(x) + W_sX$$. However, this seems to be performing worse than the identity shortcut $$H(x)=F(x)+X$$ in the bottleneck building blocks.
 
-2. Each residual block's parameters are smaller, and the learned function is simpler. Given input $x$, in a plain network, a layer will learn an entire transformation $H(x)$. However in a residual block, it will learn $F(x)$ where $H(x) = X+F(x)$. There is a chance that the residual $F(x)$ is close to zero. Hence the parameters are smaller (note, **not fewer**). This is especially true when "identity" is the optimal transform $H(x)$.
+2. Each residual block's parameters are smaller, and the learned function is simpler. Given input $$x$$, in a plain network, a layer will learn an entire transformation $$H(x)$$. However in a residual block, it will learn $$F(x)$$ where $$H(x) = X+F(x)$$. There is a chance that the residual $$F(x)$$ is close to zero. Hence the parameters are smaller (note, **not fewer**). This is especially true when "identity" is the optimal transform $$H(x)$$.
 
-3. Gradient flow can reach deeper. With skip connections, the input to a layer $x$ has more influence on the final output with less layers to go though $W_1W_2...x$. So gradients will be correspondingly higher and the vanishing gradient problem is mitigated.
+3. Gradient flow can reach deeper. With skip connections, the input to a layer $$x$$ has more influence on the final output with less layers to go though $$W_1W_2...x$$. So gradients will be correspondingly higher and the vanishing gradient problem is mitigated.
 
 ## Inception Network (Szegedy et al. 2014, Google, Going deeper with convolutions)
 
@@ -403,7 +403,7 @@ $$
 \end{gather*}
 $$
 
-where $m$ is the number of output channels, $f$ is the filter size. In some applications, $m$ is much larger, so the ratio is slightly larger than $\frac{1}{f^2}$
+where $$m$$ is the number of output channels, $$f$$ is the filter size. In some applications, $$m$$ is much larger, so the ratio is slightly larger than $$\frac{1}{f^2}$$
 
 #### Implementation - Using Grouped Convolution (分组卷积)
 

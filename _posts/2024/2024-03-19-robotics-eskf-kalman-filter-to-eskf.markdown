@@ -21,9 +21,9 @@ $$
 \end{gather*}
 $$
 
-- where $\mathbf w_k$ is process noise and $\mathbf v_k$ is measurement noise; both are assumed zero‑mean, white and mutually independent.
+- where $$\mathbf w_k$$ is process noise and $$\mathbf v_k$$ is measurement noise; both are assumed zero‑mean, white and mutually independent.
 
-**The Kalman Filter seeks to generate a sequence of estimates $\hat{x_k}$ such that its error covariance w.r.t the ground truth is minimized.**
+**The Kalman Filter seeks to generate a sequence of estimates $$\hat{x_k}$$ such that its error covariance w.r.t the ground truth is minimized.**
 
 $$
 \begin{gather*}
@@ -33,7 +33,7 @@ $$
 \end{gather*}
 $$
 
-1. With currently known control command $u_k$, we can make a prediction $\hat{\mathbf x}_k^-$.
+1. With currently known control command $$u_k$$, we can make a prediction $$\hat{\mathbf x}_k^-$$.
 
 $$
 \begin{gather*}
@@ -53,7 +53,7 @@ $$
 \end{gather*}
 $$
 
-2. **By design, the Kalman Filter applies a correction to the prediction** (a.k.a prior) $\hat{\mathbf x}_k^-$, using the measurement $z_k$ with Kalman gain $K_k$
+2. **By design, the Kalman Filter applies a correction to the prediction** (a.k.a prior) $$\hat{\mathbf x}_k^-$$, using the measurement $$z_k$$ with Kalman gain $$K_k$$
 
 $$
 \begin{gather*}
@@ -63,7 +63,7 @@ $$
 \end{gather*}
 $$
 
-- So now, define the error term $e_k$, and transform it to a function of $K_k$, measurement noise $v_k$ and observation matrix $C$:
+- So now, define the error term $$e_k$$, and transform it to a function of $$K_k$$, measurement noise $$v_k$$ and observation matrix $$C$$:
 
 $$
 \begin{gather*}
@@ -76,7 +76,7 @@ $$
 \end{gather*}
 $$
 
-- Further, because the noise $v_k$ is independent from the state $x_k$ because we can rewrite the error covariance using $K_k$ as (skipping some steps here):
+- Further, because the noise $$v_k$$ is independent from the state $$x_k$$ because we can rewrite the error covariance using $$K_k$$ as (skipping some steps here):
 
 $$
 \begin{gather*}
@@ -86,7 +86,7 @@ $$
 \end{gather*}
 $$
 
-3. **Now, we are in a good place to solve for $K_k$, such that $P_k$ is at a local minima.** This requires the partial derivative of each covariance term w.r.t $K_k$ being zero:
+3. **Now, we are in a good place to solve for $$K_k$$, such that $$P_k$$ is at a local minima.** This requires the partial derivative of each covariance term w.r.t $$K_k$$ being zero:
 
 $$
 \begin{gather*}
@@ -97,7 +97,7 @@ $$
 \end{gather*}
 $$
 
-- This way, $K_k$ minimizes each covariance term, hence the trace. $K_k$ is now called the optimal gain.
+- This way, $$K_k$$ minimizes each covariance term, hence the trace. $$K_k$$ is now called the optimal gain.
 
 - Substituting the optimal gain back into (★) yields the familiar closed‑form covariance update
 
@@ -149,7 +149,7 @@ h(\mathbf x_k) &\approx h(\hat{\mathbf x}_k^-)
 \end{gather*}
 $$
 
-- where $F_k$ and $H_k$ are Jacobian matrices:
+- where $$F_k$$ and $$H_k$$ are Jacobian matrices:
 
 $$
 \begin{gather*}
@@ -161,7 +161,7 @@ $$
 \end{gather*}
 $$
 
-3. After this linearisation step the model looks linear–Gaussian, so we can reuse the Kalman machinery with $\mathbf F_k$ and $\mathbf H_k$ playing the roles of $\mathbf A$ and $\mathbf C$:
+3. After this linearisation step the model looks linear–Gaussian, so we can reuse the Kalman machinery with $$\mathbf F_k$$ and $$\mathbf H_k$$ playing the roles of $$\mathbf A$$ and $$\mathbf C$$:
 
 $$
 \begin{gather*}
@@ -183,7 +183,7 @@ This set up is called "the extended Kalman Filter" (EKF)
 
 ## [3] Example: EKF For Robot Pose Estimation With GPS (Or USBL) and IMU Signal
 
-Below is the motion model of a robot. `x` is the state vector, $p$ is the Cartesian position `x,y,z`, $v$ is the linear velocity, $q$ is the quaternion of the robot orientation. $b_a$ and $b_g$ are biases of the IMU acceleration and gyro
+Below is the motion model of a robot. `x` is the state vector, $$p$$ is the Cartesian position `x,y,z`, $$v$$ is the linear velocity, $$q$$ is the quaternion of the robot orientation. $$b_a$$ and $$b_g$$ are biases of the IMU acceleration and gyro
 
 $$
 \begin{gather*}
@@ -201,7 +201,7 @@ $$
 \end{gather*}
 $$
 
-IMU measurements are linear acceleration $\tilde{\mathbf{a}}$ in `a/m^2`, and angular velocity:
+IMU measurements are linear acceleration $$\tilde{\mathbf{a}}$$ in `a/m^2`, and angular velocity:
 
 $$
 \begin{gather*}
@@ -242,7 +242,7 @@ $$
 \end{gather*}
 $$
 
-Where $\Gamma(\mathbf{q})$ is a 4x3 matrix:
+Where $$\Gamma(\mathbf{q})$$ is a 4x3 matrix:
 
 $$
 \begin{gather*}
@@ -263,7 +263,7 @@ q_0 I_3 + [\mathbf{q}_v]_\times
 \end{gather*}
 $$
 
-Now, we can start developing a linearized model of the control and observation model $F_k$, and $G_k$, either using auto-diff, or deriving an analytic form by ignoring higher order terms
+Now, we can start developing a linearized model of the control and observation model $$F_k$$, and $$G_k$$, either using auto-diff, or deriving an analytic form by ignoring higher order terms
 
 ## [4] Why EKF Is Not The Best And ESKF Is Widely Used Instead
 
@@ -284,11 +284,11 @@ $$
 
 followed by normalizing the quaternion. Because of the extra normalization step, errors could accumulate over time.
 
-ESKF keeps "correction-to-current-estimate" terms (or nominal quaternion) as its states. The correction is in $R^3$, but there's an extra step: the nominal quaternion is updated multiplicatively outside the Kalman machinery. That eliminates the need for ad-hoc normalization and maintains consistency
+ESKF keeps "correction-to-current-estimate" terms (or nominal quaternion) as its states. The correction is in $$R^3$$, but there's an extra step: the nominal quaternion is updated multiplicatively outside the Kalman machinery. That eliminates the need for ad-hoc normalization and maintains consistency
 
 ## Reason 2 - Loss of Significance
 
-EKF uses raw position and orientation as state vectors. These values can vary, in the magnitudes of $10^2$ or more. The linearity of the control and observation models could vary drastically in this large range, too.
+EKF uses raw position and orientation as state vectors. These values can vary, in the magnitudes of $$10^2$$ or more. The linearity of the control and observation models could vary drastically in this large range, too.
 
 ESKF on the other hand, does not suffer this issue because its states ("correction-to-current-estimate" terms) are close to 0.
 

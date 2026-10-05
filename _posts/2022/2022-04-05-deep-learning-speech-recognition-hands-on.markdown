@@ -51,7 +51,7 @@ play(concat_tone)
 ### Data Synthesis
 
 - It's quite slow to record 10s audio clips and recognize when the positive and negative words appear. So we can record positive and negative words, download some background clips, then add them to the words.
-- Label $y^{(t)}$ is when the word "activate" is done. Also, **to more have a more balanced dataset (with background)**, we add the `label=0` for 50 consecutive timesteps, 1 time step **after** the word "activate" is done.
+- Label $$y^{(t)}$$ is when the word "activate" is done. Also, **to more have a more balanced dataset (with background)**, we add the `label=0` for 50 consecutive timesteps, 1 time step **after** the word "activate" is done.
 - We want to create a dev set that's similar to the actual test set. So we want to make sure the two's distributions are similar. **In this case, I'm using real audio instead of synthesized audio**
 
 ### Model

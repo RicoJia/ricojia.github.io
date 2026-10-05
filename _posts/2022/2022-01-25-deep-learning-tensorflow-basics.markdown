@@ -142,7 +142,7 @@ grad = g.gradient(y, w)
 print(f"Gradient of y with respect to w: {grad}")
 ```
 
-- Apply gradient on an image. $\alpha$ should be set in optimizer initialization already.
+- Apply gradient on an image. $$\alpha$$ should be set in optimizer initialization already.
 
 ```python
 optimizer.apply_gradients([(grad, generated_image)])

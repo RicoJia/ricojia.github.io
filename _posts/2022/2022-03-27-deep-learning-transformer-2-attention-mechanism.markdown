@@ -53,7 +53,7 @@ f(q, k1, v1, ...) = \sum_i \alpha(q, k_i) v_i
 \end{gather*}
 $$
 
-where the attention weight $\alpha_i$ for the `ith` key value pair is:
+where the attention weight $$\alpha_i$$ for the `ith` key value pair is:
 
 $$
 \begin{gather*}
@@ -120,7 +120,7 @@ The above can be implemented as a single multi-layer perceptron. Below is from t
 - key vector `k` is `dk` long
 - query vector `q` is `dq` long
 - Say we have `h` as hidden dimension
-- Learnable weight matrices $W_v$ `(h, 1)`, $W_k$ `(h, dk)`, $W_q$ `(h, q)` score how weighted queries and keys match with each other.
+- Learnable weight matrices $$W_v$$ `(h, 1)`, $$W_k$$ `(h, dk)`, $$W_q$$ `(h, q)` score how weighted queries and keys match with each other.
 
 ```python
 from torch import nn
@@ -180,7 +180,7 @@ attention(queries, keys, values)
 
 ### Scaled Dot-Product (Luong) Attention
 
-When keys and queries do have the same length, dot-multiplying them together **is faster to give a "relavance" score**. Assume Queries is `num_queries x hidden_length (d)`, keys `key_pair_num x hidden_length`, values `key_pair_num x value_length`. Below, we denote the length of keys `hidden_length` as $d_k$
+When keys and queries do have the same length, dot-multiplying them together **is faster to give a "relavance" score**. Assume Queries is `num_queries x hidden_length (d)`, keys `key_pair_num x hidden_length`, values `key_pair_num x value_length`. Below, we denote the length of keys `hidden_length` as $$d_k$$
 
 <div style="text-align: center;">
 <p align="center">
@@ -190,7 +190,7 @@ When keys and queries do have the same length, dot-multiplying them together **i
 </p>
 </div>
 
-Note that if every pair of elements in keys and queries are independent with `[mean=0, var=1]`, their product $QK^T$ has a zero mean, and a variance `d`. We normalize this product and choose it to be our attention score `a`, so its variance is always 1.
+Note that if every pair of elements in keys and queries are independent with `[mean=0, var=1]`, their product $$QK^T$$ has a zero mean, and a variance `d`. We normalize this product and choose it to be our attention score `a`, so its variance is always 1.
 
 $$
 \begin{gather*}
@@ -298,7 +298,7 @@ $$
 \end{gather*}
 $$
 
-After Applying an look-ahead mask, the attention we get is a weighted sum of all rows in $V$:
+After Applying an look-ahead mask, the attention we get is a weighted sum of all rows in $$V$$:
 
 $$
 \begin{gather*}
@@ -343,10 +343,10 @@ To interpret:
 In 2014, Bahdanau et al. proposed an encoder-decoder structure **on top of the additive attention**. To illustrate, we have a neural machine translation example (NMT): **translate French input "Jane visite l'Afrique en septembre" to English**. For attention pooling, we talked about scaled dot-product attention pooling and additive attention pooling in the previous sections.
 
 - Encoder: we are using a [bi-directional RNN encoder](../2022/2022-03-15-deep-learning-rnn3-lstm.markdown) to generate embeddings of french sentences. Now, our input "Jane visite l'Afrique en septembre" will complete its forward and backward passes.
-  - At each time `t`, the bidirectional RNN encoder outputs **a hidden state** $a^{(t)}$ (which is the key and value at the same time.)
-  - $\alpha^{(t, t')}$: amount of attention output at time `t`, $y^{(t)}$ should put to hidden state at time `t'`, $a^{(t)}$
+  - At each time `t`, the bidirectional RNN encoder outputs **a hidden state** $$a^{(t)}$$ (which is the key and value at the same time.)
+  - $$\alpha^{(t, t')}$$: amount of attention output at time `t`, $$y^{(t)}$$ should put to hidden state at time `t'`, $$a^{(t)}$$
 - Decoder we have **another single-drectional RNN decoder** to generate the word probabilities in the vocab space.
-  - Here, we denote the hidden states as $s^{(t)}$. That's the **query**
+  - Here, we denote the hidden states as $$s^{(t)}$$. That's the **query**
   - Before outputting `<EOS>`, we assign a weight to several temporal neighbors in the input sequence at each time step.
 
 <div style="text-align: center;">
@@ -357,7 +357,7 @@ In 2014, Bahdanau et al. proposed an encoder-decoder structure **on top of the a
     </p>
 </div>
 
-In this case, we look at 3 neighbors and assign weights to them: $\alpha_1$, $\alpha_2$, $\alpha_3$. So, before outputting "Jane", we look at "Jane", "visite", "l'Afrique" at the same time. Note that this weighted sum of neighbors will enter the RNN cell as the **cell state**.
+In this case, we look at 3 neighbors and assign weights to them: $$\alpha_1$$, $$\alpha_2$$, $$\alpha_3$$. So, before outputting "Jane", we look at "Jane", "visite", "l'Afrique" at the same time. Note that this weighted sum of neighbors will enter the RNN cell as the **cell state**.
 
 When we read **long** sentences, we have attention for short word segments before finishing the whole sentence. RNN networks's Bleu scores usually dips after a certain length. The attention mechanism, however, has much better performance.
 
@@ -369,7 +369,7 @@ When we read **long** sentences, we have attention for short word segments befor
     </p>
 </div>
 
-**The process to learn the attention weight $\alpha^{(t, i)}$ is called "alignment"**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to **be "soft" so it allows back-propagation** and can be trained with the whole translation model
+**The process to learn the attention weight $$\alpha^{(t, i)}$$ is called "alignment"**. "Alignment" is to find the matching patterns between the input and the output. Specifically, alignment is learning the focus to put onto each encoder hidden state. This alignment model is said to **be "soft" so it allows back-propagation** and can be trained with the whole translation model
 </details>
 
 ## References

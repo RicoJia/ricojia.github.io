@@ -41,9 +41,9 @@ $$
 x-\lfloor x \rfloor-0.5.
 $$
 
-- The parameter $\tau$ controls how sharp the transition is.
-- A small $\tau$ gives a smoother transition.
-- A large $\tau$ makes the function behave more like normal rounding.
+- The parameter $$\tau$$ controls how sharp the transition is.
+- A small $$\tau$$ gives a smoother transition.
+- A large $$\tau$$ makes the function behave more like normal rounding.
 
 <div style="text-align: center;">
 <p align="center">
@@ -139,7 +139,7 @@ q*
 \right),
 $$
 
-small changes to $R$ usually do not change the output at all. For example,
+small changes to $$R$$ usually do not change the output at all. For example,
 
 $$
 1.1,\ 1.2,\ 1.3,\ 1.4
@@ -151,11 +151,11 @@ $$
 1.
 $$
 
-The gradient is therefore zero through most of the interval. Soft rounding replaces that flat jump with a smooth slope. A downstream loss can therefore tell the model whether increasing or decreasing $R$ would improve the result.  This is useful when the quantization itself is part of a learnable sensor model.
+The gradient is therefore zero through most of the interval. Soft rounding replaces that flat jump with a smooth slope. A downstream loss can therefore tell the model whether increasing or decreasing $$R$$ would improve the result.  This is useful when the quantization itself is part of a learnable sensor model.
 
-## The role of $q$ and $\tau$
+## The role of $$q$$ and $$\tau$$
 
-The two parameters control different things. The quantization step $q$ controls the spacing of the levels. For example, if
+The two parameters control different things. The quantization step $$q$$ controls the spacing of the levels. For example, if
 
 $$
 q=2\text{ mm},
@@ -167,7 +167,7 @@ $$
 0,\ 2,\ 4,\ 6,\ldots\text{ mm}.
 $$
 
-The parameter $\tau$ controls how sharply values move between those levels. So:
+The parameter $$\tau$$ controls how sharply values move between those levels. So:
 
 $$
 q
@@ -183,6 +183,6 @@ $$
 \text{how hard or soft the transition is}.
 $$
 
-In a learnable sensor model, $q$ can be learned if the true quantization spacing is unknown. The sharpness $\tau$ is often fixed or gradually increased during training so that the model becomes closer to hard quantization over time.
+In a learnable sensor model, $$q$$ can be learned if the true quantization spacing is unknown. The sharpness $$\tau$$ is often fixed or gradually increased during training so that the model becomes closer to hard quantization over time.
 
 Soft rounding therefore provides a practical compromise: it approximates the discrete behavior of a real sensor while still allowing gradients to pass through the quantization process.

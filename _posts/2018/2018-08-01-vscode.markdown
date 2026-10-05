@@ -256,7 +256,7 @@ Host <HOSTNAME>
 
 ## Latex Support
 
-- $\| x \|$ works with Jekyll. Without escape, it won't
+- $$\| x \|$$ works with Jekyll. Without escape, it won't
 
 ---
 

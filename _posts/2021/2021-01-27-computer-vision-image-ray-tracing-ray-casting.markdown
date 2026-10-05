@@ -75,7 +75,7 @@ $$
 ### 2D Cubic Interpolation (Catmull–Rom)
 
 1. Find a row neighborhood 1x4 around the given point `(x,y)`
-2. Given the intensity values at those 4 points, and a fraction $t$:
+2. Given the intensity values at those 4 points, and a fraction $$t$$:
 
 $$
 \begin{gather*}
@@ -108,8 +108,8 @@ $$
 
 For the 1D case, as t changes, the interpolated value really depicts the transition of weights on each of the 4 points.
 
-- While t=0, it's $p_1$. while t=1, it's $p_2$
-- Derivative at `t=0` is $f'(0) = 0.5(p_2 - p_0)$
+- While t=0, it's $$p_1$$. while t=1, it's $$p_2$$
+- Derivative at `t=0` is $$f'(0) = 0.5(p_2 - p_0)$$
 
 ## Ring Effect
 

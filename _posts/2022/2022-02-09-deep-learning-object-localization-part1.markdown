@@ -18,7 +18,7 @@ For example, if there are 4 classes, `[Pedestrian, Cars, Motorcycles, Background
 
 - p is the **confidence of** whether there is an object (so background would make this False). `cx, cy, cz` is the one-hot vector of the output class label. `bx, by, bw, bh` are the (x,y) and (width, height) of the detected object.
 
-**Loss function** can be $L(\hat{y},y) = (\hat{p}-p)^2$ if the label value for $p$ is 0. If the label value for $p$ is 1, then the loss function can be the summed squared error $L(\hat{y},y) = (\hat{p}-p)^2 + (\hat{c_x}-c_x)^2 + ...$. This is almost **a regression task**
+**Loss function** can be $$L(\hat{y},y) = (\hat{p}-p)^2$$ if the label value for $$p$$ is 0. If the label value for $$p$$ is 1, then the loss function can be the summed squared error $$L(\hat{y},y) = (\hat{p}-p)^2 + (\hat{c_x}-c_x)^2 + ...$$. This is almost **a regression task**
 
 **Landmark** is a salient feature of an image we want to recognize. E.g., certain corners of the eye, edges along a face, etc. This is important for Snapchat's filters, such as the one that adds a crown on a person's head. So the labelled data is a list of **consistent indexed** landmarks, for example, "landmark 1 is always the left corner of the left eye" (generating that could be a laborious process). The output of the neuralnet is `[x_1, y_1, ... x_64, y_64]` if we want 64 landmarks. Landmark Detection Will pave the way for object detection
 

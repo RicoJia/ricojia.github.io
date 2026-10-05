@@ -32,7 +32,7 @@ e_{word1} - e_{word2} \approx e_{word3} - e_{word4}
 $$
 
 For example, if the features are: `["gender", "royal", "age"]`,
- the embeddings for words "man" and "woman" are `[1, 0.01, 0]` and `[-1, 0.01, 0]`, king and queen are `[1, 0.97, 0]`, `[-1, 0.95, 0]`, then $e_{man} - e_{woman} \approx e_{king} - e_{queen}$. The below illustration generally describes this relationship
+ the embeddings for words "man" and "woman" are `[1, 0.01, 0]` and `[-1, 0.01, 0]`, king and queen are `[1, 0.97, 0]`, `[-1, 0.95, 0]`, then $$e_{man} - e_{woman} \approx e_{king} - e_{queen}$$. The below illustration generally describes this relationship
 
 <div style="text-align: center;">
 <p align="center">
@@ -42,7 +42,7 @@ For example, if the features are: `["gender", "royal", "age"]`,
 </p>
 </div>
 
-To find the analogy "man to woman is like king to ?", we just need to iterate through the entire vocabular, and find the word that roughly corresponds to $e_{king} - e_{man} + e_{woman}$.
+To find the analogy "man to woman is like king to ?", we just need to iterate through the entire vocabular, and find the word that roughly corresponds to $$e_{king} - e_{man} + e_{woman}$$.
 
 One thing to note is that if one wants to do `t-SNE`, the result is after a non-linear mapping, so such a relationship may not hold
 
@@ -130,7 +130,7 @@ There's an [example implementation here](https://www.geeksforgeeks.org/implement
 
 #### Negative Sampling
 
-Note that in the vanilla version of Skip-gram, the softmax $\frac{exp^{y_i}}{\sum_I exp^{y_i}}$ is very expensive to compute, if the vocabulary I is in the order of 10000. Therefore, one can use:
+Note that in the vanilla version of Skip-gram, the softmax $$\frac{exp^{y_i}}{\sum_I exp^{y_i}}$$ is very expensive to compute, if the vocabulary I is in the order of 10000. Therefore, one can use:
 
 - Hierarchical Softmax Classifier
 - Or negative sampling
@@ -243,9 +243,9 @@ minimize \sum_{I=10000} \sum_{J = 10000} f(x_{ij})(\theta_i^T e_j - log(x_{ij}) 
 \end{gather*}
 $$
 
-- $x_{ij}$: the number of times that words `i, j` occur together.
-- $\theta_i$, $e_j$ are two independently trained sets word embeddings of words `i, j`
-- $f(x_{ij})$ is a weighting term of, such that when `i`, `j` never co-occur, $log(0) = -inf$, we are numerically stable.
+- $$x_{ij}$$: the number of times that words `i, j` occur together.
+- $$\theta_i$$, $$e_j$$ are two independently trained sets word embeddings of words `i, j`
+- $$f(x_{ij})$$ is a weighting term of, such that when `i`, `j` never co-occur, $$log(0) = -inf$$, we are numerically stable.
   - A uniform probability for each word may not reflect the true weight of the word pair
   - But if we just consider the frequencies of the two words, they are a bit too harsh.
 
@@ -320,10 +320,10 @@ Bias in word embeddings mean something like "boy to girl is like breadwinner vs 
 
 ## Common Misconceptions
 
-- If C is an embedding matrix, and o1021 is a one-hot vector corresponding to word 1021, the most computationally efficient formula for Python to get the embedding of word 1021 is $C^{T} * o_{1021}$
+- If C is an embedding matrix, and o1021 is a one-hot vector corresponding to word 1021, the most computationally efficient formula for Python to get the embedding of word 1021 is $$C^{T} * o_{1021}$$
   - False because element-wise multiplication is very inefficient.
 
-- Suppose you have a 10000 word vocabulary, and are learning 100-dimensional word embeddings. Do we exepect the same word's embeddings from two embedding sets to be similar? $θ_t^T e_c \approx 0$
+- Suppose you have a 10000 word vocabulary, and are learning 100-dimensional word embeddings. Do we exepect the same word's embeddings from two embedding sets to be similar? $$θ_t^T e_c \approx 0$$
   - False because the embedding sets could be quite different.
 
 - When learning word embeddings, we pick a given word and try to predict its surrounding words or vice versa.

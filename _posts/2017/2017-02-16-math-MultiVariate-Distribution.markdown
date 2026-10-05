@@ -25,9 +25,9 @@ $$
 Where:
 
 - n is the number of variates
-- $\Sigma$ is the covariance matrix.
-- $|\Sigma|$ is the determinant of the covariance matrix.
-- $\mu$ is an n-vector $[\mu_1 ... \mu_n]$
+- $$\Sigma$$ is the covariance matrix.
+- $$\vert \Sigma\vert $$ is the determinant of the covariance matrix.
+- $$\mu$$ is an n-vector $$[\mu_1 ... \mu_n]$$
 
 Example:
 
@@ -88,9 +88,9 @@ As can be seen, the final pdf value is always a number. Here's an illustration f
 
 ### A Word On The Covariance Matrix
 
-An unbiased covariance matrix is $\frac{1}{M-1} \sum_N(x_m - \mu_m)(x_m - \mu_m)^T$. In MLE (Maximum Likelihood Estimate), it's a biased one: $\frac{1}{N} \sum_M(x_m - \mu_m)(x_m - \mu_m)^T$
+An unbiased covariance matrix is $$\frac{1}{M-1} \sum_N(x_m - \mu_m)(x_m - \mu_m)^T$$. In MLE (Maximum Likelihood Estimate), it's a biased one: $$\frac{1}{N} \sum_M(x_m - \mu_m)(x_m - \mu_m)^T$$
 
-- `m` is the number of observations of the joint probability: $x_m = [x1, x2 ...]$
+- `m` is the number of observations of the joint probability: $$x_m = [x1, x2 ...]$$
 
 Meanwhile, the covariance matrix is a symmetric, positive semi-definite matrix.
 
@@ -108,7 +108,7 @@ $$
 
 ## Linear Transformation
 
-If we have two joint distributions: $y = Ax + b$, where x has a mean vector $\mu_x$, covariance matrix $\Sigma_x$, then:
+If we have two joint distributions: $$y = Ax + b$$, where x has a mean vector $$\mu_x$$, covariance matrix $$\Sigma_x$$, then:
 
 $$
 \begin{gather*}

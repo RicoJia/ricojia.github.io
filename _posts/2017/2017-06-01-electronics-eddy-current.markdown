@@ -26,9 +26,9 @@ $$
 \end{gather*}
 $$
 
-- $\epsilon$ is the electromotive force (EMF), or commonly, "induced voltage"
-- $Delta \phi$ is the change in magnetic flux.
-- $N$ is the number of coils
+- $$\epsilon$$ is the electromotive force (EMF), or commonly, "induced voltage"
+- $$Delta \phi$$ is the change in magnetic flux.
+- $$N$$ is the number of coils
 
 Basically, Faraday's law is to say "the induced voltage is the negative of the total rate of change of flux linkage"
 

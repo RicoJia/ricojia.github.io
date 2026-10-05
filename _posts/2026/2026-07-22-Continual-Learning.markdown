@@ -22,7 +22,7 @@ $$
 \mathcal{D}_1 \rightarrow \mathcal{D}_2 \rightarrow \cdots \rightarrow \mathcal{D}_T.
 $$
 
-After learning experience $t$, we evaluate the model not only on the newest distribution, but on all distributions seen so far. If learning $\mathcal{D}_2$ reduces performance on $\mathcal{D}_1$, the model has experienced **negative backward transfer**. Severe negative backward transfer is called **catastrophic forgetting**.
+After learning experience $$t$$, we evaluate the model not only on the newest distribution, but on all distributions seen so far. If learning $$\mathcal{D}_2$$ reduces performance on $$\mathcal{D}_1$$, the model has experienced **negative backward transfer**. Severe negative backward transfer is called **catastrophic forgetting**.
 
 The key tension is:
 
@@ -41,13 +41,13 @@ These settings are not interchangeable. Separate LoRA adapters are much easier t
 
 ## 2. Why sequential fine-tuning forgets
 
-Let the model parameters after Dataset 1 be $\theta_1$. When we fine-tune only on Dataset 2, gradient descent optimizes
+Let the model parameters after Dataset 1 be $$\theta_1$$. When we fine-tune only on Dataset 2, gradient descent optimizes
 
 $$
 \min_\theta \; \mathcal{L}_2(\theta).
 $$
 
-Nothing in this objective requires $\mathcal{L}_1(\theta)$ to remain small. If the gradients that improve Dataset 2 point against directions important for Dataset 1, the new optimization step damages old behavior.
+Nothing in this objective requires $$\mathcal{L}_1(\theta)$$ to remain small. If the gradients that improve Dataset 2 point against directions important for Dataset 1, the new optimization step damages old behavior.
 
 This is not merely “the model running out of memory.” **The model may have ample parameter capacity.** The problem is that Dataset 2 provides no evidence about which old behaviors must remain invariant. Here is a family of methods that address this issue:
 
@@ -72,7 +72,7 @@ $$
 \sum_i F_i(\theta_i-\theta_{1,i})^2,
 $$
 
-where $F_i$ **approximates the importance of parameter $i$.** Gradient Episodic Memory (GEM) instead stores examples from old tasks and constrains new gradients so that the remembered losses do not increase.
+where $$F_i$$ **approximates the importance of parameter $$i$$.** Gradient Episodic Memory (GEM) instead stores examples from old tasks and constrains new gradients so that the remembered losses do not increase.
 
 In practical computer-vision systems, **a small, representative replay buffer** is often **the baseline** to beat. It directly supplies the missing evidence: “these old examples still matter.”
 
@@ -84,7 +84,7 @@ $$
 W_0 \in \mathbb{R}^{d_{\text{out}}\times d_{\text{in}}}.
 $$
 
-Full fine-tuning learns an unrestricted update $\Delta W$ with the same shape. LoRA freezes $W_0$ and parameterizes the update as
+Full fine-tuning learns an unrestricted update $$\Delta W$$ with the same shape. LoRA freezes $$W_0$$ and parameterizes the update as
 
 $$
 W_{\text{eff}}
@@ -109,7 +109,7 @@ $$
 $$
 
 LoRA restricts the update to a low-rank form. Instead of training
-$d_{\text{out}}d_{\text{in}}$ parameters, it trains
+$$d_{\text{out}}d_{\text{in}}$$ parameters, it trains
 
 $$
 r(d_{\text{in}}+d_{\text{out}})
@@ -147,15 +147,15 @@ There are three different designs that people casually call “continual learnin
 
 ### Design A: Reuse one LoRA adapter
 
-Train adapter parameters $(A,B)$ on Dataset 1, then continue updating the same parameters on Dataset 2.
+Train adapter parameters $$(A,B)$$ on Dataset 1, then continue updating the same parameters on Dataset 2.
 
-- This is **simply sequential fine-tuning** inside a smaller parameter space. The base weight $W_0$ is protected, but **the adapter’s Dataset-1 update can still be overwritten**. The detector head can also forget if it remains trainable.
+- This is **simply sequential fine-tuning** inside a smaller parameter space. The base weight $$W_0$$ is protected, but **the adapter’s Dataset-1 update can still be overwritten**. The detector head can also forget if it remains trainable.
 
 LoRA may reduce interference because it limits the update space. It can also increase interference if multiple tasks compete for the same low-rank directions. There is no general guarantee either way.
 
 ### Design B: Add one adapter per dataset or domain
 
-Keep $(A_1,B_1)$ for Dataset 1 frozen, then learn a new $(A_2,B_2)$ for Dataset 2. Direct parameter overwriting is avoided. **But now, how do we choose or combine outputs?**. If task identity is supplied, this is task-incremental learning. If a router predicts the domain, overall performance depends on routing accuracy. If all adapters are simply summed,
+Keep $$(A_1,B_1)$$ for Dataset 1 frozen, then learn a new $$(A_2,B_2)$$ for Dataset 2. Direct parameter overwriting is avoided. **But now, how do we choose or combine outputs?**. If task identity is supplied, this is task-incremental learning. If a router predicts the domain, overall performance depends on routing accuracy. If all adapters are simply summed,
 
 $$
 W_{\text{eff}}
@@ -163,7 +163,7 @@ W_{\text{eff}}
 W_0+\sum_{t=1}^{T}B_tA_t,
 $$
 
-the combined update has rank at most $\sum_t r_t$, but that does not mean the adaptations are compatible. Their functional effects can conflict. Storage also grows approximately linearly with the number of tasks.
+the combined update has rank at most $$\sum_t r_t$$, but that does not mean the adaptations are compatible. Their functional effects can conflict. Storage also grows approximately linearly with the number of tasks.
 
 ### Design C: Use LoRA inside an actual continual-learning algorithm
 
@@ -189,7 +189,7 @@ F_1
 R_{1,1}-R_{2,1}.
 $$
 
-Positive $F_1$ means the model forgot Domain 1 after learning Domain 2. Also report final average performance:
+Positive $$F_1$$ means the model forgot Domain 1 after learning Domain 2. Also report final average performance:
 
 $$
 \text{FinalAvg}
@@ -230,8 +230,8 @@ $$
 
 The four quantities play different roles:
 
-- $\mu$ and $\sigma^2$ describe the activation distribution.
-- $\gamma$ and $\beta$ are learned scale and bias parameters.
+- $$\mu$$ and $$\sigma^2$$ describe the activation distribution.
+- $$\gamma$$ and $$\beta$$ are learned scale and bias parameters.
 
 During training, BatchNorm calculates a mean and variance from each mini-batch. It also maintains running estimates of these statistics. During ordinary inference, the running statistics are frozen and reused for every input. The inference data does not normally change them. This works when training and deployment data have similar distributions. Under domain shift, however, the stored source statistics may normalize target activations badly.
 
@@ -242,7 +242,7 @@ Assume that a model was trained on a source domain and will be deployed on a rel
 1. Freeze the learned network weights.
 2. Pass unlabeled target samples through the network.
 3. Estimate a target mean and variance for every BatchNorm channel.
-4. Replace the source running statistics $\mu$ and $\sigma$ with the target statistics.
+4. Replace the source running statistics $$\mu$$ and $$\sigma$$ with the target statistics.
 
 The new inference equation becomes
 
@@ -251,7 +251,7 @@ y = \gamma\frac{x-\mu_{\text{target}}}
 {\sqrt{\sigma^2_{\text{target}}+\epsilon}}+\beta.
 $$
 
-The learned $\gamma$, $\beta$, convolution weights, and prediction heads remain unchanged. No target labels are required.
+The learned $$\gamma$$, $$\beta$$, convolution weights, and prediction heads remain unchanged. No target labels are required.
 
 ### 2-3 Offline AdaBN
 
@@ -283,7 +283,7 @@ $$
 \sigma_t^2=(1-\alpha)\sigma_{t-1}^2+\alpha\hat{\sigma}_t^2,
 $$
 
-where $\hat{\mu}_t$ and $\hat{\sigma}_t^2$ are statistics from the new data and $\alpha$ controls adaptation speed.
+where $$\hat{\mu}_t$$ and $$\hat{\sigma}_t^2$$ are statistics from the new data and $$\alpha$$ controls adaptation speed.
 
 The approximate half-life of past information is
 
@@ -291,13 +291,13 @@ $$
 h=\frac{\ln(0.5)}{\ln(1-\alpha)}.
 $$
 
-| $\alpha$ | Approximate half-life |
+| $$\alpha$$ | Approximate half-life |
 |---:|---:|
 | 0.001 | 693 updates |
 | 0.01 | 69 updates |
 | 0.1 | 7 updates |
 
-A large $\alpha$ adapts quickly but can be corrupted by a short unusual sequence. A small $\alpha$ is stable but may respond too slowly to real drift.
+A large $$\alpha$$ adapts quickly but can be corrupted by a short unusual sequence. A small $$\alpha$$ is stable but may respond too slowly to real drift.
 
 #### Why online adaptation is risky
 
@@ -307,7 +307,7 @@ $$
 \hat{y}_t=f(x_t,s_{t-1}),
 $$
 
-where $s_{t-1}$ contains the accumulated BatchNorm statistics.
+where $$s_{t-1}$$ contains the accumulated BatchNorm statistics.
 
 This creates several failure modes:
 

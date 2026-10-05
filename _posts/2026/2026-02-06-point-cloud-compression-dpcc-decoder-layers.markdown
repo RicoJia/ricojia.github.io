@@ -68,7 +68,7 @@ Final reconstructed point cloud
 
 Each decoder layer performs four conceptual steps:
 
-1. For each input point, upsample $U$ candidate child points.
+1. For each input point, upsample $$U$$ candidate child points.
 2. Predict how many upsampled points each input point actually needs.
 3. Select the appropriate number of candidates.
 4. Refine the selected points' coordinates and features.
@@ -82,7 +82,7 @@ xyzs  : (B, 3, N)
 feats : (B, C, N)
 ```
 
-the model produces $U$ candidates per parent point:
+the model produces $$U$$ candidates per parent point:
 
 ```
 candidate_xyzs  : (B, 3, N, U)
@@ -113,11 +113,11 @@ This allows **variable-density reconstruction** — different regions of the poi
 | Point 1 | 1 |
 | Point 2 | 5 |
 
-Total output points: $M = \sum_i \texttt{upsample\_num}_i$
+Total output points: $$M = \sum_i \texttt{upsample\_num}_i$$
 
 ### Step 3 — Candidate Selection
 
-From the $U$ candidates per parent, the decoder keeps the first `upsample_num[i]` candidates and flattens across all parents:
+From the $$U$$ candidates per parent, the decoder keeps the first `upsample_num[i]` candidates and flattens across all parents:
 
 ```
 xyzs  : (B, 3, M)
@@ -126,8 +126,8 @@ feats : (B, C, M)
 
 For mini-batch training the result is normalized to a fixed target size:
 
-- **Too many points** ($M >$ target): downsample with FPS.
-- **Too few points** ($M <$ target): pad by randomly repeating existing points.
+- **Too many points** ($$M >$$ target): downsample with FPS.
+- **Too few points** ($$M <$$ target): pad by randomly repeating existing points.
 
 ### Step 4 — Refinement
 
@@ -156,7 +156,7 @@ A unit icosahedron has all edges of equal length. This holds if and only if its 
 
 $$(0, \pm 1, \pm \varphi), \quad (\pm 1, \pm \varphi, 0), \quad (\pm \varphi, 0, \pm 1)$$
 
-where $\varphi$ is the **golden ratio**:
+where $$\varphi$$ is the **golden ratio**:
 
 $$\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618$$
 
@@ -226,19 +226,19 @@ Convolution runs on the smaller spatial size, so it is cheaper. The expanded cha
   </figure>
 </div>
 
-**Sub-point convolution** (the 3-D point cloud analogue) follows the same idea. Each point has a feature vector of dimension $C$. To upsample by factor $r$, convolution first expands the channel dimension to $C \cdot r$, then a point shuffle redistributes those extra channels into $r$ new points — $C$ stays the same:
+**Sub-point convolution** (the 3-D point cloud analogue) follows the same idea. Each point has a feature vector of dimension $$C$$. To upsample by factor $$r$$, convolution first expands the channel dimension to $$C \cdot r$$, then a point shuffle redistributes those extra channels into $$r$$ new points — $$C$$ stays the same:
 
 $$N \times C \;\xrightarrow{\text{conv}}\; N \times (C \cdot r) \;\xrightarrow{\text{point shuffle}}\; (r \cdot N) \times C$$
 
-For example, with $N=4$, $C=3$, $r=2$:
+For example, with $$N=4$$, $$C=3$$, $$r=2$$:
 
 $$4 \times 3 \;\xrightarrow{\text{conv}}\; 4 \times 6 \;\xrightarrow{\text{point shuffle}}\; 8 \times 3$$
 
-The intermediate $4 \times 6$ representation is **learned via convolution**, not duplicated — the network packs the information needed to reconstruct 2 new points into those 6 channels.
+The intermediate $$4 \times 6$$ representation is **learned via convolution**, not duplicated — the network packs the information needed to reconstruct 2 new points into those 6 channels.
 
 ### Pixel Shuffle
 
-The reshape step $4 \times 4 \times 12 \;\to\; 8 \times 8 \times 3$ is called **pixel shuffle** (or periodic shuffle). It reinterprets the extra channel slots as sub-pixel spatial positions. In a minimal 1D example with upscale factor $r = 2$:
+The reshape step $$4 \times 4 \times 12 \;\to\; 8 \times 8 \times 3$$ is called **pixel shuffle** (or periodic shuffle). It reinterprets the extra channel slots as sub-pixel spatial positions. In a minimal 1D example with upscale factor $$r = 2$$:
 
 $$[1,\; 2,\; 3,\; 4] \;\xrightarrow{\text{shuffle}}\; \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$$
 
@@ -253,11 +253,11 @@ $$H \times W \times (C \cdot r^2) \;\xrightarrow{\text{pixel shuffle}}\; rH \tim
   </figure>
 </div>
 
-For point cloud compression, **why not just copy-then-convolve?** The older approach was to first copy (or nearest-neighbour interpolate) the $4 \times 4 \times 3$ feature map 4 times to produce $4 \times 4 \times 12$, then upsample spatially to $8 \times 8 \times 3$ and convolve. The problem is that neighbouring output features all inherited the exact same copied input value, so the network had very little gradient signal to differentiate them — the upsampled points clustered together. Sub-pixel convolution avoids this entirely: the convolution runs on the **small** feature map and learns genuinely distinct values in each of the $C \cdot r^2$ channels, so every output position starts from a different learned representation.
+For point cloud compression, **why not just copy-then-convolve?** The older approach was to first copy (or nearest-neighbour interpolate) the $$4 \times 4 \times 3$$ feature map 4 times to produce $$4 \times 4 \times 12$$, then upsample spatially to $$8 \times 8 \times 3$$ and convolve. The problem is that neighbouring output features all inherited the exact same copied input value, so the network had very little gradient signal to differentiate them — the upsampled points clustered together. Sub-pixel convolution avoids this entirely: the convolution runs on the **small** feature map and learns genuinely distinct values in each of the $$C \cdot r^2$$ channels, so every output position starts from a different learned representation.
 
 ### Sub-Point Convolution
 
-For point clouds the same idea applies along the point dimension instead of spatial H×W. With upsample factor $r$:
+For point clouds the same idea applies along the point dimension instead of spatial H×W. With upsample factor $$r$$:
 
 $$N \times C \;\xrightarrow{\text{conv}}\; N \times (C \cdot r) \;\xrightarrow{\text{point shuffle}}\; (r \cdot N) \times C$$
 
@@ -369,7 +369,7 @@ OUTPUT
 
 ### Select First K Points Per Point
 
-For each point $i$ in a batch item, keep only the first `upsample_num[b, i]` candidates along the upsampling dimension $U$, then concatenate all kept candidates into a flat list of output points.
+For each point $$i$$ in a batch item, keep only the first `upsample_num[b, i]` candidates along the upsampling dimension $$U$$, then concatenate all kept candidates into a flat list of output points.
 
 **Example** — `candidate_xyzs` of shape `(1, 3, 2, 3)` (1 batch, 3D coords, 2 points, 3 candidates each):
 
@@ -395,11 +395,11 @@ For each batch item `bi`:
    - `sel_xyzs`: `(1, 3, m)`
    - `sel_feats`: `(1, C, m)`
 
-   where $m = \sum_i \texttt{upsample\_num}[bi, i]$.
+   where $$m = \sum_i \texttt{upsample\_num}[bi, i]$$.
 
 2. Normalize every batch item to the same point count `target_m = int(n * target_rate)`:
-   - If $m > \texttt{target\_m}$: **downsample** to `target_m` using FPS (Farthest Point Sampling).
-   - If $m < \texttt{target\_m}$: **pad** by randomly repeating existing points.
+   - If $$m > \texttt{target\_m}$$: **downsample** to `target_m` using FPS (Farthest Point Sampling).
+   - If $$m < \texttt{target\_m}$$: **pad** by randomly repeating existing points.
 
 3. Concatenate across the batch dimension to produce:
    - `xyzs_out`: `(B, 3, target_m)`

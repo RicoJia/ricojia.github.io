@@ -52,7 +52,7 @@ L = loss + \lambda \sum_j |w_j|
 \end{gather*}
 $$
 
-- L2 penalizes large weights is defined as below. $b$ could be omitted. $\lambda$ is another parameter to tune (regularization parameter). $m$ is the output dimensions.
+- L2 penalizes large weights is defined as below. $$b$$ could be omitted. $$\lambda$$ is another parameter to tune (regularization parameter). $$m$$ is the output dimensions.
 
 $$
 \begin{gather*}
@@ -107,7 +107,7 @@ The general rule of thumb is to apply dropout after layers with a high number of
 
 **During Inferencing, do NOT turn on drop-out**. The reason being, it will add random noise to the final result. You can choose to run your solution multiple times with dropout, but it's not efficient, and the result will be similar to that without drop-out.
 
-But be careful with visualization of $J$, it becomes wonky because of the added randomness.
+But be careful with visualization of $$J$$, it becomes wonky because of the added randomness.
 
 ### Technique 3: Tanh Activation Function
 

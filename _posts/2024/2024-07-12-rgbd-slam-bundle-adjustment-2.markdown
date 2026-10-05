@@ -23,7 +23,7 @@ So, we introduce graph optimization to add blocks to those matrices for those po
 
 What are nodes: each node represents a pose of the robot's trajectory. Each edge between two edges represent the relative position of the two poses.
 
-A graph G is composed of vertices (V) and edges (E) $G={V,E}$. An edge can connect to 1 vertex (unary edge), 2 vertices (binary edge), or even multiple vertices (hyper edge). Most commonly, a graph has binary edges. But when there are hyper edges, this graph is called "hyper graph".
+A graph G is composed of vertices (V) and edges (E) $$G={V,E}$$. An edge can connect to 1 vertex (unary edge), 2 vertices (binary edge), or even multiple vertices (hyper edge). Most commonly, a graph has binary edges. But when there are hyper edges, this graph is called "hyper graph".
 
 Let's look at an example:
 
@@ -38,13 +38,13 @@ Let's look at an example:
 
 We can form a graph with two types of nodes: 4 camera poses and 2 camera poses:
 
-- $x_1$ is 1 set of 6 parameters for $SE(3)$ Pose $T_{x1}$
-- $p_1$ is 1 set of 3 parameters for $(x,y,z)$ Pose $T_{p1}$
+- $$x_1$$ is 1 set of 6 parameters for $$SE(3)$$ Pose $$T_{x1}$$
+- $$p_1$$ is 1 set of 3 parameters for $$(x,y,z)$$ Pose $$T_{p1}$$
 
 Then, we have two types of edges that represent **an error**:
 
-- $x_1x_2$ is an adjacent edge with odometry observation $\hat{T_{x1,x2}}$ . It represents $T_{x1. x2} - \hat{T_{x1,x2}}$ in $se(3)$
-- $x_1p_1$ is an observation edge (TODO is that right?) with observation $\hat{T_{x1,p_1}}$. For estimate $T_{p1}$, we can get error $T_{x1, p1} - \hat{T_{x1,p_1}}$.
+- $$x_1x_2$$ is an adjacent edge with odometry observation $$\hat{T_{x1,x2}}$$ . It represents $$T_{x1. x2} - \hat{T_{x1,x2}}$$ in $$se(3)$$
+- $$x_1p_1$$ is an observation edge (TODO is that right?) with observation $$\hat{T_{x1,p_1}}$$. For estimate $$T_{p1}$$, we can get error $$T_{x1, p1} - \hat{T_{x1,p_1}}$$.
 
 
 ### Optimizers
@@ -61,7 +61,7 @@ SparseOptimizerIncremental: In online slam, optimization is done incrementally? 
 
 In SLAM, it's common to have mismatched feature points. In that case, we add an edge that we shouldn't have added between a camera pose and a 3D point. The wrong edge could give huge error and high gradient, so high that just optimizing parameters associated could yield more gradient than the correct edges. One way to make up for it is to regulate an edge's cost, so it doesn't get too high nor gives too high of a gradient. Huber loss, cauchy loss are common examples. In SLAM terminology, loss is also called  "kernel". (How come people in different computer science disciplines love corn so much?)
 
-For example, Huber kernel switches to first order when error is higher than $\delta$. Also, it is continuous and derivable at $y - \hat{y} = \delta$. This is important, because we need to get gradient everywhere at the cost function.
+For example, Huber kernel switches to first order when error is higher than $$\delta$$. Also, it is continuous and derivable at $$y - \hat{y} = \delta$$. This is important, because we need to get gradient everywhere at the cost function.
 
 $$
 \begin{gather*}
@@ -132,7 +132,7 @@ g2o is widely used in SLAM algorithms such as ORB-SLAM. [👉 Example: Bundle Ad
     \end{gather*}
     $$
 
-4. Solve for $\Delta X$ using Gauss-Newton or Levenberg-Marquardt
+4. Solve for $$\Delta X$$ using Gauss-Newton or Levenberg-Marquardt
 
 5. Update Vertices: Each vertex (pose or landmark) is updated as:
 
@@ -175,7 +175,7 @@ Edges define constraints between vertices, such as:
 - Landmark constraints (projecting landmarks into camera frames).
 - Loop closure constraints (closing a trajectory loop to reduce drift).
 
-The combined measurement error of an edge is called "chi_squared" ($\chi_i^2$):
+The combined measurement error of an edge is called "chi_squared" ($$\chi_i^2$$):
 
 $$
 \begin{gather*}

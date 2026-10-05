@@ -17,7 +17,7 @@ Advantages of Multi-view geometry mainly include: clarity in mechanism and high 
 
 ## Degeneration Of The Essenstial Matrix, E
 
-$E=t \times R$. E's rank can drop when 1. the baseline distance between cameras approaches 0, or 2. matching feature points are co-planar. Here is why:
+$$E=t \times R$$. E's rank can drop when 1. the baseline distance between cameras approaches 0, or 2. matching feature points are co-planar. Here is why:
 
 1. When all feature matches are co-planar, though E itself does not depend on the features, the way we estimate does. Recall:
 
@@ -31,8 +31,8 @@ u_2^8 u_1^8 & u_2^8 v_1^8 & u_2^8 & u_2^8 u_1^8 & u_2^8 v_1^8 & u_2^8 & v_2^8 u_
 \end{gather*}
 $$
 
-$U$ is $8 \times 9$ and normally should be of rank 8. This makes sure E is up to a scale and has 1 degree of freedom (so $E$ has 2dof). But when a homography exists all the feature points,
-When homography exists between all feature matches, more constraints could be added to $U$. E.g.,
+$$U$$ is $$8 \times 9$$ and normally should be of rank 8. This makes sure E is up to a scale and has 1 degree of freedom (so $$E$$ has 2dof). But when a homography exists all the feature points,
+When homography exists between all feature matches, more constraints could be added to $$U$$. E.g.,
 
 $$
 \begin{gather*}
@@ -44,9 +44,9 @@ p_2^TEp_1 = p_1 H^T E p_1 = 0
 \end{gather*}
 $$
 
-The proof was more involved than I thought (for those who are interested, see [2]). Basically, one could prove it from the perspective of $U$'s nullity. When the nullity is 3, that is there are 3 linearly independent solution to E, the above degeneration could happen.
+The proof was more involved than I thought (for those who are interested, see [2]). Basically, one could prove it from the perspective of $$U$$'s nullity. When the nullity is 3, that is there are 3 linearly independent solution to E, the above degeneration could happen.
 
-2. When the baseline distance between cameras approaches 0, intuitively, $E = txR$ would approach 0. But when we estimate, the $U$ matrix (see above) will also have a nullity of 3.
+2. When the baseline distance between cameras approaches 0, intuitively, $$E = txR$$ would approach 0. But when we estimate, the $$U$$ matrix (see above) will also have a nullity of 3.
 
 So, one way to combat this is using DLT to calculate homography aside from applying 8-point algorithm, and choose the result with minimum reprojection error.
 
@@ -62,7 +62,7 @@ $$
 \end{gather*}
 $$
 
-With 5 feature matches, we get 5 equations. So $U$ should have 4 linearly independent solutions: `X, Y, Z, W`. The final solution $E$ must be a linear combination of them. Since $E$ is up to scale and has 1 dof, we make $c_{w}=1$
+With 5 feature matches, we get 5 equations. So $$U$$ should have 4 linearly independent solutions: `X, Y, Z, W`. The final solution $$E$$ must be a linear combination of them. Since $$E$$ is up to scale and has 1 dof, we make $$c_{w}=1$$
 
 $$
 \begin{gather*}

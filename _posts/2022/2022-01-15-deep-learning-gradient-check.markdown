@@ -28,7 +28,7 @@ $$
 </p>
 </div>
 
-In a neural net, the gradient of a parameter $w$ w.r.t cost function can be formulated in a similar way. However, the numerical error of this method is in the order of $\epsilon$. E.g., if $\epsilon = 0.1$, this method will yield an error in the order of 0.01. Why? Please close your eyes and think for a moment before moving on?
+In a neural net, the gradient of a parameter $$w$$ w.r.t cost function can be formulated in a similar way. However, the numerical error of this method is in the order of $$\epsilon$$. E.g., if $$\epsilon = 0.1$$, this method will yield an error in the order of 0.01. Why? Please close your eyes and think for a moment before moving on?
 
 Because:
 
@@ -50,10 +50,10 @@ f'(\theta) = \frac{f(\theta + \epsilon) - f(\theta - \epsilon)}{2\epsilon}
 \end{gather*}
 $$
 
-To apply gradient checking on a single parameter $w_i$:
+To apply gradient checking on a single parameter $$w_i$$:
 
-1. Apply foreprop, and backprop to get gradient of $w_i$, $g_i$.
-2. Apply a small change to $w_i$, then do foreprop, backprop, and get gradient $g_i'$
+1. Apply foreprop, and backprop to get gradient of $$w_i$$, $$g_i$$.
+2. Apply a small change to $$w_i$$, then do foreprop, backprop, and get gradient $$g_i'$$
 3. Calculate:
 
 $$
@@ -62,7 +62,7 @@ $$
 \end{gather*}
 $$
 
-If the result is above $10^{-3}$, then we should worry about it.
+If the result is above $$10^{-3}$$, then we should worry about it.
 
 $$
 \frac{f(x+\epsilon) - f(x - \epsilon)}{2 \epsilon}

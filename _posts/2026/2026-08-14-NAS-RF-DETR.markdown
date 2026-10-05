@@ -25,7 +25,7 @@ W_{\text{head}}
 }.  
 $$
 
-Now suppose training allows two resolutions: $320\times320$ or $640\times640$. For simplicity, suppose patch size is fixed at $p=16$.  Suppose the original image is large - RF-DETR chooses $r=320$ for the batch and resizes the images. The input tensor is:
+Now suppose training allows two resolutions: $$320\times320$$ or $$640\times640$$. For simplicity, suppose patch size is fixed at $$p=16$$.  Suppose the original image is large - RF-DETR chooses $$r=320$$ for the batch and resizes the images. The input tensor is:
 
 $$  
 X  
@@ -39,7 +39,7 @@ $$
 320/16=20.  
 $$
 
-Per side, then each patch gets $20\times20=400$ image tokens. Then, 400 tokens -> ViT -> 300 queries -> decoder layers
+Per side, then each patch gets $$20\times20=400$$ image tokens. Then, 400 tokens -> ViT -> 300 queries -> decoder layers
 
 $$  
 X_{320}  
@@ -67,7 +67,7 @@ $$
 
 Then through back propagation, all these weight layers get trained.
 
-Now let's say NAS samples $r=640$.  The new batch is
+Now let's say NAS samples $$r=640$$.  The new batch is
 
 $$  
 X  
@@ -87,7 +87,7 @@ $$
 40\times40=1600  
 $$
 
-tokens. Then, ViT produces 400 encoder features, one per spatial token: $Z\in\mathbb{R}^{B\times400\times d}$ . Then, we feed them into a proposal head evaluates each feature and predicts:
+tokens. Then, ViT produces 400 encoder features, one per spatial token: $$Z\in\mathbb{R}^{B\times400\times d}$$ . Then, we feed them into a proposal head evaluates each feature and predicts:
 
 - An object/class confidence
 - An initial bounding box

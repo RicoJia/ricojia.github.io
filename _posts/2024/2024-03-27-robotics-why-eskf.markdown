@@ -38,11 +38,11 @@ Key issue: Rotations lie on the special orthogonal group SO(3), which is a nonli
         \end{gather*}
         $$
 
-  - This leads to a linear update of $(\delta \theta^{\land})' \approx ...$. Though we still need to apply BCH and Taylor expansion to achieve this linear update, during an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map. **By doing this, you ensure the orientation remains on SO(3) after an update**, and the linearization is better-conditioned because **you are linearizing around a small error state rather than the full orientation.**
+  - This leads to a linear update of $$(\delta \theta^{\land})' \approx ...$$. Though we still need to apply BCH and Taylor expansion to achieve this linear update, during an EKF update, you update only this small error δθ, and then “correct” the nominal orientation using an exponential map. **By doing this, you ensure the orientation remains on SO(3) after an update**, and the linearization is better-conditioned because **you are linearizing around a small error state rather than the full orientation.**
 
 ### Could we define a “generic addition” for EKF?
 
-In theory, yes. Defining a proper “retraction” (or group operation) for the rotation part of the state is essentially how manifold-based filters are derived. For example, we do the final $x_{t+1} = x_t \oplus \Delta x_t$. In that case, our EKF motion model is actually following:
+In theory, yes. Defining a proper “retraction” (or group operation) for the rotation part of the state is essentially how manifold-based filters are derived. For example, we do the final $$x_{t+1} = x_t \oplus \Delta x_t$$. In that case, our EKF motion model is actually following:
 
 $$
 \begin{gather*}
@@ -54,9 +54,9 @@ $$
 \end{gather*}
 $$
 
-- $F_t$ is the Jacobian of the motion model and is linearzed $x_t$. $x_t$ could be relatively large.
+- $$F_t$$ is the Jacobian of the motion model and is linearzed $$x_t$$. $$x_t$$ could be relatively large.
   - If you are using Euler Angles, when the rotation angle is large, there could be singularities around gimbal lock values. E.g, `pitch = ±90∘`
-  - Even if you are not using Euler Angles and are using quaternion or world frame rotation vector instead, at certain large values, the first order Jacobian may not model the system well using linearization. **So, linearization around $\delta x$ in ESKF is around 0 and generally have better accuracies**
+  - Even if you are not using Euler Angles and are using quaternion or world frame rotation vector instead, at certain large values, the first order Jacobian may not model the system well using linearization. **So, linearization around $$\delta x$$ in ESKF is around 0 and generally have better accuracies**
 
 ## ESKF Can Work With Higher Floating Point Precision
 
@@ -83,19 +83,19 @@ $$
 
 Along this process we operate on `10^6m` position state variables. Any associated operations, such as motion model prediction, would not be able to achieve centimeter accuracy. So **throughout EKF, we need `FP64`**
 
-- On the other hand, in ESKF, we operate on the error $\delta x$, which stays close to 0. All the intermediate steps just require `FP32` to achieve centimeter level accuracy. Of course, at the end, we still need to add the small update back to the large coordinates in `FP64`, but it's fairly minimal.
+- On the other hand, in ESKF, we operate on the error $$\delta x$$, which stays close to 0. All the intermediate steps just require `FP32` to achieve centimeter level accuracy. Of course, at the end, we still need to add the small update back to the large coordinates in `FP64`, but it's fairly minimal.
 
 ## Questions
 
-### Why Do We Skip $F \delta x$ In Prediction But Still Need F For Covariance?
+### Why Do We Skip $$F \delta x$$ In Prediction But Still Need F For Covariance?
 
-In an Error-State Kalman Filter (ESKF), during the prediction step, we do not explicitly update the error-state mean $\delta x$ via:
+In an Error-State Kalman Filter (ESKF), during the prediction step, we do not explicitly update the error-state mean $$\delta x$$ via:
 
 $$
 \delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k
 $$
 
-even though we do use the Jacobian $\mathbf{F}_k$ to propagate the error covariance $\mathbf{P}$:
+even though we do use the Jacobian $$\mathbf{F}_k$$ to propagate the error covariance $$\mathbf{P}$$:
 
 $$
 \mathbf{P}_{k+1} = \mathbf{F}_k \, \mathbf{P}_k \, \mathbf{F}_k^\top + \mathbf{Q}_k.
@@ -107,9 +107,9 @@ $$
 \delta \mathbf{x}_{k+1} = \mathbf{K} \, \big(\mathbf{z} - h(\cdot)\big),
 $$
 
-without having used $\mathbf{F}_k \, \delta \mathbf{x}_k$ in the first place.
+without having used $$\mathbf{F}_k \, \delta \mathbf{x}_k$$ in the first place.
 
-Why is $\mathbf{F}_k$ still necessary for $\mathbf{P}$ , if we never actually compute $\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k$ ?
+Why is $$\mathbf{F}_k$$ still necessary for $$\mathbf{P}$$ , if we never actually compute $$\delta \mathbf{x}_{k+1} = \mathbf{F}_k \, \delta \mathbf{x}_k$$ ?
 
 #### Answer
 
@@ -123,19 +123,19 @@ $$
 \end{gather*}
 $$
 
-Where $G w_k$ is noise. **$\delta x_{k, true}$ is 0 after the reset from the last step**, so our prediction, $ \delta x_{k+1, pred} = F \delta x_{k, pred}=0$ Therefore, it doesn't need to be **explicitly added in code**. However, our Kalman Filter still implicitly assumes that, so we take F into account when updating covariances.
+Where $$G w_k$$ is noise. **$$\delta x_{k, true}$$ is 0 after the reset from the last step**, so our prediction, $$ \delta x_{k+1, pred} = F \delta x_{k, pred}=0$$ Therefore, it doesn't need to be **explicitly added in code**. However, our Kalman Filter still implicitly assumes that, so we take F into account when updating covariances.
 
 ### Would ba, bg, and g Stay Zero?
 
 #### Answer
 
-No. Predictions $F \delta x_{k, pred}$ are always 0, as expected. $K * (z \ominus h(x_{k, pred}))$ would yield non-zero results there, due to Kalman gain being non-zero in those observations.
+No. Predictions $$F \delta x_{k, pred}$$ are always 0, as expected. $$K * (z \ominus h(x_{k, pred}))$$ would yield non-zero results there, due to Kalman gain being non-zero in those observations.
 
 ### Consequently, It Is Imporant To
 
 - It is important to use `FP64` for ESKF update
 - Run the filter at a high enough frequency so that each discrete step is small
-- Be careful with angle wraps for $[0, 2 \pi]$
+- Be careful with angle wraps for $$[0, 2 \pi]$$
 
 ## Why Does ESKF Work?
 
@@ -162,4 +162,4 @@ $$
 
 Then, we can discretize this continuous system. 
 
-At the end, $\delta x$ gets reset to 0. What does that really mean? This means the distribution of $\delta x$ is shifted to 0. We do that because we think the last estimate is ground truth. The covariance of rotation needs to be adjusted as well, but it's small. So, ESKF is effectively applying `K*innovation` to the full state prediction.
+At the end, $$\delta x$$ gets reset to 0. What does that really mean? This means the distribution of $$\delta x$$ is shifted to 0. We do that because we think the last estimate is ground truth. The covariance of rotation needs to be adjusted as well, but it's small. So, ESKF is effectively applying `K*innovation` to the full state prediction.

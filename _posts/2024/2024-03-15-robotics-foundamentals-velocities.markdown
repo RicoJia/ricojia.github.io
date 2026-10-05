@@ -10,9 +10,9 @@ tags:
 
 ## Rotation-Only Velocity and Acceleration
 
-Assume we have a world frame, a car frame, and a point. The car is rotating around the world frame, no translation.The point itself is moving as well, $p_c'$.
+Assume we have a world frame, a car frame, and a point. The car is rotating around the world frame, no translation.The point itself is moving as well, $$p_c'$$.
 
-So in the world frame, the velocity of the point $p_w$ can be determined from its position and velocities in the car frame
+So in the world frame, the velocity of the point $$p_w$$ can be determined from its position and velocities in the car frame
 
 $$
 \begin{gather*}
@@ -23,7 +23,7 @@ p_w = R_{wc} p_c
 \end{gather*}
 $$
 
-**Note that this is NOT converting the velocity vector $p_c$.** This is instead finding the velocity of the point given the rotation of the car, and the car's perceived point velocity $p_c$.
+**Note that this is NOT converting the velocity vector $$p_c$$.** This is instead finding the velocity of the point given the rotation of the car, and the car's perceived point velocity $$p_c$$.
 
 The acceleration would be:
 
@@ -45,11 +45,11 @@ p_w'' = R_{wc} p_c''
 \end{gather*}
 $$
 
-## Derivative of Rotations, $\frac{\partial Ra}{\partial R}$
+## Derivative of Rotations, $$\frac{\partial Ra}{\partial R}$$
 
 If we rotate a vector a, what's its derivative w.r.t R? That is, when there's an infinitesmal change in R, what would be that change in a?
 
-We know that `SO(3)` is a manifold that do not support direct addition. So, we need to come back to the very definition of derivatives - we perturb `Ra` in terms of the rotation vector $\theta$ using either the left/right perturbation model, then because addition is supported among rotation vectors, we calculate the derivative there. Here we use the right perturbation model since it's more common:
+We know that `SO(3)` is a manifold that do not support direct addition. So, we need to come back to the very definition of derivatives - we perturb `Ra` in terms of the rotation vector $$\theta$$ using either the left/right perturbation model, then because addition is supported among rotation vectors, we calculate the derivative there. Here we use the right perturbation model since it's more common:
 
 $$
 \begin{gather*}
@@ -67,7 +67,7 @@ $$
 
 ### Derivative of Rotations Is The Same For Quaternions and Rotation Matrix
 
-Recall that rotation in quaternion is $p'=qaq*$. If `q=[s, v]`, withthout proof,
+Recall that rotation in quaternion is $$p'=qaq*$$. If `q=[s, v]`, withthout proof,
 
 $$
 \begin{gather*}
@@ -119,7 +119,7 @@ $$
 \end{gather*}
 $$
 
-- To prove (1), first check out the section **Rotation Preserves Dot Product** for proving $R^T \theta^{\land} R = (R^T \theta)^{\land}$. Then, since
+- To prove (1), first check out the section **Rotation Preserves Dot Product** for proving $$R^T \theta^{\land} R = (R^T \theta)^{\land}$$. Then, since
 
 $$
 \begin{gather*}
@@ -157,7 +157,7 @@ $$
 
 ### Rotation Preserves Dot Product
 
-- Prove $R^T \theta^{\land} R = (R^T \theta)^{\land}$:
+- Prove $$R^T \theta^{\land} R = (R^T \theta)^{\land}$$:
 
 $$
 \begin{gather*}
@@ -171,11 +171,11 @@ $$
 \end{gather*}
 $$
 
-- This is because "Rotation Preserves Dot Product". Why? Because dot product is the unique vector $Ra \times Rb = |Ra||Rb|sin\theta \rightarrow (Rn) = R(a \times b)$
+- This is because "Rotation Preserves Dot Product". Why? Because dot product is the unique vector $$Ra \times Rb = \vert Ra\Vert Rb\vert sin\theta \rightarrow (Rn) = R(a \times b)$$
 
 ## Exercises
 
-### Find $\frac{\partial R^{-1}p}{\partial R}$ using left and right perturbations
+### Find $$\frac{\partial R^{-1}p}{\partial R}$$ using left and right perturbations
 
 Right Perturbation:
 
@@ -221,7 +221,7 @@ $$
 \end{gather*}
 $$
 
-### Find $\frac{\partial R_1R_2^{-1}}{\partial R_2}$ using left and right perturbations
+### Find $$\frac{\partial R_1R_2^{-1}}{\partial R_2}$$ using left and right perturbations
 
 When differentiating a rotation matrix w.r.t another rotation matrix, we assume that we want to find the derivative on so(3), so we do this with `Log(R)` to convert this to so(3)
 

@@ -20,15 +20,15 @@ At various points of my career in robotics, computer vision, and machine learnin
 
 ## Singular Value Decomposition Intuition
 
-Definition: singular values are $\sqrt{eig(A^T A)}$.
+Definition: singular values are $$\sqrt{eig(A^T A)}$$.
 
-Let A be an `m x n` matrix. The goal is to decompose A into $A = U\Sigma V^T$, where U is `mxm`, and m > n
+Let A be an `m x n` matrix. The goal is to decompose A into $$A = U\Sigma V^T$$, where U is `mxm`, and m > n
 
-- $U$ is m x m orthonormal matrix, **aka left singular vectors.**
-- $\Sigma$ is m x n diagonal matrix, all elements are non-negative, and decreasing $\sigma 1 > \sigma 2 > \sigma 3... $.
-- $V$ is n x n orthonormal matrix, **aka right singular vectors**
+- $$U$$ is m x m orthonormal matrix, **aka left singular vectors.**
+- $$\Sigma$$ is m x n diagonal matrix, all elements are non-negative, and decreasing $\sigma 1 > \sigma 2 > \sigma 3... $.
+- $$V$$ is n x n orthonormal matrix, **aka right singular vectors**
 
-To solve for the above matrices, [A's correlation matrix $A^T A$](https://ricojia.github.io/2017/01/03/various-forms-of-matrix-multiplication/) can be written as:
+To solve for the above matrices, [A's correlation matrix $$A^T A$$](https://ricojia.github.io/2017/01/03/various-forms-of-matrix-multiplication/) can be written as:
 
 $$
 \begin{gather*}
@@ -38,11 +38,11 @@ A^T A = (U \Sigma V^T)^T U \Sigma V^T
 \end{gather*}
 $$
 
-Note, because $V$ is orthonormal, $V^T=V^{-1}$. Then, $A^T A = V \Sigma^2 V^{-1}$, and that is **eigen value decomposition**. [More explanation see here.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
+Note, because $$V$$ is orthonormal, $$V^T=V^{-1}$$. Then, $$A^T A = V \Sigma^2 V^{-1}$$, and that is **eigen value decomposition**. [More explanation see here.](https://ricojia.github.io/2017/01/15/eigen-value-decomp/)
 
-In fact, U and V are "unitary". That is $UU^T = U^TU = I$. That means:
+In fact, U and V are "unitary". That is $$UU^T = U^TU = I$$. That means:
 
-- V is the eigen vectors of $A^TA$
+- V is the eigen vectors of $$A^TA$$
 
 $$
 \begin{gather*}
@@ -52,7 +52,7 @@ v_1 | ... | v_n
 \end{gather*}
 $$
 
-- $\Sigma = diag(\sqrt{\sigma_1}, \sqrt{\sigma_2} ...)$ (`mxn`), where $\sigma_n$ are eigen values of $A^TA$
+- $$\Sigma = diag(\sqrt{\sigma_1}, \sqrt{\sigma_2} ...)$$ (`mxn`), where $$\sigma_n$$ are eigen values of $$A^TA$$
 
 $$
 \Sigma=[
@@ -63,9 +63,9 @@ $$
 ]
 $$
 
-Similarly, $AA^T =  U \Sigma^2 U^{-1}$. We can see that the eigen values of $AA^T$ and $A^TA$ are the same (their dimensions are different, but the one with larger dimension will just have more zeros).
+Similarly, $$AA^T =  U \Sigma^2 U^{-1}$$. We can see that the eigen values of $$AA^T$$ and $$A^TA$$ are the same (their dimensions are different, but the one with larger dimension will just have more zeros).
 
-- $U = [u_1 ... u_n]$, eigen vectors of $AA^T$
+- $$U = [u_1 ... u_n]$$, eigen vectors of $$AA^T$$
 
 $$
 \begin{gather*}
@@ -75,18 +75,18 @@ u_1 | ... | u_n
 \end{gather*}
 $$
 
-So singular value decomposition of $A$ really is the eigen value decomposition of its correlation matrices, $A^TA$ and $AA^T$.
+So singular value decomposition of $$A$$ really is the eigen value decomposition of its correlation matrices, $$A^TA$$ and $$AA^T$$.
 
 **Important CAVEAT**: do not compute SVD using the above method, it's not accurate and not efficient. Method based on QR factorization is faster.
 
-### Interpretations of U, $\Sigma$, V
+### Interpretations of U, $$\Sigma$$, V
 
 - Each singular value in sigma is an "importance".
-- Each column in $U$ corresponds to each singular value (or importance)
-- $V$ is a "mixture" of columns.
-  - Eventually, this will become: $\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$ (the sum of outer products). Each term increasingly improves the estimate of SVD
-- Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $A$. So, the returned values are: $U$ as mxn, $\Sigma$ as nxn, and $V$ as nxn, are returned
-  - Many times, people would return the first $r$ columns and rows of $U$ and $V^T$
+- Each column in $$U$$ corresponds to each singular value (or importance)
+- $$V$$ is a "mixture" of columns.
+  - Eventually, this will become: $$\sqrt{\sigma_1} u_1 v_1^T + \sqrt{\sigma_2}u_2v_2^T ...$$ (the sum of outer products). Each term increasingly improves the estimate of SVD
+- Economy SVD: we sometimes just care about the non-zero part of sigma and their corresponding eigen vectors in U, because their vector products comprise the final matrix $$A$$. So, the returned values are: $$U$$ as mxn, $$\Sigma$$ as nxn, and $$V$$ as nxn, are returned
+  - Many times, people would return the first $$r$$ columns and rows of $$U$$ and $$V^T$$
 
 [Wikipedia gives a very good example of how this works](https://en.wikipedia.org/wiki/Singular_value_decomposition#)
 
@@ -100,26 +100,26 @@ So singular value decomposition of $A$ really is the eigen value decomposition o
 
 Geometrically, if we multiply a random vector in the unit circle (top left) by M, the vector would be mapped to another vector in the M ellipse (top right). SVD allows us to visualize how exactly this mapping is done:
 
-1. map to another orthonormal basis ($V^T x$)
-2. Stretch to an ellipse ($\Sigma V^T x$)
-3. map to another orthonormal basis ($U \Sigma V^T x$), rotation.
+1. map to another orthonormal basis ($$V^T x$$)
+2. Stretch to an ellipse ($$\Sigma V^T x$$)
+3. map to another orthonormal basis ($$U \Sigma V^T x$$), rotation.
 
 ### Applications
 
 - Image Compression: By SVD'ing an image and keeping first 5 columns of the U matrix (so they are eigen vectors of the image column space) and first 5 rows of the V matrix, we can already see some features.
     1. We represent an image `I` of size `M×N` as a data matrix
     2. Perform PCA:
-        1. Subtract mean from each row: $x = x - \mu$
-        2. Calculate covariance matrix: $C = \frac{1}{N}X^T X$ `NxN`
-        3. Eigen Value Decomposition: get eigen vectors $V$ (`NxN`) and eigen values of $C$
+        1. Subtract mean from each row: $$x = x - \mu$$
+        2. Calculate covariance matrix: $$C = \frac{1}{N}X^T X$$ `NxN`
+        3. Eigen Value Decomposition: get eigen vectors $$V$$ (`NxN`) and eigen values of $$C$$
         4. Select first k eigen vectors as the projection basis `V` (Nxk)
         5. Project the image onto the k eigen vectors: `R = I*V` (Mxk)
     3. The compression results are two matrices: `V` and `R`
 
 - In eigen face, each column of U is a face's pixels in columns
-  - Each term $\sqrt{\sigma_1} u_1 v_1^T$ has rank 1, because it's formed by only 1 linearly independ row and column
+  - Each term $$\sqrt{\sigma_1} u_1 v_1^T$$ has rank 1, because it's formed by only 1 linearly independ row and column
 
-- Digital Watermark: after SVD'ing an image, one can change an column in $U$ or $V$ with low $\sigma$ value to their own "digital watermark".
+- Digital Watermark: after SVD'ing an image, one can change an column in $$U$$ or $$V$$ with low $$\sigma$$ value to their own "digital watermark".
 
 <p align="center">
     <figure>
@@ -166,7 +166,7 @@ $$
 R = U I Vᵀ
 $$
 
-When you multiply two matrices together, though they are SE3 matrices, there still could be numerical errors. When that happens, R can be adjusted to $U V^T$ because without numerical errors, those should be R's values
+When you multiply two matrices together, though they are SE3 matrices, there still could be numerical errors. When that happens, R can be adjusted to $$U V^T$$ because without numerical errors, those should be R's values
 
 ```cpp
 Eigen::Isometry3d guess = last;

@@ -15,9 +15,9 @@ The IMU is a very common localization device. One can find it in most electronic
 
 In this article and beyond,
 
-- $\tilde{w}$, $\tilde{a}$ are measured values of angular velocity, and linear acceleration
-- $R = R_{wb}$ We represent the world rotation matrix $R_{wb}$ as $R$.
-  - So $R^T = R_{bw}$ is the car-to-world rotation
+- $$\tilde{w}$$, $$\tilde{a}$$ are measured values of angular velocity, and linear acceleration
+- $$R = R_{wb}$$ We represent the world rotation matrix $$R_{wb}$$ as $$R$$.
+  - So $$R^T = R_{bw}$$ is the car-to-world rotation
 
 
 ## The IMU Kinematics Model Set Up
@@ -26,7 +26,7 @@ Assumptions:
 
 - The general frame of reference is: XYZ = forward, left, up.
 - On earth, when free-falling, the IMU cannot detect gravity. When stationary, the IMU can measure the support `+g`. So the IMU usually measures the "specific force". Some IMU could omit `+g` though.
-- In a car, we can measure the actual acceleration (in free space) $\tilde{a}$ and angular velocity $\tilde{w}$ w.r.t their world frame counterparts. **Here we assume the world is flat**
+- In a car, we can measure the actual acceleration (in free space) $$\tilde{a}$$ and angular velocity $$\tilde{w}$$ w.r.t their world frame counterparts. **Here we assume the world is flat**
 - Here, we **assume the IMU is mounted at the car's center of mass**. Otherwise, the imu could sense the Coriolis force, angular acceleration, and the centrifugal force.
 - In reality, vibrations from the suspension of a car could be detected too.
 
@@ -60,8 +60,8 @@ $$
 
 IMU is susceptible to **noise** and **bias**.
 
-- Even when stationary, the IMU does **NOT** have a zero-mean white noise on `a`, `w`. So we add mathematical bias terms $b_a$, $b_g$ to characterize it. **Note that this bias is affected by temperature, even. It's NOT a physical property, yet just a mathematical simplification.** The bias is a Wiener Process, whose time derivative is a Gaussian Process (This is also a Brownian motion, or random walk).
-- The noise itself, $\eta_a$, $\eta_g$ is a zero-mean Gaussian random process
+- Even when stationary, the IMU does **NOT** have a zero-mean white noise on `a`, `w`. So we add mathematical bias terms $$b_a$$, $$b_g$$ to characterize it. **Note that this bias is affected by temperature, even. It's NOT a physical property, yet just a mathematical simplification.** The bias is a Wiener Process, whose time derivative is a Gaussian Process (This is also a Brownian motion, or random walk).
+- The noise itself, $$\eta_a$$, $$\eta_g$$ is a zero-mean Gaussian random process
 
 [For more about Gaussian Process and Power Spectral Density, please check here](../2017/2017-06-03-stats-basic-recap.markdown)
 
@@ -75,7 +75,7 @@ $$
 \end{gather*}
 $$
 
-Where the biases' time derivatives are zero-mean Gaussian random processes, with **covariance functions** $\sigma_{ba}$ and $\sigma_{bg}^2$:
+Where the biases' time derivatives are zero-mean Gaussian random processes, with **covariance functions** $$\sigma_{ba}$$ and $$\sigma_{bg}^2$$:
 
 $$
 \begin{gather*}
@@ -91,7 +91,7 @@ $$
 \end{gather*}
 $$
 
-- The covariance functions of $b_a(t)$ and $b_g(t)$ increases over time. So the IMU measurements $\tilde{a}$ and $\tilde{w}$ will become less accurate over time.
+- The covariance functions of $$b_a(t)$$ and $$b_g(t)$$ increases over time. So the IMU measurements $$\tilde{a}$$ and $$\tilde{w}$$ will become less accurate over time.
 - The bias appears to be in Brownian motion (random walk). The higher range of the random walk, the "less stable" we call the bias.
 - **A good IMU should have a bias relatively stable around 0**
 
@@ -99,7 +99,7 @@ $$
 
 The derivation of the Discrete time IMU kinematics model is quite lengthy. For those who are curious, please check out the appendix of [this paper](http://www.acsu.buffalo.edu/~johnc/gpsins_gnc05.pdf). The summary is:
 
-- The discrete time value of $\tilde{w}(t + \Delta t)$ is the time average of the integral of $\tilde{w}$ over $\Delta t$. Over $\Delta t$, we assume that the IMU true value $w(t)$ is constant.
+- The discrete time value of $$\tilde{w}(t + \Delta t)$$ is the time average of the integral of $$\tilde{w}$$ over $$\Delta t$$. Over $$\Delta t$$, we assume that the IMU true value $$w(t)$$ is constant.
 
 $$
 \begin{gather*}
@@ -170,10 +170,10 @@ $$
 \end{gather*}
 $$
 
-In some IMU documentations, people use $\frac{1}{\Delta t} = Hz$, or using $1/\sqrt{hour}$. 
+In some IMU documentations, people use $$\frac{1}{\Delta t} = Hz$$, or using $$1/\sqrt{hour}$$. 
 
-- E.g., $\sigma_g = 0.66^\circ/\sqrt{hour}$ and $\sigma_a = 0.11 m/s/\sqrt{hour}$ means with the correct biases, within an hour, the IMU will have an integration error of $0.66 ^\circ$ and $0.11m/s$. (Note they are angle and velocity, first degree integration)
-- IMU documentations typically do NOT have bias covariances $\sigma_{bg}$, $\sigma_{ba}$ because in real life they are hard to measure? Also, IMU bias covariances are usually **affected by temperature** as well. So, we usually need to estimate them real-time.
+- E.g., $$\sigma_g = 0.66^\circ/\sqrt{hour}$$ and $$\sigma_a = 0.11 m/s/\sqrt{hour}$$ means with the correct biases, within an hour, the IMU will have an integration error of $$0.66 ^\circ$$ and $$0.11m/s$$. (Note they are angle and velocity, first degree integration)
+- IMU documentations typically do NOT have bias covariances $$\sigma_{bg}$$, $$\sigma_{ba}$$ because in real life they are hard to measure? Also, IMU bias covariances are usually **affected by temperature** as well. So, we usually need to estimate them real-time.
 
 ### Simple IMU Integration Using Recursion
 
@@ -229,7 +229,7 @@ $$
 \end{gather*}
 $$
 
-So if we set the IMU idle for 10s (so `w=0`, `a`=0), we will collect multiple $\tilde{w}$ and $\tilde{a}$. So, since we assume Gaussian noises, and `R=I`,
+So if we set the IMU idle for 10s (so `w=0`, `a`=0), we will collect multiple $$\tilde{w}$$ and $$\tilde{a}$$. So, since we assume Gaussian noises, and `R=I`,
 
 $$
 \begin{gather*}
@@ -241,7 +241,7 @@ $$
 \end{gather*}
 $$
 
-For $a$, we do:
+For $$a$$, we do:
 
 $$
 \begin{gather*}

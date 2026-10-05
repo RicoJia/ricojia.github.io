@@ -10,8 +10,8 @@ tags:
 
 ## Determinant
 
-- $\det(AB) = \det(A)\,\det(B)$
-- For an orthogonal matrix $Q$ (i.e., $Q^\top Q = I$), we have $\det(Q) = \pm 1$:
+- $$\det(AB) = \det(A)\,\det(B)$$
+- For an orthogonal matrix $$Q$$ (i.e., $$Q^\top Q = I$$), we have $$\det(Q) = \pm 1$$:
 
 $$
 \begin{aligned}
@@ -24,11 +24,11 @@ Q^\top Q &= I \\
 \end{aligned}
 $$
 
-In particular, if $Q \in SO(n)$ (special orthogonal group), then $\det Q = 1$.
+In particular, if $$Q \in SO(n)$$ (special orthogonal group), then $$\det Q = 1$$.
 
 ## Trace Properties
 
-1. Proving $\mathrm{tr}(AB) = \mathrm{tr}(BA)$ (cyclic shifting)
+1. Proving $$\mathrm{tr}(AB) = \mathrm{tr}(BA)$$ (cyclic shifting)
 
 $$
 \begin{aligned}
@@ -38,7 +38,7 @@ $$
 \end{aligned}
 $$
 
-1. Proving $\|A\|_F^2 = \operatorname{tr}(A^\top A)$
+1. Proving $$\|A\|_F^2 = \operatorname{tr}(A^\top A)$$
 
 $$
 \begin{aligned}
@@ -49,7 +49,7 @@ $$
 
 ### Von-Neumann's Trace Inequality
 
-In 1937, Von-Neumann proved that if $A, B$ are complex $n \times n$ matrices with singular values
+In 1937, Von-Neumann proved that if $$A, B$$ are complex $$n \times n$$ matrices with singular values
 
 $$
 a_1 \ge a_2 \ge \cdots \ge a_n,\quad b_1 \ge b_2 \ge \cdots \ge b_n
@@ -71,27 +71,27 @@ $$
 
 ### Singular values of a rotation matrix are all 1
 
-Let $R \in SO(3)$, i.e., $R^\top R = I$ and $\det R = 1$. The singular values $\{\sigma_i\}_{i=1}^3$ of $R$ are the square roots of the eigenvalues of $R^\top R$:
+Let $$R \in SO(3)$$, i.e., $$R^\top R = I$$ and $$\det R = 1$$. The singular values $$\{\sigma_i\}_{i=1}^3$$ of $$R$$ are the square roots of the eigenvalues of $$R^\top R$$:
 
 $$
 \sigma_i = \sqrt{\lambda_i(R^\top R)}.
 $$
 
-Since $R^\top R = I$, all eigenvalues of $R^\top R$ are $1$. Therefore,
+Since $$R^\top R = I$$, all eigenvalues of $$R^\top R$$ are $$1$$. Therefore,
 
 $$
 \sigma_1 = \sigma_2 = \sigma_3 = 1.
 $$
 
-Equivalently, from the SVD $R = U\Sigma V^\top$ with $U, V \in SO(3)$ for an orthogonal matrix, we must have $\Sigma = I$, hence all singular values are $1$.
+Equivalently, from the SVD $$R = U\Sigma V^\top$$ with $$U, V \in SO(3)$$ for an orthogonal matrix, we must have $$\Sigma = I$$, hence all singular values are $$1$$.
 
 ## Frobenius Norm
 
-Frobenius norm = $\sum_i \sum_j (a_{ij} * a_{ij})$
+Frobenius norm = $$\sum_i \sum_j (a_{ij} * a_{ij})$$
 
-E.g., a common task in lidar is if we have an estimate $R$ of an SO(3) matrix, we want to find the closest SO(3) matrix $X$ with the lowest Frobenius norm. That is:
+E.g., a common task in lidar is if we have an estimate $$R$$ of an SO(3) matrix, we want to find the closest SO(3) matrix $$X$$ with the lowest Frobenius norm. That is:
 
-1. Proving $\|X-R\|_F^2 = \|X\|_F^2 + \|R\|_F^2 - 2\operatorname{tr}(X^\top R)$ and deriving $\arg\max(\operatorname{tr}(X^\top R))$
+1. Proving $$\|X-R\|_F^2 = \|X\|_F^2 + \|R\|_F^2 - 2\operatorname{tr}(X^\top R)$$ and deriving $$\arg\max(\operatorname{tr}(X^\top R))$$
 
 $$
 \begin{aligned}
@@ -103,25 +103,25 @@ $$
 \end{aligned}
 $$
 
-1. To minimize $\|X-R\|_F^2$, we need to maximize $\operatorname{tr}(X^\top R)$ since $\|X\|_F^2$ and $\|R\|_F^2$ are constants. Therefore:
+1. To minimize $$\|X-R\|_F^2$$, we need to maximize $$\operatorname{tr}(X^\top R)$$ since $$\|X\|_F^2$$ and $$\|R\|_F^2$$ are constants. Therefore:
 
 $$
 \arg\min_R \|X-R\|_F^2 = \arg\max_X \operatorname{tr}(X^\top R)
 $$
 
-1. Now, we can perform SVD on $R$:
+1. Now, we can perform SVD on $$R$$:
 
 $$
 R = U \Sigma V^\top
 $$
 
-1. To find $X$, we define an intermediate variable:
+1. To find $$X$$, we define an intermediate variable:
 
 $$
 Y = U^\top X V
 $$
 
-1. Since $U$ and $V$ are orthonormal matrices, they are in $\mathrm{O}(3)$. Consequently, $Y$ is also in $\mathrm{O}(3)$. So now $\operatorname{tr}(X^\top R)$ becomes:
+1. Since $$U$$ and $$V$$ are orthonormal matrices, they are in $$\mathrm{O}(3)$$. Consequently, $$Y$$ is also in $$\mathrm{O}(3)$$. So now $$\operatorname{tr}(X^\top R)$$ becomes:
 
 $$
 \begin{aligned}
@@ -140,9 +140,9 @@ $$
 \end{aligned}
 $$
 
-1. Choosing $Y$ and the determinant constraint
+1. Choosing $$Y$$ and the determinant constraint
 
-Let $R = U\,\Sigma\,V^\top$ be the SVD with $U, V \in \mathrm{O}(3)$ and $\Sigma = \operatorname{diag}(\sigma_1,\sigma_2,\sigma_3)$, $\sigma_1 \ge \sigma_2 \ge \sigma_3 \ge 0$. Define $Y := U^\top X V$. Then $Y \in \mathrm{O}(3)$ and
+Let $$R = U\,\Sigma\,V^\top$$ be the SVD with $$U, V \in \mathrm{O}(3)$$ and $$\Sigma = \operatorname{diag}(\sigma_1,\sigma_2,\sigma_3)$$, $$\sigma_1 \ge \sigma_2 \ge \sigma_3 \ge 0$$. Define $$Y := U^\top X V$$. Then $$Y \in \mathrm{O}(3)$$ and
 
 $$
 \det(Y)
@@ -157,10 +157,10 @@ $$
 \operatorname{tr}(X^\top R) = \operatorname{tr}(Y^\top \Sigma),
 $$
 
-1. Since maximum of $\operatorname{tr}(Y^\top \Sigma)$ is achieved when $Y$ and $\Sigma$ are diagonal. Since $\Sigma$ is diagonal already, we want $Y$ to be a diagonal SO(3) matrix. Therefore, maximize $\operatorname{tr}(Y^\top \Sigma)$ over $Y \in \mathrm{O}(3)$ subject to $\det(Y) = \det(UV^\top)$.
+1. Since maximum of $$\operatorname{tr}(Y^\top \Sigma)$$ is achieved when $$Y$$ and $$\Sigma$$ are diagonal. Since $$\Sigma$$ is diagonal already, we want $$Y$$ to be a diagonal SO(3) matrix. Therefore, maximize $$\operatorname{tr}(Y^\top \Sigma)$$ over $$Y \in \mathrm{O}(3)$$ subject to $$\det(Y) = \det(UV^\top)$$.
 
-- If $\det(UV^\top) = 1$, the maximizer is $Y = I$, giving $\mathrm{tr}(Y^\top \Sigma) = \sigma_1 + \sigma_2 + \sigma_3$.
-- If $\det(UV^\top) = -1$, the maximizer (under $\det(Y)=-1$) is $Y = \operatorname{diag}(1,1,-1)$, giving $\mathrm{tr}(Y^\top \Sigma) = \sigma_1 + \sigma_2 - \sigma_3$.
+- If $$\det(UV^\top) = 1$$, the maximizer is $$Y = I$$, giving $$\mathrm{tr}(Y^\top \Sigma) = \sigma_1 + \sigma_2 + \sigma_3$$.
+- If $$\det(UV^\top) = -1$$, the maximizer (under $$\det(Y)=-1$$) is $$Y = \operatorname{diag}(1,1,-1)$$, giving $$\mathrm{tr}(Y^\top \Sigma) = \sigma_1 + \sigma_2 - \sigma_3$$.
 
 10. Thus, the optimizer for the original problem is
 

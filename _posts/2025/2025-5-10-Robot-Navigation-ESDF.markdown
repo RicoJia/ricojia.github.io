@@ -24,9 +24,9 @@ p \in [0, n-1]
 $$
 
 - Distance is euclidean distance, not Manhattan Distance.
-- f(p) = 0 at obstacle locations, otherwise it's  $\inf$
+- f(p) = 0 at obstacle locations, otherwise it's  $$\inf$$
 
-Assume obstacles are in $Q$, then the distance field value at index $p$ is  to find the minimum distance among all obstacles Q:
+Assume obstacles are in $$Q$$, then the distance field value at index $$p$$ is  to find the minimum distance among all obstacles Q:
 
 $$
 D(p) = min_{Q} ((p - q) ^ 2 + f(q)
@@ -180,7 +180,7 @@ $$
 D(0,y) = (y-1)^2 + 4 = 5
 $$
 
-Then you can see that 4 already the x-axis distance of the column to the obstacle. Adding $(y-1)^2$ directly gives the distance! So the final values are:
+Then you can see that 4 already the x-axis distance of the column to the obstacle. Adding $$(y-1)^2$$ directly gives the distance! So the final values are:
 
 ```
 y=2:  5   2   1  
@@ -188,7 +188,7 @@ y=1:  4   1   0
 y=0:  5   2   1
 ```
 
-Which is exactly $D(x,y) = (x - 2)^2 + (y-1)^2$
+Which is exactly $$D(x,y) = (x - 2)^2 + (y-1)^2$$
 
 ## What Is a Signed Distance Field?
 
@@ -218,14 +218,14 @@ $$
 J = J_{smooth} + \lambda J_{collision}
 $$
 
-- $J_{smooth}$: encourages smooth motion, like minisnap, minijerk, etc.
-- $J_{collision}$: keeps trajectory away from obstacles. **This depends on the signed distance field**:
+- $$J_{smooth}$$: encourages smooth motion, like minisnap, minijerk, etc.
+- $$J_{collision}$$: keeps trajectory away from obstacles. **This depends on the signed distance field**:
 
 $$
 \phi(x) = \text{signed dist to obstacle}
 $$
 
-Consider a single point on the trajectory: $x_k$. Suppose it is slightly inside a wall:
+Consider a single point on the trajectory: $$x_k$$. Suppose it is slightly inside a wall:
 
 $$
 \phi(x_k) < 0
@@ -243,13 +243,13 @@ $$
 \nabla J = -(d_{safe} - \phi(x_k)) \nabla \phi(x_k)
 $$
 
-$\nabla \phi(x)$ is the gradient of the signed distance field. It points outward from the obstacle, and has magnitude $\approx 1$ near surface. If you are instead the wall, it will point outward too. In gradient descent update:
+$$\nabla \phi(x)$$ is the gradient of the signed distance field. It points outward from the obstacle, and has magnitude $$\approx 1$$ near surface. If you are instead the wall, it will point outward too. In gradient descent update:
 
 $$
 x_k = x_k - \alpha \nabla J = x_k + \alpha(d_{safe} - \phi (x_k)) \nabla \phi(x_k)
 $$
 
-$x_k$  will be pushed outward, too. **Therefore, if we do NOT use negative distances within obstacles, $\phi(x) = 0$, so $x_k$ gets stuck and won't be pushed out**
+$$x_k$$  will be pushed outward, too. **Therefore, if we do NOT use negative distances within obstacles, $$\phi(x) = 0$$, so $$x_k$$ gets stuck and won't be pushed out**
 
 ## References
 

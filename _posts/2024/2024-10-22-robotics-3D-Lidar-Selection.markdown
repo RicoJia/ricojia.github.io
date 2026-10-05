@@ -33,7 +33,7 @@ The term "dual return" refers to the system's ability to detect and record multi
 3. Propagation: the laser pulses travel through the air at the speed of light
 4. Reflection: when the pulses encounter an object, a portion of the light is reflected back towards the LiDAR sensor.
 
-$\Delta t$ is measured between the emission and reception of the laser pulse with picosecond $10^-{12}$s resolution. The distance is $d = \frac{c \times \Delta t}{2}$
+$$\Delta t$$ is measured between the emission and reception of the laser pulse with picosecond $$10^-{12}$$s resolution. The distance is $$d = \frac{c \times \Delta t}{2}$$
 
 To generate a 3D depth map, **a ToF LiDAR's receiver can be modeled as a pinhole camera where each pixel on the field of view corresponds to a point that's at an angle to the optical center.**
 
@@ -270,7 +270,7 @@ In The ADAS field, the main players are Chinese and US companies
 | Company                   | Product                | Specifications | Price |
 |----------------------------|------------------------|----------------|-------|
 | **Hesai Technologies**      | Pandar 40p             | 40-channel     | $3,000 - $4,000 |
-| **RoboSense**               | Helios 16p         | Solid-State? 16-channel, 150m, 288kpts/s        | $3,000-$4,000   |
+| **RoboSense**               | Helios 16p         | Solid-State? 16-channel, 150m, 288kpts/s        | $$3,000-$$4,000   |
 | **RoboSense**               | RS-LiDAR-16 miniature         | Mechanical, 16-channel, 150m, 320kpts/s        | $442   |
 | **LeiShen Intelligent Systems** | LSLIDAR 16-Line Mechanical LiDAR   |  16-channel, mechanical      | $3,000.00   |
 
@@ -279,6 +279,6 @@ In The ADAS field, the main players are Chinese and US companies
 | Company                   | Product                | Specifications | Price |
 |----------------------------|------------------------|----------------|-------|
 | **Livox**      | Mid-360 | 10cm - 70m,  40-channel,9-27v, 6.5 W     | $838 |
-| **Unitree**    | 3D LiDAR L1 360 | 5cm - 30m         | Solid-State? 16-channel, 150m, 21.6kpt/s        | $3,000-$4,000   |
+| **Unitree**    | 3D LiDAR L1 360 | 5cm - 30m         | Solid-State? 16-channel, 150m, 21.6kpt/s        | $$3,000-$$4,000   |
 
 - UniTree claimed that although their L1's point rate is only `21.6 kpt/s`, it's on par with the automotive-grade LiDARs for point cloud density PER VOLUME (kpts/m/s)

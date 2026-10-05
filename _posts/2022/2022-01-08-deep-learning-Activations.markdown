@@ -27,7 +27,7 @@ Early work observed that the Rectified Linear Unit (ReLU) often trains faster th
         <img src="https://github.com/RicoJia/The-Dream-Robot/assets/39393023/d34a1631-c183-4a2e-b5f3-6bedc24b12a3" height="300"/>
     </p>
 
-- Leaky ReLU: allows a small gradient for negative inputs, reducing dead neurons. For $\alpha>0$:
+- Leaky ReLU: allows a small gradient for negative inputs, reducing dead neurons. For $$\alpha>0$$:
 
 $$
 \mathrm{LeakyReLU}(x)=\begin{cases}
@@ -36,7 +36,7 @@ x & x>0,\\
 \end{cases}
 $$
 
-    Typical choice: $\alpha\approx 0.01$.
+    Typical choice: $$\alpha\approx 0.01$$.
 
     <p align="center">
         <figure>
@@ -58,7 +58,7 @@ $$
         </figure>
     </p>
 
-- GELU (Gaussian Error Linear Unit): smoother alternative used in Transformers. Defined using the Gaussian CDF $\Phi(x)$; a common approximation is:
+- GELU (Gaussian Error Linear Unit): smoother alternative used in Transformers. Defined using the Gaussian CDF $$\Phi(x)$$; a common approximation is:
 
 $$
 \mathrm{GELU}(x)=x\,\Phi(x)\approx 0.5x\left[1+\tanh\left(\sqrt{\tfrac{2}{\pi}}\,(x+0.044715x^3)\right)\right].
@@ -78,7 +78,7 @@ $$
  anh(x)=\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}=\frac{2}{1+e^{-2x}}-1.
 $$
 
-    Range: $(-1,1)$. Compared with sigmoid, tanh is zero-centered which can help optimization, but it still saturates for large |x|.
+    Range: $$(-1,1)$$. Compared with sigmoid, tanh is zero-centered which can help optimization, but it still saturates for large |x|.
 
     <p align="center">
         <figure>
@@ -92,4 +92,4 @@ $$
 \sigma(x)=\frac{1}{1+e^{-x}}.
 $$
 
-    Range: $(0,1)$. Advantages: interpretable as a probability-like output; disadvantages: saturates for large |x| which leads to vanishing gradients (maximum derivative is $\sigma'(0)=0.25$).
+    Range: $$(0,1)$$. Advantages: interpretable as a probability-like output; disadvantages: saturates for large |x| which leads to vanishing gradients (maximum derivative is $$\sigma'(0)=0.25$$).

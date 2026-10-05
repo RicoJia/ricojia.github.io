@@ -13,7 +13,7 @@ tags:
 
 We use the same example as the one in [the EKF post](./2024-03-21-robotics-foundamentals-extended-kalman-filter.markdown): imagine our world has two cones with known locations: `c1`, `c2`, and a diff drive with wheel encoders and a cone detector.
 
-- The encoder can give us body-frame linear and angular velocities $\tilde{v}$, $\tilde{w}$. They can be modelled as 'true value + noise':
+- The encoder can give us body-frame linear and angular velocities $$\tilde{v}$$, $$\tilde{w}$$. They can be modelled as 'true value + noise':
 
 $$
 \begin{gather*}
@@ -24,9 +24,9 @@ $$
 \end{gather*}
 $$
 
-    - Note, we use $\eta_g$ to represent angular velocity noise
+    - Note, we use $$\eta_g$$ to represent angular velocity noise
 
-- The cone detector can give us the range and bearing of each cone from the robot: `d`, $\beta$. **The goal is to estimate the $[x, y, \theta]$ of the vehicle.**
+- The cone detector can give us the range and bearing of each cone from the robot: `d`, $$\beta$$. **The goal is to estimate the $$[x, y, \theta]$$ of the vehicle.**
 
 <div style="text-align: center;">
 <p align="center">
@@ -53,7 +53,7 @@ $$
 \end{gather*}
 $$
 
-In ESKF, we define an error $\delta x$ to be the difference between last state estiate $x_t$ and the true value of the current state $x_{t+1, true}$:
+In ESKF, we define an error $$\delta x$$ to be the difference between last state estiate $$x_t$$ and the true value of the current state $$x_{t+1, true}$$:
 
 $$
 \begin{gather*}
@@ -63,7 +63,7 @@ $$
 \end{gather*}
 $$
 
-For the sake of convenience, we represent position `[x, y]` as `p`. So our state vector is $x = [p, \theta]$. Therefore, we have the error defined as:
+For the sake of convenience, we represent position `[x, y]` as `p`. So our state vector is $$x = [p, \theta]$$. Therefore, we have the error defined as:
 
 $$
 \begin{gather*}
@@ -74,7 +74,7 @@ $$
 \end{gather*}
 $$
 
-Also, since we have heading $\theta$, it's easy to have:
+Also, since we have heading $$\theta$$, it's easy to have:
 
 $$
 \begin{gather*}
@@ -84,9 +84,9 @@ $$
 \end{gather*}
 $$
 
-### Linearize $\delta \theta'$ TODO: error: did not consider bg. Suggestion: remove this example, and move this nice workflow to the full eskf article
+### Linearize $$\delta \theta'$$ TODO: error: did not consider bg. Suggestion: remove this example, and move this nice workflow to the full eskf article
 
-In ESKF, we apply Kalman Filtering on **Linearized errors**. To linearize $\delta \theta$, we first look at the true [2D rotation matrix](./2024-03-10-robotics-foundamentals-rotations.markdown):
+In ESKF, we apply Kalman Filtering on **Linearized errors**. To linearize $$\delta \theta$$, we first look at the true [2D rotation matrix](./2024-03-10-robotics-foundamentals-rotations.markdown):
 
 $$
 \begin{gather*}
@@ -148,9 +148,9 @@ $$
 \end{gather*}
 $$
 
-### Linearize $\delta p'$
+### Linearize $$\delta p'$$
 
-Using first order Taylor expansion $Exp(\delta \theta) \approx I + \delta \theta$
+Using first order Taylor expansion $$Exp(\delta \theta) \approx I + \delta \theta$$
 
 $$
 \begin{gather*}
@@ -181,8 +181,8 @@ $$
 $$
 
 - $R \eta_v $ has the same covariance as $\eta_v $
-- $\sigma(\eta_{\theta}) = \sigma(\eta_{g}) \Delta t$
-- $\delta \theta_{t+1}$ is derived by integrating $\delta \theta$
+- $$\sigma(\eta_{\theta}) = \sigma(\eta_{g}) \Delta t$$
+- $$\delta \theta_{t+1}$$ is derived by integrating $$\delta \theta$$
 
 The above already is linear!! So putting it in matrix form:
 
@@ -222,7 +222,7 @@ $$
 
 ## Observation Model
 
-In this example, we assume that the landmark positions are known. In general EKF and ESKF, the observations $[d, \beta]$ we get for each cone is the result of the non-linear model of the **true value** plus the noise.
+In this example, we assume that the landmark positions are known. In general EKF and ESKF, the observations $$[d, \beta]$$ we get for each cone is the result of the non-linear model of the **true value** plus the noise.
 
 $$
 \begin{gather*}
@@ -232,7 +232,7 @@ $$
 \end{gather*}
 $$
 
-So to linearize it, since we know the predicted $x_{t+1}^*$ we do:
+So to linearize it, since we know the predicted $$x_{t+1}^*$$ we do:
 
 $$
 \begin{gather*}
@@ -242,7 +242,7 @@ $$
 \end{gather*}
 $$
 
-But H will be the Jacobian w.r.t $\delta x$
+But H will be the Jacobian w.r.t $$\delta x$$
 
 $$
 \begin{gather*}
@@ -266,7 +266,7 @@ $$
 \end{gather*}
 $$
 
-The tricky part is finding $\frac{\partial x_{true}}{\partial \delta x}$. Finding $\frac{\partial p_{true}}{\partial \delta p}$ is easy because $p_{true} = p + \delta p$:
+The tricky part is finding $$\frac{\partial x_{true}}{\partial \delta x}$$. Finding $$\frac{\partial p_{true}}{\partial \delta p}$$ is easy because $$p_{true} = p + \delta p$$:
 
 $$
 \begin{gather*}
@@ -276,7 +276,7 @@ $$
 \end{gather*}
 $$
 
-Special part about ESKF is $\frac{\partial \theta_{true}}{\partial \delta \theta}$
+Special part about ESKF is $$\frac{\partial \theta_{true}}{\partial \delta \theta}$$
 
 $$
 \begin{gather*}
@@ -339,7 +339,7 @@ P_{t+1}=(I−KH)P_{t+1}^{*}
 \end{gather*}
 $$
 
-However, we need to reset $\delta x$ every step:
+However, we need to reset $$\delta x$$ every step:
 
 $$
 \begin{gather*}
@@ -359,7 +359,7 @@ $$
 \end{gather*}
 $$
 
-Then finally, we need to apply $\delta x$ back onto $x$. For general rotation, we need to apply $\oplus$.
+Then finally, we need to apply $$\delta x$$ back onto $$x$$. For general rotation, we need to apply $$\oplus$$.
 
 $$
 \begin{gather*}

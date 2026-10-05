@@ -95,7 +95,7 @@ $$
 P_{interpolated}(r) = \max_{\tilde{r} \ge r} P(\tilde{r})
 $$
 
-so when `r=0.9`, $P_{interpolated}=\max(0.96,1.0,1.0)=1.0$; when `r=0.8, ...`, we get the same $P_{interpolated}$. The final AP is `(1.0 + 1.0 + ...)/11=1.0`. The intuition comes from that normally, **as recall goes up, precision goes down.**
+so when `r=0.9`, $$P_{interpolated}=\max(0.96,1.0,1.0)=1.0$$; when `r=0.8, ...`, we get the same $$P_{interpolated}$$. The final AP is `(1.0 + 1.0 + ...)/11=1.0`. The intuition comes from that normally, **as recall goes up, precision goes down.**
 
 #### PASCAL VOC (Visual Object Classes) Post-2010
 

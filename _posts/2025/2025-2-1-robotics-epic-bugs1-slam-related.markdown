@@ -40,7 +40,7 @@ $$
 $$
 
 
-Where a, b, and c define a line (ax + by + c = 0), and $(p_x, p_y)$ is the point.
+Where a, b, and c define a line (ax + by + c = 0), and $$(p_x, p_y)$$ is the point.
 
 In my case, the point came from source_cloud, expressed in the body frame. However, the line coefficients a, b, c were fit in the map frame, using nearest neighbors from the target cloud.
 

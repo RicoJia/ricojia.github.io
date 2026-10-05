@@ -54,7 +54,7 @@ In practice a simplified binary assignment (using +1 and -1) produces similar re
     - For the first scan, we simply add it to the occupancy map, then initialize likelihood fields with it.
 2. Iterate through the likelihood field pyramid, from the lowest resolution to the highest:
     1. Build a graph of the pose estimate (vertex) and distance errors of scan points (edges)
-    2. Set $\delta$ in $\Chi^2$ of an edge. Above $\delta^2$, a g2o edge is considered an outlier in the data. Then these large errors will be downweighted:
+    2. Set $$\delta$$ in $$\Chi^2$$ of an edge. Above $$\delta^2$$, a g2o edge is considered an outlier in the data. Then these large errors will be downweighted:
 
         $$
         \begin{gather*}
@@ -71,7 +71,7 @@ In practice a simplified binary assignment (using +1 and -1) produces similar re
         rk->setDelta(delta);
         edge->setRobustKernel(rk);
         ```
-    3. Count number of inliers, that is, edges with $Chi^2$ lower than its threshold. If there are not enough inlier, we are not going to add the scan for loop closure / registration
+    3. Count number of inliers, that is, edges with $$Chi^2$$ lower than its threshold. If there are not enough inlier, we are not going to add the scan for loop closure / registration
     4. Keep the pose estimate for next level likelihood field optimization
 3. Update occupancy grid
 

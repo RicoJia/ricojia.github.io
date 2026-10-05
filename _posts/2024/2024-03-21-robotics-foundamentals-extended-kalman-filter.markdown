@@ -17,9 +17,9 @@ Now let's take a look at a diff (differential) drive example.
 Imagine our world has two cones with known locations: `c1`, `c2`, and a diff drive with wheel encoders and a cone detector.
 
 - A wheel encoder tells us how far (in m/s) a wheel has travelled within a known time window.
-- The cone detector can detect the range `d` and bearing $\beta$ of each cone at any given time.
+- The cone detector can detect the range `d` and bearing $$\beta$$ of each cone at any given time.
 
-**The goal is to estimate the $[x, y, \theta]$ of the vehicle.**
+**The goal is to estimate the $$[x, y, \theta]$$ of the vehicle.**
 
 <div style="text-align: center;">
 <p align="center">
@@ -34,7 +34,7 @@ Imagine our world has two cones with known locations: `c1`, `c2`, and a diff dri
 
 ### Wheel Encoder
 
-The wheel encoder is able to give us a noisy estimate of the linear $v$ and angular velocity $w$ of the robot:
+The wheel encoder is able to give us a noisy estimate of the linear $$v$$ and angular velocity $$w$$ of the robot:
 
 $$
 \begin{gather*}
@@ -48,15 +48,15 @@ $$
 
 Where:
 
-- $v$ is the linear velocity of the robot's center in `m/s`
-- $w$ is the angular velocity of the robot's rotation in `rad/s`
-- $l, r$ are the wheel encoder increments within time window $\Delta t$ in `m/s`.
-- $c$ is the distance between the two wheels (wheel base).
+- $$v$$ is the linear velocity of the robot's center in `m/s`
+- $$w$$ is the angular velocity of the robot's rotation in `rad/s`
+- $$l, r$$ are the wheel encoder increments within time window $$\Delta t$$ in `m/s`.
+- $$c$$ is the distance between the two wheels (wheel base).
 
-One can also notice that $v = wR$ in this case!
+One can also notice that $$v = wR$$ in this case!
 
 
-Conventionally, we use $x$ to represent our state vector as:
+Conventionally, we use $$x$$ to represent our state vector as:
 
 $$
 \begin{gather*}
@@ -69,7 +69,7 @@ x \\ y \\ \theta
 \end{gather*}
 $$
 
-And we deem the linear and angular velocities as control input ,$u$:
+And we deem the linear and angular velocities as control input ,$$u$$:
 
 $$
 \begin{gather*}
@@ -83,7 +83,7 @@ $$
 
 ### Motion Model
 
-In **discrete time** $t+1 = t + \Delta t$, we assume the robot **follows a circular motion**. That is, it has a constant linear and angular velocity.
+In **discrete time** $$t+1 = t + \Delta t$$, we assume the robot **follows a circular motion**. That is, it has a constant linear and angular velocity.
 
 <div style="text-align: center;">
 <p align="center">
@@ -106,7 +106,7 @@ $$
 \end{gather*}
 $$
 
-If we integrate the above derivatives, we can get the motion update. This motion update is equivalent to **gettting the new coordinates on a circle**. In the real world, we have a gaussian noise $\eta$ from the control update. 
+If we integrate the above derivatives, we can get the motion update. This motion update is equivalent to **gettting the new coordinates on a circle**. In the real world, we have a gaussian noise $$\eta$$ from the control update. 
 
 $$
 \begin{gather*}
@@ -120,7 +120,7 @@ $$
 \end{gather*}
 $$
 
-- The process noise has a covariance matrix $Q$:
+- The process noise has a covariance matrix $$Q$$:
 
 $$
 \begin{gather*}
@@ -144,9 +144,9 @@ $$
 \end{gather*}
 $$
 
-However, because of the non linear terms like $\frac{w}{v}sin(\theta)$, we can't write the above into a linear form directly. However, we can use the taylor expansion to linearize it. One tricky thing is, the linearization is around an estimate. So the EKF framework is formulated **about the deviation from the true value.**
+However, because of the non linear terms like $$\frac{w}{v}sin(\theta)$$, we can't write the above into a linear form directly. However, we can use the taylor expansion to linearize it. One tricky thing is, the linearization is around an estimate. So the EKF framework is formulated **about the deviation from the true value.**
 
-1. We first get a prediction $x_{t+1}^*$ using the full non-linear update model above, 
+1. We first get a prediction $$x_{t+1}^*$$ using the full non-linear update model above, 
 2. Define Deviation between the last state estimate and the next state estimate:
 
 $$
@@ -157,7 +157,7 @@ $$
 \end{gather*}
 $$
 
-2. Linearize the deviation $\delta x$
+2. Linearize the deviation $$\delta x$$
 
 $$
 \begin{gather*}
@@ -170,11 +170,11 @@ x_{t+1, true} = f(\bar{x_t} + \delta x) \approx x_{t+1}^* + J_x (x_{t + 1} - \ba
 \end{gather*}
 $$
 
-So $x_{t+1, true} = J_x x_{t + 1} + b$ is linear, **w.r.t**  $x_{t+1}$! This is the foundamental difference from ESKF, where a linear system is built on error $\delta x = x_{t + 1, true} - x_{t+1}^*$
+So $$x_{t+1, true} = J_x x_{t + 1} + b$$ is linear, **w.r.t**  $$x_{t+1}$$! This is the foundamental difference from ESKF, where a linear system is built on error $$\delta x = x_{t + 1, true} - x_{t+1}^*$$
 
-- This is because we our motion model estimates a single state estimate $x_{t+1}$, and still linearizes around $x_{t}$. However ESKF estimates the error $\delta x = x_{t + 1, true} - x_{t+1}^*$
+- This is because we our motion model estimates a single state estimate $$x_{t+1}$$, and still linearizes around $$x_{t}$$. However ESKF estimates the error $$\delta x = x_{t + 1, true} - x_{t+1}^*$$
 
-$J_x$ is the Jacobian of $\frac{\partial f}{\partial x}$ 
+$$J_x$$ is the Jacobian of $$\frac{\partial f}{\partial x}$$ 
 
 $$
 \begin{gather*}
@@ -191,7 +191,7 @@ x_{t + 1} + b
 $$
 
 
-To be consistent with most other literature, we use $F_t$ to represent this Jacobian (a.k.a Prediction Jacobian)
+To be consistent with most other literature, we use $$F_t$$ to represent this Jacobian (a.k.a Prediction Jacobian)
 
 $$
 \begin{gather*}
@@ -207,7 +207,7 @@ $$
 
 ### Observation Model
 
-We assume that we know the positions of each landmark $[c_x, c_y]$
+We assume that we know the positions of each landmark $$[c_x, c_y]$$
 A cone appears to be `\beta, d` in our observation. Note that in real life, this observation is subject to observation noise:
 
 $$
@@ -219,7 +219,7 @@ $$
 \end{gather*}
 $$
 
-Similarly, we think that deviation of the predicted observation from the real observation comes from the deviation of state estimate $x_{t+1}^*$ and the true state: $x_{t+1, true}$. Using Taylor Expansion to linearize the observation model:
+Similarly, we think that deviation of the predicted observation from the real observation comes from the deviation of state estimate $$x_{t+1}^*$$ and the true state: $$x_{t+1, true}$$. Using Taylor Expansion to linearize the observation model:
 
 $$
 \begin{gather*}
@@ -234,9 +234,9 @@ h(x_{t+1, true}) - h(x_{t+1}^*) = z_t - h(x_{t+1}^*) = H(x) (x_{t+1} - x_{t+1}^*
 \end{gather*}
 $$
 
-- $h(x_{t+1, true}) := z_t$ is the real observation
+- $$h(x_{t+1, true}) := z_t$$ is the real observation
 
-Linearizing the above gives us the observation Jacobian $H$:
+Linearizing the above gives us the observation Jacobian $$H$$:
 
 $$
 \begin{gather*}
@@ -259,11 +259,11 @@ $$
 \end{gather*}
 $$
 
-- This is because we our observation model is still linearized on $x$ (at $x=x_{t+1}^*$), but ESKF's observation model views the entire $h(x_{t+1, true}) - h(x_{t+1}^*)$ caused by the error $\delta x$
+- This is because we our observation model is still linearized on $$x$$ (at $$x=x_{t+1}^*$$), but ESKF's observation model views the entire $$h(x_{t+1, true}) - h(x_{t+1}^*)$$ caused by the error $$\delta x$$
 
 ## Filtering Process
 
-In EKF, we are implicitly applying the Kalman Filtering on the devivation $\delta x$ from true state values. By applying kalman filtering, we can minimize the error covariance on the deviation given observation.
+In EKF, we are implicitly applying the Kalman Filtering on the devivation $$\delta x$$ from true state values. By applying kalman filtering, we can minimize the error covariance on the deviation given observation.
 
 - Prediction is 
 

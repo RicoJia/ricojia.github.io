@@ -29,7 +29,7 @@ During model training, the first 20 layers were first trained with on the ImageN
 
 Then, because this loss is second order, gradient descent will be first order.
 
-- Localization error if a ground truth bounding box appear in a cell $i$. The responsible predicted bounding box is $j$.  $\lambda_{\text{coord}}=5$ and has a larger weight.
+- Localization error if a ground truth bounding box appear in a cell $$i$$. The responsible predicted bounding box is $$j$$.  $$\lambda_{\text{coord}}=5$$ and has a larger weight.
 
 $$
 \begin{gather*}
@@ -37,7 +37,7 @@ L_{\text{loc}} = \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^B \mathbb{1}
 \end{gather*}
 $$
 
-- Confidence loss: when a ground truth bounding box exists in cell $j$, this penalizes confidence deviations across classes:
+- Confidence loss: when a ground truth bounding box exists in cell $$j$$, this penalizes confidence deviations across classes:
 
 $$
 \begin{gather*}
@@ -45,7 +45,7 @@ L_{\text{conf\_obj}} = \sum_{i=0}^{S^2} \sum_{j=0}^B \mathbb{1}_{ij}^{\text{obj}
 \end{gather*}
 $$
 
-- For grids without an object, $\lambda_{\text{noobj}}=0.5$:
+- For grids without an object, $$\lambda_{\text{noobj}}=0.5$$:
 
 $$
 \begin{gather*}
@@ -111,7 +111,7 @@ Image (608, 608, 3) -> Deep CNN -> Encoding (m, n_h=19, n_w=19, anchors=5, class
 </p>
 </div>
 
-- The probability of a cell containing an object of a given class is $p(class, object) = p(class | object) * p(object)$.
+- The probability of a cell containing an object of a given class is $$p(class, object) = p(class \vert  object) * p(object)$$.
 - Anchor boxes are pre-assigned.
 - Can use labels or a single integer. In the above illustration, we are using a single integer.
 - `Image -> CNN -> (19, 19,425)`, where `425 = 5 * 85. 85 = 5($(p_c, b_x, b_y, b_h, b_w)$) + 80 (classes)`

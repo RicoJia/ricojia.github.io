@@ -48,7 +48,7 @@ A=\sqrt{3^2+4^2}=5,
 \phi=\operatorname{atan2}(4,3)\approx53.1^\circ.  
 $$
 
-The physical waveform is the real part of the rotating complex signal:, whose frequency is fixed $\omega$:
+The physical waveform is the real part of the rotating complex signal:, whose frequency is fixed $$\omega$$:
 
 $$
 s(t)=\operatorname{Re}[(3+4j)e^{j\omega t}].  
@@ -116,7 +116,7 @@ f_A(a) =
 \qquad a\ge0  
 $$
 
-where $\sigma$ is the standard deviation of X and Y.  with \(X\) and \(Y\) independent. Then the joint distribution of (X,Y) is (w.r.t each realization (x,y)):
+where $$\sigma$$ is the standard deviation of X and Y.  with \(X\) and \(Y\) independent. Then the joint distribution of (X,Y) is (w.r.t each realization (x,y)):
 
 $$
 f_{X,Y}(x,y)
@@ -148,7 +148,7 @@ f_{X,Y}(r\cos\theta,r\sin\theta)
 \right).
 $$
 
-For ($\sigma=1$):
+For ($$\sigma=1$$):
 
 $$
 f_A(a)=r\exp\left(-\frac{r^2}{2}\right)  
@@ -172,7 +172,7 @@ $$
 \sigma\sqrt{\frac{4-\pi}{2}}  
 $$
 
-For ($\sigma=1$):
+For ($$\sigma=1$$):
 
 $$
 E[A]\approx1.253  
@@ -182,7 +182,7 @@ $$
 \operatorname{std}(A)\approx0.655  
 $$
 
-Therefore, coefficient of variation (CV) doesn't depend on $\sigma$:
+Therefore, coefficient of variation (CV) doesn't depend on $$\sigma$$:
 
 $$
 CV =
@@ -223,7 +223,7 @@ X\sim\mathcal N(0,\sigma^2),
 Y\sim\mathcal N(0,\sigma^2)  
 $$
 
-For example, if a Rayleigh-distributed amplitude has $CV \approx 0.523$,
+For example, if a Rayleigh-distributed amplitude has $$CV \approx 0.523$$,
 
  $$  
 CV_A =
@@ -292,7 +292,7 @@ $$
 
 ### 4 - 1 Gamma Distribution
 
-On the other hand, A Gamma-distributed random variable (G) with shape (k) and scale ($\theta$) has PDF
+On the other hand, A Gamma-distributed random variable (G) with shape (k) and scale ($$\theta$$) has PDF
 
 $$
 \boxed{  
@@ -307,8 +307,8 @@ $$
 Here:
 
 - (k>0) is the **shape** parameter;
-- ($\theta$>0) is the **scale** parameter;
-- ($\Gamma(k)$) is the Gamma function.
+- ($$\theta$$>0) is the **scale** parameter;
+- ($$\Gamma(k)$$) is the Gamma function.
 
 For positive integers,
 
@@ -536,7 +536,7 @@ L → ∞   Concentrates around 1
 |6|0.408|
 |10|0.316|
 
-Therefore, if we measured $CV \in [0.41, 0.49]$  corresponds approximately to
+Therefore, if we measured $$CV \in [0.41, 0.49]$$  corresponds approximately to
 
 $$
 L=\frac{1}{CV^2}  \approx4.2\text{–}5.9.  
