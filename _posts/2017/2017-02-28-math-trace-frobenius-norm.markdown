@@ -287,3 +287,37 @@ Eigen::Matrix3d nearestRotation(const Eigen::Matrix3d& R) {
     return R_ortho;
 }
 ```
+
+---
+
+## Trace is the Sum of Eigenvalues for Symmetric Matrices
+
+By definition, $$\operatorname{tr}(H) = \sum_i H_{ii}$$. For a diagonal matrix, the trace is obviously the sum of the diagonal:
+
+$$
+D = \begin{bmatrix} d_1 & 0 & 0 \\ 0 & d_2 & 0 \\ 0 & 0 & d_3 \end{bmatrix}
+\quad\Rightarrow\quad
+\operatorname{tr}(D) = d_1 + d_2 + d_3
+$$
+
+Now if $$H$$ is symmetric, it has an eigendecomposition $$H = V\Lambda V^T$$, where $$V$$ is orthonormal and
+
+$$
+\Lambda = \begin{bmatrix} \lambda_1 & 0 & 0 \\ 0 & \lambda_2 & 0 \\ 0 & 0 & \lambda_3 \end{bmatrix}
+$$
+
+Using the cyclic property of trace, $$\operatorname{tr}(ABC) = \operatorname{tr}(BCA)$$, we can move $$V$$ around. Because $$V$$ is orthonormal, $$V^TV = I$$, so
+
+$$
+\operatorname{tr}(H) = \operatorname{tr}(V\Lambda V^T) = \operatorname{tr}(\Lambda V^TV) = \operatorname{tr}(\Lambda)
+$$
+
+And therefore
+
+$$
+\boxed{\operatorname{tr}(H) = \lambda_1 + \lambda_2 + \lambda_3}
+$$
+
+So the trace is invariant under this change of basis.
+
+---
