@@ -235,7 +235,7 @@ v^{\land} = |v|a => (v^{\land})^2 = |v|^2 (a a^T - I)
 \end{gather*}
 $$
 
-We have the trace of $$(v^{\land})^2$$:
+We have the trace of $$(v^{\land})^2$$ ([general proof](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-of-a-squared-skew-symmetric-matrix)):
 
 $$
 \begin{gather*}

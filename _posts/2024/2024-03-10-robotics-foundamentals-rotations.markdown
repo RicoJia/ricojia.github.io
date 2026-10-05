@@ -62,7 +62,7 @@ R = R_z(\theta_z) R_y(\theta_y) R_x(\theta_x)
 \end{gather*}
 $$
 
-Then we can get $$\theta$$ and rotation axis $$u=[u_x, u_y, u_z]$$
+Then we can get $$\theta$$ and rotation axis $$u=[u_x, u_y, u_z]$$. The angle comes from [$$\operatorname{tr}(R) = 1 + 2\cos\theta$$](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-of-a-rotation-matrix):
 
 $$
 \begin{gather*}

@@ -8,7 +8,6 @@ header-img: img/post-bg-infinity.jpg
 tags:
   - Machine-Learning
 ---
-# Metric 1 - Degeneracy using Hessian
 
 ## Part 1 - The derivation
 
@@ -153,6 +152,7 @@ $$
 
 This approximate Hessian describes how strongly the registration cost changes for different perturbations of the state.
 
+---
 ## Part 2 - Why Hessian eigenvalues can show degeneracy
 
 Suppose we perturb the state $$\mathbf{x}$$ by a small amount $$\delta\mathbf{x}$$. A second-order Taylor expansion of the cost is
@@ -505,7 +505,9 @@ mixes radians and meters, so its eigenvalues are not in the same units either. C
 
 A naive thought is
 
- λ_i / λ_max < scale_i * THRESHOLD
+$$ 
+λ_i / λ_max < scale_i * THRESHOLD
+$$
 
 This doesn't work well because scaling the threshold per eigenvalue breaks on coupled directions. Suppose an eigenvector is 60% yaw and 40% sideways motion, another is 20% yaw and 40% sideways motion. We cannot apply a single preset scale_i. 
 
@@ -571,9 +573,9 @@ Let $$\mathbf{p}_i$$ be a matched point in the body (IMU) frame, and $$N$$ the n
 |Translate by $$\delta\mathbf{t}$$|$$\delta\mathbf{t}$$|$$\mathbf{I}$$|$$\mathbf{I}$$|
 |Rotate by $$\delta\boldsymbol{\theta}$$|$$\delta\boldsymbol{\theta}\times\mathbf{p}_i = -[\mathbf{p}_i]_\times\delta\boldsymbol{\theta}$$|$$-[\mathbf{p}_i]_\times$$|$$[\mathbf{p}_i]_\times^T[\mathbf{p}_i]_\times$$|
 
-**Step 2: measure how "stiff" each block is.** Think of the cost as a spring holding the pose in place: $$\Delta E \approx \frac{1}{2}\delta\mathbf{x}^T\mathbf{H}\,\delta\mathbf{x}$$, so pushing the pose by $$\delta\mathbf{x}$$ raises the cost like stretching a spring. A large eigenvalue is a stiff spring (a small push costs a lot, so that direction is well constrained), and a small eigenvalue is a loose one. The trace (sum of the diagonal, which equals the sum of the eigenvalues) adds up the stiffness of a block's three directions, so it measures the block's total stiffness. 
+**Step 2: measure how "stiff" each block is.** Think of the cost as a spring holding the pose in place: $$\Delta E \approx \frac{1}{2}\delta\mathbf{x}^T\mathbf{H}\,\delta\mathbf{x}$$, so pushing the pose by $$\delta\mathbf{x}$$ raises the cost like stretching a spring. A large eigenvalue is a stiff spring (a small push costs a lot, so that direction is well constrained), and a small eigenvalue is a loose one. The trace (sum of the diagonal, which [equals the sum of the eigenvalues](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-equals-the-sum-of-eigenvalues)) adds up the stiffness of a block's three directions, so it measures the block's total stiffness. 
 
-Using $$[\mathbf{p}]_\times^T[\mathbf{p}]_\times = \|\mathbf{p}\|^2\mathbf{I} - \mathbf{p}\mathbf{p}^T$$, whose trace is $$3\|\mathbf{p}\|^2 - \|\mathbf{p}\|^2 = 2\|\mathbf{p}\|^2$$:
+Using $$[\mathbf{p}]_\times^T[\mathbf{p}]_\times = \|\mathbf{p}\|^2\mathbf{I} - \mathbf{p}\mathbf{p}^T$$ ([proof](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-of-a-squared-skew-symmetric-matrix)), whose trace is $$3\|\mathbf{p}\|^2 - \|\mathbf{p}\|^2 = 2\|\mathbf{p}\|^2$$:
 
 $$
 \operatorname{tr}(\mathbf{H}_{tt}) = 3N,
