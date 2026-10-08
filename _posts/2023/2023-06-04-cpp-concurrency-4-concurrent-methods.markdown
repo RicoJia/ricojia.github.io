@@ -250,6 +250,47 @@ int main() {
 }
 ```
 
+### Flag Arrays: `std::vector<bool>` vs `std::vector<uint8_t>` vs `std::atomic<bool>`
+
+A common use of lockless writes in SLAM: in a parallel correspondence search, mark which LiDAR points found a valid match, e.g. `effect_pts[i] = 1`. The obvious container, `std::vector<bool>`, is the one exception to the rule above. It packs 8 flags into each byte, so writing flag `i` is really a read-modify-write of the whole byte, and two threads writing neighboring flags can silently overwrite each other's bits. The standard explicitly excludes `std::vector<bool>` from the "different elements are safe" guarantee.
+
+| Type | Concurrent writes to different indices | Concurrent writes to the same index |
+|---|---|---|
+| `std::vector<bool>` | Unsafe (bits share a byte) | Unsafe |
+| `std::vector<uint8_t>` | Safe | Unsafe (a data race, even if both threads write the same value) |
+| `std::atomic<bool>` array | Safe | Safe |
+
+**If each index is written by exactly one iteration, use `std::vector<uint8_t>`.** This is the usual case: point `i` is processed once, so only that iteration ever touches `effect_pts[i]`. One byte per flag gives every flag its own memory location, and no atomics are needed:
+
+```cpp
+std::vector<uint8_t> effect_pts(total_size, 0);
+```
+
+**If several iterations can write the same index, use atomics**, or restructure the algorithm so that each index has a single owner (e.g. accumulate per thread, then merge). For example, if many source points can match the same map point, `matched[map_idx] = 1` can come from several threads at once.
+
+`std::vector<std::atomic<bool>>` works as long as you construct it with its final size: `std::vector<std::atomic<bool>> flags(total_size);`. What doesn't work is anything that **copies or moves elements** (`push_back`, `resize`, copying the vector), because atomics are neither copyable nor movable. A plain array avoids that trap:
+
+```cpp
+// Value-initialized, so every flag starts as false
+auto effect_pts = std::make_unique<std::atomic<bool>[]>(total_size);
+
+std::for_each(
+    std::execution::par_unseq,
+    indices.begin(), indices.end(),
+    [&](size_t i) {
+        if (has_valid_correspondence(i)) {
+            effect_pts[map_index(i)].store(true, std::memory_order_relaxed);
+        }
+    });
+```
+
+Two things to note about the atomic version:
+
+- **Use `std::memory_order_relaxed`.** The flags are independent, and we only read them after the parallel loop finishes (the algorithm's return is the synchronization point), so no ordering guarantees are needed. With `par_unseq` it's actually required: the callback may not call anything that synchronizes with another thread, and only relaxed atomic operations don't. See [memory_order_relaxed](https://ricojia.github.io/2023/06/06/cpp-concurrency-6-memory-model/) for what relaxed does and doesn't guarantee.
+- **An atomic flag only protects the flag.** If threads also write correspondence data (coordinates, residuals, indices) for the same slot, those writes need their own protection.
+
+**What about performance?** A relaxed atomic store compiles to an ordinary store on x86, so the flag write itself is cheap. The cost is elsewhere: atomics can prevent the compiler from vectorizing the loop. And when threads write neighboring flags that share a cache line, the line bounces between cores (false sharing), but that happens with `std::vector<uint8_t>` too, so it isn't a reason to prefer either. When each index has one owner, atomics add machinery without improving correctness, so stick with `uint8_t`.
+
 ------------------------------------------------------------
 
 ## [Method 3] Vectorization Execution Policy `std::execution::par_unseq` (C++ 17, Optimization Impact: ⭐️⭐⭐️️️⚪⚪)
@@ -369,7 +410,6 @@ To link: do `g++ -O2 -std=c++17 omp_test.cpp -ltbb` (note, libraries like `-ltbb
         });
 ```
 
-
 | Metric            |    `seq` | `par_unseq` |
 | ----------------- | -------: | ----------: |
 | Calls             |    7,718 |      12,905 |
@@ -399,8 +439,6 @@ However, a good place to use `par_unseq` is where there is no arithmatic additio
             voxel_ptr->update_existing_voxel_data(voxel_data);
         });
 ```
-
-
 
 ------------------------------------------------------------
 

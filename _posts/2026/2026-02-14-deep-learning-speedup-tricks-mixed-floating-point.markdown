@@ -21,7 +21,7 @@ A floating point is represented as `sign bit | exponent | mantissa`. `0 | 100000
 
 $$
 \begin{gather*}
-\text{value} = (-1)^\text{exponent} \times 2^\text{exponent} \times \text{1.mantissa}
+\text{value} = (-1)^\text{sign} \times 2^\text{exponent} \times \text{1.mantissa}
 \\
 = (-1)^\text{0} \times 2^\text{2} \times \text{1.5} = 6
 \end{gather*}
@@ -31,17 +31,27 @@ $$
 
 [This section is inspired by this blogpost](https://medium.com/@furkangozukara/what-is-the-difference-between-fp16-and-bf16-here-a-good-explanation-for-you-d75ac7ec30fa) and [this blogpost](https://www.53ai.com/news/qianyanjishu/2024052494875.html)
 
+**FP16 (16-bit floating point)** and **BF16 (Brain Floating Point)** both use 16 bits to represent a number, but they make different tradeoffs between **precision and dynamic range**. FP16 gives 10 bits to the fraction (mantissa) and 5 bits to the exponent, which means higher precision but a smaller dynamic range (up to about ±65,504). BF16 gives only 7 bits to the fraction and 8 bits to the exponent. It sacrifices precision for a much larger dynamic range (up to about ±3.39 × 10³⁸), similar to FP32, because it has the same 8 exponent bits as FP32. In practice, FP16 represents nearby values more accurately, while BF16 is much less likely to overflow or underflow. Consequently, **BF16 is often preferred for neural network training**, while **FP16 is widely used for inference**, especially on hardware like the Jetson AGX Xavier, which accelerates FP16 but has no native BF16 support.
+
+|Format|Sign / exponent / mantissa bits|Max value|Smallest normal value|Significant decimal digits|
+|---|---|---|---|---|
+|FP32|1 / 8 / 23|≈ 3.40 × 10³⁸|≈ 1.18 × 10⁻³⁸|≈ 7.2|
+|FP16|1 / 5 / 10|65,504|≈ 6.10 × 10⁻⁵ (subnormals go down to ≈ 5.96 × 10⁻⁸)|≈ 3.3|
+|BF16|1 / 8 / 7|≈ 3.39 × 10³⁸|≈ 1.18 × 10⁻³⁸|≈ 2.4|
+
+The details of each format:
+
 - FP16 has `|1 sign bit | 5 exponent bits | 10 mantissa bits |`
   - Mantissa calculation for 1.5625: `1.1001000000 =  2^0 + 1 * 2^(-1) + 0 * 2^(-2) + 0 * 2^(-3) + 1 * 2^(-4) + 0 * 2^(-5) + 0 * 2^(-6) + 0 * 2^(-7) + 0 * 2^(-8) + 0 * 2^(-9) = 1.5625`
 
-- BFloat16(Brain-Floating-Point-16) has `|1 sign bit | 8 exponent bits | 7 mantissa bits |`. This representation **sacrifices some precision for a wider range**. It was developed by Google Brain, and it's relatively new such that it's only supported on Nvidia Ampere+.
+- BFloat16(Brain-Floating-Point-16) has `|1 sign bit | 8 exponent bits | 7 mantissa bits |`. This representation **sacrifices some precision for a wider range**. It was developed by Google Brain, and it's relatively new, so Nvidia GPUs only support it natively from Ampere onward (e.g. RTX 30-series, A100, Jetson Orin). Older GPUs like the Volta-based Jetson AGX Xavier don't.
 
 ```
 import transformers
 transformers.utils.import_utils.is_torch_bf16_gpu_available()
 ```
 
-BFloat16's dynamic range is `[-3.40282e+38，3.40282e+38]` whereas float16 is `[-65504，65504]`. Also, BF16 can go all the way down to ~10e-38 whereas FP16 has ~6e-8. So BFloat16 does NOT need scaling.
+BFloat16's dynamic range is about `[-3.39e+38, 3.39e+38]` whereas float16 is `[-65504, 65504]`. Also, BF16 can go all the way down to ~1.18e-38 (like FP32), whereas FP16 bottoms out at ~6e-8 even with subnormals. So BFloat16 does NOT need loss scaling.
 
 So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing gradient problem.
 
@@ -72,14 +82,35 @@ So, I'd suggest use BFloat16 when FP16 is suffering from exploding / vanishing g
   - BF16: `0|01110001|1010010`, 0.00010013580322
         1. $$0.0001 \approx 1.6384 \times 2^{−14}$$
         2. Sign bit is 0 for positive.
-        2. Actual Exponent `E_actual = -14`, so the FP16 exponent is `E = E_actual + bias = -14 + 127 = 113`. So we get `01110001`
+        2. Actual Exponent `E_actual = -14`, so the BF16 exponent is `E = E_actual + bias = -14 + 127 = 113`. So we get `01110001`
         3. For mantissa: similar to the process for FP16.
 
 ### Precisions
 
+- BF16 has 7 mantissa bits, plus the implicit leading 1. So that's roughly `log_10(2^8) = 2.4` significant digits.
 - FP16 has 10 mantissa bits, which is `2^10=1024` numbers. So that's roughly `log_10(1024) = 3` significant digits.
 - FP32 has 23 mantissa bits. So that is `log_10(2^23) = 7` significant digits.
 - FP64 has 52 mantissa bits. So that's `log_10(2^52) = 15.6` significant digits
+
+Another way to see FP16's precision is the gap between neighboring numbers. Within each power-of-two interval $$[2^e, 2^{e+1})$$, the 10 mantissa bits split the interval into $$2^{10}$$ equal steps, so the spacing is:
+
+$$
+\boxed{\Delta = \frac{2^e}{2^{10}} = 2^{e-10}}
+$$
+
+where $$e$$ is the binary exponent. So the spacing doubles every time the number crosses a power of two:
+
+|Number range|FP16 spacing|Example|
+|---|---|---|
+|1–2|0.0009765625|1, 1.0009765625, ...|
+|1024–2048|1|1024, 1025, 1026|
+|2048–4096|2|2048, 2050, 2052|
+|4096–8192|4|4096, 4100, 4104|
+|8192–16384|8|8192, 8200, 8208|
+|16384–32768|16|16384, 16400, 16416|
+|32768–65504|32|32768, 32800, 32832|
+
+E.g., above 2048, FP16 can't even represent odd integers: `2049` rounds to `2048`. And the largest FP16 value, 65504, is just $$65536 - 32$$, the last step below $$2^{16}$$. BF16 works the same way with 7 mantissa bits, so its spacing is $$2^{e-7}$$, already 0.0078125 between 1 and 2.
 
 ## Mixed Precision Training
 
