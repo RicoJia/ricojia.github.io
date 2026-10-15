@@ -162,3 +162,7 @@ Noam scheduling is to increase learning rate at the beginning, then decrease it.
 ## Good Reads
 
 - [Weight Tying, Initialization of Transformer](https://jerryzhao.com/post/guan-yu-vanilla-transformer-de-chong-chong-xi-jie/)
+
+## Next
+
+- [Transformer Series 6 - Decoder-Only LLMs and KV Cache](https://ricojia.github.io/2026/10/07/kv-cache/)
