@@ -227,3 +227,35 @@ To fix, you flip the last column and try again:
 det(U Vᵀ) = 1
 R = U D Vᵀ
 ```
+
+## When to Use SVD vs Eigen Value Decomposition
+
+For a square matrix \(A\), eigendecomposition has the general form:
+
+\[ \boxed{A=V\Lambda V^{-1}} \]
+
+where:
+
+- \(V\): columns are eigenvectors of \(A\).
+    
+- \(\Lambda\): diagonal matrix of eigenvalues.
+    
+- \(V^{-1}\): inverse of the eigenvector matrix.
+    
+
+This requires \(A\) to have enough linearly independent eigenvectors to form an invertible \(V\). Such a matrix is called diagonalizable.
+
+| Matrix type           | Eigendecomposition                                               | Properties                                |
+| --------------------- | ---------------------------------------------------------------- | ----------------------------------------- |
+| Real symmetric        | Always                                                           | Real eigenvalues, orthogonal eigenvectors |
+| Real nonsymmetric     | Sometimes over real numbers; sometimes only over complex numbers | Eigenvalues may be complex                |
+| General square matrix | Only if diagonalizable                                           | May have complex eigenvalues              |
+| Rectangular matrix    | No                                                               | Use SVD instead                           |
+
+||Eigendecomposition|SVD|
+|---|---|---|
+|Formula|\(A=V\Lambda V^{-1}\)|\(A=U\Sigma V^T\)|
+|Matrix shape|Square, diagonalizable|Any matrix|
+|Eigenvalues/singular values|Eigenvalues may be negative or complex|Singular values always nonnegative|
+|Principal use|Understand a square linear transformation|Analyze rank, conditioning, least squares|
+|Example in SLAM|Hessian eigenanalysis|ICP Jacobian rank analysis|

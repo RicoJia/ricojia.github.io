@@ -622,3 +622,6 @@ Making rotation and translation comparable with a length scale is an established
 3. Zhang, Kaess, and Singh (2016), "On Degeneracy of Optimization-based State Estimation Problems",, the degeneracy test behind LOAM, thresholds the eigenvalues of the raw Hessian without such a scaling, which is the problem this part addresses.
 4. For LiDAR degeneracy, [DCReg](https://arxiv.org/abs/2509.06285) (2025) analyzes this rotation-translation scale disparity and decouples the two subspaces with Schur complements.
 5. [Degeneracy-Resilient Teach and Repeat with FMCW Lidar](https://arxiv.org/abs/2603.10248) (2026) uses block scaling with a scaling factor $$\ell$$, detects degeneracy in the scaled space, and maps the solution back, as in this post.
+
+
+**Next:** [Laplace Approximation](https://ricojia.github.io/2026/05/15/Laplace-Approximation/) explains why the inverse Hessian can be read as a covariance.
