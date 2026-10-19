@@ -195,6 +195,8 @@ $$
 - `torch.optim.lr_scheduler.StepLR`: reduces learning rate on fixed schedule
 - `torch.optim.lr_scheduler.ExponentialL` or `torch.optim.lr_scheduler.CosineAnnealingLR` reduces learning rate in a smooth exp or cosine manner.
 
+For warmup, cosine decay, and warm restarts, see [Learning Rate Schedules](https://ricojia.github.io/2026/10/19/learning-rate-schedules/).
+
 ## Local Optima
 
 When people think about `gradient=0` in optimizations, local minima immediately becomes a concern, like the ones below.
