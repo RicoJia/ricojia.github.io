@@ -2,7 +2,7 @@
 layout: post
 title: Deep Learning - Why 100 GB of NumPy Data Slowed Down Our ML Training
 date: 2026-10-16 13:19
-subtitle: NumPy Memory Mapping, Linux Page Cache, Swap, and Ragged Arrays
+subtitle: NumPy Memory Mapping, Linux Page Cache, Swap, Pause and Resume, and Ragged Arrays
 comments: true
 header-img: img/post-bg-infinity.jpg
 tags:
@@ -280,3 +280,36 @@ Neural network
 The 4,096-point limit can remain as a maximum at crop creation time; crops exceeding that size are subsampled. Shorter crops no longer need padding at any stage.
 
 Implementation requires updating the crop builder, dataset loader, and viewer, followed by testing that old and new representations produce equivalent model inputs.
+
+## 11. Pausing and Resuming Training with `kill -STOP` and `kill -CONT`
+
+Another way to reduce concurrency is to temporarily pause a training job to free CPU resources for another one, without losing the progress of existing jobs. Linux allows us to **pause and resume a process without restarting it**.
+
+### Pausing a training process
+
+```bash
+kill -STOP <PID>
+```
+
+Here, `PID` is the process ID. The `SIGSTOP` signal tells Linux to suspend the process:
+
+- The process **stops executing instructions.**
+- Its RAM and allocated **GPU memory remain reserved**.
+- Its model weights, optimizer state, and current training position remain intact.
+- It does not need to reload a checkpoint when resumed.
+
+For example, a training job paused halfway through epoch 20 can continue from that position.
+
+A PyTorch `DataLoader` with `num_workers > 0` runs its workers as separate processes, so stopping only the main PID leaves them running until their prefetch queues fill. To pause the whole job, signal its process group instead, e.g. `kill -STOP -- -<PGID>` (find the PGID with `ps -o pgid= -p <PID>`).
+
+### Resuming the process
+
+```bash
+kill -CONT <PID>
+```
+
+The `SIGCONT` signal allows the process to execute again, continuing from where it was suspended. Unlike terminating and restarting training, no training progress is intentionally discarded.
+
+**Important:** pausing does not release GPU memory, and the process's state is preserved only while it remains alive. A reboot or process termination still loses uncheckpointed progress. Pausing does not free RAM either: under memory pressure, Linux may swap a stopped job's memory out (Section 4), and resuming it then means reading that memory back from swap.
+
+To continue, send `SIGCONT` to the paused processes with `kill -CONT <PID>`. This is useful when coordinating multiple jobs on a shared GPU machine, provided enough GPU memory remains available for the jobs that continue running.
