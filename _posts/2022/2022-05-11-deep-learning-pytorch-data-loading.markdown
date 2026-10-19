@@ -108,7 +108,27 @@ After that, in PyTorch, we will have dataloading. A naive dataloader reads input
 for indices in batch_sampler:
     yield collate_fn([dataset[i] for i in indices])
 ```
-- **There's a default function for it in PyTorch**, but one can do things like padding input text (for NLP tasks)
+- **There's a default function for it in PyTorch**, `default_collate`. It converts a **list of dictionaries** (one per sample, i.e. rows) into a **dictionary of batched tensors** (one per key, i.e. columns): tensors are stacked along a new batch dimension, and numbers become a 1D tensor.
+
+```python
+from torch.utils.data import default_collate
+
+samples = [
+    {"image": tensor_A, "label": 0},
+    {"image": tensor_B, "label": 1},
+    {"image": tensor_C, "label": 2},
+]
+
+batch = default_collate(samples)
+
+# Equivalent to:
+batch = {
+    "image": torch.stack([tensor_A, tensor_B, tensor_C]),
+    "label": torch.tensor([0, 1, 2]),
+}
+```
+
+- Instead of the default, one can write a custom `collate_fn`, e.g. to pad input text (for NLP tasks)
 
 ```python
 # Padding during Collate in NLP tasks
