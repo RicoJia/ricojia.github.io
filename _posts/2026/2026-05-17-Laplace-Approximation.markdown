@@ -149,7 +149,50 @@ The large curvature in `x` (100) means `x` is well constrained; the small curvat
 
 The inner dashed ellipse is the 1σ Mahalanobis contour; the outer solid ellipse is 2σ. They show greater uncertainty in `y` than in `x`. In 2D, the 1σ ellipse contains about 39.3% of the Gaussian probability mass (`1 − e^{−1/2}`), and the 2σ ellipse about 86.5% (`1 − e^{−2}`).
 
-## 7. Summary
+## 7. From Covariance to One Degeneracy Score: Magnusson's $$Q_H$$ {#magnusson-score}
+
+Once $$\Sigma=H^{-1}$$ is a covariance, its worst direction gives a single confidence number for a registration. Martin Magnusson proposed this in his 2009 PhD thesis on the 3D Normal-Distributions Transform [1]:
+
+$$
+\boxed{Q_H=\sqrt{\lambda_{\max}(H^{-1})}}
+$$
+
+The eigenvalues of $$\Sigma$$ are the variances along its principal directions, so $$\lambda_{\max}(H^{-1})$$ is the largest variance. **The square root converts it into a standard deviation**, which has the same unit as the state. $$Q_H$$ is therefore the standard deviation of the least certain direction, and **a larger $$Q_H$$ means a less trustworthy registration.**
+
+In the robot example above, $$Q_H=\max(\sigma_x,\sigma_y)=\sqrt{0.25}=0.5\text{ m}$$.
+
+### $$Q_H$$ only needs the smallest Hessian eigenvalue
+
+For a symmetric positive-definite $$H=V\Lambda V^T$$, the inverse is $$H^{-1}=V\Lambda^{-1}V^T$$, so [every eigenvalue becomes its reciprocal](https://ricojia.github.io/2017/01/15/eigen-value-decomp/#zero-eigenvalues-invertibility-and-condition-number). The largest eigenvalue of $$H^{-1}$$ therefore comes from the smallest eigenvalue of $$H$$:
+
+$$
+\lambda_{\max}(H^{-1})=\frac{1}{\lambda_{\min}(H)}
+\qquad\Rightarrow\qquad
+\boxed{Q_H=\frac{1}{\sqrt{\lambda_{\min}(H)}}}
+$$
+
+Check with the example: $$\lambda_{\min}(H)=4$$, so $$Q_H=1/\sqrt{4}=0.5\text{ m}$$, the same as before. No matrix inverse is needed.
+
+| $$\lambda_{\min}(H)$$ | $$Q_H$$ |
+|---|---|
+| 100 | 0.1 |
+| 4 | 0.5 |
+| 1 | 1 |
+| 0.04 | 5 |
+| 0.01 | 10 |
+| 0.0001 | 100 |
+
+As $$\lambda_{\min}(H)\rightarrow0^+$$, $$Q_H\rightarrow\infty$$. For an exactly singular Hessian, the uncertainty along its null space is unbounded unless a prior is added.
+
+### Limitations
+
+- **Mixed units.** A 6-DoF pose mixes meters and radians, so $$\lambda_{\min}$$ and $$Q_H$$ change with the unit choice even when the geometry does not. Compute it on the scaled Hessian $$\mathbf{H}_s$$ from [Hessian Degeneracy Test, Part 4](https://ricojia.github.io/2026/05/14/Hessian-Degeneracy-Test/#part-4---additional-handling-for-rotation-scale).
+- **Curvature is local.** A steep minimum does not mean the correct minimum. Repetitive geometry can create several sharp local minima, so $$Q_H$$ measures local confidence, not global correctness.
+- **One scalar hides the direction.** $$Q_H$$ reports how uncertain the worst direction is, not which direction it is. Two scenes can share a $$Q_H$$ with different degenerate directions. The eigenvector of $$\lambda_{\min}$$ carries that information; see [Hessian Degeneracy Test, Parts 2–3](https://ricojia.github.io/2026/05/14/Hessian-Degeneracy-Test/#part-2---why-hessian-eigenvalues-can-show-degeneracy).
+
+[1] Magnusson, M. (2009). [_The Three-Dimensional Normal-Distributions Transform — An Efficient Representation for Registration, Surface Analysis, and Loop Detection._](https://www.diva-portal.org/smash/get/diva2:276162/FULLTEXT02.pdf) PhD thesis, Örebro University. Section 6.3.1, Equation 6.28.
+
+## 8. Summary
 
 The entire Laplace approximation fits in three steps:
 

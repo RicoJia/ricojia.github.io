@@ -153,6 +153,7 @@ $$
 This approximate Hessian describes how strongly the registration cost changes for different perturbations of the state.
 
 ---
+
 ## Part 2 - Why Hessian eigenvalues can show degeneracy
 
 Suppose we perturb the state $$\mathbf{x}$$ by a small amount $$\delta\mathbf{x}$$. A second-order Taylor expansion of the cost is
@@ -178,7 +179,6 @@ E(\mathbf{x}+\delta\mathbf{x}) - E(\mathbf{x})
 \approx
 \frac{1}{2}\delta\mathbf{x}^T \mathbf{H}\, \delta\mathbf{x}.
 $$
-
 
 Now consider the eigendecomposition of the Hessian:
 
@@ -290,7 +290,6 @@ $$
 
 So if the smallest eigenvalue is sufficiently far from zero, there is no nonzero unit state direction that can be changed without noticeably increasing the cost. In that sense, there is no locally unobservable direction in the Hessian.
 
-
 "Small" or "large" eigenvalues are relative quantities. In an 18-state LIO system, different state components have different units, such as meters, radians, meters per second, and sensor-bias units. For this reason, **LiDAR geometric degeneracy is often analyzed using the $$6\times6$$ pose Hessian associated with translation and rotation rather than the full $$18\times18$$ estimator Hessian.**
 
 ## Plane is a Natural Degeneracy Scenario
@@ -299,7 +298,7 @@ Some point-cloud geometries naturally provide weak constraints on certain pose d
 
 ![](https://i.postimg.cc/d1k0kWYP/chuan-gan-qi-yu-qiang-mian-fa-xiang-shi-yi-tu.png)
 
-Imagine the robot facing a large flat wall. In point-to-plane ICP, each residual measures 
+Imagine the robot facing a large flat wall. In point-to-plane ICP, each residual measures
 displacement along the wall normal. If the robot moves parallel to the wall, the point-to-plane residuals change very little. Therefore,
 
 $$  
@@ -323,7 +322,6 @@ These weakly constrained motions appear as small eigenvalues of the pose Hessian
 For an ideal infinite plane, two translations along the plane are unobservable. Rotation about the plane normal is also unobservable in pure point-to-plane ICP. Therefore, an ideal single-plane geometry can produce three near-zero eigenvalues in the $$6\times6$$ pose Hessian.
 
 Other common degeneracy cases include long corridors or tunnels, line-like structures, scenes dominated by parallel planes, narrow fields of view, and highly repetitive or symmetric geometry. In each case, the underlying issue is the same: some pose perturbation changes the measured geometric residuals very little.
-
 
 ---
 
@@ -381,7 +379,7 @@ $$
 
 For the single-plane example above, the $$6\times6$$ pose Hessian has three near-zero eigenvalues, so $$\mathbf{D} = \operatorname{diag}(1, 1, 1, 0, 0, 0)$$.
 
-The threshold is on the eigenvalue $$\lambda_i$$, which measures how well the measurements constrain a direction. 
+The threshold is on the eigenvalue $$\lambda_i$$, which measures how well the measurements constrain a direction. An absolute alternative to this relative test is [Magnusson's score](https://ricojia.github.io/2026/05/17/Laplace-Approximation/#magnusson-score) $$Q_H=1/\sqrt{\lambda_{\min}}$$, the standard deviation of the weakest direction.
 
 Now we would like a projection matrix $$\mathbf{P}$$ that keeps only the well-constrained directions. That is, for each eigenvector:
 
@@ -505,11 +503,11 @@ mixes radians and meters, so its eigenvalues are not in the same units either. C
 
 A naive thought is
 
-$$ 
+$$
 λ_i / λ_max < scale_i * THRESHOLD
 $$
 
-This doesn't work well because scaling the threshold per eigenvalue breaks on coupled directions. Suppose an eigenvector is 60% yaw and 40% sideways motion, another is 20% yaw and 40% sideways motion. We cannot apply a single preset scale_i. 
+This doesn't work well because scaling the threshold per eigenvalue breaks on coupled directions. Suppose an eigenvector is 60% yaw and 40% sideways motion, another is 20% yaw and 40% sideways motion. We cannot apply a single preset scale_i.
 
 Instead, we can convert radians into meters with a characteristic length $$L$$:
 
@@ -573,7 +571,7 @@ Let $$\mathbf{p}_i$$ be a matched point in the body (IMU) frame, and $$N$$ the n
 |Translate by $$\delta\mathbf{t}$$|$$\delta\mathbf{t}$$|$$\mathbf{I}$$|$$\mathbf{I}$$|
 |Rotate by $$\delta\boldsymbol{\theta}$$|$$\delta\boldsymbol{\theta}\times\mathbf{p}_i = -[\mathbf{p}_i]_\times\delta\boldsymbol{\theta}$$|$$-[\mathbf{p}_i]_\times$$|$$[\mathbf{p}_i]_\times^T[\mathbf{p}_i]_\times$$|
 
-**Step 2: measure how "stiff" each block is.** Think of the cost as a spring holding the pose in place: $$\Delta E \approx \frac{1}{2}\delta\mathbf{x}^T\mathbf{H}\,\delta\mathbf{x}$$, so pushing the pose by $$\delta\mathbf{x}$$ raises the cost like stretching a spring. A large eigenvalue is a stiff spring (a small push costs a lot, so that direction is well constrained), and a small eigenvalue is a loose one. The trace (sum of the diagonal, which [equals the sum of the eigenvalues](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-equals-the-sum-of-eigenvalues)) adds up the stiffness of a block's three directions, so it measures the block's total stiffness. 
+**Step 2: measure how "stiff" each block is.** Think of the cost as a spring holding the pose in place: $$\Delta E \approx \frac{1}{2}\delta\mathbf{x}^T\mathbf{H}\,\delta\mathbf{x}$$, so pushing the pose by $$\delta\mathbf{x}$$ raises the cost like stretching a spring. A large eigenvalue is a stiff spring (a small push costs a lot, so that direction is well constrained), and a small eigenvalue is a loose one. The trace (sum of the diagonal, which [equals the sum of the eigenvalues](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-equals-the-sum-of-eigenvalues)) adds up the stiffness of a block's three directions, so it measures the block's total stiffness.
 
 Using $$[\mathbf{p}]_\times^T[\mathbf{p}]_\times = \|\mathbf{p}\|^2\mathbf{I} - \mathbf{p}\mathbf{p}^T$$ ([proof](https://ricojia.github.io/2017/02/28/math-trace-frobenius-norm/#trace-of-a-squared-skew-symmetric-matrix)), whose trace is $$3\|\mathbf{p}\|^2 - \|\mathbf{p}\|^2 = 2\|\mathbf{p}\|^2$$:
 
@@ -613,15 +611,14 @@ It is the RMS (root-mean-square) range rather than the plain average, because th
 - **NDT or point-to-plane:** the per-point weights change both blocks, so the formula is approximate, but the RMS range is still a sensible scale.
 - **Clamp and smooth.** Put a floor on $$L$$ for near-empty scans, and smooth it across scans (e.g. an exponential moving average) so the degeneracy decision doesn't flicker.
 
-### Related work 
+### Related work
 
 Making rotation and translation comparable with a length scale is an established yet still common method
 
-1. In robot kinematics, Angeles and López-Cajún (1992) introduced a *characteristic length* that makes a manipulator Jacobian dimensionally homogeneous, so that its condition number is meaningful. 
+1. In robot kinematics, Angeles and López-Cajún (1992) introduced a *characteristic length* that makes a manipulator Jacobian dimensionally homogeneous, so that its condition number is meaningful.
 2. For ICP, [Gelfand, Ikemoto, Rusinkiewicz, and Levoy (2003), "Geometrically Stable Sampling for the ICP Algorithm"](https://www.cs.princeton.edu/~smr/papers/stabicp/) already did this. Before computing the eigenvalues and condition number of the $$6\times6$$ ICP covariance matrix, they shift the points to their centroid and scale them "so that the average distance of points from the origin is 1", which equalizes the displacement a point gets from rotation ("torque") and from translation ("force"). That is $$L$$ = mean point distance, a close cousin of the RMS-based $$L$$ above.
 3. Zhang, Kaess, and Singh (2016), "On Degeneracy of Optimization-based State Estimation Problems",, the degeneracy test behind LOAM, thresholds the eigenvalues of the raw Hessian without such a scaling, which is the problem this part addresses.
 4. For LiDAR degeneracy, [DCReg](https://arxiv.org/abs/2509.06285) (2025) analyzes this rotation-translation scale disparity and decouples the two subspaces with Schur complements.
 5. [Degeneracy-Resilient Teach and Repeat with FMCW Lidar](https://arxiv.org/abs/2603.10248) (2026) uses block scaling with a scaling factor $$\ell$$, detects degeneracy in the scaled space, and maps the solution back, as in this post.
 
-
-**Next:** [Laplace Approximation](https://ricojia.github.io/2026/05/15/Laplace-Approximation/) explains why the inverse Hessian can be read as a covariance.
+**Next:** [Laplace Approximation](https://ricojia.github.io/2026/05/17/Laplace-Approximation/) explains why the inverse Hessian can be read as a covariance.
