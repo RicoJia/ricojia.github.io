@@ -1,0 +1,781 @@
+---
+layout: post
+title: Deep Learning - Grad-CAM
+date: 2026-10-25 13:19
+subtitle: A Step-by-Step Example with a Tiny Neural Network
+comments: true
+header-img: img/post-bg-infinity.jpg
+tags:
+  - Deep Learning
+  - Machine-Learning
+---
+
+Grad-CAM (Gradient-weighted Class Activation Mapping) is a technique for understanding **which spatial regions** of an image **contribute to a neural network's classification**. Suppose we train a neural network to classify images as either **cats or dogs**. When the model predicts "cat," we want to answer:
+
+- Which parts of the image provide evidence for "cat"?
+
+- Which parts provide evidence against "cat"?
+
+- How do the network's activations and gradients combine to produce a heatmap?
+
+In essence, Grad-CAM is a first-order estimate of contribution relative to zero features / inputs through Taylor Expansion.
+
+To understand Grad-CAM, we'll build a tiny neural network and calculate everything by hand.
+
+## 1. Our Tiny Neural Network
+
+The architecture is:
+
+```
+RGB Image (3 × 2 × 2)
+         |
+         v
+Global Average Pooling
+         |
+         v
+RGB Averages (3 values)
+         |
+         v
+Fully Connected (3 → 2)
+         |
+         v
+       ReLU
+         |
+         v
+      Softmax
+         |
+         v
+   P(cat), P(dog)
+```
+
+Global average pooling is not a trainable layer. The fully connected layer contains the network's only learnable parameters.
+
+### Input image
+
+We use a very small image with just four RGB pixels:
+
+|Position|Red|Green|Blue|
+|---|---|---|---|
+|Top-left|2|0|0|
+|Top-right|1|0|0|
+|Bottom-left|0|0|2|
+|Bottom-right|0|1|0|
+
+We use simplified RGB values rather than the usual 0–255 or normalized 0–1 range.
+
+We can represent the input as:
+
+$$
+X\in\mathbb{R}^{3\times2\times2}
+$$
+
+The first dimension represents the three color channels. Each channel is a 2 × 2 grid laid out like the image (top row first):
+
+$$
+R=\begin{bmatrix}
+2&1\\
+0&0
+\end{bmatrix},\quad
+G=\begin{bmatrix}
+0&0\\
+0&1
+\end{bmatrix},\quad
+B=\begin{bmatrix}
+0&0\\
+2&0
+\end{bmatrix}
+$$
+
+### Step 1: Global Average Pooling
+
+Average each color channel over the four spatial positions.
+
+For red:
+
+$$
+\bar R=\operatorname{mean}\left(\begin{bmatrix}
+2&1\\
+0&0
+\end{bmatrix}\right)=\frac{2+1+0+0}{4}=0.75
+$$
+
+For green:
+
+$$
+\bar G=\operatorname{mean}\left(\begin{bmatrix}
+0&0\\
+0&1
+\end{bmatrix}\right)=\frac{0+0+0+1}{4}=0.25
+$$
+
+For blue:
+
+$$
+\bar B=\operatorname{mean}\left(\begin{bmatrix}
+0&0\\
+2&0
+\end{bmatrix}\right)=\frac{0+0+2+0}{4}=0.5
+$$
+
+Therefore:
+
+$$
+\bar X=
+\begin{bmatrix}
+0.75\\
+0.25\\
+0.5
+\end{bmatrix}
+$$
+
+### Step 2: Fully Connected Layer
+
+The fully connected layer produces two outputs, one for cat and one for dog. We manually choose these weights: ($2\times3$ matrix)
+
+$$
+W=
+\begin{bmatrix}
+2&0&-1\\
+-1&0&2
+\end{bmatrix}
+$$
+
+The first row contains the cat weights, and the second contains the dog weights. We set biases to zero.
+
+The output is:
+
+$$
+a=W\bar X
+$$
+
+For cat:
+
+$$
+a_{\text{cat}}=2(0.75)+0(0.25)-1(0.5)
+$$
+
+$$
+\boxed{a_{\text{cat}}=1.0}
+$$
+
+For dog:
+
+$$
+a_{\text{dog}}=-1(0.75)+0(0.25)+2(0.5)
+$$
+
+$$
+\boxed{a_{\text{dog}}=0.25}
+$$
+
+These invented weights make red favor cats and blue favor dogs. They are not learned from real images.
+
+### Step 3: ReLU
+
+ReLU removes negative values:
+
+$$
+\operatorname{ReLU}(x)=\max(0,x)
+$$
+
+Our two values are positive, so neither changes:
+
+$$
+z_{\text{cat}}=1.0
+$$
+
+$$
+z_{\text{dog}}=0.25
+$$
+
+We will use $z$ to denote the output scores before Softmax.
+
+### Step 4: Softmax
+
+Softmax converts our scores into class probabilities:
+
+$$
+P(\text{cat})=
+\frac{e^{z_{\text{cat}}}}
+{e^{z_{\text{cat}}}+e^{z_{\text{dog}}}}
+$$
+
+Substituting:
+
+$$
+P(\text{cat})=
+\frac{e^{1.0}}{e^{1.0}+e^{0.25}}
+$$
+
+$$
+\boxed{P(\text{cat})\approx0.679}
+$$
+
+Similarly:
+
+$$
+\boxed{P(\text{dog})\approx0.321}
+$$
+
+Our network predicts **cat, with approximately 67.9% probability**. Now we want to know which pixels contributed to that decision.
+
+---
+
+## 2. How Grad-CAM Works
+
+Grad-CAM combines two things:
+
+- **Activations:** The feature values present at different spatial locations.
+
+- **Gradients:** How sensitive the target score is to changes in those activations.
+
+Standard Grad-CAM operates on a convolutional feature map. In this toy example, we'll treat the spatial RGB input as our feature map:
+
+$$
+A=X\in\mathbb{R}^{3\times2\times2}
+$$
+
+This is a simplified Grad-CAM-style calculation, not a conventional convolutional Grad-CAM implementation.
+
+We'll initially target the cat score:
+
+$$
+S=z_{\text{cat}}
+$$
+
+Later, we'll use cat minus dog to explain the classification decision more directly.
+
+### Step 1: Calculate the gradients
+
+We want:
+
+$$
+g_{c,u,v}=
+\frac{\partial S}{\partial A_{c,u,v}}
+$$
+
+Here:
+
+- $c$: color channel, red, green, or blue.
+- $(u,v)$: spatial position.
+- $A_{c,u,v}$: activation at that channel and position.
+- $S$: cat score before Softmax.
+
+Consider the red channel. From the weight matrix, we know:
+
+$$
+S=2\bar R-\bar B
+$$
+
+And:
+
+$$
+R=\begin{bmatrix}
+R_1&R_2\\
+R_3&R_4
+\end{bmatrix},\qquad
+\bar R=\frac{R_1+R_2+R_3+R_4}{4}
+$$
+
+Therefore:
+
+$$
+\frac{\partial S}{\partial R_i} = 2\frac{\partial\bar R}{\partial R_i}
+$$
+
+Since:
+
+$$
+\frac{\partial\bar R}{\partial R}=\begin{bmatrix}
+\frac14&\frac14\\
+\frac14&\frac14
+\end{bmatrix}
+$$
+
+**Red gradients**
+
+$$
+\frac{\partial S}{\partial R}= G_R=
+\begin{bmatrix}
+0.5&0.5\\
+0.5&0.5
+\end{bmatrix}
+$$
+
+**Green gradients**
+
+$$
+G_G=
+\begin{bmatrix}
+0&0\\
+0&0
+\end{bmatrix}
+$$
+
+**Blue gradients**
+
+$$
+G_B=
+\begin{bmatrix}
+-0.25&-0.25\\
+-0.25&-0.25
+\end{bmatrix}
+$$
+
+A positive gradient means increasing that activation would increase the cat score locally. A negative gradient means increasing it would decrease the cat score.
+
+### Step 2: Average gradients within each channel
+
+Standard Grad-CAM computes one weight for each channel:
+
+$$
+\alpha_c=
+\frac1{HW}
+\sum_{u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+$$
+
+Here, $H=W=2$. For red:
+
+$$
+\alpha_R=\operatorname{mean}\left(\begin{bmatrix}
+0.5&0.5\\
+0.5&0.5
+\end{bmatrix}\right)=0.5
+$$
+
+For green:
+
+$$
+\alpha_G=\operatorname{mean}\left(\begin{bmatrix}
+0&0\\
+0&0
+\end{bmatrix}\right)=0
+$$
+
+For blue:
+
+$$
+\alpha_B=\operatorname{mean}\left(\begin{bmatrix}
+-0.25&-0.25\\
+-0.25&-0.25
+\end{bmatrix}\right)=-0.25
+$$
+
+Our three Grad-CAM channel weights are:
+
+$$
+\boxed{
+\alpha=
+\begin{bmatrix}
+0.5\\
+0\\
+-0.25
+\end{bmatrix}
+}
+$$
+
+Notice that the gradient weights are different from the original fully connected weights because of the global average pooling operation.
+
+### Step 3: Multiply each channel's activations by its Grad-CAM weight
+
+The signed Grad-CAM heatmap is:
+
+$$
+M(u,v)=\sum_c\alpha_c A_c(u,v)
+$$
+
+For our three color channels:
+
+$$
+M(u,v)=0.5R(u,v)+0G(u,v)-0.25B(u,v)
+$$
+
+
+In matrix form:
+
+$$
+M=0.5\begin{bmatrix}
+2&1\\
+0&0
+\end{bmatrix}+0\begin{bmatrix}
+0&0\\
+0&1
+\end{bmatrix}-0.25\begin{bmatrix}
+0&0\\
+2&0
+\end{bmatrix}
+$$
+
+Our final signed heatmap is:
+
+$$
+\boxed{
+M=
+\begin{bmatrix}
+1.0&0.5\\
+-0.5&0
+\end{bmatrix}
+}
+$$
+
+### Step 4: Interpret the heatmap
+
+|Pixel|Attribution|Interpretation|
+|---|---|---|
+|Top-left|+1.0|Strongest evidence favoring cat|
+|Top-right|+0.5|Some evidence favoring cat|
+|Bottom-left|−0.5|Evidence against cat|
+|Bottom-right|0|No contribution through this path|
+
+The top-left red pixel has the strongest positive attribution, while the blue pixel has negative attribution.
+
+**The critical distinction:** This heatmap is not just a sensitivity map.
+
+It combines **sensitivity and activation magnitude**. A pixel can have a large gradient but zero activation, producing zero Gradient × Activation attribution.
+
+Also, conventional Grad-CAM applies ReLU after combining the channels:
+
+$$
+M_{\text{Grad-CAM}}=\operatorname{ReLU}(M)
+$$
+
+So the conventional heatmap would be:
+
+$$
+\begin{bmatrix}
+1.0&0.5\\
+0&0
+\end{bmatrix}
+$$
+
+This removes negative evidence. For our explanation, we'll keep the signed version so both supporting and opposing regions remain visible.
+
+---
+
+## 3. Explain Cat Versus Dog Instead of Just Cat
+
+Our previous target was:
+
+$$
+S=z_{\text{cat}}
+$$
+
+But a classification depends on the relative scores of cat and dog.
+
+A more informative target is:
+
+$$
+\boxed{S=z_{\text{cat}}-z_{\text{dog}}}
+$$
+
+Since:
+
+$$
+z_{\text{cat}}=1.0,\quad z_{\text{dog}}=0.25
+$$
+
+we have:
+
+$$
+S=0.75
+$$
+
+A positive value means cat is favored over dog.
+
+In this example, both ReLUs are active. Therefore:
+
+$$
+S=(2\bar R-\bar B)-(-\bar R+2\bar B)
+$$
+
+Simplifying:
+
+$$
+\boxed{S=3\bar R-3\bar B}
+$$
+
+The derivatives are now:
+
+$$
+\frac{\partial S}{\partial R_i}=\frac34=0.75
+$$
+
+$$
+\frac{\partial S}{\partial B_i}=-\frac34=-0.75
+$$
+
+$$
+\frac{\partial S}{\partial G_i}=0
+$$
+
+As 2 × 2 gradient maps:
+
+$$
+G_R=\begin{bmatrix}
+0.75&0.75\\
+0.75&0.75
+\end{bmatrix},\quad
+G_G=\begin{bmatrix}
+0&0\\
+0&0
+\end{bmatrix},\quad
+G_B=\begin{bmatrix}
+-0.75&-0.75\\
+-0.75&-0.75
+\end{bmatrix}
+$$
+
+The signed Grad-CAM heatmap becomes:
+
+$$
+M(u,v)=0.75R(u,v)-0.75B(u,v)
+$$
+
+Calculating each pixel:
+
+$$
+M=0.75\begin{bmatrix}
+2&1\\
+0&0
+\end{bmatrix}-0.75\begin{bmatrix}
+0&0\\
+2&0
+\end{bmatrix}
+$$
+
+$$
+\boxed{
+M=
+\begin{bmatrix}
+1.5&0.75\\
+-1.5&0
+\end{bmatrix}
+}
+$$
+
+This time:
+
+- Positive values provide evidence favoring cat over dog.
+
+- Negative values provide evidence favoring dog over cat.
+
+- Zero means no contribution to the margin in this simplified model.
+
+Notice that:
+
+$$
+\sum_{u,v}M(u,v)=\operatorname{sum}\left(\begin{bmatrix}
+1.5&0.75\\
+-1.5&0
+\end{bmatrix}\right)=1.5+0.75-1.5+0
+$$
+
+$$
+\boxed{\sum_{u,v}M(u,v)=0.75=S}
+$$
+
+In this particular network, the sum of the signed heatmap exactly reproduces the cat-minus-dog score.
+
+This happens because the network uses global average pooling, has zero biases, and both ReLU outputs are in their active linear regions.
+
+It is not a general property of all Grad-CAM maps.
+
+---
+
+## 4. Grad-CAM Versus Gradient × Activation
+
+So far, we calculated:
+
+$$
+\alpha_c=
+\frac1{HW}\sum_{u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+$$
+
+Then:
+
+$$
+M(u,v)=\sum_c\alpha_c A_{c,u,v}
+$$
+
+But averaging gradients can lose spatial information.
+
+Another method is **Gradient × Activation**:
+
+$$
+\boxed{
+G(u,v)=
+\sum_c
+A_{c,u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+}
+$$
+
+The difference is that Gradient × Activation preserves the gradient at each spatial position.
+
+For our toy network, the gradients are constant at every position within each channel because the fully connected layer operates on global averages.
+
+Therefore:
+
+$$
+G(u,v)=M(u,v)
+$$
+
+They produce identical heatmaps.
+
+In a deeper CNN, however, gradients often vary spatially. Then Grad-CAM and Gradient × Activation may produce different results.
+
+This is particularly relevant when analyzing earlier convolutional layers.
+
+---
+
+## 5. What Happens in a Real CNN?
+
+A real cat-and-dog classifier typically contains multiple convolutional layers:
+
+```
+RGB Image
+    |
+    v
+Convolution 1
+    |
+    v
+   ReLU
+    |
+    v
+Convolution 2
+    |
+    v
+   ReLU
+    |
+    v
+Convolution 3
+    |
+    v
+Feature Maps (64 × 12 × 12)
+    |
+    v
+Global Average Pooling
+    |
+    v
+Fully Connected Layers
+    |
+    v
+Cat / Dog Logits
+    |
+    v
+Softmax
+```
+
+Instead of using the raw RGB values as activations, standard Grad-CAM uses intermediate convolutional feature maps.
+
+For example:
+
+$$
+A\in\mathbb{R}^{64\times12\times12}
+$$
+
+There are now 64 feature channels rather than three RGB channels.
+
+One channel might respond to edges, another to textures, and others to more complex learned patterns. Their interpretations are not guaranteed to correspond neatly to human concepts.
+
+For each channel, Grad-CAM calculates:
+
+$$
+\alpha_c=
+\frac1{144}
+\sum_{u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+$$
+
+Then combines all 64 channels:
+
+$$
+M(u,v)=\sum_{c=1}^{64}\alpha_c A_{c,u,v}
+$$
+
+This produces a 12 × 12 attribution map.
+
+The map can be upsampled to the original image resolution and overlaid on the image.
+
+However, an upsampled heatmap does not have the spatial precision of the original pixels. A feature-map cell can depend on a large receptive field of the original image.
+
+---
+
+## 6. What Grad-CAM Can and Cannot Tell Us
+
+Grad-CAM can show which feature-map locations provide positive or negative evidence for a chosen score.
+
+But there are important limitations.
+
+**First, attribution is not the same as sensitivity.**
+
+The gradient alone measures local sensitivity:
+
+$$
+\frac{\partial S}{\partial A}
+$$
+
+Grad-CAM multiplies activations by channel-averaged gradients, so its output reflects both feature presence and score sensitivity.
+
+**Second, Grad-CAM does not prove causation.**
+
+A high attribution value suggests that a region contributes to the current prediction. It does not guarantee that deleting that region would change the score by exactly that amount.
+
+Removing pixels can change many downstream activations and even the gradients themselves.
+
+**Third, the target score matters.**
+
+Using:
+
+$$
+S=z_{\text{cat}}
+$$
+
+asks which regions support the cat score.
+
+Using:
+
+$$
+S=z_{\text{cat}}-z_{\text{dog}}
+$$
+
+asks which regions favor cat relative to dog.
+
+These can produce different heatmaps.
+
+**Fourth, Softmax is generally not the best target for attribution.**
+
+Although the network outputs probabilities, Grad-CAM is commonly computed using a pre-Softmax class score. Softmax couples the classes and can produce small gradients when probabilities saturate.
+
+In our toy network, we therefore use the pre-Softmax score or logit margin.
+
+## Conclusion
+
+Grad-CAM uses gradients to determine the importance of feature channels, then weights their spatial activations to produce a heatmap.
+
+The essential mathematics is:
+
+$$
+\boxed{
+\alpha_c=
+\frac1{HW}
+\sum_{u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+}
+$$
+
+$$
+\boxed{
+M(u,v)=\sum_c\alpha_c A_{c,u,v}
+}
+$$
+
+The result highlights where the model has learned features that support or oppose a particular score.
+
+For a real CNN, the most useful interpretation is:
+
+**Grad-CAM shows where influential learned features are activated, not a direct measurement of how much each original image pixel would change the prediction if edited.**
+
+To test whether those highlighted regions genuinely control the prediction, we can follow up with perturbation-based experiments, such as deleting or replacing selected image regions and measuring the resulting score change.
