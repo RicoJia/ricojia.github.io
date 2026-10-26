@@ -130,7 +130,7 @@ $$
 
 ### Step 2: Fully Connected Layer
 
-The fully connected layer produces two outputs, one for cat and one for dog. We manually choose these weights: ($2\times3$ matrix)
+The fully connected layer produces two outputs, one for cat and one for dog. We manually choose these weights: ($$2\times3$$ matrix)
 
 $$
 W=
@@ -188,7 +188,7 @@ $$
 z_{\text{dog}}=0.25
 $$
 
-We will use $z$ to denote the output scores before Softmax.
+We will use $$z$$ to denote the output scores before Softmax.
 
 ### Step 4: Softmax
 
@@ -256,10 +256,10 @@ $$
 
 Here:
 
-- $c$: color channel, red, green, or blue.
-- $(u,v)$: spatial position.
-- $A_{c,u,v}$: activation at that channel and position.
-- $S$: cat score before Softmax.
+- $$c$$: color channel, red, green, or blue.
+- $$(u,v)$$: spatial position.
+- $$A_{c,u,v}$$: activation at that channel and position.
+- $$S$$: cat score before Softmax.
 
 Consider the red channel. From the weight matrix, we know:
 
@@ -335,7 +335,7 @@ $$
 \frac{\partial S}{\partial A_{c,u,v}}
 $$
 
-Here, $H=W=2$. For red:
+Here, $$H=W=2$$. For red:
 
 $$
 \alpha_R=\operatorname{mean}\left(\begin{bmatrix}
@@ -583,54 +583,7 @@ It is not a general property of all Grad-CAM maps.
 
 ---
 
-## 4. Grad-CAM Versus Gradient × Activation
-
-So far, we calculated:
-
-$$
-\alpha_c=
-\frac1{HW}\sum_{u,v}
-\frac{\partial S}{\partial A_{c,u,v}}
-$$
-
-Then:
-
-$$
-M(u,v)=\sum_c\alpha_c A_{c,u,v}
-$$
-
-But averaging gradients can lose spatial information.
-
-Another method is **Gradient × Activation**:
-
-$$
-\boxed{
-G(u,v)=
-\sum_c
-A_{c,u,v}
-\frac{\partial S}{\partial A_{c,u,v}}
-}
-$$
-
-The difference is that Gradient × Activation preserves the gradient at each spatial position.
-
-For our toy network, the gradients are constant at every position within each channel because the fully connected layer operates on global averages.
-
-Therefore:
-
-$$
-G(u,v)=M(u,v)
-$$
-
-They produce identical heatmaps.
-
-In a deeper CNN, however, gradients often vary spatially. Then Grad-CAM and Gradient × Activation may produce different results.
-
-This is particularly relevant when analyzing earlier convolutional layers.
-
----
-
-## 5. What Happens in a Real CNN?
+## 4. What Happens in a Real CNN?
 
 A real cat-and-dog classifier typically contains multiple convolutional layers:
 
@@ -703,7 +656,170 @@ However, an upsampled heatmap does not have the spatial precision of the origina
 
 ---
 
-## 6. What Grad-CAM Can and Cannot Tell Us
+## 5. Grad-CAM Versus Gradient × Activation
+
+Grad-CAM computes one weight per channel by averaging the gradients:
+
+$$
+\alpha_c=
+\frac1{HW}\sum_{u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+$$
+
+and then weights the activations:
+
+$$
+M(u,v)=\sum_c\alpha_c A_{c,u,v}
+$$
+
+Averaging gradients discards their spatial variation. **Gradient × Activation** keeps the gradient at each position:
+
+$$
+\boxed{
+G(u,v)=
+\sum_c
+A_{c,u,v}
+\frac{\partial S}{\partial A_{c,u,v}}
+}
+$$
+
+### When the two methods agree
+
+In our toy network, the fully connected layer operates on global averages, so every position in a channel has the same gradient. Averaging changes nothing, and:
+
+$$
+G(u,v)=M(u,v)
+$$
+
+The same holds in a real CNN at the **last convolutional layer**, the one feeding global average pooling: after pooling, the score no longer depends on where in the channel an activation sits, so the gradient within each channel is spatially constant.
+
+### When they disagree: earlier convolutional layers
+
+At earlier layers, the following convolutions and ReLUs mix information from neighboring positions, so the gradient can vary substantially across a channel. Averaging it can then flip the sign of the evidence.
+
+#### A small example
+
+Suppose one channel of an earlier layer has activations:
+
+$$
+A=
+\begin{bmatrix}
+10&0\\
+0&2
+\end{bmatrix}
+$$
+
+And the score gradients are:
+
+$$
+\frac{\partial S}{\partial A}=
+\begin{bmatrix}
+-2&0\\
+0&4
+\end{bmatrix}
+$$
+
+Interpretation:
+
+- Top-left: increasing its activation decreases the target score.
+- Bottom-right: increasing its activation increases the target score.
+
+#### What signed Grad-CAM does
+
+It averages all gradients:
+
+$$
+\alpha=\operatorname{mean}\left(
+\begin{bmatrix}
+-2&0\\
+0&4
+\end{bmatrix}
+\right)=\frac{-2+0+0+4}{4}=0.5
+$$
+
+Then multiplies all activations by that same weight:
+
+$$
+M=0.5A
+$$
+
+$$
+\boxed{
+M=
+\begin{bmatrix}
+5&0\\
+0&1
+\end{bmatrix}
+}
+$$
+
+This says the top-left region provides strong positive evidence for the target.
+
+But remember: its original gradient was negative!
+
+Grad-CAM has assigned a positive weight there because it averaged gradients from different locations.
+
+#### What Gradient × Activation does instead
+
+Gradient × Activation preserves each spatial gradient:
+
+$$
+G_{uv}=A_{uv}\frac{\partial S}{\partial A_{uv}}
+$$
+
+Therefore:
+
+$$
+G=
+\begin{bmatrix}
+10(-2)&0\\
+0&2(4)
+\end{bmatrix}
+$$
+
+$$
+\boxed{
+G=
+\begin{bmatrix}
+-20&0\\
+0&8
+\end{bmatrix}
+}
+$$
+
+#### Side by side
+
+Signed Grad-CAM:
+
+$$
+M=
+\begin{bmatrix}
+5&0\\
+0&1
+\end{bmatrix}
+$$
+
+Incorrectly marks the top-left location as positive.
+
+Gradient × Activation:
+
+$$
+G=
+\begin{bmatrix}
+-20&0\\
+0&8
+\end{bmatrix}
+$$
+
+Preserves the negative top-left and positive bottom-right attribution.
+
+The gradient at one position influences the Grad-CAM weight applied at every other position in the same channel.
+
+This matters when comparing Grad-CAM maps across layers. If a later layer appears to reverse the evidence shown at an earlier layer, part of that reversal may come from the gradient averaging rather than from the model's behavior. Gradient × Activation at the earlier layer is the better check.
+
+---
+
+## 6. What Grad-CAM and Gradient × Activation Can and Cannot Tell Us
 
 Grad-CAM can show which feature-map locations provide positive or negative evidence for a chosen score.
 
@@ -750,6 +866,24 @@ These can produce different heatmaps.
 Although the network outputs probabilities, Grad-CAM is commonly computed using a pre-Softmax class score. Softmax couples the classes and can produce small gradients when probabilities saturate.
 
 In our toy network, we therefore use the pre-Softmax score or logit margin.
+
+**Fifth, Gradient × Activation is also only a local, first-order estimate.**
+
+$$
+G_i=A_i\frac{\partial S}{\partial A_i}
+$$
+
+It estimates the effect of moving activation $$A_i$$ to zero using the gradient at the current activation. If the network behaves nonlinearly over that change, then in general:
+
+$$
+S(A)-S(0)\not\approx\sum_iG_i
+$$
+
+Our toy network is the exception: it is linear in the active ReLU region with zero biases, which is why the heatmap summed exactly to the score in Section 3.
+
+**Sixth, neither method identifies input pixels directly.**
+
+Both attribute the score to feature-map locations. Each location depends on a receptive field in the original image, so neither method tells us which original pixels caused the prediction.
 
 ## Conclusion
 
