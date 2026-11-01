@@ -120,6 +120,39 @@ for gradient in [dWaa, dWax, dWya, db, dby]:
 - Each `gradient` is an `np.array` object, so we are actually modifying gradient in place!
 - If `gradient` is not an array, modifying in place won't make sense
 
+#### `np.einsum`
+
+`np.einsum` is Einstein summation: you name each array's axes with letters, and any axis that doesn't show up after `->` gets summed over.
+
+For example, the range of a point `p = [x, y, z]` is:
+
+$$
+\begin{gather*}
+r=\|\mathbf p\|_2=\sqrt{x^2+y^2+z^2}
+\end{gather*}
+$$
+
+```python
+offsets_xyz = np.array([
+    [3, 4, 0],
+])
+ranges = np.sqrt(np.einsum('...i,...i->...', offsets_xyz, offsets_xyz))
+# see array([5.])
+```
+
+Mathematically, `'...i,...i->...'` means "multiply element-wise along the last axis `i`, then sum `i` away":
+
+$$
+\begin{gather*}
+s_{\ldots}=\sum_{i=0}^{2}A_{\ldots,i}A_{\ldots,i}
+\end{gather*}
+$$
+
+For `[3, 4, 0]`, `s = 3·3 + 4·4 + 0·0 = 25`, then `np.sqrt` gives `r = 5`.
+
+- It avoids creating an intermediate array of squared coordinates, unlike `offsets_xyz**2`, and may be faster than `np.linalg.norm` for small vectors.
+- However, it isn't guaranteed to be faster, and `np.linalg.norm` can be more numerically stable for extremely large or small values.
+
 ### Random Number Generation
 
 - `np.random.choice(a, size, replace=True, p=None)` randomly draws values from input `a`.
