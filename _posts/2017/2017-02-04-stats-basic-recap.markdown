@@ -273,6 +273,34 @@ $$
 
 This is the **inverse-variance fusion formula**. It gives the minimum-variance linear unbiased estimate when measurements are unbiased, independent, and have known finite variances. It does not require Gaussian distributions.
 
+#### Connection To The Kalman Filter
+
+The **Kalman filter measurement update is essentially inverse-variance weighted averaging**. The Kalman gain determines how much weight to assign to the new measurement versus the prior estimate, with lower-variance estimates receiving higher weights. For a scalar state, the Kalman gain is exactly the normalized inverse-variance weight of the measurement:
+
+$$
+\begin{gather*}
+K=\frac{1/\sigma_z^2}{1/\sigma_p^2+1/\sigma_z^2}
+\end{gather*}
+$$
+
+The updated estimate is:
+
+$$
+\begin{gather*}
+\mu_{\text{new}}=(1-K)\mu_p+Kz
+\end{gather*}
+$$
+
+The updated variance follows the same inverse-variance fusion rule:
+
+$$
+\begin{gather*}
+\sigma_{\text{new}}^2=\left(\frac{1}{\sigma_p^2}+\frac{1}{\sigma_z^2}\right)^{-1}
+\end{gather*}
+$$
+
+This applies to independent, unbiased estimates of the same scalar quantity. In multidimensional Kalman filters, the same principle extends to covariance matrices.
+
 ## Regression
 
 Regression in statistics means "estimating the relationship model between dependent variables and independent variables." For example, linear regression models the relationship of `Y` and its independent variables, `x1, x2 ...`.
