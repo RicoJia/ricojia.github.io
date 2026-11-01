@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Bessel Correction, box filter
+subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Variance Addition, Inverse-Variance Weighting, Bessel Correction, box filter
 date: 2017-02-04 13:19
 header-img: img/bg-material.jpg
 tags:
@@ -142,6 +142,136 @@ $$
 P_y=f'(x_0)P_xf'(x_0)^\top.  
 }  
 $$
+
+### Variance Is Not a Gaussian Property
+
+Variance measures how much a random variable deviates from its mean. For a zero-mean random variable:
+
+$$
+\begin{gather*}
+\operatorname{Var}(X)=E[X^2]=\sigma_X^2
+\end{gather*}
+$$
+
+More generally:
+
+$$
+\begin{gather*}
+\boxed{\operatorname{Var}(X)=E[X^2]-E[X]^2}
+\end{gather*}
+$$
+
+**Variance applies to any probability distribution with a finite second moment**, not just Gaussians. For example, rolling a fair six-sided die is a discrete uniform distribution: each outcome has the same probability.
+
+```
+Probability
+  1/6 |  █   █   █   █   █   █
+      |  █   █   █   █   █   █
+      |  █   █   █   █   █   █
+    0 +-------------------------
+         1   2   3   4   5   6
+                  X
+```
+
+Its mean and variance are:
+
+$$
+\begin{gather*}
+E[X]=3.5, \quad \operatorname{Var}(X)=\frac{35}{12}\approx 2.92
+\end{gather*}
+$$
+
+We love Gaussian distributions because **they are described entirely by their mean and covariance**. For non-Gaussian distributions, the mean and covariance do not necessarily capture the entire distribution.
+
+### Adding Two Independent Random Variables
+
+Another property that is not specific to Gaussian distributions: **the variances of two independent random variables add together**.
+
+Suppose `X` and `Y` are independent and both zero-mean. Define `Z = X + Y`. Then:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\operatorname{Var}(Z)
+&=E[(X+Y)^2]
+\\ &=E[X^2+2XY+Y^2]
+\\ &=E[X^2]+2E[XY]+E[Y^2]
+\end{aligned}
+\end{gather*}
+$$
+
+Because `X` and `Y` are independent, `E[XY] = E[X]E[Y] = 0`. Therefore:
+
+$$
+\begin{gather*}
+\boxed{\operatorname{Var}(X+Y)=\sigma_X^2+\sigma_Y^2}
+\end{gather*}
+$$
+
+This is the **additive property of variance for independent random variables**. The same applies to covariance matrices of independent random vectors:
+
+$$
+\begin{gather*}
+\boxed{\Sigma_{X+Y}=\Sigma_X+\Sigma_Y}
+\end{gather*}
+$$
+
+If the variables are correlated, **we must also account for their cross-covariance.**
+
+For example, when estimating the global position of a sonar detection, we combine the sonar measurement uncertainty and the INS state-estimation uncertainty. Assuming the two errors are independent, their covariances add together after being transformed into the same coordinate frame.
+
+### Combining Multiple Independent Measurements: Inverse-Variance Weighting
+
+When combining multiple measurements, we are still working with independent random variables. However, **they are measurements of the same quantity**.
+
+Suppose two sensors estimate the position of the same object, `X_1` and `X_2`. Each measurement has its own mean and variance:
+
+$$
+\begin{gather*}
+(\mu_1,\sigma_1^2),\qquad(\mu_2,\sigma_2^2)
+\end{gather*}
+$$
+
+A simple average is not optimal when the measurements have different uncertainties. Instead, we want a **weighted average** that gives more weight to measurements with smaller variance.
+
+**Step 1:** Assign inverse-variance weights. The normalized weight of measurement `i` is:
+
+$$
+\begin{gather*}
+\boxed{w_i=\frac{1/\sigma_i^2}{\sum_j 1/\sigma_j^2}}, \quad \sum_i w_i=1
+\end{gather*}
+$$
+
+**Step 2:** Calculate the weighted mean. A measurement with smaller variance contributes more:
+
+$$
+\begin{gather*}
+\boxed{\mu_{\text{fused}}=\sum_i w_i\mu_i}
+\end{gather*}
+$$
+
+**Step 3:** Calculate the combined variance. Because the measurements are independent, the variance of their weighted sum is:
+
+$$
+\begin{gather*}
+\sigma_{\text{fused}}^2 = w_1^2\sigma_1^2+w_2^2\sigma_2^2+\cdots
+\end{gather*}
+$$
+
+**Notice that the weights are squared.** This follows from `Var(aX) = a² Var(X)`. Substituting the inverse-variance weights and simplifying:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\sigma_{\text{fused}}^2
+&= \sum_i \left( \frac{1/\sigma_i^2}{\sum_j1/\sigma_j^2} \right)^2\sigma_i^2
+\\ &= \frac{\sum_i1/\sigma_i^2}{\left(\sum_j1/\sigma_j^2\right)^2}
+\\ &= \boxed{\frac{1}{\sum_i1/\sigma_i^2}}
+\end{aligned}
+\end{gather*}
+$$
+
+This is the **inverse-variance fusion formula**. It gives the minimum-variance linear unbiased estimate when measurements are unbiased, independent, and have known finite variances. It does not require Gaussian distributions.
 
 ## Regression
 

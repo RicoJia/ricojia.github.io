@@ -94,18 +94,42 @@ $$
 
 ### Negative Log-Likelihood Loss (NLL)
 
-NLL measures how likely the model assigns high probability to the true class. Requires log-probability inputs and integer class-index targets (not one-hot vectors).
+NLL penalizes the model for assigning low probability to the true target. Over $$m$$ samples:
 
 $$
 \text{NLL} = -\frac{1}{m}\sum_{j=1}^{m} \log p(y_j \mid x_j)
 $$
 
-Always pair with a log-softmax activation for numerical stability.
+#### Classification
+
+For classification, NLL takes log-probability inputs and integer class-index targets (not one-hot vectors). Always pair it with a log-softmax activation for numerical stability.
 
 **Example**: logits `[1.0, 2.0, 0.5]`, true class index `1`.
 
 1. Apply log-softmax: `[-1.463, -0.463, -1.963]`
 2. Pick the true-class log-probability: $$-\log p(y=1) = 0.463$$
+
+#### Regression with a Gaussian
+
+NLL also applies to regression when the model predicts a distribution. Suppose the ground-truth velocity follows a Gaussian centered on the prediction $$\hat v$$:
+
+$$
+v^{GT}\sim\mathcal N(\hat v,\sigma^2)
+$$
+
+Its probability density is:
+
+$$
+p(v^{GT})= \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(v^{GT}-\hat v)^2}{2\sigma^2} \right)
+$$
+
+Taking the negative logarithm gives:
+
+$$
+\boxed{
+L_{\mathrm{NLL}}= \frac{(v^{GT}-\hat v)^2}{2\sigma^2} +\frac12\log(\sigma^2) +\frac12\log(2\pi)
+}
+$$
 
 ### Sparse Categorical Cross-Entropy
 
