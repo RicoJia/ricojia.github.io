@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Variance Addition, Inverse-Variance Weighting, Bessel Correction, box filter
+subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Covariance Propagation, Variance Addition, Inverse-Variance Weighting, Bessel Correction, box filter
 date: 2017-02-04 13:19
 header-img: img/bg-material.jpg
 tags:
@@ -121,27 +121,136 @@ $$
 
     - Correlation is a standardized measure of "relatedness" between two random variables. It ranges from $$[-1, 1]$$. If $$A=kB$$ after mean normalization, then correlation will be a perfect 1
 
-### Covariance of Function
+### Covariance Propagation Through a Nonlinear Function
 
-For a simple nonlinear function
+A random variable isn't "linear" or "nonlinear"; the function that transforms it is. Given a random vector `x` with known mean and covariance, pushed through a nonlinear function `f`:
 
-$$  
-y=f(x),  
+$$
+\begin{gather*}
+\mathbf{x}\sim(\boldsymbol{\mu}_x,\Sigma_x), \quad \mathbf{y}=f(\mathbf{x})
+\end{gather*}
 $$
 
-linearized around (x_0),
+how do we get the mean and covariance of `y`?
 
-$$  
-y \approx f(x_0)+f'(x_0)\delta x.  
+#### Start With a Scalar
+
+Take `y = 3x` with `σ_x = 2`. A change of 1 in `x` changes `y` by 3, so the uncertainty is amplified by 3 too: `σ_y = 6`. In terms of variance, with the derivative `J = 3`:
+
+$$
+\begin{gather*}
+\sigma_y^2=3^2\sigma_x^2 = J\sigma_x^2J^T
+\end{gather*}
 $$
 
-If (x) has covariance (P_x), then the covariance of (y) is approximately
+The transpose does nothing for a scalar, but this is already Jacobian-based covariance propagation.
 
-$$  
-\boxed{  
-P_y=f'(x_0)P_xf'(x_0)^\top.  
-}  
+#### Multiple Inputs and Outputs: The Jacobian
+
+With several inputs and outputs, the Jacobian collects every partial derivative. It is a **sensitivity matrix**: entry `(i, j)` says how much output `i` moves when input `j` moves by 1. For example:
+
 $$
+\begin{gather*}
+\begin{aligned}
+y_1&=2x_1+x_2
+\\ y_2&=x_1+3x_2
+\end{aligned}
+\quad \Rightarrow \quad
+J=
+\begin{bmatrix}
+\frac{\partial y_1}{\partial x_1}&\frac{\partial y_1}{\partial x_2}
+\\ \frac{\partial y_2}{\partial x_1}&\frac{\partial y_2}{\partial x_2}
+\end{bmatrix}
+=
+\begin{bmatrix}2&1\\1&3\end{bmatrix}
+\end{gather*}
+$$
+
+#### Derivation of `J Σ J^T`
+
+Linearize `f` around the mean with a first-order Taylor expansion, where `J` is the Jacobian evaluated at `μ_x`:
+
+$$
+\begin{gather*}
+f(\mathbf{x})\approx f(\boldsymbol{\mu}_x)+J(\mathbf{x}-\boldsymbol{\mu}_x)
+\end{gather*}
+$$
+
+So a small input error `δx` maps to an output error `δy ≈ J δx`. Covariance is the expected outer product of errors, `Σ_x = E[δx δx^T]`, so:
+
+$$
+\begin{gather*}
+\begin{aligned}
+\Sigma_y
+&=E[\delta\mathbf{y}\delta\mathbf{y}^T]
+\\ &\approx E[(J\delta\mathbf{x})(J\delta\mathbf{x})^T]
+\\ &=J\, E[\delta\mathbf{x}\delta\mathbf{x}^T]\, J^T
+\end{aligned}
+\end{gather*}
+$$
+
+$$
+\begin{gather*}
+\boxed{\Sigma_y\approx J\Sigma_xJ^T}, \quad \boxed{\boldsymbol{\mu}_y\approx f(\boldsymbol{\mu}_x)}
+\end{gather*}
+$$
+
+- `J` turns small input errors into output errors.
+- `Σ_x` describes the input error distribution.
+- `J Σ_x J^T` is the resulting output covariance.
+
+This is a **first-order** approximation: it replaces `f` with its tangent at `μ_x`. It is good for small errors. When the input uncertainty is large relative to the curvature of `f`, both `J Σ J^T` and `f(μ_x)` become inaccurate (the true mean of `y` is generally not `f(μ_x)`).
+
+#### Example: INS Uncertainty of a Sonar Target
+
+A vehicle with pose `[x, y, θ]` detects a mine 20 m along its forward axis. The mine's global position and the Jacobian with respect to the pose are:
+
+$$
+\begin{gather*}
+\begin{aligned}
+p_x&=x+20\cos\theta
+\\ p_y&=y+20\sin\theta
+\end{aligned}
+\quad \Rightarrow \quad
+J_{\text{nav}}=
+\begin{bmatrix}
+1&0&-20\sin\theta
+\\ 0&1&20\cos\theta
+\end{bmatrix}
+\overset{\theta=0}{=}
+\begin{bmatrix}
+1&0&0
+\\ 0&1&20
+\end{bmatrix}
+\end{gather*}
+$$
+
+That 20 is the lever arm: a 1 m vehicle position error gives a 1 m target error, but a 0.01 rad heading error gives about `20 × 0.01 = 0.2` m of transverse target error.
+
+Suppose the INS has 1 m standard deviation on each position axis and 0.1 rad on heading:
+
+$$
+\begin{gather*}
+\Sigma_{\text{nav}}=\operatorname{diag}(1,\ 1,\ 0.01)
+\end{gather*}
+$$
+
+$$
+\begin{gather*}
+\Sigma_{\text{geo,nav}}=
+J_{\text{nav}}\Sigma_{\text{nav}}J_{\text{nav}}^T
+=
+\begin{bmatrix} 1&0&0\\ 0&1&20 \end{bmatrix}
+\begin{bmatrix} 1&0&0\\ 0&1&0\\ 0&0&0.01 \end{bmatrix}
+\begin{bmatrix} 1&0\\ 0&1\\ 0&20 \end{bmatrix}
+=
+\begin{bmatrix} 1&0\\ 0&1 + 20^2 \cdot 0.01 \end{bmatrix}
+=
+\boxed{\begin{bmatrix} 1&0\\ 0&5 \end{bmatrix}}
+\end{gather*}
+$$
+
+So from the INS alone, `σ_px = 1` m and `σ_py = √5 ≈ 2.24` m: heading uncertainty dominates the transverse error. This is only the navigation contribution; the sonar measurement's own covariance, propagated through its own Jacobian, adds on top of it if the two errors are independent (see the next sections).
 
 ### Variance Is Not a Gaussian Property
 
