@@ -62,3 +62,9 @@ imu_tf_publisher_->publish(*imu_msg);
 ### Quirks
 
 - rclcpp does not support callback in tf_listener.
+
+### TF Timing Issue
+
+On a real system, TF publishes robot poses at approximately 150 Hz, but transforms could arrive with a 40–100 ms delay, due to network congestion. 
+
+- When a detection arrives before its corresponding TF transform, we want to look up a transform with a buffer.
