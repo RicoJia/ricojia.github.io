@@ -511,3 +511,17 @@ int main() {
 ## [Method 5] OpenMP    (Optimization Impact: ⭐️⚪⚪⚪⚪)
 
 See above example
+
+### TBB (`par_unseq`) vs. OpenMP
+
+| Aspect | `std::for_each(par_unseq, …)` via TBB | OpenMP `#pragma omp parallel for` |
+| --- | --- | --- |
+| Style | Standard C++17; compiler-independent source | Compiler pragma; needs `-fopenmp` |
+| Scheduling | Task-based work stealing: splits the range recursively, and idle threads steal work | Fixed thread team; static / dynamic / guided schedules you choose |
+| Control | Limited: no chunk size, thread count, or affinity from the call itself (only global `tbb::global_control`) | Fine-grained: `schedule(static, 256)`, `num_threads`, `reduction(+:x)`, `collapse` |
+| Reductions | None built into `for_each`; write them yourself (e.g., partial per-chunk sums) or use `std::transform_reduce` | `reduction(...)` clause; custom reductions can be declared |
+| Determinism | Possible with fixed chunks summed in a fixed order | Reduction order is unspecified, so floating-point sums can differ between runs unless you use fixed chunks |
+| Overhead | Task scheduling overhead; `par_unseq` also permits vectorization | Low overhead for simple loops, but each region incurs parallel-region overhead |
+| Nesting / composability | TBB generally handles nested parallelism efficiently through shared scheduling resources | Nested regions can oversubscribe unless configured; mixing OpenMP with TBB can cause competing thread pools |
+
+- TBB is the backend of GCC's libstdc++ parallel algorithms, which is why we link `-ltbb` (see [Dependency on TBB](#dependency-on-tbb)). Other standard libraries may use a different backend.

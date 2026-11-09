@@ -92,6 +92,10 @@ The ndt hessian
 
 - Symmetric Fitness Check: Run NDT A->B and B->A
 
+## Lessons Learned
+
+- To calculate per-point residuals, we group points into 256-point chunks and process the chunks in parallel. Inside each chunk, we calculate `J`, `e`, ... in series. Previously, TBB workers spent their time waiting and dispatching tiny per-point tasks. This is a good example of balancing `par_unseq` multi-threading with sequential execution.
+
 ## Gotchas
 
 - Appllying rotation to translation in motion updates does make this estimate better
