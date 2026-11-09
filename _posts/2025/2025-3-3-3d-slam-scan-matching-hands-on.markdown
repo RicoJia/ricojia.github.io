@@ -54,6 +54,47 @@ The ROS2 driver for Preact-Mojave [can be found here](https://github.com/preact-
 </p>
 </div>
 
+NDT does **not** use the NDT Gaussians or the Mahalanobis distance, so in implementation `getFitnessScore()` is inherited from `pcl::Registration`, which is the parent class of `pcl::NormalDistributionsTransform `. After NDT estimates the transform `T`:
+
+1. Transform every source point: `q_i = T p_i`.
+2. Find its nearest neighbor `m_i` in the target cloud with a k-d tree.
+3. Calculate the squared Euclidean distance `||q_i - m_i||^2`.
+4. Average the squared distances over the valid correspondences. `getFitnessScore(max_range)` skips points whose **squared** nearest-neighbor distance exceeds `max_range` (default: no limit).
+
+$$
+\begin{gather*}
+\boxed{ \text{Fitness}=\frac{1}{N}\sum_{i=1}^{N}\|Tp_i-m_i\|^2 }
+\end{gather*}
+$$
+
+This is a mean squared error (MSE), in m² when coordinates are in meters. Lower is better. For example, a fitness of `0.04` corresponds to:
+
+$$
+\begin{gather*}
+\text{RMSE}=\sqrt{0.04}=0.2\text{ m}
+\end{gather*}
+$$
+
+#### Fitness vs. NDT Optimization
+
+The NDT optimizer scores each point against its voxel's mean `μ_i` and information matrix `Ω_i = Σ_i^-1` with the squared Mahalanobis distance, which accounts for the voxel's covariance. PCL's NDT wraps it in a Gaussian score, but the distance inside is the same:
+
+$$
+\begin{gather*}
+d_{M,i}^2=(q_i-\mu_i)^T\Omega_i(q_i-\mu_i)
+\end{gather*}
+$$
+
+The reported fitness ignores the covariance entirely:
+
+$$
+\begin{gather*}
+d_i^2=\|q_i-m_i\|^2
+\end{gather*}
+$$
+
+So the fitness score is not the quantity NDT minimized. It is a separate, covariance-free check of the final alignment.
+
 ### Front End Improvements
 
 - Switch to PCL’s NDT implementation.
