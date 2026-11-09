@@ -299,3 +299,12 @@ score = mean_linear_acceleration_sq
 ```
 
 Higher score means a less smooth trajectory.
+
+#### TUM Trajectory Format
+
+The timestamped poses are often stored in the TUM trajectory format, named after TU Munich's RGB-D benchmark. It's plain text with one pose per line, with the position in meters and the orientation as a unit quaternion (`qw` last):
+
+```
+timestamp  x  y  z  qx  qy  qz  qw
+1771654210.471488476 -0.033942353 -0.072726394 -0.019995801 -0.002909294 0.000445978 -0.000935790 0.999995231
+```

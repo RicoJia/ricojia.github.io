@@ -365,6 +365,51 @@ $$
 
 When the point cloud is sparse, we need to consider neighbor voxels. While it's dense, 1 voxel is enough for matching.
 
+### Multi-Neighbor NDT Formulation
+
+Matching each point against several neighboring voxels may improve registration smoothness, but it also introduces **neighborhood-dependent weighting**.
+
+**One point → one voxel.** For each transformed source point `q`, find its voxel, compute the residual `e = q - μ` against the voxel mean, compute the Jacobian `J`, and accumulate, with `Ω = Σ⁻¹` the voxel's information matrix:
+
+$$
+\begin{gather*}
+H \mathrel{+}= J^T\Omega J, \quad b \mathrel{+}= -J^T\Omega e
+\end{gather*}
+$$
+
+**One point → multiple neighboring voxels.** Each valid neighbor voxel `v` adds its own constraint:
+
+$$
+\begin{gather*}
+\boxed{H = \sum_{v\in\mathcal N(p)} J^T\Omega_v J}, \quad \boxed{b = -\sum_{v\in\mathcal N(p)} J^T\Omega_v (q-\mu_v)}
+\end{gather*}
+$$
+
+<div style="text-align: center;">
+<p align="center">
+    <figure>
+        <img src="https://i.postimg.cc/66CScM7F/neighboring-pts.jpg" height="200" alt=""/>
+    </figure>
+</p>
+</div>
+
+- The point `q` and the Jacobian `J` are the same for every neighbor voxel.
+- The voxel means `μ_v` and information matrices `Ω_v` differ.
+
+**Is this averaging? No.** There is no division by the number of neighbor voxels, so we are minimizing:
+
+$$
+\begin{gather*}
+E(T)=\sum_{p\in\text{source}}\sum_{v\in\mathcal N(p)} (q_p-\mu_v)^T\Omega_v(q_p-\mu_v)
+\end{gather*}
+$$
+
+where `N(p)` holds the neighbor voxels that exist and pass rejection. This changes the optimization objective:
+
+- **Pro:** registration is less sensitive to voxel boundaries, because a point interacts with several nearby distributions.
+- **Con:** a source point matching 5 voxels contributes 5 residuals, while a point matching 1 voxel contributes only 1. Points in dense voxel neighborhoods get more influence.
+- **Con:** those 5 residuals come from the same source point, so they are not 5 independent measurements, even though the cost treats them as if they were.
+
 **Advantages and Weaknesses:**
 
 - NDT is very concise, and it does not need to consider plane, or line like ICP. It has become a widely-used **baseline** scan matching method.
