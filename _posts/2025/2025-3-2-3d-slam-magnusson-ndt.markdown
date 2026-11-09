@@ -110,7 +110,7 @@ Magnusson isn't more stable because its penalty is smaller. It's more robust to 
 
 ### Weakness: It Needs A Good Initial Guess
 
-When the initial transform is far off, many correct points also have large residuals, so they get downweighted just like outliers. The useful gradient then disappears and the optimizer can stall or converge to the wrong pose.
+When the initial transform is far off, many correct points also have large residuals, so they get downweighted just like outliers. The useful gradient then disappears and the optimizer can stall or converge to the wrong pose. For a real example, see [experiment C in LIO Accuracy](https://ricojia.github.io/2025/04/14/3d-slam-lio-accuracy-experiments/#optimization-changes-that-reduced-robustness), where Magnusson's score caused up to 4.9 m of vertical drift.
 
 ---
 

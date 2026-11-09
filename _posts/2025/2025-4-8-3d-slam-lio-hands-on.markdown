@@ -100,3 +100,5 @@ Smaller tiles improve scan matching quality for two reasons:
 2. **More effective per-tile downsampling.** Each tile is voxel-downsampled independently. A smaller tile covers a tighter spatial region, so the voxel grid produces a more spatially uniform point distribution within that region. With large tiles the same voxel grid is spread over a wide area, leaving some sub-regions over- or under-represented after downsampling.
 
 The trade-off is a larger hash map and more tile-boundary bookkeeping, but for typical `tile_size` values (1–10 m) this overhead is negligible.
+
+For the runtime baseline and accuracy experiments built on this pipeline, see [LIO Accuracy: What Worked And What Didn't](https://ricojia.github.io/2025/04/14/3d-slam-lio-accuracy-experiments/).
