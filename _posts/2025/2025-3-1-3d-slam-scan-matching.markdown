@@ -265,6 +265,61 @@ $$
 \end{gather*}
 $$
 
+### Translation Observability
+
+From the Jacobian above, translation only enters the residual through the surface normal: `J_t = n^T`. Therefore, each point contributes a 3×3 matrix `n n^T` to the translation block of the Gauss-Newton Hessian. If we sum over all points:
+
+$$
+\begin{gather*}
+H_{tt}=\sum_i J_{t,i}^\top J_{t,i} =\sum_i n_i n_i^\top
+\end{gather*}
+$$
+
+This tells us how well translation is constrained in different directions. We can calculate the eigenvalues of `H_tt`. If the smallest eigenvalue is close to zero (relative to the largest), the Hessian is rank-deficient (or nearly so), meaning there is a direction where translation is poorly constrained. **This is translation degeneracy.**
+
+#### 2D Example: Corridor
+
+Imagine we have a hallway with 200 points on the two parallel walls:
+
+```text
+  ............ points
+  ------------------
+        HALLWAY       → x
+  ------------------
+  ............ points
+          ↑ y
+```
+
+For each point, the surface normal is either `[0, 1]^T` or `[0, -1]^T`. Both produce the same outer product:
+
+$$
+\begin{gather*}
+n n^\top=
+\begin{bmatrix}
+0&0\\
+0&1
+\end{bmatrix}
+\end{gather*}
+$$
+
+Summing over 200 points:
+
+$$
+\begin{gather*}
+H_{tt}=
+\begin{bmatrix}
+0&0\\
+0&200
+\end{bmatrix}
+\end{gather*}
+$$
+
+The eigenvalues are `λ_1 = 0` and `λ_2 = 200`. The corresponding eigenvectors are the x and y axes.
+
+This means translation along the **y-axis is strongly constrained**, since moving toward either wall changes the point-to-plane residual. However, translation along the **x-axis (the direction of the hallway) is completely unobservable** from these wall constraints. We can move forward or backward without changing the residual.
+
+This is why point-to-plane ICP can struggle in long, featureless corridors, even with hundreds of point correspondences. Adding more wall points only makes `λ_2` bigger; it never lifts `λ_1` off zero. Only surfaces with a normal component along x, such as a door frame or the end wall, do. For what happened when I tried to handle this with eigenvalue thresholds on a real dataset, see [experiment B in LIO Accuracy](https://ricojia.github.io/2025/04/14/3d-slam-lio-accuracy-experiments/#geometric-constraints-that-reinforced-existing-errors).
+
 ## Point-Line ICP
 
 The point-line ICP is mostly similar to the point-plane ICP, except that we need to adjust the error and Jacobians.

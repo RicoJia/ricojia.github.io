@@ -2,7 +2,7 @@
 layout: post
 title: Robotics - [3D SLAM - 5] Map Metrics
 date: 2025-4-8 13:19
-subtitle: Gaussian Entropy, Graph Tension, Chi Squared, Trajectory Smoothness
+subtitle: Gaussian Entropy, Graph Tension, Chi Squared, Trajectory Smoothness, ATE, RPE
 header-img: img/post-bg-o.jpg
 tags:
   - Robotics
@@ -308,3 +308,59 @@ The timestamped poses are often stored in the TUM trajectory format, named after
 timestamp  x  y  z  qx  qy  qz  qw
 1771654210.471488476 -0.033942353 -0.072726394 -0.019995801 -0.002909294 0.000445978 -0.000935790 0.999995231
 ```
+
+---
+
+## Trajectory Error Against Ground Truth
+
+The metrics above need no ground truth. When a ground truth trajectory is available (for example, in TUM format), we can measure accuracy directly with ATE and RPE.
+
+### ATE
+
+**Absolute Trajectory Error (ATE)** measures how far the estimated trajectory is from the ground truth. For each timestamp `i` that has a ground truth pose, we calculate the Euclidean distance between the estimated position and the ground truth position. ATE is then the RMSE over all timestamps (position only, no rotation):
+
+$$
+\begin{gather*}
+\text{ATE} = \sqrt{\frac{1}{N}\sum_{i=1}^{N}\left\|p_i^{gt}-p_i^{est}\right\|^2}
+\end{gather*}
+$$
+
+A lower ATE means the estimated trajectory is closer to the ground truth. Both trajectories must be expressed in the same coordinate frame, so they are usually aligned first (e.g., with Umeyama's method), and estimated poses are matched to ground truth poses by the nearest timestamp.
+
+### RPE
+
+**Relative Pose Error (RPE)** measures the error in relative motion between two poses, rather than their absolute positions. Given ground truth poses `G_i, G_j` and estimated poses `T_i, T_j`, we first calculate the relative transformations:
+
+$$
+\begin{gather*}
+G_{ij}=G_i^{-1}G_j,\qquad T_{ij}=T_i^{-1}T_j
+\end{gather*}
+$$
+
+Then, the relative pose error is:
+
+$$
+\begin{gather*}
+E_{ij}=G_{ij}^{-1}T_{ij}
+\end{gather*}
+$$
+
+For translation-only RPE, we take the norm of the translation component of `E_ij`:
+
+$$
+\begin{gather*}
+\text{RPE}_{ij}=\left\|\operatorname{trans}(E_{ij})\right\|
+\end{gather*}
+$$
+
+Alternatively, we can use the SE(3) logarithm to measure both translation and rotation errors:
+
+$$
+\begin{gather*}
+e_{ij}=\operatorname{Log}(E_{ij})^\vee\in\mathbb R^6
+\end{gather*}
+$$
+
+This gives us a 6D error vector (3 translation + 3 rotation). We can then compute its norm, with appropriate weighting since translation and rotation have different units.
+
+RPE is usually used to measure **relative motion accuracy (local drift)** over a fixed time or distance interval, averaged over all pairs `(i, j)` with that spacing. If we choose `i` as the starting pose and `j` as the final pose, it measures the relative end-pose error over that interval. Unlike ATE, it does not directly measure global trajectory accuracy, and it doesn't need the trajectories to be aligned first, since a constant offset cancels out in `G_ij` and `T_ij`.

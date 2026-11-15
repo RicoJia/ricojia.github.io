@@ -85,7 +85,7 @@ The key limitation was that the floor constraint was not independent of the pose
 
 **B. Hessian-based degeneracy handling**
 
-We attempted to suppress pose updates along weakly observable directions using the eigenvalues of the 6×6 Gauss–Newton Hessian:
+We attempted to suppress pose updates along weakly observable directions (see [Translation Observability](https://ricojia.github.io/2025/03/01/3d-slam-scan-matching/#translation-observability)) using the eigenvalues of the 6×6 Gauss–Newton Hessian:
 
 ```python
 lam, V = eig(H)
