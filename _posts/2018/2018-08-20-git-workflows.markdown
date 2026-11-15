@@ -23,6 +23,7 @@ git config --global user.email "your_email@example.com"
 ## Regular Git Workflow
 
 - Store changes of one file to stash: `git stash push FILEPATH`
+- Export a snapshot of the current commit as a zip (tracked files only, no `.git` directory and no uncommitted changes): `git archive --format=zip --output=/tmp/halo-branch.zip HEAD`
 
 Here is the cleaned-up, properly formatted **raw Markdown** (no code fences around the whole thing—**this is the final raw markdown**):
 
