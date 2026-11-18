@@ -131,6 +131,8 @@ $$
 
 This is equivalent to eigen decomposition.
 
+With outliers, fit a plane with [RANSAC](https://ricojia.github.io/2021/02/01/computer-vision-ransac/#ransac-plane-fitting) first, then refit with this method using only the inliers.
+
 ### Why The Above Doesn't Need Gaussian Newton
 
 Recall that in [robot pose estimation](https://ricojia.github.io/2024/07/11/rgbd-slam-bundle-adjustment/#how-to-formulate-slam-into-an-optimization-problem), cost is also in the quadratic form:

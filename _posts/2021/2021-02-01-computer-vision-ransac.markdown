@@ -2,7 +2,7 @@
 layout: post
 title: Computer Vision - RANSAC
 date: 2021-02-01 13:19
-subtitle:
+subtitle: Line Fitting, PnP, Plane Fitting
 comments: true
 tags:
   - Computer Vision
@@ -252,3 +252,53 @@ e_i < reprojectionError
 ```
 
 So if `reprojectionError=3.0`, then a detected corner is an inlier if the predicted projected corner lands within 3 pixels of the measured corner.
+
+## RANSAC Plane Fitting
+
+For a 3D plane, the minimal sample size is 3 points. For a number of iterations:
+
+**Step 1.** Select 3 random points `p_1, p_2, p_3`. Figure out the plane's normal with a cross product. If the 3 points are nearly collinear, `n` is close to zero, so skip this sample.
+
+$$
+\begin{gather*}
+n = \frac{(p_2 - p_1) \times (p_3 - p_1)}{\|(p_2 - p_1) \times (p_3 - p_1)\|}
+\end{gather*}
+$$
+
+**Step 2.** Calculate every point's distance to this plane. Draw a vector from `p_1` to the point `x_i`, then project it onto the unit normal:
+
+$$
+\begin{gather*}
+d_i = |n^T (x_i - p_1)|
+\end{gather*}
+$$
+
+**Step 3.** Count the inliers, i.e., the points with `d_i < threshold`.
+
+The plane with the most inliers wins.
+
+### Refitting With All Inliers
+
+The 3-point plane only uses 3 points, so we refit it with all `k` inliers. This is a least-squares problem that minimizes the inliers' squared distances to the plane:
+
+$$
+\begin{gather*}
+\min_{n, p} \sum_{i=1}^{k} \left( n^T (x_i - p) \right)^2, \quad \|n\| = 1
+\end{gather*}
+$$
+
+The best `p` is the centroid of the inliers. Stack the demeaned inliers into `A`:
+
+$$
+\begin{gather*}
+p = \frac{1}{k} \sum_{i=1}^{k} x_i, \qquad
+A = \begin{bmatrix}
+(x_1 - p)^T \\
+(x_2 - p)^T \\
+\vdots \\
+(x_k - p)^T
+\end{bmatrix}
+\end{gather*}
+$$
+
+The cost becomes `|An|² = nᵀ AᵀA n`. The best normal direction is the eigenvector of `AᵀA` (the 3x3 covariance matrix, up to a scale) with the smallest eigenvalue. Equivalently, it's the right singular vector of `A` with the smallest singular value, so it can be solved by SVD. See [Math - Linear Fitting](https://ricojia.github.io/2017/02/25/math-plane-fitting/#plane-fitting) for the derivation.

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math - Stats Basics Recap
-subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Covariance Propagation, Variance Addition, Inverse-Variance Weighting, Bessel Correction, box filter
+subtitle: Basic Statistics Concepts, Regression, Distributions, Covariance & Correlation, Covariance Propagation, Variance Addition, Inverse-Variance Weighting, Bessel Correction, Central Limit Theorem, Box Filter
 date: 2017-02-04 13:19
 header-img: img/bg-material.jpg
 tags:
@@ -77,6 +77,20 @@ Student's t-distribution is similar to a Gaussian distribution, but with heavier
 </div>
 
 TODO
+
+### Central Limit Theorem
+
+**If you add many independent random variables with finite variance, their sum tends toward a Gaussian (normal) distribution after standardization**, under the usual CLT conditions.
+
+For example, imagine rolling a six-sided die. One roll has a uniform distribution: each face has probability 1/6. Now roll two dice and **sum up their values**. A sum of 7 is more likely than a sum of 2, because there are more combos: 7 comes from 6 combos (1+6, 2+5, ..., 6+1), while 2 only comes from 1+1:
+
+$$
+\begin{gather*}
+P(\text{sum}=7)=\frac{6}{36}, \qquad P(\text{sum}=2)=\frac{1}{36}
+\end{gather*}
+$$
+
+If you roll many dice and add their values, the distribution of their sum becomes bell-shaped. See [Repeated Box Filters Approach A Gaussian](#repeated-box-filters-approach-a-gaussian) for the same idea applied to image filtering.
 
 ## Covariance And Correlation
 
@@ -539,4 +553,33 @@ $$
 
 ## Box Filter
 
-a box filter is a same-size local average, one output value per input pixel, not a downsample
+A box filter is a same-size local average: one output value per input pixel, not a downsample. See [Box Blur](https://ricojia.github.io/2021/01/03/computer-vision-blurring/#box-blur) for a worked example.
+
+### Repeated Box Filters Approach A Gaussian
+
+A normalized kernel is a probability distribution. For a uniform three-pixel kernel `[1/3, 1/3, 1/3]`, think of it as a random displacement `X` that takes values -1, 0, +1, each with probability 1/3. Its mean and variance are:
+
+$$
+\begin{gather*}
+E[X]=0 \\
+\operatorname{Var}(X)=\frac{(-1)^2+0^2+1^2}{3}=\frac23
+\end{gather*}
+$$
+
+Applying the filter `n` times convolves the kernel with itself `n` times. That is the distribution of the sum of `n` independent displacements:
+
+$$
+\begin{gather*}
+S_n=X_1+X_2+\cdots+X_n
+\end{gather*}
+$$
+
+Their [variances add](#adding-two-independent-random-variables):
+
+$$
+\begin{gather*}
+\boxed{\operatorname{Var}(S_n)=\frac{2n}{3}}
+\end{gather*}
+$$
+
+By the [Central Limit Theorem](#central-limit-theorem), **the distribution of `S_n`, after centering and dividing by its growing standard deviation, approaches a standard Gaussian**. That is why the effective filter after repeated box filtering becomes Gaussian-shaped, with a standard deviation of `sqrt(2n/3)` pixels.
